@@ -20,7 +20,7 @@ addons:
     - libavdevice-dev 
     - libavfilter-dev 
     - libavformat-dev 
-    - libavformat-ffmpeg56 
+    - libavformat57 
     - libavresample-dev 
     - libdbus-1-dev 
     - libpulse-dev 
