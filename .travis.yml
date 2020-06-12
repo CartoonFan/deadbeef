@@ -7,6 +7,7 @@ matrix:
           addons:
             apt:
               packages:
+              - gettext
               - autopoint
               - automake
               - autoconf
@@ -18,6 +19,8 @@ matrix:
           sudo: required
         - os: osx
           osx_image: xcode11.3
+before_install:
+- git fetch --unshallow
 
 git:
   submodules: false
@@ -30,7 +33,16 @@ addons:
 
 
 script:
-    - ./travis/build.sh
+  # Wraps the compilation with the Build Wrapper to generate configuration (used
+  # later by the SonarScanner) into the "bw-output" folder
+  - build-wrapper-linux-x86-64 --out-dir bw-output ./travis/build.sh
+  # And finally run the SonarCloud analysis - read the "sonar-project.properties"
+  # file to see the specific configuration
+  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
 
 after_success:
     - ./travis/upload.sh
+    
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
