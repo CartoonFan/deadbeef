@@ -54,6 +54,7 @@ addons:
     - intltool
     - libtool
     - gawk
+    - jansson
   sonarcloud:
     organization: "cartoonfan"
     token:
