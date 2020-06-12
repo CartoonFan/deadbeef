@@ -55,6 +55,10 @@ addons:
     - libtool
     - gawk
     - jansson
+    - libzip
+    - yasm
+    - gtk+3
+    - glib
   sonarcloud:
     organization: "cartoonfan"
     token:
