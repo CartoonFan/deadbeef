@@ -5,49 +5,49 @@ dist: bionic
 addons:
   apt:
     packages:
-    - gettext 
-    - autopoint 
-    - automake 
-    - autoconf 
-    - intltool 
-    - libc6-dev 
-    - libjansson-dev 
-    - libgtk-3-dev 
-    - libgtk2.0-dev 
-    - libasound2-dev 
-    - ffmpeg 
-    - libavcodec-dev 
-    - libavdevice-dev 
-    - libavfilter-dev 
-    - libavformat-dev 
-    - libavformat57 
-    - libavresample-dev 
-    - libdbus-1-dev 
-    - libpulse-dev 
-    - libmad0-dev 
-    - libmpg123-dev 
-    - libvorbis-dev 
-    - libopus-dev 
-    - opus-tools 
-    - libopusfile-dev 
-    - libogg-dev 
-    - libflac-dev 
-    - libwavpack-dev 
-    - libsndfile1-dev 
-    - libcdio-dev 
-    - libcdio-cdda-dev 
-    - libcdio-cdda2 
-    - libcdparanoia-dev 
-    - libcddb2-dev 
-    - oss-compat 
-    - oss4-dev 
-    - libimlib2-dev 
-    - libsamplerate0-dev 
-    - libfaad-dev 
-    - libzip-dev 
-    - zip 
-    - yasm 
-    - libglib2.0-bin 
+    - gettext
+    - autopoint
+    - automake
+    - autoconf
+    - intltool
+    - libc6-dev
+    - libjansson-dev
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - libasound2-dev
+    - ffmpeg
+    - libavcodec-dev
+    - libavdevice-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavformat57
+    - libavresample-dev
+    - libdbus-1-dev
+    - libpulse-dev
+    - libmad0-dev
+    - libmpg123-dev
+    - libvorbis-dev
+    - libopus-dev
+    - opus-tools
+    - libopusfile-dev
+    - libogg-dev
+    - libflac-dev
+    - libwavpack-dev
+    - libsndfile1-dev
+    - libcdio-dev
+    - libcdio-cdda-dev
+    - libcdio-cdda2
+    - libcdparanoia-dev
+    - libcddb2-dev
+    - oss-compat
+    - oss4-dev
+    - libimlib2-dev
+    - libsamplerate0-dev
+    - libfaad-dev
+    - libzip-dev
+    - zip
+    - yasm
+    - libglib2.0-bin
     - fakeroot
   homebrew:
     packages:
@@ -80,7 +80,7 @@ script:
   # later by the SonarScanner) into the "bw-output" folder
   - ./autogen.sh
   - ./configure
-  - build-wrapper-linux-x86-64 --out-dir bw-output make clean all
+  - if [ $TRAVIS_OS_NAME = osx ]; then build-wrapper-macosx-x86 --out-dir bw-output gmake clean all; else build-wrapper-linux-x86-64 --out-dir bw-output make clean all; fi
   # And finally run the SonarCloud analysis - read the "sonar-project.properties"
   # file to see the specific configuration
   - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
