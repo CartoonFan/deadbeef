@@ -51,6 +51,7 @@ addons:
     - fakeroot
   homebrew:
     packages:
+    - make
     - intltool
     - libtool
     - gawk
@@ -80,7 +81,7 @@ script:
   # later by the SonarScanner) into the "bw-output" folder
   - ./autogen.sh
   - ./configure
-  - if [ $TRAVIS_OS_NAME = osx ]; then build-wrapper-macosx-x86 --out-dir bw-output xcodebuild clean build; else build-wrapper-linux-x86-64 --out-dir bw-output make clean all; fi
+  - if [ $TRAVIS_OS_NAME = osx ]; then build-wrapper-macosx-x86 --out-dir bw-output gmake clean all; else build-wrapper-linux-x86-64 --out-dir bw-output make clean all; fi
   # And finally run the SonarCloud analysis - read the "sonar-project.properties"
   # file to see the specific configuration
   - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
