@@ -49,6 +49,11 @@ addons:
     - yasm 
     - libglib2.0-bin 
     - fakeroot
+  homebrew:
+    packages:
+    - intltool
+    - libtool
+    - gawk
   sonarcloud:
     organization: "cartoonfan"
     token:
