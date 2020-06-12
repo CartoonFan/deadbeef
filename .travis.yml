@@ -1,14 +1,68 @@
 language: cpp
 
-before_install:
-- sudo apt-get install gettext autopoint automake autoconf intltool libc6-dev libjansson-dev libgtk-3-dev libgtk2.0-dev libasound2-dev ffmpeg libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavformat-ffmpeg56 libavresample-dev libdbus-1-dev libpulse-dev libmad0-dev libmpg123-dev libvorbis-dev libopus-dev opus-tools libopusfile-dev libogg-dev libflac-dev libwavpack-dev libsndfile1-dev libcdio-dev libcdio-cdda-dev libcdio-cdda1 libcdparanoia-dev libcddb2-dev oss-compat oss4-dev libimlib2-dev libsamplerate0-dev libfaad-dev libzip-dev zip yasm libglib2.0-bin fakeroot
-
 addons:
+ apt:
+    packages:
+    - gettext 
+    - autopoint 
+    - automake 
+    - autoconf 
+    - intltool 
+    - libc6-dev 
+    - libjansson-dev 
+    - libgtk-3-dev 
+    - libgtk2.0-dev 
+    - libasound2-dev 
+    - ffmpeg 
+    - libavcodec-dev 
+    - libavdevice-dev 
+    - libavfilter-dev 
+    - libavformat-dev 
+    - libavformat-ffmpeg56 
+    - libavresample-dev 
+    - libdbus-1-dev 
+    - libpulse-dev 
+    - libmad0-dev 
+    - libmpg123-dev 
+    - libvorbis-dev 
+    - libopus-dev 
+    - opus-tools 
+    - libopusfile-dev 
+    - libogg-dev 
+    - libflac-dev 
+    - libwavpack-dev 
+    - libsndfile1-dev 
+    - libcdio-dev 
+    - libcdio-cdda-dev 
+    - libcdio-cdda2 
+    - libcdparanoia-dev 
+    - libcddb2-dev 
+    - oss-compat 
+    - oss4-dev 
+    - libimlib2-dev 
+    - libsamplerate0-dev 
+    - libfaad-dev 
+    - libzip-dev 
+    - zip 
+    - yasm 
+    - libglib2.0-bin 
+    - fakeroot
+  
   sonarcloud:
     organization: "cartoonfan"
     token:
       secure: "GclhC/mYAMgyHTOhPPkcuq00AasytSpiY78U+bf/eUEnCZHJcSn8JModTa79r8Mb5m2i7gTMPDWgTNRxCgNJL7LPQ6Orq/n3ZawaOW1dnW5NbebJV8aXzUp9j2lL5ojYjxQzTrCCwdRFkA2LO07CUNDY0VfQt/wruieQ8CTTwADxuyLNmBNjAZra6E+k7A7hdsn7EeadSstxaHse+Mq2K4PZJ65KJdJz/+g3WnV76asJH3/8YIG8YcA1HvDKvddtJmqHfwi9l0+0Zf9GFxEXI4+Pur5vF/PddBsH3LCEtvUQqRia9SYavH3irgrTjwDfPiD2GwozAbW9eNiWJDI2dKVceY7k36tVV81KBSFZNXwfeFmu6frjpkGTXD9UyScV8lYo4o9y/UnDBo4ISPLvpKkBrDlqto9bMhq1OoHouXL+k7h0AhfT/TM3l0fe81R3hw7+6js2XNRpUSNwCvfSRW7eUgBzYSBdfSmgO0sfIH+PVYsRvxPiwdV9TbyEeL+QXsZ1TOhQecZTloGdgeuEDb8SSsyioZDxn7SGz8I58vid1RYoEm5UZjQ7CqrilAT319qwEv02exvvSXRyyTIg2K7cSd6wRKqAcoJRNUwcf4qY0orpyaJAt8JJmD6GBHTOfufgyFeYtaGbzmNcMJp36rMhSl/OMOy63EZzdMkYndw="
 
+compiler:
+  - gcc
+  - clang
+
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+    - os: osx
+      osx_image: xcode11.5
 
 script:
   # Wraps the compilation with the Build Wrapper to generate configuration (used
