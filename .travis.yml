@@ -1,7 +1,7 @@
 language: cpp
 
 addons:
- apt:
+  apt:
     packages:
     - gettext 
     - autopoint 
@@ -47,8 +47,7 @@ addons:
     - yasm 
     - libglib2.0-bin 
     - fakeroot
-  
-  sonarcloud:
+sonarcloud:
     organization: "cartoonfan"
     token:
       secure: "GclhC/mYAMgyHTOhPPkcuq00AasytSpiY78U+bf/eUEnCZHJcSn8JModTa79r8Mb5m2i7gTMPDWgTNRxCgNJL7LPQ6Orq/n3ZawaOW1dnW5NbebJV8aXzUp9j2lL5ojYjxQzTrCCwdRFkA2LO07CUNDY0VfQt/wruieQ8CTTwADxuyLNmBNjAZra6E+k7A7hdsn7EeadSstxaHse+Mq2K4PZJ65KJdJz/+g3WnV76asJH3/8YIG8YcA1HvDKvddtJmqHfwi9l0+0Zf9GFxEXI4+Pur5vF/PddBsH3LCEtvUQqRia9SYavH3irgrTjwDfPiD2GwozAbW9eNiWJDI2dKVceY7k36tVV81KBSFZNXwfeFmu6frjpkGTXD9UyScV8lYo4o9y/UnDBo4ISPLvpKkBrDlqto9bMhq1OoHouXL+k7h0AhfT/TM3l0fe81R3hw7+6js2XNRpUSNwCvfSRW7eUgBzYSBdfSmgO0sfIH+PVYsRvxPiwdV9TbyEeL+QXsZ1TOhQecZTloGdgeuEDb8SSsyioZDxn7SGz8I58vid1RYoEm5UZjQ7CqrilAT319qwEv02exvvSXRyyTIg2K7cSd6wRKqAcoJRNUwcf4qY0orpyaJAt8JJmD6GBHTOfufgyFeYtaGbzmNcMJp36rMhSl/OMOy63EZzdMkYndw="
