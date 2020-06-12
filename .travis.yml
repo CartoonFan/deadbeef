@@ -1,7 +1,7 @@
 language: cpp
 
 before_install:
-- sudo apt-get gettext autopoint automake autoconf intltool libc6-dev yasm libglib2.0-bin fakeroot
+- sudo apt-get install gettext autopoint automake autoconf intltool libc6-dev yasm libglib2.0-bin fakeroot
 - git fetch --unshallow
 
 addons:
