@@ -21,15 +21,16 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Foundation/Foundation.h>
 #import "DdbWidget.h"
+#import <Foundation/Foundation.h>
 
-@interface DdbWidgetManager : NSObject {
-    NSMutableArray *_regWidgets;
-}
+@interface DdbWidgetManager : NSObject
 
 + (DdbWidgetManager *)defaultWidgetManager;
 - (void)addWidget:(DdbWidget *)widget;
 - (void)removeWidget:(DdbWidget *)widget;
-- (int)widgetMessage:(uint32_t)_id ctx:(uintptr_t)ctx p1:(uint32_t)p1 p2:(uint32_t)p2;
+- (int)widgetMessage:(uint32_t)_id
+                 ctx:(uintptr_t)ctx
+                  p1:(uint32_t)p1
+                  p2:(uint32_t)p2;
 @end

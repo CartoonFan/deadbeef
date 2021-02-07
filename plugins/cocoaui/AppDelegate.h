@@ -21,11 +21,12 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Cocoa/Cocoa.h>
-#include "MainWindowController.h"
-#import "SearchWindowController.h"
+#import "MainWindowController.h"
+#import "MediaLibraryManager.h"
 #import "PreferencesWindowController.h"
+#import "SearchWindowController.h"
 #include "deadbeef.h"
+#import <Cocoa/Cocoa.h>
 
 #define MAX_COLUMNS 20
 
@@ -33,31 +34,30 @@
 
 + (int)ddb_message:(int)_id ctx:(uint64_t)ctx p1:(uint32_t)p1 p2:(uint32_t)p2;
 
-@property MainWindowController *mainWindow;
+@property(nonatomic) MainWindowController *mainWindow;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *mainWindowToggleMenuItem;
-@property (unsafe_unretained) IBOutlet NSMenuItem *logWindowToggleMenuItem;
-@property (weak) IBOutlet NSMenuItem *equalizerWindowToggleMenuItem;
+@property(nonatomic, readonly) MediaLibraryManager *mediaLibraryManager;
 
+@property(unsafe_unretained) IBOutlet NSMenuItem *mainWindowToggleMenuItem;
+@property(unsafe_unretained) IBOutlet NSMenuItem *logWindowToggleMenuItem;
+@property(weak) IBOutlet NSMenuItem *equalizerWindowToggleMenuItem;
 
-@property (unsafe_unretained) IBOutlet NSMenu *mainMenu;
-@property (unsafe_unretained) IBOutlet NSMenu *dockMenu;
+@property(unsafe_unretained) IBOutlet NSMenu *mainMenu;
+@property(unsafe_unretained) IBOutlet NSMenu *dockMenu;
 
-
-@property (unsafe_unretained) IBOutlet NSWindow *addFilesWindow;
-@property (unsafe_unretained) IBOutlet NSTextField *addFilesLabel;
+@property(unsafe_unretained) IBOutlet NSWindow *addFilesWindow;
+@property(unsafe_unretained) IBOutlet NSTextField *addFilesLabel;
 - (IBAction)addFilesCancel:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSPanel *customSortPanel;
-@property (unsafe_unretained) IBOutlet NSTextField *customSortEntry;
-@property (unsafe_unretained) IBOutlet NSButton *customSortDescending;
-
+@property(unsafe_unretained) IBOutlet NSPanel *customSortPanel;
+@property(unsafe_unretained) IBOutlet NSTextField *customSortEntry;
+@property(unsafe_unretained) IBOutlet NSButton *customSortDescending;
 
 - (IBAction)customSortCancelAction:(id)sender;
 - (IBAction)customSortOKAction:(id)sender;
 
 - (IBAction)toggleDescendingSortOrderAction:(id)sender;
-@property (unsafe_unretained) IBOutlet NSMenuItem *descendingSortMode;
+@property(unsafe_unretained) IBOutlet NSMenuItem *descendingSortMode;
 
 - (IBAction)openPrefWindow:(id)sender;
 
@@ -66,15 +66,14 @@
 - (IBAction)addFilesAction:(id)sender;
 - (IBAction)addFoldersAction:(id)sender;
 - (IBAction)addLocationAction:(id)sender;
-@property (unsafe_unretained) IBOutlet NSPanel *addLocationPanel;
+@property(unsafe_unretained) IBOutlet NSPanel *addLocationPanel;
 - (IBAction)addLocationOKAction:(id)sender;
 - (IBAction)addLocationCancelAction:(id)sender;
-@property (unsafe_unretained) IBOutlet NSTextField *addLocationTextField;
+@property(unsafe_unretained) IBOutlet NSTextField *addLocationTextField;
 
 - (IBAction)newPlaylistAction:(id)sender;
 - (IBAction)loadPlaylistAction:(id)sender;
 - (IBAction)savePlaylistAction:(id)sender;
-
 
 // edit menu
 - (IBAction)clearAction:(id)sender;
@@ -94,32 +93,32 @@
 - (IBAction)stopAction:(id)sender;
 - (IBAction)nextAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *orderLinear;
-@property (unsafe_unretained) IBOutlet NSMenuItem *orderRandom;
-@property (unsafe_unretained) IBOutlet NSMenuItem *orderShuffle;
-@property (unsafe_unretained) IBOutlet NSMenuItem *orderShuffleAlbums;
+@property(unsafe_unretained) IBOutlet NSMenuItem *orderLinear;
+@property(unsafe_unretained) IBOutlet NSMenuItem *orderRandom;
+@property(unsafe_unretained) IBOutlet NSMenuItem *orderShuffle;
+@property(unsafe_unretained) IBOutlet NSMenuItem *orderShuffleAlbums;
 - (IBAction)orderLinearAction:(id)sender;
 - (IBAction)orderRandomAction:(id)sender;
 - (IBAction)orderShuffleAction:(id)sender;
 - (IBAction)orderShuffleAlbumsAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *loopNone;
-@property (unsafe_unretained) IBOutlet NSMenuItem *loopAll;
-@property (unsafe_unretained) IBOutlet NSMenuItem *loopSingle;
+@property(unsafe_unretained) IBOutlet NSMenuItem *loopNone;
+@property(unsafe_unretained) IBOutlet NSMenuItem *loopAll;
+@property(unsafe_unretained) IBOutlet NSMenuItem *loopSingle;
 - (IBAction)loopNoneAction:(id)sender;
 - (IBAction)loopAllAction:(id)sender;
 - (IBAction)loopSingleAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *cursorFollowsPlayback;
+@property(unsafe_unretained) IBOutlet NSMenuItem *cursorFollowsPlayback;
 - (IBAction)cursorFollowsPlaybackAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *scrollFollowsPlayback;
+@property(unsafe_unretained) IBOutlet NSMenuItem *scrollFollowsPlayback;
 - (IBAction)scrollFollowsPlaybackAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *stopAfterCurrent;
+@property(unsafe_unretained) IBOutlet NSMenuItem *stopAfterCurrent;
 - (IBAction)stopAfterCurrentAction:(id)sender;
 
-@property (unsafe_unretained) IBOutlet NSMenuItem *stopAfterCurrentAlbum;
+@property(unsafe_unretained) IBOutlet NSMenuItem *stopAfterCurrentAlbum;
 - (IBAction)stopAfterCurrentAlbumAction:(id)sender;
 
 - (IBAction)deselectAllAction:(id)sender;

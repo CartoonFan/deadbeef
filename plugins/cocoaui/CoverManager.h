@@ -21,14 +21,16 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Foundation/Foundation.h>
 #include "../../deadbeef.h"
+#import <Foundation/Foundation.h>
 
 @interface CoverManager : NSObject
 
 + (CoverManager *)defaultCoverManager;
 - (CoverManager *)init;
-- (NSImage *)defaultCover;
-- (NSImage *)getCoverForTrack:(DB_playItem_t *)track withCallbackWhenReady:(void (*) (NSImage *img, void *user_data))callback withUserDataForCallback:(void *)user_data;
+@property(nonatomic, readonly) NSImage *defaultCover;
+- (NSImage *)getCoverForTrack:(DB_playItem_t *)track
+        withCallbackWhenReady:(void (*)(NSImage *img, void *user_data))callback
+      withUserDataForCallback:(void *)user_data;
 
 @end

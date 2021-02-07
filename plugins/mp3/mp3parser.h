@@ -24,17 +24,17 @@
 #ifndef mp3parser_h
 #define mp3parser_h
 
-#include <stdint.h>
 #include "../../deadbeef.h"
+#include <stdint.h>
 
 enum {
-    MP3_PARSE_FULLSCAN = 1,
-    MP3_PARSE_ESTIMATE_DURATION = 2,
+  MP3_PARSE_FULLSCAN = 1,
+  MP3_PARSE_ESTIMATE_DURATION = 2,
 };
 
 // vbrmethod constants
-#define XING_CBR  1
-#define XING_ABR  2
+#define XING_CBR 1
+#define XING_ABR 2
 #define XING_VBR1 3
 #define XING_VBR2 4
 #define XING_VBR3 5
@@ -44,73 +44,82 @@ enum {
 #define DETECTED_VBR 100
 
 typedef struct {
-    uint64_t offs;
-    int ver;
-    int samplerate;
-    int bitrate;
-    int nchannels;
-    int samples_per_frame;
-    int layer;
-    int packetlength;
+  uint64_t offs;
+  int ver;
+  int samplerate;
+  int bitrate;
+  int nchannels;
+  int samples_per_frame;
+  int layer;
+  int packetlength;
 } mp3packet_t;
 
 typedef struct {
-    // outputs
-    int64_t packet_offs; // stream position of the packet corresponding to the requested seek position
-    int64_t pcmsample; // sample position corresponding to packet_offs
-    int64_t npackets;
+  // outputs
+  int64_t packet_offs; // stream position of the packet corresponding to the
+  // requested seek position
+  int64_t pcmsample; // sample position corresponding to packet_offs
+  int64_t npackets;
 
-    int have_duration; // set to 1 if totalsamples has final value (e.g. from Xing packet)
-    int64_t totalsamples; // total samples in the stream, or -1 for infinite
+  int have_duration; // set to 1 if totalsamples has final value (e.g. from Xing
+  // packet)
+  int64_t totalsamples; // total samples in the stream, or -1 for infinite
 
-    int lastpacket_valid;
-    int64_t valid_packets;
+  int lastpacket_valid;
+  int64_t valid_packets;
 
-    mp3packet_t ref_packet; // packet representing the stream format
+  mp3packet_t ref_packet; // packet representing the stream format
 
-    int have_xing_header;
-    int vbr_type;
+  int have_xing_header;
+  int have_xing_nframes;
+  int vbr_type;
 
-    // FIXME: these fields should be filled/used only for network streams of finite length
-    double avg_packetlength;
-    int64_t avg_samples_per_frame;
-    int64_t avg_bitrate;
+  // FIXME: these fields should be filled/used only for network streams of
+  // finite length
+  double avg_packetlength;
+  int64_t avg_samples_per_frame;
+  int64_t avg_bitrate;
 
-    int is_streaming;
+  int is_streaming;
 
-    int delay;
-    int padding;
+  int delay;
+  int padding;
 
-    uint16_t lamepreset;
-    uint32_t lame_musiclength; // file size from beginning of LAME info packet until the last byte of packet with audio, as encoded by Lame
+  uint16_t lamepreset;
+  uint32_t lame_musiclength; // file size from beginning of LAME info packet
+  // until the last byte of packet with audio, as
+  // encoded by Lame
 
-    uint64_t fsize;
-    uint64_t datasize;
+  uint64_t fsize;
+  uint64_t datasize;
 
-    // intermediates
-    mp3packet_t prev_packet;
+  // intermediates
+  mp3packet_t prev_packet;
 
-    int checked_xing_header;
+  int checked_xing_header;
 
-    // read statistics
-    uint64_t num_seeks;
-    uint64_t num_reads;
-    uint64_t bytes_read;
+  // read statistics
+  uint64_t num_seeks;
+  uint64_t num_reads;
+  uint64_t bytes_read;
 } mp3info_t;
 
 // Params:
-// seek_to_sample: -1 means to the end (scan whole file), otherwise a sample to seek to
-// When seeking, the packet offset returned will be the one containing seek_to_sample, not accounting for delay.
-// `totalsamples` will be set to the sample count at the packet start.
-// So the caller is responsible for adding delay to seek_to_sample, and then adjusting skipsamples based on returned "totalsamples".
+// seek_to_sample: -1 means to the end (scan whole file), otherwise a sample to
+// seek to When seeking, the packet offset returned will be the one containing
+// seek_to_sample, not accounting for delay. `totalsamples` will be set to the
+// sample count at the packet start. So the caller is responsible for adding
+// delay to seek_to_sample, and then adjusting skipsamples based on returned
+// "totalsamples".
 //
 //
 // returns:
 // 0: success
 // -1: error
 //
-// the caller is supposed to start decoding from info->packet_offs, and skip info->skipsamples samples
-int
-mp3_parse_file (mp3info_t *info, uint32_t flags, DB_FILE *fp, int64_t fsize, int startoffs, int endoffs, int64_t seek_to_sample);
+// the caller is supposed to start decoding from info->packet_offs, and skip
+// info->skipsamples samples
+int mp3_parse_file(mp3info_t *info, uint32_t flags, DB_FILE *fp, int64_t fsize,
+                   int startoffs, int endoffs, int64_t seek_to_sample);
 
 #endif /* mp3parser_h */

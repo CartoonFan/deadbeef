@@ -7,27 +7,29 @@
 //
 
 #import "DDBTestInitializer.h"
-#include "conf.h"
-#include "playlist.h"
 #include "../../common.h"
+#include "conf.h"
 #include "logger.h"
-#include "vfs.h"
+#include "playlist.h"
+#include "playmodes.h"
 #include "plugins.h"
+#include "vfs.h"
 
 @implementation DDBTestInitializer
 - (id)init {
-    NSString *resPath = [[NSBundle bundleForClass:[self class]] resourcePath];
-    const char *str = [resPath UTF8String];
-    strcpy (dbplugindir, str);
+  NSString *resPath = [NSBundle bundleForClass:self.class].resourcePath;
+  const char *str = resPath.UTF8String;
+  strcpy(dbplugindir, str);
 
-    ddb_logger_init ();
-    conf_init ();
-    conf_enable_saving (0);
-    pl_init ();
+  ddb_logger_init();
+  conf_init();
+  conf_enable_saving(0);
+  streamer_playmodes_init();
+  pl_init();
 
-    if (plug_load_all ()) { // required to add files to playlist from commandline
-        exit (1);
-    }
+  if (plug_load_all()) { // required to add files to playlist from commandline
+    exit(1);
+  }
 
 #if 0
     plug_disconnect_all ();
@@ -36,6 +38,6 @@
     conf_free ();
     ddb_logger_free ();
 #endif
-    return self;
+  return self;
 }
 @end

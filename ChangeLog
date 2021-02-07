@@ -1,3 +1,48 @@
+version 1.8.6
+	Fixed loading encoder presets in non-portable builds
+	Fix truncation of long group titles in the playlist
+
+version 1.8.5
+	Added the new ISO/IEC Base Media File Format library MP4P for working with MP4 files, which removes MP4FF dependency
+	Added support for additional per-track metadata in cuesheets
+	Added updating titlebar when displaying playback position (Nicolai Syvertsen)
+	Added a more convenient way to edit container widgets in design mode (Nicolai Syvertsen)
+	Fixed ALAC bug whiuch caused division by zero exception
+	Fixed cuesheet parser bug caused by unknown/unsupported field names
+	Fixed a series of bugs in the Adplug plugin
+	Fixed a bug when parsing MP3 Xing/Info header, reading incorrect packet count
+	Fixed a number of bugs in artwork plugin, especially affecting the Windows version (Jakub Wasylków, Keith Cancel)
+	Fixed a SHIFT-JIS detection bug which caused memory corruption
+	Fixed a bug when configuring keyboard shortcut involving Shift key
+	Fixed a bug with playlist becoming to small in certain UI layouts
+	Fixed a crash when deadbeef window becomes too small when using certain UI layouts
+	Fixed drawing playlist column separators in certain newer GTK themes
+	Fixed on-screen notification bug when too many notifications accumulated at the same time, spawning too many threads
+	Fixed a bug, causing the Band field to be missing from %artist% specifier when using title formatting
+	Fixed bugs leaking file handles in AAC and ALAC plugins (Thomas Jepp)
+	Fixed handling certain non-conformant S3M files
+	Fixed a bug where resizing the log window caused the auto-scroll to stop working (Nicolai Syvertsen)
+	Fixed album shuffle bug, causing the same album to repeat after the last track of the album has finished
+	Fixed shuffle bug causing short tracks to repeat
+
+version 1.8.4
+	Soundtouch plugin has been updated, and is now included in the releases
+	Added %last_modified% title formatting keyword (Cristian Ciocaltea)
+	Fixed stack overflow bug in converter
+	Fixed buffer overflow bug in mp3 parser
+	Fixed handling of leading forward shash character in zipper file names
+	Fixed handling user-specified file mask in artwork plugin
+	Fixed CBR MP3 scanning performance
+	Fixed stack overflow in title formatting tint range calculation
+	Fixed pulseaudio plugin configuration backwards compatibility issue
+	Fixed last.fm scrobbling of streaming shoutcast tracks
+	Fixed deadlock when loading cuesheets which recursively reference themselves
+	Fixed a false-positive when detecting free format MP3 files
+	Fixed skipping unsupported fields in cuesheets
+	Fixed a regression which caused MP3 tag editing to crash when text can't be represented as CP1252
+	Fixed playback of certain network streams
+	Fixed handling of ID3v2 COMM frame content description data
+
 version 1.8.3
 	Fixed a CD Text reading issue
 	Added title formatting functions: len2, longer, longest, padcut, padcut_right, progress, progress2, right, roman, rot13, shortest, strchr, stricmp, strrchr, strstr, substr, tab, trim (esainane@github)
@@ -145,7 +190,7 @@ version 1.8.0
 	renamed Looping and Order menus to Repeat and Shuffle, respectively
 	fixed loading larger Songlenths.txt in sid plugin, and added support for Songlengths.md5
 
-version 0.7.2 
+version 0.7.2
 	fixed title formatting %filename% crash
 	fixed streaming of aac content in mp4 container
 	added https:// support to vfs_curl (Viktor Semykin)
@@ -221,7 +266,7 @@ version 0.7.0
 	mp3: fixed xing header parsing, length calculation issues
 	favor album artist over artist in "stop after current album" mode
 	gme: fixed SAP file duration and improved looping handling
-	sid: automatic detection of HVSC SongLengths.txt from sid file pathes
+	sid: automatic detection of HVSC SongLengths.txt from sid file paths
 	gtkui: added Tabs widget in Design mode (Christian Boxdörfer)
 	added sc68 plugin for playing Atari ST music
 	added on-demand initialization to wild-midi, to speed up player init
@@ -333,7 +378,7 @@ version 0.6.1
 	fixed mp3 duration rounding bug
 	fixed incorrect scroll/cursor after deleting playlists
 	added support for loading plugins from ~/.local/lib{32|64}/deadbeef, depending on running deadbeef build version
-	fixed bug imposing 256 byte limit on file pathes in archives
+	fixed bug imposing 256 byte limit on file paths in archives
 	fixed column autoresize issues
 	removed libstdc++ hacks from C++ plugins
 	fixed "Remove from disk" menu item not being hidden by corresponding option
@@ -408,7 +453,7 @@ version 0.5.6
 	show blank instead of "?" when a metadata field is absent
 	fixed local album cover files search order, it's alphabetical now
 	alsa: added a hack/work-around to prevent releasing sound device when a user switches between tracks
-	m3u: improved handling of relative file pathes
+	m3u: improved handling of relative file paths
 	converter: fixed handling "/" in filenames; fixed tag-writing to files which have special characters
 	fixed resuming last session in shuffle albums mode
 	fixed several libmms freeze/hang/crash bugs
@@ -436,11 +481,11 @@ version 0.5.5
 	fixed crash in adplug when playing ADL files
 	fixed crash in aac reload metadata
 	fixed Grandia - Parallel Trippers.gbs crash in GME plugin
-	fixed crash in GME plugin when a file doesn't exist 
+	fixed crash in GME plugin when a file doesn't exist
 	fixed integer overflow bug in float32->int32 conversion
 	fixed m3u parser string copy bug
 	fixed several dsp bugs in the converter
-	fixed up/down buttons in the converter's dsp preset editor 
+	fixed up/down buttons in the converter's dsp preset editor
 	fixed selected row bugs in dsp preset editors in gtkui preferences and converter
 	fixed parent window of dsp plugin configure window
 	fixed all known issues in gtk3 plugin -- it should be fully working now
@@ -794,13 +839,13 @@ version 0.3.2
 	fixed sse2 issues on i686 architecture
 	added 24-bit ape support (thanks to Rockbox project)
 	added support for custom scrobbler url to last.fm plugin (e.g. libre.fm)
-	added Play Queue funtionality to playlist (context menu)
+	added Play Queue functionality to playlist (context menu)
 	added average/approximate bitrate display to statusbar
 	new "cursor follows playback" feature
 	new "stop after current track" feature
 	.dbpl extension is auto-added when saving playlist
 	improved robustness in http code (handling connection problems, etc)
-		
+
 version 0.3.1
 	improved header widget drawing and gtkengines compatibility
 	fixed vfs_curl to fetch content size properly again
@@ -879,7 +924,7 @@ version 0.2.2.2
 version 0.2.2.1
 	fixed playlist drawing regressions encountered in 0.2.2
 
-version 0.2.2	
+version 0.2.2
 	fixed several build problems reported by users
 	added app icons, updated launcher script
 	proper sse2 detection and usage in ape plugin

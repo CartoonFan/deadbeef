@@ -24,37 +24,38 @@
 #import "cocoautil.h"
 #import <Foundation/Foundation.h>
 
-int
-cocoautil_get_resources_path (char *s, int size) {
-    strcpy (s, NSBundle.mainBundle.resourcePath.UTF8String);
-    return 0;
+int cocoautil_get_resources_path(char *s, int size) {
+  strlcpy(s, NSBundle.mainBundle.resourcePath.UTF8String, size);
+  return 0;
 }
 
-void
-cocoautil_backtrace (void) {
-    NSLog(@"%@", NSThread.callStackSymbols);
+int cocoautil_get_plugins_path(char *s, int size) {
+  strlcpy(s, NSBundle.mainBundle.builtInPlugInsPath.UTF8String, size);
+  return 0;
 }
 
-int
-cocoautil_get_library_path (char *s, int size) {
-    *s = 0;
+void cocoautil_backtrace(void) { NSLog(@"%@", NSThread.callStackSymbols); }
 
-    NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains (NSLibraryDirectory, NSUserDomainMask, YES);
-    if (!paths.count) {
-        return -1;
-    }
-    strncat (s, paths[0].UTF8String, size);
-    return 0;
+int cocoautil_get_library_path(char *s, int size) {
+  *s = 0;
+
+  NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(
+      NSLibraryDirectory, NSUserDomainMask, YES);
+  if (!paths.count) {
+    return -1;
+  }
+  strlcpy(s, paths.firstObject.UTF8String, size);
+  return 0;
 }
 
-int
-cocoautil_get_application_support_path (char *s, int size) {
-    *s = 0;
+int cocoautil_get_application_support_path(char *s, int size) {
+  *s = 0;
 
-    NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    if (!paths.count) {
-        return -1;
-    }
-    strncat (s, paths[0].UTF8String, size);
-    return 0;
+  NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(
+      NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  if (!paths.count) {
+    return -1;
+  }
+  strlcpy(s, paths.firstObject.UTF8String, size);
+  return 0;
 }

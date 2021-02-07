@@ -21,43 +21,29 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Cocoa/Cocoa.h>
+#import "ConverterWindowController.h"
 #import "DesignableViewController.h"
 #import "PlaylistView.h"
-#import "TrackPropertiesWindowController.h"
-#import "ConverterWindowController.h"
-
-#define PLT_MAX_COLUMNS 100
+#import <Cocoa/Cocoa.h>
 
 typedef struct {
-    char *title;
-    int type; // predefined col type
-    char *format;
-    int size;
-    int alignment;
-    int set_text_color;
-    uint8_t text_color[4];
-    char *bytecode;
-    int sort_order;
+  char *title;
+  int type; // predefined col type
+  char *format;
+  int size;
+  int alignment;
+  int set_text_color;
+  uint8_t text_color[4];
+  char *bytecode;
+  int sort_order;
 } plt_col_info_t;
 
-@interface PlaylistViewController : DesignableViewController<DdbListviewDelegate,NSMenuDelegate> {
-    plt_col_info_t _columns[PLT_MAX_COLUMNS];
-    int _ncolumns;
-    int _menuColumn;
-    NSImage *_playTpl;
-    NSImage *_pauseTpl;
-    NSImage *_bufTpl;
-    NSDictionary *_colTextAttrsDictionary;
-    NSDictionary *_cellTextAttrsDictionary;
-    NSDictionary *_cellSelectedTextAttrsDictionary;
-    NSDictionary *_groupTextAttrsDictionary;
-    TrackPropertiesWindowController *_trkProperties;
-}
+@interface PlaylistViewController : DesignableViewController
+
+@property(nonatomic, readonly) plt_col_info_t *columns;
+@property(nonatomic, readonly) int ncolumns;
 
 - (void)setup;
-- (int)playlistIter;
-
 - (void)cleanup;
 
 @end

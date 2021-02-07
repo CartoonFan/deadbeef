@@ -20,14 +20,11 @@
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#import <Cocoa/Cocoa.h>
 #import "PlaylistView.h"
 #import "PlaylistViewController.h"
+#import <Cocoa/Cocoa.h>
 
 @interface SearchViewController : PlaylistViewController
-
-@property (unsafe_unretained) IBOutlet NSTextField *entry;
-@property (unsafe_unretained) IBOutlet PlaylistView *listview;
 
 - (void)reset;
 

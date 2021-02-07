@@ -23,8 +23,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface PreferencesWindowController : NSWindowController<NSToolbarDelegate>
+@interface PreferencesWindowController : NSWindowController <NSToolbarDelegate>
 
 - (void)outputDeviceChanged;
+
+- (void)switchToTab:(NSString *)identifier;
 
 @end

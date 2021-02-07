@@ -21,726 +21,739 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
-#include <string.h>
-#include "../../gettext.h"
 #include "../../deadbeef.h"
+#include "../../gettext.h"
+#include <string.h>
 
 extern DB_functions_t *deadbeef;
 
-int
-action_jump_to_current_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->sendmessage (DB_EV_TRACKFOCUSCURRENT, 0, 0, 0);
-    return 0;
+int action_jump_to_current_handler(DB_plugin_action_t *act,
+                                   ddb_action_context_t ctx) {
+  deadbeef->sendmessage(DB_EV_TRACKFOCUSCURRENT, 0, 0, 0);
+  return 0;
 }
 
-static DB_playItem_t*
-skip_to_get_track_helper () {
-    DB_playItem_t *current = deadbeef->streamer_get_playing_track ();
-    if (!current) {
-        return NULL;
-    }
+static DB_playItem_t *skip_to_get_track_helper() {
+  DB_playItem_t *current = deadbeef->streamer_get_playing_track();
+  if (!current) {
+    return NULL;
+  }
 
-    ddb_playlist_t *plt_curr = deadbeef->plt_get_curr ();
-    ddb_playlist_t *plt = deadbeef->pl_get_playlist (current);
+  ddb_playlist_t *plt_curr = deadbeef->plt_get_curr();
+  ddb_playlist_t *plt = deadbeef->pl_get_playlist(current);
 
-    DB_playItem_t *it = NULL;
-    if (plt && plt_curr && plt != plt_curr) {
-        deadbeef->pl_item_unref (current);
-        it = deadbeef->plt_get_first (plt_curr, PL_MAIN);
-        while (it) {
-            if (deadbeef->pl_is_selected (it)) {
-                break;
-            }
-            DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-            deadbeef->pl_item_unref (it);
-            it = next;
-        }
-    }
-    else {
-        it = current;
-    }
-
-    if (plt) {
-        deadbeef->plt_unref (plt);
-    }
-    if (plt_curr) {
-        deadbeef->plt_unref (plt_curr);
-    }
-    return it;
-}
-
-static void
-skip_to_prev_helper (const char *meta) {
-    if (!meta) {
-        return;
-    }
-    deadbeef->pl_lock ();
-    DB_output_t *output = deadbeef->get_output ();
-    if (output->state () == DDB_PLAYBACK_STATE_STOPPED) {
-        deadbeef->pl_unlock ();
-        return;
-    }
-
-    DB_playItem_t *it = skip_to_get_track_helper ();
-    if (!it) {
-        deadbeef->pl_unlock ();
-        return;
-    }
-
-    const char *cur_meta = deadbeef->pl_find_meta_raw (it, meta);
-    int c = 0;
+  DB_playItem_t *it = NULL;
+  if (plt && plt_curr && plt != plt_curr) {
+    deadbeef->pl_item_unref(current);
+    it = deadbeef->plt_get_first(plt_curr, PL_MAIN);
     while (it) {
-        DB_playItem_t *prev = deadbeef->pl_get_prev (it, PL_MAIN);
-        if (!prev) {
-            if (c == 1) {
-                deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (it), 0);
+      if (deadbeef->pl_is_selected(it)) {
+        break;
+      }
+      DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+      deadbeef->pl_item_unref(it);
+      it = next;
+    }
+  } else {
+    it = current;
+  }
+
+  if (plt) {
+    deadbeef->plt_unref(plt);
+  }
+  if (plt_curr) {
+    deadbeef->plt_unref(plt_curr);
+  }
+  return it;
+}
+
+static void skip_to_prev_helper(const char *meta) {
+  if (!meta) {
+    return;
+  }
+  deadbeef->pl_lock();
+  DB_output_t *output = deadbeef->get_output();
+  if (output->state() == DDB_PLAYBACK_STATE_STOPPED) {
+    deadbeef->pl_unlock();
+    return;
+  }
+
+  DB_playItem_t *it = skip_to_get_track_helper();
+  if (!it) {
+    deadbeef->pl_unlock();
+    return;
+  }
+
+  const char *cur_meta = deadbeef->pl_find_meta_raw(it, meta);
+  int c = 0;
+  while (it) {
+    DB_playItem_t *prev = deadbeef->pl_get_prev(it, PL_MAIN);
+    if (!prev) {
+      if (c == 1) {
+        deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(it),
+                              0);
+      }
+      deadbeef->pl_item_unref(it);
+      break;
+    }
+    const char *prev_meta = deadbeef->pl_find_meta_raw(prev, meta);
+    if (cur_meta != prev_meta) {
+      if (c == 0) {
+        cur_meta = prev_meta;
+        c = 1;
+      } else {
+        deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(it),
+                              0);
+        deadbeef->pl_item_unref(it);
+        deadbeef->pl_item_unref(prev);
+        break;
+      }
+    }
+    deadbeef->pl_item_unref(it);
+    it = prev;
+  }
+  deadbeef->pl_unlock();
+}
+
+static void skip_to_next_helper(const char *meta) {
+  if (!meta) {
+    return;
+  }
+  deadbeef->pl_lock();
+  DB_output_t *output = deadbeef->get_output();
+  if (output->state() == DDB_PLAYBACK_STATE_STOPPED) {
+    deadbeef->pl_unlock();
+    return;
+  }
+
+  DB_playItem_t *it = skip_to_get_track_helper();
+  if (!it) {
+    deadbeef->pl_unlock();
+    return;
+  }
+
+  const char *cur_meta = deadbeef->pl_find_meta_raw(it, meta);
+  while (it) {
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    if (!next) {
+      deadbeef->pl_item_unref(it);
+      break;
+    }
+    const char *next_meta = deadbeef->pl_find_meta_raw(next, meta);
+    if (cur_meta != next_meta) {
+      deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(next),
+                            0);
+      deadbeef->pl_item_unref(it);
+      deadbeef->pl_item_unref(next);
+      break;
+    }
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+  deadbeef->pl_unlock();
+}
+
+int action_skip_to_next_album_handler(DB_plugin_action_t *act,
+                                      ddb_action_context_t ctx) {
+  skip_to_next_helper("album");
+  return 0;
+}
+
+int action_skip_to_next_genre_handler(DB_plugin_action_t *act,
+                                      ddb_action_context_t ctx) {
+  skip_to_next_helper("genre");
+  return 0;
+}
+
+int action_skip_to_next_composer_handler(DB_plugin_action_t *act,
+                                         ddb_action_context_t ctx) {
+  skip_to_next_helper("composer");
+  return 0;
+}
+
+int action_skip_to_prev_album_handler(DB_plugin_action_t *act,
+                                      ddb_action_context_t ctx) {
+  skip_to_prev_helper("album");
+  return 0;
+}
+
+int action_skip_to_prev_genre_handler(DB_plugin_action_t *act,
+                                      ddb_action_context_t ctx) {
+  skip_to_prev_helper("genre");
+  return 0;
+}
+
+int action_skip_to_prev_composer_handler(DB_plugin_action_t *act,
+                                         ddb_action_context_t ctx) {
+  skip_to_prev_helper("composer");
+  return 0;
+}
+
+int action_skip_to_next_artist_handler(DB_plugin_action_t *act,
+                                       ddb_action_context_t ctx) {
+  deadbeef->pl_lock();
+  DB_output_t *output = deadbeef->get_output();
+  if (output->state() == DDB_PLAYBACK_STATE_STOPPED) {
+    deadbeef->pl_unlock();
+    return 0;
+  }
+
+  DB_playItem_t *it = skip_to_get_track_helper();
+  if (!it) {
+    deadbeef->pl_unlock();
+    return 0;
+  }
+
+  const char *cur_artist = deadbeef->pl_find_meta_raw(it, "band");
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "album artist");
+  }
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "albumartist");
+  }
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "artist");
+  }
+  while (it) {
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    if (!next) {
+      deadbeef->pl_item_unref(it);
+      break;
+    }
+    const char *next_artist = deadbeef->pl_find_meta_raw(next, "band");
+    if (!next_artist) {
+      next_artist = deadbeef->pl_find_meta_raw(next, "album artist");
+    }
+    if (!next_artist) {
+      next_artist = deadbeef->pl_find_meta_raw(next, "albumartist");
+    }
+    if (!next_artist) {
+      next_artist = deadbeef->pl_find_meta_raw(next, "artist");
+    }
+
+    if (cur_artist != next_artist) {
+      deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(next),
+                            0);
+      deadbeef->pl_item_unref(it);
+      deadbeef->pl_item_unref(next);
+      break;
+    }
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+  deadbeef->pl_unlock();
+  return 0;
+}
+
+int action_skip_to_prev_artist_handler(DB_plugin_action_t *act,
+                                       ddb_action_context_t ctx) {
+  deadbeef->pl_lock();
+  DB_output_t *output = deadbeef->get_output();
+  if (output->state() == DDB_PLAYBACK_STATE_STOPPED) {
+    deadbeef->pl_unlock();
+    return 0;
+  }
+
+  DB_playItem_t *it = skip_to_get_track_helper();
+  if (!it) {
+    deadbeef->pl_unlock();
+    return 0;
+  }
+
+  const char *cur_artist = deadbeef->pl_find_meta_raw(it, "band");
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "album artist");
+  }
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "albumartist");
+  }
+  if (!cur_artist) {
+    cur_artist = deadbeef->pl_find_meta_raw(it, "artist");
+  }
+  int c = 0;
+  while (it) {
+    DB_playItem_t *prev = deadbeef->pl_get_prev(it, PL_MAIN);
+    if (!prev) {
+      if (c == 1) {
+        deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(it),
+                              0);
+      }
+      deadbeef->pl_item_unref(it);
+      break;
+    }
+    const char *prev_artist = deadbeef->pl_find_meta_raw(prev, "band");
+    if (!prev_artist) {
+      prev_artist = deadbeef->pl_find_meta_raw(prev, "album artist");
+    }
+    if (!prev_artist) {
+      prev_artist = deadbeef->pl_find_meta_raw(prev, "albumartist");
+    }
+    if (!prev_artist) {
+      prev_artist = deadbeef->pl_find_meta_raw(prev, "artist");
+    }
+
+    if (cur_artist != prev_artist) {
+      if (c == 0) {
+        cur_artist = prev_artist;
+        c = 1;
+      } else {
+        deadbeef->sendmessage(DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of(it),
+                              0);
+        deadbeef->pl_item_unref(it);
+        deadbeef->pl_item_unref(prev);
+        break;
+      }
+    }
+    deadbeef->pl_item_unref(it);
+    it = prev;
+  }
+  deadbeef->pl_unlock();
+  return 0;
+}
+
+int action_reload_metadata_handler(DB_plugin_action_t *act,
+                                   ddb_action_context_t ctx) {
+  DB_playItem_t *it = deadbeef->pl_get_first(PL_MAIN);
+  while (it) {
+    deadbeef->pl_lock();
+    char decoder_id[100];
+    const char *dec = deadbeef->pl_find_meta(it, ":DECODER");
+    if (dec) {
+      strncpy(decoder_id, dec, sizeof(decoder_id));
+    }
+    int match;
+    if (ctx == DDB_ACTION_CTX_PLAYLIST) {
+      match =
+          deadbeef->is_local_file(deadbeef->pl_find_meta(it, ":URI")) && dec;
+    } else {
+      match = deadbeef->pl_is_selected(it) &&
+              deadbeef->is_local_file(deadbeef->pl_find_meta(it, ":URI")) &&
+              dec;
+    }
+    deadbeef->pl_unlock();
+
+    if (match) {
+      uint32_t f = deadbeef->pl_get_item_flags(it);
+      if (!(f & DDB_IS_SUBTRACK)) {
+        f &= ~DDB_TAG_MASK;
+        deadbeef->pl_set_item_flags(it, f);
+        DB_decoder_t **decoders = deadbeef->plug_get_decoder_list();
+        for (int i = 0; decoders[i]; i++) {
+          if (!strcmp(decoders[i]->plugin.id, decoder_id)) {
+            if (decoders[i]->read_metadata) {
+              decoders[i]->read_metadata(it);
             }
-            deadbeef->pl_item_unref (it);
             break;
+          }
         }
-        const char *prev_meta = deadbeef->pl_find_meta_raw (prev, meta);
-        if (cur_meta != prev_meta) {
-            if (c == 0) {
-                cur_meta = prev_meta;
-                c = 1;
-            }
-            else {
-                deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (it), 0);
-                deadbeef->pl_item_unref (it);
-                deadbeef->pl_item_unref (prev);
-                break;
-            }
-        }
-        deadbeef->pl_item_unref (it);
-        it = prev;
+      }
     }
-    deadbeef->pl_unlock ();
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+  deadbeef->sendmessage(DB_EV_PLAYLIST_REFRESH, 0, 0, 0);
+  return 0;
 }
 
-static void
-skip_to_next_helper (const char *meta) {
-    if (!meta) {
-        return;
-    }
-    deadbeef->pl_lock ();
-    DB_output_t *output = deadbeef->get_output ();
-    if (output->state () == DDB_PLAYBACK_STATE_STOPPED) {
-        deadbeef->pl_unlock ();
-        return;
-    }
+int action_next_playlist_handler(DB_plugin_action_t *act,
+                                 ddb_action_context_t ctx) {
+  int tab = deadbeef->plt_get_curr_idx();
 
-    DB_playItem_t *it = skip_to_get_track_helper ();
-    if (!it) {
-        deadbeef->pl_unlock ();
-        return;
-    }
+  if (tab == deadbeef->plt_get_count() - 1) {
+    tab = 0;
+  } else {
+    tab++;
+  }
 
-    const char *cur_meta = deadbeef->pl_find_meta_raw (it, meta);
-    while (it) {
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        if (!next) {
-            deadbeef->pl_item_unref (it);
-            break;
+  deadbeef->plt_set_curr_idx(tab);
+  deadbeef->conf_set_int("playlist.current", tab);
+
+  return 0;
+}
+
+int action_prev_playlist_handler(DB_plugin_action_t *act,
+                                 ddb_action_context_t ctx) {
+  int tab = deadbeef->plt_get_curr_idx();
+
+  if (tab == 0) {
+    tab = deadbeef->plt_get_count() - 1;
+  } else {
+    tab--;
+  }
+
+  deadbeef->plt_set_curr_idx(tab);
+  deadbeef->conf_set_int("playlist.current", tab);
+
+  return 0;
+}
+
+int action_playlist1_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 0;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist2_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 1;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist3_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 2;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist4_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 3;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist5_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 4;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist6_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 5;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist7_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 6;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist8_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 7;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist9_handler(DB_plugin_action_t *act,
+                             ddb_action_context_t ctx) {
+  int pl = 8;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_playlist10_handler(DB_plugin_action_t *act,
+                              ddb_action_context_t ctx) {
+  int pl = 9;
+  if (pl < deadbeef->plt_get_count()) {
+    deadbeef->plt_set_curr_idx(pl);
+    deadbeef->conf_set_int("playlist.current", pl);
+  }
+  return 0;
+}
+
+int action_sort_randomize_handler(DB_plugin_action_t *act,
+                                  ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, NULL, DDB_SORT_RANDOM);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_sort_by_date_handler(DB_plugin_action_t *act,
+                                ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, "%year%", DDB_SORT_ASCENDING);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_sort_by_artist_handler(DB_plugin_action_t *act,
+                                  ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, "%artist%", DDB_SORT_ASCENDING);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_sort_by_album_handler(DB_plugin_action_t *act,
+                                 ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, "%album%", DDB_SORT_ASCENDING);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_sort_by_tracknr_handler(DB_plugin_action_t *act,
+                                   ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, "%tracknumber%", DDB_SORT_ASCENDING);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_sort_by_title_handler(DB_plugin_action_t *act,
+                                 ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->plt_get_curr();
+  deadbeef->plt_sort_v2(plt, PL_MAIN, -1, "%title%", DDB_SORT_ASCENDING);
+  deadbeef->plt_unref(plt);
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_invert_selection_handler(DB_plugin_action_t *act,
+                                    ddb_action_context_t ctx) {
+  deadbeef->pl_lock();
+  DB_playItem_t *it = deadbeef->pl_get_first(PL_MAIN);
+  while (it) {
+    if (deadbeef->pl_is_selected(it)) {
+      deadbeef->pl_set_selected(it, 0);
+    } else {
+      deadbeef->pl_set_selected(it, 1);
+    }
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+  deadbeef->pl_unlock();
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_SELECTION,
+                        0);
+  return 0;
+}
+
+int action_clear_playlist_handler(DB_plugin_action_t *act,
+                                  ddb_action_context_t ctx) {
+  deadbeef->pl_clear();
+  deadbeef->pl_save_current();
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
+
+int action_toggle_in_playqueue_handler(DB_plugin_action_t *act,
+                                       ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->action_get_playlist();
+
+  DB_playItem_t *it = deadbeef->plt_get_first(plt, PL_MAIN);
+  while (it) {
+    if (ctx == DDB_ACTION_CTX_PLAYLIST ||
+        (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected(it))) {
+      if (deadbeef->playqueue_test(it) != -1)
+        deadbeef->playqueue_remove(it);
+      else
+        deadbeef->playqueue_push(it);
+    }
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+
+  deadbeef->plt_unref(plt);
+  return 0;
+}
+
+int action_move_tracks_up_handler(DB_plugin_action_t *act,
+                                  ddb_action_context_t ctx) {
+  deadbeef->pl_lock();
+
+  ddb_playlist_t *plt = deadbeef->action_get_playlist();
+  DB_playItem_t *it;
+
+  int it_count = 0;
+  if (ctx == DDB_ACTION_CTX_SELECTION) {
+    it_count = deadbeef->pl_getselcount();
+    if (it_count) {
+      int i = 0;
+      uint32_t indexes[it_count];
+      memset(indexes, 0, sizeof(indexes));
+
+      it = deadbeef->plt_get_first(plt, PL_MAIN);
+      while (it) {
+        if (deadbeef->pl_is_selected(it)) {
+          indexes[i] = deadbeef->pl_get_idx_of(it);
+          i++;
         }
-        const char *next_meta = deadbeef->pl_find_meta_raw (next, meta);
-        if (cur_meta != next_meta) {
-            deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (next), 0);
-            deadbeef->pl_item_unref (it);
-            deadbeef->pl_item_unref (next);
-            break;
-        }
-        deadbeef->pl_item_unref (it);
+        DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+        deadbeef->pl_item_unref(it);
         it = next;
+      }
+      DB_playItem_t *drop_before = deadbeef->pl_get_for_idx(indexes[0] - 1);
+      if (drop_before) {
+        deadbeef->plt_move_items(plt, PL_MAIN, plt, drop_before, indexes,
+                                 it_count);
+        deadbeef->pl_item_unref(drop_before);
+      }
     }
-    deadbeef->pl_unlock ();
-}
-
-int
-action_skip_to_next_album_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_next_helper ("album");
-    return 0;
-}
-
-int
-action_skip_to_next_genre_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_next_helper ("genre");
-    return 0;
-}
-
-int
-action_skip_to_next_composer_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_next_helper ("composer");
-    return 0;
-}
-
-int
-action_skip_to_prev_album_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_prev_helper ("album");
-    return 0;
-}
-
-int
-action_skip_to_prev_genre_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_prev_helper ("genre");
-    return 0;
-}
-
-int
-action_skip_to_prev_composer_handler (DB_plugin_action_t *act, int ctx) {
-    skip_to_prev_helper ("composer");
-    return 0;
-}
-
-int
-action_skip_to_next_artist_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_lock ();
-    DB_output_t *output = deadbeef->get_output ();
-    if (output->state () == DDB_PLAYBACK_STATE_STOPPED) {
-        deadbeef->pl_unlock ();
-        return 0;
+  } else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
+    it = deadbeef->streamer_get_playing_track();
+    if (it) {
+      it_count = 1;
+      uint32_t indexes[1];
+      indexes[0] = deadbeef->pl_get_idx_of(it);
+      DB_playItem_t *drop_before = deadbeef->pl_get_prev(it, PL_MAIN);
+      if (drop_before) {
+        deadbeef->plt_move_items(plt, PL_MAIN, plt, drop_before, indexes,
+                                 it_count);
+        deadbeef->pl_item_unref(drop_before);
+      }
+      deadbeef->pl_item_unref(it);
     }
+  }
 
-    DB_playItem_t *it = skip_to_get_track_helper ();
-    if (!it) {
-        deadbeef->pl_unlock ();
-        return 0;
-    }
+  deadbeef->plt_save_config(plt);
+  deadbeef->plt_unref(plt);
+  deadbeef->pl_unlock();
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
+}
 
-    const char *cur_artist = deadbeef->pl_find_meta_raw (it, "band");
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "album artist");
-    }
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "albumartist");
-    }
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "artist");
-    }
-    while (it) {
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        if (!next) {
-            deadbeef->pl_item_unref (it);
-            break;
+int action_move_tracks_down_handler(DB_plugin_action_t *act,
+                                    ddb_action_context_t ctx) {
+  deadbeef->pl_lock();
+
+  ddb_playlist_t *plt = deadbeef->action_get_playlist();
+  DB_playItem_t *it;
+
+  int it_count = 0;
+  if (ctx == DDB_ACTION_CTX_SELECTION) {
+    int it_count = deadbeef->pl_getselcount();
+    if (it_count) {
+      int i = 0;
+      uint32_t indexes[it_count];
+      memset(indexes, 0, sizeof(indexes));
+
+      it = deadbeef->plt_get_first(plt, PL_MAIN);
+      while (it) {
+        if (deadbeef->pl_is_selected(it)) {
+          indexes[i] = deadbeef->pl_get_idx_of(it);
+          i++;
         }
-        const char *next_artist = deadbeef->pl_find_meta_raw (next, "band");
-        if (!next_artist) {
-            next_artist = deadbeef->pl_find_meta_raw (next, "album artist");
-        }
-        if (!next_artist) {
-            next_artist = deadbeef->pl_find_meta_raw (next, "albumartist");
-        }
-        if (!next_artist) {
-            next_artist = deadbeef->pl_find_meta_raw (next, "artist");
-        }
-
-        if (cur_artist != next_artist) {
-            deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (next), 0);
-            deadbeef->pl_item_unref (it);
-            deadbeef->pl_item_unref (next);
-            break;
-        }
-        deadbeef->pl_item_unref (it);
+        DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+        deadbeef->pl_item_unref(it);
         it = next;
+      }
+      DB_playItem_t *drop_before = deadbeef->pl_get_for_idx(indexes[i - 1] + 2);
+      deadbeef->plt_move_items(plt, PL_MAIN, plt, drop_before, indexes,
+                               it_count);
+      if (drop_before)
+        deadbeef->pl_item_unref(drop_before);
     }
-    deadbeef->pl_unlock ();
-    return 0;
+  } else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
+    it = deadbeef->streamer_get_playing_track();
+    if (it) {
+      it_count = 1;
+      uint32_t indexes[1];
+      indexes[0] = deadbeef->pl_get_idx_of(it);
+      DB_playItem_t *drop_before = deadbeef->pl_get_for_idx(indexes[0] + 2);
+      deadbeef->plt_move_items(plt, PL_MAIN, plt, drop_before, indexes,
+                               it_count);
+      if (drop_before)
+        deadbeef->pl_item_unref(drop_before);
+      deadbeef->pl_item_unref(it);
+    }
+  }
+
+  deadbeef->plt_save_config(plt);
+  deadbeef->plt_unref(plt);
+  deadbeef->pl_unlock();
+  deadbeef->sendmessage(DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT,
+                        0);
+  return 0;
 }
 
-int
-action_skip_to_prev_artist_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_lock ();
-    DB_output_t *output = deadbeef->get_output ();
-    if (output->state () == DDB_PLAYBACK_STATE_STOPPED) {
-        deadbeef->pl_unlock ();
-        return 0;
-    }
+int action_add_to_playqueue_handler(DB_plugin_action_t *act,
+                                    ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->action_get_playlist();
 
-    DB_playItem_t *it = skip_to_get_track_helper ();
-    if (!it) {
-        deadbeef->pl_unlock ();
-        return 0;
+  DB_playItem_t *it = deadbeef->plt_get_first(plt, PL_MAIN);
+  while (it) {
+    if (ctx == DDB_ACTION_CTX_PLAYLIST ||
+        (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected(it))) {
+      deadbeef->playqueue_push(it);
     }
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
 
-    const char *cur_artist = deadbeef->pl_find_meta_raw (it, "band");
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "album artist");
-    }
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "albumartist");
-    }
-    if (!cur_artist) {
-        cur_artist = deadbeef->pl_find_meta_raw (it, "artist");
-    }
-    int c = 0;
-    while (it) {
-        DB_playItem_t *prev = deadbeef->pl_get_prev (it, PL_MAIN);
-        if (!prev) {
-            if (c == 1) {
-                deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (it), 0);
-            }
-            deadbeef->pl_item_unref (it);
-            break;
-        }
-        const char *prev_artist = deadbeef->pl_find_meta_raw (prev, "band");
-        if (!prev_artist) {
-            prev_artist = deadbeef->pl_find_meta_raw (prev, "album artist");
-        }
-        if (!prev_artist) {
-            prev_artist = deadbeef->pl_find_meta_raw (prev, "albumartist");
-        }
-        if (!prev_artist) {
-            prev_artist = deadbeef->pl_find_meta_raw (prev, "artist");
-        }
+  deadbeef->plt_unref(plt);
 
-        if (cur_artist != prev_artist) {
-            if (c == 0) {
-                cur_artist = prev_artist;
-                c = 1;
-            }
-            else {
-                deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, deadbeef->pl_get_idx_of (it), 0);
-                deadbeef->pl_item_unref (it);
-                deadbeef->pl_item_unref (prev);
-                break;
-            }
-        }
-        deadbeef->pl_item_unref (it);
-        it = prev;
-    }
-    deadbeef->pl_unlock ();
-    return 0;
+  return 0;
 }
 
-int
-action_reload_metadata_handler (DB_plugin_action_t *act, int ctx) {
-    DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
-    while (it) {
-        deadbeef->pl_lock ();
-        char decoder_id[100];
-        const char *dec = deadbeef->pl_find_meta (it, ":DECODER");
-        if (dec) {
-            strncpy (decoder_id, dec, sizeof (decoder_id));
-        }
-        int match;
-        if (ctx == DDB_ACTION_CTX_PLAYLIST) {
-            match = deadbeef->is_local_file (deadbeef->pl_find_meta (it, ":URI")) && dec;
-        }
-        else {
-            match = deadbeef->pl_is_selected (it) && deadbeef->is_local_file (deadbeef->pl_find_meta (it, ":URI")) && dec;
-        }
-        deadbeef->pl_unlock ();
+int action_remove_from_playqueue_handler(DB_plugin_action_t *act,
+                                         ddb_action_context_t ctx) {
+  ddb_playlist_t *plt = deadbeef->action_get_playlist();
 
-        if (match) {
-            uint32_t f = deadbeef->pl_get_item_flags (it);
-            if (!(f & DDB_IS_SUBTRACK)) {
-                f &= ~DDB_TAG_MASK;
-                deadbeef->pl_set_item_flags (it, f);
-                DB_decoder_t **decoders = deadbeef->plug_get_decoder_list ();
-                for (int i = 0; decoders[i]; i++) {
-                    if (!strcmp (decoders[i]->plugin.id, decoder_id)) {
-                        if (decoders[i]->read_metadata) {
-                            decoders[i]->read_metadata (it);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        deadbeef->pl_item_unref (it);
-        it = next;
+  DB_playItem_t *it = deadbeef->plt_get_first(plt, PL_MAIN);
+  while (it) {
+    if (ctx == DDB_ACTION_CTX_PLAYLIST ||
+        (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected(it))) {
+      deadbeef->playqueue_remove(it);
     }
-    deadbeef->sendmessage (DB_EV_PLAYLIST_REFRESH, 0, 0, 0);
-    return 0;
+    DB_playItem_t *next = deadbeef->pl_get_next(it, PL_MAIN);
+    deadbeef->pl_item_unref(it);
+    it = next;
+  }
+
+  deadbeef->plt_unref(plt);
+  return 0;
 }
 
-int
-action_next_playlist_handler (DB_plugin_action_t *act, int ctx) {
-    int tab = deadbeef->plt_get_curr_idx ();
-
-    if (tab == deadbeef->plt_get_count ()-1) {
-        tab = 0;
-    }
-    else {
-        tab++;
-    }
-
-    deadbeef->plt_set_curr_idx (tab);
-    deadbeef->conf_set_int ("playlist.current", tab);
-
-    return 0;
-}
-
-int
-action_prev_playlist_handler (DB_plugin_action_t *act, int ctx) {
-    int tab = deadbeef->plt_get_curr_idx ();
-
-    if (tab == 0) {
-        tab = deadbeef->plt_get_count ()-1;
-    }
-    else {
-        tab--;
-    }
-
-    deadbeef->plt_set_curr_idx (tab);
-    deadbeef->conf_set_int ("playlist.current", tab);
-
-    return 0;
-}
-
-int
-action_playlist1_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 0;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist2_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 1;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist3_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 2;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist4_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 3;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist5_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 4;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist6_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 5;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist7_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 6;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist8_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 7;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist9_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 8;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_playlist10_handler (DB_plugin_action_t *act, int ctx) {
-    int pl = 9;
-    if (pl < deadbeef->plt_get_count ()) {
-        deadbeef->plt_set_curr_idx (pl);
-        deadbeef->conf_set_int ("playlist.current", pl);
-    }
-    return 0;
-}
-
-int
-action_sort_randomize_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, NULL, DDB_SORT_RANDOM);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_sort_by_date_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, "%year%", DDB_SORT_ASCENDING);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_sort_by_artist_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, "%artist%", DDB_SORT_ASCENDING);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_sort_by_album_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, "%album%", DDB_SORT_ASCENDING);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_sort_by_tracknr_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, "%tracknumber%", DDB_SORT_ASCENDING);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_sort_by_title_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, "%title%", DDB_SORT_ASCENDING);
-    deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_invert_selection_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_lock ();
-    DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
-    while (it) {
-        if (deadbeef->pl_is_selected (it)) {
-            deadbeef->pl_set_selected (it, 0);
-        }
-        else {
-            deadbeef->pl_set_selected (it, 1);
-        }
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        deadbeef->pl_item_unref (it);
-        it = next;
-    }
-    deadbeef->pl_unlock ();
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_SELECTION, 0);
-    return 0;
-}
-
-int
-action_clear_playlist_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_clear ();
-    deadbeef->pl_save_current ();
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_toggle_in_playqueue_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-
-    DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-    while (it) {
-        if (ctx == DDB_ACTION_CTX_PLAYLIST || (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected (it))) {
-            if(deadbeef->playqueue_test(it) != -1)
-                deadbeef->playqueue_remove (it);
-            else
-                deadbeef->playqueue_push (it);
-
-        }
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        deadbeef->pl_item_unref (it);
-        it = next;
-    }
-
-    deadbeef->plt_unref (plt);
-    return 0;
-}
-
-int
-action_move_tracks_up_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_lock ();
-
-    ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-    DB_playItem_t *it;
-
-    int it_count = 0;
-    if (ctx == DDB_ACTION_CTX_SELECTION) {
-        it_count = deadbeef->pl_getselcount ();
-        if (it_count) {
-            int i = 0;
-            uint32_t indexes[it_count];
-            memset (indexes, 0, sizeof (indexes));
-
-            it = deadbeef->plt_get_first (plt, PL_MAIN);
-            while (it) {
-                if (deadbeef->pl_is_selected (it)) {
-                    indexes[i] = deadbeef->pl_get_idx_of (it);
-                    i++;
-                }
-                DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-                deadbeef->pl_item_unref (it);
-                it = next;
-            }
-            DB_playItem_t *drop_before = deadbeef->pl_get_for_idx (indexes[0]-1);
-            if (drop_before) {
-                deadbeef->plt_move_items (plt, PL_MAIN, plt, drop_before, indexes, it_count);
-                deadbeef->pl_item_unref (drop_before);
-            }
-        }
-    }
-    else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
-        it = deadbeef->streamer_get_playing_track ();
-        if (it) {
-            it_count = 1;
-            uint32_t indexes[1];
-            indexes[0] = deadbeef->pl_get_idx_of (it);
-            DB_playItem_t *drop_before = deadbeef->pl_get_prev (it,PL_MAIN);
-            if (drop_before) {
-                deadbeef->plt_move_items (plt, PL_MAIN, plt, drop_before, indexes, it_count);
-                deadbeef->pl_item_unref (drop_before);
-            }
-            deadbeef->pl_item_unref (it);
-        }
-    }
-
-    deadbeef->plt_save_config (plt);
-    deadbeef->plt_unref (plt);
-    deadbeef->pl_unlock ();
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_move_tracks_down_handler (DB_plugin_action_t *act, int ctx) {
-    deadbeef->pl_lock ();
-
-    ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-    DB_playItem_t *it;
-
-    int it_count = 0;
-    if (ctx == DDB_ACTION_CTX_SELECTION) {
-        int it_count = deadbeef->pl_getselcount ();
-        if (it_count) {
-            int i = 0;
-            uint32_t indexes[it_count];
-            memset (indexes, 0, sizeof (indexes));
-
-            it = deadbeef->plt_get_first (plt, PL_MAIN);
-            while (it) {
-                if (deadbeef->pl_is_selected (it)) {
-                    indexes[i] = deadbeef->pl_get_idx_of (it);
-                    i++;
-                }
-                DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-                deadbeef->pl_item_unref (it);
-                it = next;
-            }
-            DB_playItem_t *drop_before = deadbeef->pl_get_for_idx (indexes[i-1]+2);
-            deadbeef->plt_move_items (plt, PL_MAIN, plt, drop_before, indexes, it_count);
-            if (drop_before)
-                deadbeef->pl_item_unref (drop_before);
-        }
-    }
-    else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
-        it = deadbeef->streamer_get_playing_track ();
-        if (it) {
-            it_count = 1;
-            uint32_t indexes[1];
-            indexes[0] = deadbeef->pl_get_idx_of (it);
-            DB_playItem_t *drop_before = deadbeef->pl_get_for_idx (indexes[0]+2);
-            deadbeef->plt_move_items (plt, PL_MAIN, plt, drop_before, indexes, it_count);
-            if (drop_before)
-                deadbeef->pl_item_unref (drop_before);
-            deadbeef->pl_item_unref (it);
-        }
-    }
-
-    deadbeef->plt_save_config (plt);
-    deadbeef->plt_unref (plt);
-    deadbeef->pl_unlock ();
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
-    return 0;
-}
-
-int
-action_add_to_playqueue_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-
-    DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-    while (it) {
-        if (ctx == DDB_ACTION_CTX_PLAYLIST || (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected (it))) {
-            deadbeef->playqueue_push (it);
-        }
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        deadbeef->pl_item_unref (it);
-        it = next;
-    }
-
-    deadbeef->plt_unref (plt);
-
-    return 0;
-}
-
-int
-action_remove_from_playqueue_handler (DB_plugin_action_t *act, int ctx) {
-    ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-
-    DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-    while (it) {
-        if (ctx == DDB_ACTION_CTX_PLAYLIST || (ctx == DDB_ACTION_CTX_SELECTION && deadbeef->pl_is_selected (it))) {
-            deadbeef->playqueue_remove (it);
-        }
-        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-        deadbeef->pl_item_unref (it);
-        it = next;
-    }
-
-    deadbeef->plt_unref (plt);
-    return 0;
-}
-
-int
-action_toggle_mute_handler (DB_plugin_action_t *act, int ctx) {
-    int mute = 1-deadbeef->audio_is_mute ();
-    deadbeef->audio_set_mute (mute);
-    return 0;
+int action_toggle_mute_handler(DB_plugin_action_t *act,
+                               ddb_action_context_t ctx) {
+  int mute = 1 - deadbeef->audio_is_mute();
+  deadbeef->audio_set_mute(mute);
+  return 0;
 }

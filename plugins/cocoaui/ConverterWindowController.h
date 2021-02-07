@@ -21,43 +21,18 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
+#include "deadbeef.h"
 #import <Cocoa/Cocoa.h>
 
-@interface ConverterWindowController : NSWindowController<NSWindowDelegate>
+@interface ConverterWindowController : NSWindowController <NSWindowDelegate>
 
-@property (unsafe_unretained) IBOutlet NSTextField *outputFolder;
-@property (unsafe_unretained) IBOutlet NSButton *writeToSourceFolder;
-@property (unsafe_unretained) IBOutlet NSButton *preserveFolderStructure;
-@property (unsafe_unretained) IBOutlet NSButton *bypassSameFormat;
-@property (weak) IBOutlet NSButton *retagAfterCopy;
-@property (unsafe_unretained) IBOutlet NSTextField *outputFileName;
-@property (unsafe_unretained) IBOutlet NSArrayController *filenamePreviewController;
-@property (unsafe_unretained) IBOutlet NSPopUpButton *outputFormat;
-@property (unsafe_unretained) IBOutlet NSPopUpButton *fileExistsAction;
-- (IBAction)cancelAction:(id)sender;
-- (IBAction)okAction:(id)sender;
+- (void)runWithTracks:(ddb_playItem_t **)tracks
+                count:(NSInteger)count
+             playlist:(ddb_playlist_t *)plt;
 
-- (IBAction)openOutputFolderAction:(id)sender;
-
-- (IBAction)writeToSourceFolderChanged:(id)sender;
-- (IBAction)preserveFolderStructureChanged:(id)sender;
-- (IBAction)bypassSameFormatChanged:(id)sender;
-- (IBAction)retagAfterCopyChanged:(id)sender;
-- (IBAction)overwritePromptChanged:(id)sender;
-- (IBAction)outputFormatChanged:(id)sender;
-
-@property (strong) IBOutlet NSPanel *progressPanel;
-@property (unsafe_unretained) IBOutlet NSTextField *progressText;
-@property (unsafe_unretained) IBOutlet NSTextField *progressOutText;
-@property (unsafe_unretained) IBOutlet NSTextField *progressNumeric;
-
-@property (unsafe_unretained) IBOutlet NSProgressIndicator *progressBar;
-- (IBAction)progressCancelAction:(id)sender;
-
-// ctx is one of the DDB_ACTION_CTX_ constants
-- (void)run:(int)ctx;
-
-+ (void)runConverter:(int)ctx;
++ (void)runConverterWithTracks:(ddb_playItem_t **)tracks
+                         count:(NSInteger)count
+                      playlist:(ddb_playlist_t *)plt;
 
 + (void)cleanup;
 

@@ -5,6 +5,7 @@ function pkgconfig (pkgname)
   links { pkgconfig_libs (pkgname) }
   includedirs { pkgconfig_includedirs (pkgname) }
   libdirs { pkgconfig_libdirs (pkgname) }
+  buildoptions { pkgconfig_cflags (pkgname) }
 end
 
 -- Returns true if package is installed
@@ -63,9 +64,27 @@ function pkgconfig_libs (pkgname)
   parts = string.explode (returnval, " ")
   tab2 = {}
   for i, v in ipairs(parts) do
-    tab2[i] = string.sub (v, 3)
-    tab2[i] = tab2[i] .. " " -- fix problems when project name is same as library
-    -- this will favor linking with library than with itself
+    if (v ~= nil and v ~= '') then
+      tab2[i] = string.sub (v, 3)
+      tab2[i] = tab2[i] .. " " -- fix problems when project name is same as library
+      -- this will favor linking with library than with itself
+    end
+  end
+  return tab2
+end
+
+-- Returns cflags for pkgname
+function pkgconfig_cflags (pkgname)
+  command = "pkg-config --cflags-only-other " .. pkgname
+  returnval = os.outputof (command)
+  if (returnval == nil)
+  then
+    error ("pkg-config failed for " .. pkgname)
+  end
+  parts = string.explode (returnval, " ")
+  tab2 = {}
+  for i, v in ipairs(parts) do
+    tab2[i] = v
   end
   return tab2
 end
@@ -227,7 +246,7 @@ end
 -- Returns deadbeef version which is stored in ./PORTABLE_VERSION
 -- WINDOWS: Return current date
 function get_version ()
-	if os.host() == "windows" then
+	if _OPTIONS["version-override"] ~= nil then
 		date = os.date("%Y-%m-%d")
 		fp = io.open ("PORTABLE_VERSION","w")
 		io.output (fp)

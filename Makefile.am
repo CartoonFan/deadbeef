@@ -1,8 +1,10 @@
 SUBDIRS = pixmaps\
 		  icons\
+		  external\
 		  shared\
 		  ${PLUGINS_DIRS}\
-		  po
+		  po\
+		  intl
 
 bin_PROGRAMS = deadbeef
 
@@ -51,7 +53,7 @@ deadbeef_SOURCES =\
 	logger.c logger.h\
 	external/wcwidth/wcwidth.c external/wcwidth/wcwidth.h\
 	playmodes.c playmodes.h
-	
+
 #	ConvertUTF/ConvertUTF.c ConvertUTF/ConvertUTF.h
 
 sdkdir = $(pkgincludedir)
