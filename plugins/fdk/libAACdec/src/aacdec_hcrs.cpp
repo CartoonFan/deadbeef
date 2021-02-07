@@ -206,8 +206,8 @@ void DecodeNonPCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
                remainingCodewordsInSet++) {
             tempWord = tempWord & ~(1 << (NUMBER_OF_BIT_IN_WORD - 1 -
                                           remainingCodewordsInSet)); /* set a
-                        zero at bit number
-                        (NUMBER_OF_BIT_IN_WORD-1-i) in tempWord */
+            zero at bit number
+            (NUMBER_OF_BIT_IN_WORD-1-i) in tempWord */
           }
           *pCodewordBitfield++ = tempWord;
           tempWord = 0x00000000;
@@ -275,7 +275,7 @@ of the current codeword lies within modulo range */
             codewordOffset +=
                 NUMBER_OF_BIT_IN_WORD; /* add NUMBER_OF_BIT_IN_WORD at once */
             codewordOffset = ModuloValue(codewordOffset, *pNumSegment); /* index
-          of the current codeword lies within modulo range */
+of the current codeword lies within modulo range */
             pHcr->nonPcwSideinfo.codewordOffset = codewordOffset;
           }
         } /* end of bitfield word loop */
@@ -284,9 +284,9 @@ of the current codeword lies within modulo range */
         codewordOffsetBase -= 1;
         codewordOffsetBase =
             ModuloValue(codewordOffsetBase, *pNumSegment); /* index
-                              of the current codeword
-                              base lies within
-                              modulo range */
+                      of the current codeword
+                      base lies within
+                      modulo range */
 
         /* rotate numSegment bits in codewordBitfield */
         /* rotation of *numSegment bits in bitfield of codewords
@@ -380,18 +380,17 @@ static UINT InitSegmentBitfield(UINT *pNumSegment,
     r = bitfieldWord << THIRTYTWO_LOG_DIV_TWO_LOG;
     for (i = 0; i < NUMBER_OF_BIT_IN_WORD; i++) {
       if (pRemainingBitsInSegment[r + i] == 0) {
-        tempWord =
-            tempWord & ~(1 << (NUMBER_OF_BIT_IN_WORD - 1 - i)); /* set a zero at
-                                   bit number (NUMBER_OF_BIT_IN_WORD-1-i) in
-                                   tempWord */
+        tempWord = tempWord & ~(1 << (NUMBER_OF_BIT_IN_WORD - 1 - i)); /* set a
+                                  zero at bit number (NUMBER_OF_BIT_IN_WORD-1-i)
+                                  in tempWord */
       } else {
         numValidSegment += 1; /* count segments which are not empty */
       }
     }
     pSegmentBitfield[bitfieldWord] = tempWord;        /* store result */
     *pNumBitValidInLastWord -= NUMBER_OF_BIT_IN_WORD; /* calculate number of
-                                         zeros on LSB side in
-                                         the last word */
+                                     zeros on LSB side in
+                                     the last word */
   }
 
   /* calculate last word: prepare special tempWord */
@@ -406,8 +405,8 @@ static UINT InitSegmentBitfield(UINT *pNumSegment,
     if (pRemainingBitsInSegment[r + i] == 0) {
       tempWord =
           tempWord & ~(1 << (NUMBER_OF_BIT_IN_WORD - 1 - i)); /* set a zero at
-                                         bit number (NUMBER_OF_BIT_IN_WORD-1-i)
-                                         in tempWord */
+                                   bit number (NUMBER_OF_BIT_IN_WORD-1-i)
+                                   in tempWord */
     } else {
       numValidSegment += 1; /* count segments which are not empty */
     }
@@ -472,13 +471,13 @@ static void InitNonPCWSideInformationForCurrentSet(H_HCR_INFO pHcr) {
       *pEscapeSequenceInfo++ = 0;
       quantizedSpectralCoefficientsIdx +=
           codebookDim; /* update pointer by codebookDim --> point to next
-  starting value for writing out */
+starting value for writing out */
       if (quantizedSpectralCoefficientsIdx >= 1024) {
         return;
       }
     }
     numExtendedSortedCodewordInSectionIdx++; /* inc ptr for next ext sort sec in
-                                current set */
+                            current set */
     extendedSortedCodebookIdx++; /* inc ptr for next ext sort sec in current set
                                   */
     if (numExtendedSortedCodewordInSectionIdx >= (MAX_SFB_HCR + MAX_HCR_SETS) ||
@@ -625,32 +624,32 @@ UINT Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
     if ((branchNode & TEST_BIT_10) ==
         TEST_BIT_10) { /* test bit 10 ; ==> body is complete */
       pQuantValBase = aQuantTable[pCodebook[codewordOffset]]; /* get base
-                                         address of
-                                         quantized
-                                         values
-                                         belonging to
-                                         current
-                                         codebook */
+                                   address of
+                                   quantized
+                                   values
+                                   belonging to
+                                   current
+                                   codebook */
       pQuantVal = pQuantValBase + branchValue; /* set pointer to first valid
-                          line [of 2 or 4 quantized
-                          values] */
+                    line [of 2 or 4 quantized
+                    values] */
 
       iQSC = iResultPointer[codewordOffset]; /* get position of first line for
-                        writing out result */
+                  writing out result */
 
       for (dimCntr = pCbDimension[pCodebook[codewordOffset]]; dimCntr != 0;
            dimCntr--) {
         pResultBase[iQSC++] = (FIXP_DBL)*pQuantVal++; /* write out 2 or 4 lines
-                         into spectrum; no Sign bits
-                         available in this state */
+                 into spectrum; no Sign bits
+                 available in this state */
       }
 
       ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                            pCodewordBitfield); /* clear a bit in bitfield and
-                          switch off statemachine */
+                    switch off statemachine */
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
       break; /* end of branch in tree reached  i.e. a whole nonPCW-Body is
 decoded */
     } else { /* body is not decoded completely: */
@@ -660,13 +659,13 @@ decoded */
     }
   }
   iNode[codewordOffset] = treeNode; /* store updated treeNode because maybe
-                               decoding of codeword body not finished
-                               yet */
+                             decoding of codeword body not finished
+                             yet */
 
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_ONLY;
@@ -760,18 +759,18 @@ UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       /* body completely decoded; branchValue is valid, set pQuantVal to first
        * (of two or four) quantized spectral coefficients */
       pQuantValBase = aQuantTable[pCodebook[codewordOffset]]; /* get base
-                                         address of
-                                         quantized
-                                         values
-                                         belonging to
-                                         current
-                                         codebook */
+                                   address of
+                                   quantized
+                                   values
+                                   belonging to
+                                   current
+                                   codebook */
       pQuantVal = pQuantValBase + branchValue; /* set pointer to first valid
-                          line [of 2 or 4 quantized
-                          values] */
+                    line [of 2 or 4 quantized
+                    values] */
 
       iQSC = iResultPointer[codewordOffset]; /* get position of first line for
-                        writing result */
+                  writing result */
 
       /* codeword decoding result is written out here: Write out 2 or 4
        * quantized spectral values with probably */
@@ -790,20 +789,20 @@ UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       if (cntSign == 0) {
         ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                              pCodewordBitfield); /* clear a bit in bitfield and
-                    switch off statemachine */
+            switch off statemachine */
       } else {
         pCntSign[codewordOffset] = cntSign;     /* write sign count result into
-                   codewordsideinfo of current
-                   codeword */
+           codewordsideinfo of current
+           codeword */
         pSta[codewordOffset] = BODY_SIGN__SIGN; /* change state */
         pHcr->nonPcwSideinfo.pState =
             aStateConstant2State[pSta[codewordOffset]]; /* get state from
-                           separate array of
-                           cw-sideinfo */
+                   separate array of
+                   cw-sideinfo */
       }
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
       break; /* end of branch in tree reached  i.e. a whole nonPCW-Body is
 decoded */
     } else { /* body is not decoded completely: */
@@ -813,13 +812,13 @@ decoded */
     }
   }
   iNode[codewordOffset] = treeNode; /* store updated treeNode because maybe
-                               decoding of codeword body not finished
-                               yet */
+                             decoding of codeword body not finished
+                             yet */
 
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN__BODY;
@@ -905,10 +904,10 @@ UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
     if (cntSign == 0) { /* if (cntSign==0)  ==>  set state CODEWORD_DECODED */
       ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                            pCodewordBitfield); /* clear a bit in bitfield and
-                          switch off statemachine */
+                    switch off statemachine */
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
       break; /* whole nonPCW-Body and according sign bits are decoded */
     }
   }
@@ -918,7 +917,7 @@ UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN__SIGN;
@@ -1009,12 +1008,12 @@ UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       /* set pQuantVol to first (of two or four) quantized spectral coefficients
        */
       pQuantValBase = aQuantTable[ESCAPE_CODEBOOK]; /* get base address of
-                               quantized values
-                               belonging to current
-                               codebook */
+                         quantized values
+                         belonging to current
+                         codebook */
       pQuantVal = pQuantValBase + branchValue; /* set pointer to first valid
-                          line [of 2 or 4 quantized
-                          values] */
+                    line [of 2 or 4 quantized
+                    values] */
 
       /* make backup from original resultPointer in node storage for state
        * BODY_SIGN_ESC__SIGN */
@@ -1040,7 +1039,7 @@ UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       if (cntSign == 0) {
         ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                              pCodewordBitfield); /* clear a bit in bitfield and
-                    switch off statemachine */
+            switch off statemachine */
                                                  /* codeword decoded */
       } else {
         /* write sign count result into codewordsideinfo of current codeword */
@@ -1048,12 +1047,12 @@ UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
         pSta[codewordOffset] = BODY_SIGN_ESC__SIGN; /* change state */
         pHcr->nonPcwSideinfo.pState =
             aStateConstant2State[pSta[codewordOffset]]; /* get state from
-                           separate array of
-                           cw-sideinfo */
+                   separate array of
+                   cw-sideinfo */
       }
       pRemainingBitsInSegment[segmentOffset] -= 1; /* the last reinitialzation
-                              of for loop counter (see
-                              above) is done here */
+                        of for loop counter (see
+                        above) is done here */
       break; /* end of branch in tree reached  i.e. a whole nonPCW-Body is
 decoded */
     } else { /* body is not decoded completely: */
@@ -1067,7 +1066,7 @@ decoded */
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN_ESC__BODY;
@@ -1183,8 +1182,8 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
     if (cntSign == 0) {
       /* all sign bits are decoded now */
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
 
       /* check decoded values if codeword is decoded: Check if one or two escape
        * sequences 16 follow */
@@ -1214,7 +1213,7 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       if (!flagA && !flagB) {
         ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                              pCodewordBitfield); /* clear a bit in bitfield and
-                    switch off statemachine */
+            switch off statemachine */
       } else {
         /* at least one of two lines is 16 */
         /* store both flags at correct positions in non PCW codeword sideinfo
@@ -1227,8 +1226,8 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
         pSta[codewordOffset] = BODY_SIGN_ESC__ESC_PREFIX;
         pHcr->nonPcwSideinfo.pState =
             aStateConstant2State[pSta[codewordOffset]]; /* get state from
-                           separate array of
-                           cw-sideinfo */
+                   separate array of
+                   cw-sideinfo */
 
         /* set result pointer to the first line of the two decoded lines */
         iResultPointer[codewordOffset] = iNode[codewordOffset];
@@ -1251,7 +1250,7 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN_ESC__SIGN;
@@ -1325,8 +1324,8 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       escapePrefixUp >>= LSB_ESCAPE_PREFIX_UP; /* shift back down */
     } else {                                   /* separator [zero] reached */
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
       escapePrefixUp +=
           4; /* if escape_separator '0' appears, add 4 and ==> break */
 
@@ -1350,7 +1349,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       pSta[codewordOffset] = BODY_SIGN_ESC__ESC_WORD; /* set next state */
       pHcr->nonPcwSideinfo.pState =
           aStateConstant2State[pSta[codewordOffset]]; /* get state from separate
-                                 array of cw-sideinfo */
+                           array of cw-sideinfo */
       break;
     }
   }
@@ -1358,7 +1357,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN_ESC__ESC_PREFIX;
@@ -1458,8 +1457,8 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
     if (escapePrefixDown == 0) {
       pRemainingBitsInSegment[segmentOffset] -= 1; /* last reinitialzation of
-                              for loop counter (see
-                              above) is done here */
+                        for loop counter (see
+                        above) is done here */
 
       /* escape sequence decoded. Assemble escape-line and replace original line
        */
@@ -1503,8 +1502,8 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
         if (flagB == 0) {
           ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                                pCodewordBitfield); /* clear a bit in bitfield
-              and switch off
-              statemachine */
+    and switch off
+    statemachine */
         } else {
           /* updated pointer to next and last 16 */
           iQSC++;
@@ -1514,13 +1513,13 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
           pSta[codewordOffset] = BODY_SIGN_ESC__ESC_PREFIX;
           pHcr->nonPcwSideinfo.pState =
               aStateConstant2State[pSta[codewordOffset]]; /* get state from
-                     separate array of
-                     cw-sideinfo */
+           separate array of
+           cw-sideinfo */
         }
       } else {
         ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                              pCodewordBitfield); /* clear a bit in bitfield and
-                    switch off statemachine */
+            switch off statemachine */
       }
       break;
     }
@@ -1529,7 +1528,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   if (pRemainingBitsInSegment[segmentOffset] <= 0) {
     ClearBitFromBitfield(&(pHcr->nonPcwSideinfo.pState), segmentOffset,
                          pSegmentBitfield); /* clear a bit in bitfield and
-                               switch off statemachine */
+                           switch off statemachine */
 
     if (pRemainingBitsInSegment[segmentOffset] < 0) {
       pHcr->decInOut.errorLog |= STATE_ERROR_BODY_SIGN_ESC__ESC_WORD;

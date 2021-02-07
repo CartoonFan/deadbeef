@@ -178,8 +178,8 @@ static DRC_ERROR _generateDrcInstructionsDerivedData(
     pActiveDrc->gainElementForGroup[g] =
         pActiveDrc->gainElementForGroup[g - 1] +
         pActiveDrc->bandCountForChannelGroup[g - 1]; /* index of first gain
-                                        sequence in channel
-                                        group */
+                                    sequence in channel
+                                    group */
   }
 
   return DE_OK;

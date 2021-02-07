@@ -164,7 +164,7 @@ typedef struct {
   UCHAR gainElementForGroup[8];
   UCHAR channelGroupIsParametricDrc[8];
   UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
-                     bands */
+                   bands */
   int lnbIndexForChannel[8][NUM_LNB_FRAMES];
   int subbandGainsReady;
 } ACTIVE_DRC;

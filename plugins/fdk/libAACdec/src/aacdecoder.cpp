@@ -667,8 +667,8 @@ LINKSPEC_CPP AAC_DECODER_ERROR CAacDecoder_PreRollExtensionPayloadParse(
   UCHAR config[TP_USAC_MAX_CONFIG_LEN] = {0};
   UCHAR
   implicitExplicitCfgDiff = 0; /* in case implicit and explicit config is
-                          equal preroll AU's should be processed
-                          after decoder reset */
+                        equal preroll AU's should be processed
+                        after decoder reset */
 
   ErrorStatus = AAC_DEC_OK;
 
@@ -1033,7 +1033,7 @@ change detection */
 
   case EXT_DATA_LENGTH:
     if (!fIsFillElement /* Makes no sens to have an additional length in a
-             fill ...   */
+         fill ...   */
         &&
         (self->flags[0] &
          AC_ER)) /* ... element because this extension payload type was ... */
@@ -1627,8 +1627,8 @@ contain only a mono core channel. */
         }
         if (asc->m_sc.m_usacConfig.m_coreSbrFrameLengthIndex == 4) {
           usacResidualDelayCompSamples += 6 * 16; /* difference between 12 SBR
-             overlap slots from SBR and 6
-             slots delayed in MPS212 */
+   overlap slots from SBR and 6
+   slots delayed in MPS212 */
         }
       }
     }
@@ -1805,7 +1805,7 @@ contain only a mono core channel. */
 
   if ((INT)asc->m_samplesPerFrame % downscaleFactor != 0) {
     return AAC_DEC_UNSUPPORTED_SAMPLINGRATE; /* frameSize/dsf must be an integer
-                                number */
+                            number */
   }
 
   self->streamInfo.bitRate = 0;
@@ -1841,7 +1841,7 @@ contain only a mono core channel. */
   if (self->sbrEnabled && asc->m_extensionSamplingFrequency) {
     if (downscaleFactor != 1 && (downscaleFactor)&1) {
       return AAC_DEC_UNSUPPORTED_SAMPLINGRATE; /* SBR needs an even downscale
-                          factor */
+                    factor */
     }
     if (configMode & AC_CM_ALLOC_MEM) {
       self->streamInfo.extSamplingRate =

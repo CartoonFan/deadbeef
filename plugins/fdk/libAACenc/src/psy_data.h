@@ -158,7 +158,7 @@ typedef struct {
   SFB_MAX_SCALE sfbMaxScaleSpec;
   SFB_ENERGY sfbEnergyMS; /* mid/side sfb energies                  */
   FIXP_DBL sfbEnergyMSLdData[MAX_GROUPED_SFB]; /* mid/side sfb energies in
-                                          ldData format */
+                                        ldData format */
   SFB_ENERGY sfbSpreadEnergy;
   INT mdctScale; /* exponent of data in mdctSpectrum       */
   INT groupedSfbOffset[MAX_GROUPED_SFB + 1];

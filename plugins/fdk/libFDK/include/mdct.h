@@ -153,7 +153,7 @@ typedef struct {
 
   FIXP_DBL *pFacZir;
   FIXP_DBL *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
-                  transition) */
+                transition) */
 } mdct_t;
 
 typedef mdct_t *H_MDCT;

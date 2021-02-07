@@ -187,7 +187,7 @@ typedef struct {
   UCHAR targetLayoutRequested;
   UCHAR targetChannelCountRequested;
   LONG audioSampleRate; /* needed for complexity estimation, currently not
-                   supported */
+                 supported */
 
   /* loudness normalization parameters */
   UCHAR loudnessNormalizationOn;
@@ -3003,7 +3003,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
       int dB_e;
       FIXP_DBL coeff;
       FIXP_DBL sum, maxSum; /* e = 7, so it is possible to sum up up to 32
-       downmix coefficients (with e = 2) */
+ downmix coefficients (with e = 2) */
       int i, j;
       DOWNMIX_INSTRUCTIONS *pDown =
           &(hUniDrcConfig->downmixInstructions[downmixInstructionIndex]);

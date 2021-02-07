@@ -3666,7 +3666,7 @@ static int junk_id3v2_load_rva2(int version_major, playItem_t *it,
       pl_set_item_replaygain(it, DDB_REPLAYGAIN_ALBUMPEAK,
                              (float)peak_val /
                                  32767.0); /* NOTE: this is a guess based on
-                                        mp3gain 1.5.2 written tags */
+                                      mp3gain 1.5.2 written tags */
     }
   } else if (!strcasecmp(rva_desc, "track")) {
     if (!pl_find_meta(it, ddb_internal_rg_keys[DDB_REPLAYGAIN_TRACKGAIN])) {

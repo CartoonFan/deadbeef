@@ -140,8 +140,8 @@ typedef struct {
   INT sf_concealment;                 /* 1          */
   INT rev_global_gain;                /* 2          */
   SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
-                                       (subtract 9) in case of noise
-                                       (PNS); is kept for later use */
+                                     (subtract 9) in case of noise
+                                     (PNS); is kept for later use */
   INT dpcm_noise_nrg;                       /* 4 optional */
   INT sf_escapes_present;                   /* 5          */
   SHORT length_of_rvlc_escapes;             /* 6 optional */
@@ -166,9 +166,9 @@ typedef struct {
   /* bitstream indices */
   INT bsAnchor;             /* hcr bit buffer reference index */
   INT bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
-                       2) for forward  decoding */
+                     2) for forward  decoding */
   INT bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
-                       2) for backward decoding */
+                     2) for backward decoding */
   INT bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
 
   /* decoding trees */

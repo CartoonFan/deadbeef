@@ -142,8 +142,9 @@ static void smoothingOfNoiseLevels(
     FIXP_DBL prevNoiseLevels
         [NF_SMOOTHING_LENGTH]
         [MAX_NUM_NOISE_VALUES], /*!< Previous noise
-                                                              floor envelopes.
-                                                                               */
+                                                                  floor
+                                   envelopes.
+                                                                                   */
     const FIXP_DBL *
         pSmoothFilter, /*!< filter used for smoothing the noise floor levels. */
     INT transientFlag) /*!< flag indicating if a transient is present*/

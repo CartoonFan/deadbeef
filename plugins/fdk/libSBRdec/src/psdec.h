@@ -185,12 +185,12 @@ struct PS_DEC_COEFFICIENTS {
 
   SCHAR
   aaIidIndexMapped[MAX_NO_PS_ENV][NO_HI_RES_IID_BINS]; /*!< The mapped IID index
-                                                      for all envelopes and
-                                                      all IID bins */
+                                                    for all envelopes and
+                                                    all IID bins */
   SCHAR
   aaIccIndexMapped[MAX_NO_PS_ENV][NO_HI_RES_ICC_BINS]; /*!< The mapped ICC index
-                                                      for all envelopes and
-                                                      all ICC bins */
+                                                    for all envelopes and
+                                                    all ICC bins */
 };
 
 typedef enum { ppt_none = 0, ppt_mpeg = 1, ppt_drm = 2 } PS_PAYLOAD_TYPE;
@@ -201,16 +201,16 @@ typedef struct {
   UCHAR bEnableIid; /*!< One bit denoting the presence of IID parameters */
   UCHAR bEnableIcc; /*!< One bit denoting the presence of ICC parameters */
   UCHAR bEnableExt; /*!< The PS extension layer is enabled using the enable_ext
-               bit. If it is set to %1 the IPD and OPD parameters are
-               sent. If it is disabled, i.e. %0, the extension layer is
-               skipped.   */
+             bit. If it is set to %1 the IPD and OPD parameters are
+             sent. If it is disabled, i.e. %0, the extension layer is
+             skipped.   */
 
   UCHAR
   modeIid;       /*!< The configuration of IID parameters (number of bands and
-              quantisation grid, iid_quant) is determined by iid_mode.   */
+            quantisation grid, iid_quant) is determined by iid_mode.   */
   UCHAR modeIcc; /*!< The configuration of Inter-channel Coherence parameters
-              (number of bands and quantisation grid) is determined by
-              icc_mode. */
+            (number of bands and quantisation grid) is determined by
+            icc_mode. */
 
   UCHAR freqResIid; /*!< 0=low, 1=mid or 2=high frequency resolution for iid */
   UCHAR freqResIcc; /*!< 0=low, 1=mid or 2=high frequency resolution for icc */
@@ -218,29 +218,29 @@ typedef struct {
   UCHAR bFineIidQ; /*!< Use fine Iid quantisation. */
 
   UCHAR bFrameClass; /*!< The frame_class bit determines whether the parameter
-                  positions of the current frame are uniformly spaced
-                  accross the frame or they are defined using the
-                positions described by border_position.
-              */
+                positions of the current frame are uniformly spaced
+                accross the frame or they are defined using the
+              positions described by border_position.
+            */
 
   UCHAR noEnv; /*!< The number of envelopes per frame */
   UCHAR aEnvStartStop[MAX_NO_PS_ENV + 1]; /*!< In case of variable parameter
-                                     spacing the parameter positions are
-                                     determined by border_position */
+                                   spacing the parameter positions are
+                                   determined by border_position */
 
   SCHAR abIidDtFlag[MAX_NO_PS_ENV]; /*!< Deltacoding time/freq flag for IID, 0
-                               => freq           */
+                             => freq           */
   SCHAR abIccDtFlag[MAX_NO_PS_ENV]; /*!< Deltacoding time/freq flag for ICC, 0
-                               => freq           */
+                             => freq           */
 
   SCHAR
   aaIidIndex[MAX_NO_PS_ENV][NO_HI_RES_IID_BINS]; /*!< The IID index for all
-                                                    envelopes and all IID bins
-                                                  */
+                                                  envelopes and all IID bins
+                                                */
   SCHAR
   aaIccIndex[MAX_NO_PS_ENV][NO_HI_RES_ICC_BINS]; /*!< The ICC index for all
-                                                    envelopes and all ICC bins
-                                                  */
+                                                  envelopes and all ICC bins
+                                                */
 
 } MPEG_PS_BS_DATA;
 
@@ -249,8 +249,8 @@ struct PS_DEC {
   SCHAR noChannels;
 
   SCHAR procFrameBased; /*!< Helper to detected switching from frame based to
-                   slot based processing
-                 */
+                 slot based processing
+               */
 
   PS_PAYLOAD_TYPE
   bPsDataAvail[(1) + 1]; /*!< set if new data available from bitstream */
@@ -260,7 +260,7 @@ struct PS_DEC {
   UCHAR bsLastSlot;  /*!< Index of last read slot.  */
   UCHAR bsReadSlot;  /*!< Index of current read slot for additional delay.  */
   UCHAR processSlot; /*!< Index of current slot for processing (need for add.
-                delay).   */
+              delay).   */
 
   union { /* Bitstream data */
     MPEG_PS_BS_DATA
@@ -271,20 +271,20 @@ struct PS_DEC {
   shouldBeUnion { /* Static data */
     struct {
       SCHAR aIidPrevFrameIndex[NO_HI_RES_IID_BINS]; /*!< The IID index for
-                               previous frame */
+                         previous frame */
       SCHAR aIccPrevFrameIndex[NO_HI_RES_ICC_BINS]; /*!< The ICC index for
-                               previous frame */
+                         previous frame */
       UCHAR
       bPrevFrameFineIidQ;   /*!< The IID quantization of the previous frame */
       UCHAR prevFreqResIid; /*!< Frequency resolution for IID of the previous
-       frame            */
+ frame            */
       UCHAR prevFreqResIcc; /*!< Frequency resolution for ICC of the previous
-       frame            */
+ frame            */
       UCHAR lastUsb; /*!< uppermost WMF delay band of last frame          */
 
       FIXP_DBL pHybridAnaStatesLFdmx
           [2 * 13 * NO_QMF_BANDS_HYBRID20]; /*!< Memory used in hybrid analysis
-                                         for filter states. */
+                                       for filter states. */
       FDK_ANA_HYB_FILTER hybridAnalysis;
       FDK_SYN_HYB_FILTER hybridSynthesis[2];
 
@@ -292,13 +292,13 @@ struct PS_DEC {
       FIXP_DBL decorrBufferCplx[(2 * ((825) + (373)))];
 
       FIXP_DBL h11rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
-                   coefficients */
+             coefficients */
       FIXP_DBL h12rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
-                   coefficients */
+             coefficients */
       FIXP_DBL h21rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
-                   coefficients */
+             coefficients */
       FIXP_DBL h22rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
-                   coefficients */
+             coefficients */
 
       PS_DEC_COEFFICIENTS
       *pCoef; /*!< temporal coefficients are on reusable scratch memory */

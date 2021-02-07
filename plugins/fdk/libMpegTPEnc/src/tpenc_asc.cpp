@@ -124,14 +124,14 @@ amm-info@iis.fraunhofer.de
 typedef struct {
   UCHAR
   num_front_height_channel_elements[2];      /*!< Number of front channel
-                                        elements in top [0] and bottom
-                                        [1] plane. */
+                                      elements in top [0] and bottom
+                                      [1] plane. */
   UCHAR num_side_height_channel_elements[2]; /*!< Number of side channel
-                                        elements in top [0] and bottom
-                                        [1] plane. */
+                                      elements in top [0] and bottom
+                                      [1] plane. */
   UCHAR num_back_height_channel_elements[2]; /*!< Number of back channel
-                                        elements in top [0] and bottom
-                                        [1] plane. */
+                                      elements in top [0] and bottom
+                                      [1] plane. */
 } PCE_HEIGHT_NUM;
 
 /**
@@ -144,7 +144,7 @@ typedef struct {
   UCHAR num_lfe_channel_elements;   /*!< Number of lfe channel elements. */
   const MP4_ELEMENT_ID
       *pEl_type; /*!< List contains sequence describing the elements
-                              in present channel mode. (MPEG order) */
+                                in present channel mode. (MPEG order) */
   const PCE_HEIGHT_NUM *pHeight_num;
 } PCE_CONFIGURATION;
 
@@ -426,10 +426,10 @@ int transportEnc_writePCE(HANDLE_FDK_BITSTREAM hBs, CHANNEL_MODE channelMode,
     topFrontEnd =
         normalBackEnd + config->num_lfe_channel_elements +
         config->pHeight_num->num_front_height_channel_elements[0]; /* only
-                                                      normal
-                                                      height
-                                                      LFEs
-                                                      assumed */
+                                                  normal
+                                                  height
+                                                  LFEs
+                                                  assumed */
     topSideEnd =
         topFrontEnd + config->pHeight_num->num_side_height_channel_elements[0];
     topBackEnd =
@@ -486,7 +486,7 @@ int transportEnc_writePCE(HANDLE_FDK_BITSTREAM hBs, CHANNEL_MODE channelMode,
     else {
       elDepth = BACK;
       FDK_ASSERT(i < bottomBackEnd); /* won't fail if implementation of pce
-                configuration table is correct */
+          configuration table is correct */
     }
 
     switch (elDepth) {
@@ -701,9 +701,9 @@ static int transportEnc_writeGASpecificConfig(HANDLE_FDK_BITSTREAM asc,
   FDKwriteBits(asc,
                ((samplesPerFrame == 960 || samplesPerFrame == 480) ? 1 : 0),
                1); /* frameLengthFlag: 1 for a 960/480 (I)MDCT, 0 for a 1024/512
-              (I)MDCT*/
+            (I)MDCT*/
   FDKwriteBits(asc, 0, 1); /* dependsOnCoreCoder: Sampling Rate Coder Specific,
-                      see in ISO/IEC 14496-3 Subpart 4, 4.4.1 */
+                    see in ISO/IEC 14496-3 Subpart 4, 4.4.1 */
   FDKwriteBits(asc, extFlg,
                1); /* Extension Flag: Shall be 1 for aot = 17,19,20,21,22,23 */
 
@@ -839,7 +839,7 @@ static int transportEnc_writeELDSpecificConfig(HANDLE_FDK_BITSTREAM hBs,
         (downscaleSamplingRate != 11025) && (downscaleSamplingRate != 8000) &&
         (downscaleSamplingRate != 7350)) {
       eldExtLenDsc = 4; /* length extends to 4 if downscaleSamplingRate's value
-   is not one of the listed values */
+is not one of the listed values */
     }
 
     FDKwriteBits(hBs, eldExtLenDsc, 4);

@@ -161,7 +161,7 @@ typedef struct AAC_METADATA {
       UCHAR dmx_gain_2_sgn;
       UCHAR dmx_gain_2_idx;
       UCHAR ext_dmix_lfe_idx; /* extended downmix level for lfe (0..15,
-         according to table) */
+   according to table) */
 
     } extAncData;
 
@@ -187,7 +187,7 @@ typedef struct FDK_METADATA_ENCODER {
   AACENC_MetaData submittedMetaData;
 
   INT nAudioDataDelay; /* Additional delay to round up to next frame border (in
-                  samples) */
+                samples) */
   INT nMetaDataDelay;  /* Meta data delay (in frames) */
   INT nChannels;
   CHANNEL_MODE channelMode;
@@ -208,10 +208,10 @@ typedef struct FDK_METADATA_ENCODER {
   UINT maxChannels; /* Maximum number of audio channels to be supported. */
 
   INT finalizeMetaData;   /* Delay switch off by one frame and write default
-                     configuration to   finalize the metadata setup. */
+                   configuration to   finalize the metadata setup. */
   INT initializeMetaData; /* Fill up delay line with first meta data info. This
-                     is required to have meta data already in first
-                     frame. */
+                   is required to have meta data already in first
+                   frame. */
 } FDK_METADATA_ENCODER;
 
 /*---------------- constants -----------------------*/
@@ -627,8 +627,8 @@ static FDK_METADATA_ERROR ProcessCompressor(AAC_METADATA *pMetadata,
   /* Sanity check */
   if (profileComp == DRC_NONE) {
     pMetadata->etsiAncData.compression_value = 0x80; /* to ensure no external
-                                        values will be written
-                                        if not configured */
+                                    values will be written
+                                    if not configured */
   }
 
   /* in case of embedding external values, copy this now (limiter may overwrite
@@ -1071,8 +1071,8 @@ LoadSubmittedMetadata(const AACENC_MetaData *const hMetadata,
       if (pAacMetaData->mpegDrc.drc_profile ==
           AACENC_METADATA_DRC_NOT_PRESENT) {
         pAacMetaData->mpegDrc.drc_profile = AACENC_METADATA_DRC_NONE; /* MPEG
-                                         DRC gains are always
-                                         present in BS syntax */
+                                 DRC gains are always
+                                 present in BS syntax */
         /* we should give a warning, but ErrorHandler does not support this */
       }
 

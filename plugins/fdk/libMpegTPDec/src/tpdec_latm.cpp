@@ -286,7 +286,7 @@ CLatmDemux_ReadStreamMuxConfig(HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
                                CSAudioSpecificConfig *pAsc, int *pfConfigFound,
                                UCHAR configMode, UCHAR configChanged) {
   CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
-                             after that new config can be parsed */
+                           after that new config can be parsed */
   CSAudioSpecificConfig *pAscDummy;
   pAscDummy = &ascDummy;
   pLatmDemux->usacExplicitCfgChanged = 0;

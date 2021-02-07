@@ -132,8 +132,8 @@ int SpatialDecConcealment_Apply(
     const SCHAR (*cmpIdxData)[MAX_PARAMETER_BANDS], SCHAR **diffIdxData,
     SCHAR *
         idxPrev, /* char
-                                    idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
-                                  */
+                                        idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
+                                      */
     SCHAR *bsXXXDataMode, const int startBand, const int stopBand,
     const SCHAR defaultValue, const int paramType, const int numParamSets) {
   int appliedProcessing = 0;

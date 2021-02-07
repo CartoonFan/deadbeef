@@ -612,7 +612,7 @@ void CJointStereo_ApplyMS(
 
     /* get length of short window for current configuration */
     windowLen = pAacDecoderChannelInfo[L]->granuleLength; /* framelength 768 =>
-                                             96, framelength 1024 => 128 */
+                                         96, framelength 1024 => 128 */
 
     /* if this is no short-block set length for long-block */
     if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence != BLOCK_SHORT) {
@@ -896,10 +896,10 @@ BLOCK_SHORT) || (window == 0) ) */
 
           lScale = fMin(DFRACT_BITS - 1, specScaleL[window] - lScale);
           rScale = fMin(DFRACT_BITS - 1, specScaleL[window] - rScale); /* L or R
-                                  doesn't matter,
-                                  specScales are
-                                  equal at this
-                                  point */
+                        doesn't matter,
+                        specScales are
+                        equal at this
+                        point */
 
           /* Write back to sfb scale to cover the case when max_sfb_ste <
            * max_sfb */

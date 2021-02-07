@@ -139,7 +139,7 @@ struct AAC_ENC {
   AACENC_CONFIG *config;
 
   INT ancillaryBitsPerFrame; /* ancillary bits per frame calculated from
-                        ancillary rate */
+                      ancillary rate */
 
   CHANNEL_MAPPING channelMapping;
 
