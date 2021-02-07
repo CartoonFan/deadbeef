@@ -131,79 +131,79 @@ amm-info@iis.fraunhofer.de
 #define LOFILT 1 /* index of lower filter    */
 
 typedef struct { /* stuff that is tabulated dependent on bitrate etc. */
-  INT filterEnabled[MAX_NUM_OF_FILTERS];
-  INT threshOn[MAX_NUM_OF_FILTERS];        /* min. prediction gain for using tns
+    INT filterEnabled[MAX_NUM_OF_FILTERS];
+    INT threshOn[MAX_NUM_OF_FILTERS];        /* min. prediction gain for using tns
                                             TABUL*/
-  INT filterStartFreq[MAX_NUM_OF_FILTERS]; /* lowest freq for lpc TABUL*/
-  INT tnsLimitOrder[MAX_NUM_OF_FILTERS];   /* Limit for TNS order TABUL*/
-  INT tnsFilterDirection[MAX_NUM_OF_FILTERS]; /* Filtering direction, 0=up,
+    INT filterStartFreq[MAX_NUM_OF_FILTERS]; /* lowest freq for lpc TABUL*/
+    INT tnsLimitOrder[MAX_NUM_OF_FILTERS];   /* Limit for TNS order TABUL*/
+    INT tnsFilterDirection[MAX_NUM_OF_FILTERS]; /* Filtering direction, 0=up,
                                                1=down TABUL */
-  INT acfSplit[MAX_NUM_OF_FILTERS];
-  FIXP_DBL tnsTimeResolution[MAX_NUM_OF_FILTERS]; /* TNS max. time resolution
+    INT acfSplit[MAX_NUM_OF_FILTERS];
+    FIXP_DBL tnsTimeResolution[MAX_NUM_OF_FILTERS]; /* TNS max. time resolution
                                                    TABUL. Should be fract but
                                                    MSVC won't compile then */
-  INT seperateFiltersAllowed;
+    INT seperateFiltersAllowed;
 } TNS_PARAMETER_TABULATED;
 
 typedef struct { /*assigned at InitTime*/
-  TNS_PARAMETER_TABULATED confTab;
-  INT isLowDelay;
-  INT tnsActive;
-  INT maxOrder; /* max. order of tns filter */
-  INT coefRes;
-  FIXP_DBL acfWindow[MAX_NUM_OF_FILTERS][TNS_MAX_ORDER + 3 + 1];
-  /* now some things that only probably can be done at Init time;
-     could be they have to be split up for each individual (short) window or
-     even filter.  */
-  INT lpcStartBand[MAX_NUM_OF_FILTERS];
-  INT lpcStartLine[MAX_NUM_OF_FILTERS];
-  INT lpcStopBand;
-  INT lpcStopLine;
+    TNS_PARAMETER_TABULATED confTab;
+    INT isLowDelay;
+    INT tnsActive;
+    INT maxOrder; /* max. order of tns filter */
+    INT coefRes;
+    FIXP_DBL acfWindow[MAX_NUM_OF_FILTERS][TNS_MAX_ORDER + 3 + 1];
+    /* now some things that only probably can be done at Init time;
+       could be they have to be split up for each individual (short) window or
+       even filter.  */
+    INT lpcStartBand[MAX_NUM_OF_FILTERS];
+    INT lpcStartLine[MAX_NUM_OF_FILTERS];
+    INT lpcStopBand;
+    INT lpcStopLine;
 
 } TNS_CONFIG;
 
 typedef struct {
-  INT tnsActive[MAX_NUM_OF_FILTERS];
-  INT predictionGain[MAX_NUM_OF_FILTERS];
+    INT tnsActive[MAX_NUM_OF_FILTERS];
+    INT predictionGain[MAX_NUM_OF_FILTERS];
 } TNS_SUBBLOCK_INFO;
 
 typedef struct { /*changed at runTime*/
-  TNS_SUBBLOCK_INFO subBlockInfo[TRANS_FAC];
-  FIXP_DBL ratioMultTable[TRANS_FAC][MAX_SFB_SHORT];
+    TNS_SUBBLOCK_INFO subBlockInfo[TRANS_FAC];
+    FIXP_DBL ratioMultTable[TRANS_FAC][MAX_SFB_SHORT];
 } TNS_DATA_SHORT;
 
 typedef struct { /*changed at runTime*/
-  TNS_SUBBLOCK_INFO subBlockInfo;
-  FIXP_DBL ratioMultTable[MAX_SFB_LONG];
+    TNS_SUBBLOCK_INFO subBlockInfo;
+    FIXP_DBL ratioMultTable[MAX_SFB_LONG];
 } TNS_DATA_LONG;
 
 /* can be implemented as union */
 typedef shouldBeUnion {
-  TNS_DATA_LONG Long;
-  TNS_DATA_SHORT Short;
+    TNS_DATA_LONG Long;
+    TNS_DATA_SHORT Short;
 }
 TNS_DATA_RAW;
 
 typedef struct {
-  INT numOfSubblocks;
-  TNS_DATA_RAW dataRaw;
-  INT tnsMaxScaleSpec;
-  INT filtersMerged;
+    INT numOfSubblocks;
+    TNS_DATA_RAW dataRaw;
+    INT tnsMaxScaleSpec;
+    INT filtersMerged;
 } TNS_DATA;
 
 typedef struct {
-  INT numOfFilters[TRANS_FAC];
-  INT coefRes[TRANS_FAC];
-  INT length[TRANS_FAC][MAX_NUM_OF_FILTERS];
-  INT order[TRANS_FAC][MAX_NUM_OF_FILTERS];
-  INT direction[TRANS_FAC][MAX_NUM_OF_FILTERS];
-  INT coefCompress[TRANS_FAC][MAX_NUM_OF_FILTERS];
-  /* for Long: length TNS_MAX_ORDER (12 for LC) is required -> 12 */
-  /* for Short: length TRANS_FAC*TNS_MAX_ORDER (only 5 for short LC) is required
-   * -> 8*5=40 */
-  /* Currently TRANS_FAC*TNS_MAX_ORDER = 8*12 = 96 (for LC) is used (per
-   * channel)! Memory could be saved here! */
-  INT coef[TRANS_FAC][MAX_NUM_OF_FILTERS][TNS_MAX_ORDER];
+    INT numOfFilters[TRANS_FAC];
+    INT coefRes[TRANS_FAC];
+    INT length[TRANS_FAC][MAX_NUM_OF_FILTERS];
+    INT order[TRANS_FAC][MAX_NUM_OF_FILTERS];
+    INT direction[TRANS_FAC][MAX_NUM_OF_FILTERS];
+    INT coefCompress[TRANS_FAC][MAX_NUM_OF_FILTERS];
+    /* for Long: length TNS_MAX_ORDER (12 for LC) is required -> 12 */
+    /* for Short: length TRANS_FAC*TNS_MAX_ORDER (only 5 for short LC) is required
+     * -> 8*5=40 */
+    /* Currently TRANS_FAC*TNS_MAX_ORDER = 8*12 = 96 (for LC) is used (per
+     * channel)! Memory could be saved here! */
+    INT coef[TRANS_FAC][MAX_NUM_OF_FILTERS][TNS_MAX_ORDER];
 } TNS_INFO;
 
 INT FDKaacEnc_FreqToBandWidthRounding(const INT freq, const INT fs,

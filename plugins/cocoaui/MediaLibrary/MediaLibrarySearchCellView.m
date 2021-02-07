@@ -17,8 +17,8 @@
 }
 
 - (IBAction)searchFieldAction:(id)sender {
-  [self.delegate
-      mediaLibrarySearchCellViewTextChanged:self.searchField.stringValue];
+    [self.delegate
+     mediaLibrarySearchCellViewTextChanged:self.searchField.stringValue];
 }
 
 - (void)searchFieldDidStartSearching:(NSSearchField *)sender {

@@ -116,46 +116,46 @@ amm-info@iis.fraunhofer.de
 
 #ifdef FUNCTION_fixnormz_D
 inline INT fixnormz_D(LONG value) {
-  INT result;
+    INT result;
 #if defined(__ARM_ARCH_8__)
-  asm("clz %w0, %w1 " : "=r"(result) : "r"(value));
+    asm("clz %w0, %w1 " : "=r"(result) : "r"(value));
 #else
-  asm("clz %0, %1 " : "=r"(result) : "r"(value));
+    asm("clz %0, %1 " : "=r"(result) : "r"(value));
 #endif
-  return result;
+    return result;
 }
 #endif /* #ifdef FUNCTION_fixnormz_D */
 
 #ifdef FUNCTION_fixnorm_D
 inline INT fixnorm_D(LONG value) {
-  if (!value)
-    return 0;
-  if (value < 0)
-    value = ~value;
-  return fixnormz_D(value) - 1;
+    if (!value)
+        return 0;
+    if (value < 0)
+        value = ~value;
+    return fixnormz_D(value) - 1;
 }
 #endif /* #ifdef FUNCTION_fixnorm_D */
 
 #ifdef FUNCTION_fixnormz_S
 inline INT fixnormz_S(SHORT value) {
-  INT result;
-  result = (LONG)(value << 16);
-  if (result == 0)
-    result = 16;
-  else
-    result = fixnormz_D(result);
-  return result;
+    INT result;
+    result = (LONG)(value << 16);
+    if (result == 0)
+        result = 16;
+    else
+        result = fixnormz_D(result);
+    return result;
 }
 #endif /* #ifdef FUNCTION_fixnormz_S */
 
 #ifdef FUNCTION_fixnorm_S
 inline INT fixnorm_S(SHORT value) {
-  LONG lvalue = (LONG)(value << 16);
-  if (!lvalue)
-    return 0;
-  if (lvalue < 0)
-    lvalue = ~lvalue;
-  return fixnormz_D(lvalue) - 1;
+    LONG lvalue = (LONG)(value << 16);
+    if (!lvalue)
+        return 0;
+    if (lvalue < 0)
+        lvalue = ~lvalue;
+    return fixnormz_D(lvalue) - 1;
 }
 #endif /* #ifdef FUNCTION_fixnorm_S */
 

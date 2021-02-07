@@ -120,9 +120,9 @@ amm-info@iis.fraunhofer.de
 
 /* Data Types ****************************************************************/
 struct STATIC_GAIN_CONFIG {
-  MP4SPACEENC_MODE encMode;
-  MP4SPACEENC_DMX_GAIN fixedGainDMX;
-  INT preGainFactorDb;
+    MP4SPACEENC_MODE encMode;
+    MP4SPACEENC_DMX_GAIN fixedGainDMX;
+    INT preGainFactorDb;
 };
 
 typedef struct STATIC_GAIN_CONFIG *HANDLE_STATIC_GAIN_CONFIG;

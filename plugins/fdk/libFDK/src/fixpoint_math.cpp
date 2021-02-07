@@ -115,10 +115,10 @@ amm-info@iis.fraunhofer.de
 *****************************************************************************/
 LNK_SECTION_CODE_L1
 void LdDataVector(FIXP_DBL *srcVector, FIXP_DBL *destVector, INT n) {
-  INT i;
-  for (i = 0; i < n; i++) {
-    destVector[i] = fLog2(srcVector[i], 0);
-  }
+    INT i;
+    for (i = 0; i < n; i++) {
+        destVector[i] = fLog2(srcVector[i], 0);
+    }
 }
 
 #define MAX_POW2_PRECISION 8
@@ -292,7 +292,8 @@ static const FIXP_DBL ldIntCoeff[] = {
     (FIXP_DBL)0x0d82809d, (FIXP_DBL)0x0d894f75, (FIXP_DBL)0x0d900e61,
     (FIXP_DBL)0x0d96bdad, (FIXP_DBL)0x0d9d5da0, (FIXP_DBL)0x0da3ee7f,
     (FIXP_DBL)0x0daa708f, (FIXP_DBL)0x0db0e412, (FIXP_DBL)0x0db74949,
-    (FIXP_DBL)0x0dbda072, (FIXP_DBL)0x0dc3e9ca, (FIXP_DBL)0x0dca258e};
+    (FIXP_DBL)0x0dbda072, (FIXP_DBL)0x0dc3e9ca, (FIXP_DBL)0x0dca258e
+};
 
 #elif (LD_INT_TAB_LEN <= 193)
 LNK_SECTION_CONSTDATA_L1
@@ -361,7 +362,8 @@ static const FIXP_DBL ldIntCoeff[] = {
     (FIXP_DBL)0x0f0809cf, (FIXP_DBL)0x0f0c1050, (FIXP_DBL)0x0f10113b,
     (FIXP_DBL)0x0f140ca0, (FIXP_DBL)0x0f18028d, (FIXP_DBL)0x0f1bf312,
     (FIXP_DBL)0x0f1fde3d, (FIXP_DBL)0x0f23c41d, (FIXP_DBL)0x0f27a4c0,
-    (FIXP_DBL)0x0f2b8034};
+    (FIXP_DBL)0x0f2b8034
+};
 
 #else
 #error "ldInt table size too small"
@@ -376,18 +378,18 @@ void InitLdInt() { /* nothing to do! Use preinitialized logarithm table */
 
 LNK_SECTION_CODE_L1
 FIXP_DBL CalcLdInt(INT i) {
-  /* calculates ld(op)/LD_DATA_SCALING */
-  /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */
+    /* calculates ld(op)/LD_DATA_SCALING */
+    /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */
 
-  FDK_ASSERT((LD_INT_TAB_LEN > 0) &&
-             ((FIXP_DBL)ldIntCoeff[0] ==
-              (FIXP_DBL)0x80000001)); /* tab has to be initialized */
+    FDK_ASSERT((LD_INT_TAB_LEN > 0) &&
+               ((FIXP_DBL)ldIntCoeff[0] ==
+                (FIXP_DBL)0x80000001)); /* tab has to be initialized */
 
-  if ((i > 0) && (i < LD_INT_TAB_LEN))
-    return ldIntCoeff[i];
-  else {
-    return (0);
-  }
+    if ((i > 0) && (i < LD_INT_TAB_LEN))
+        return ldIntCoeff[i];
+    else {
+        return (0);
+    }
 }
 #endif /* (LD_INT_TAB_LEN!=0)  */
 
@@ -400,409 +402,409 @@ FIXP_DBL CalcLdInt(INT i) {
 *****************************************************************************/
 
 FIXP_DBL schur_div(FIXP_DBL num, FIXP_DBL denum, INT count) {
-  INT L_num = (LONG)num >> 1;
-  INT L_denum = (LONG)denum >> 1;
-  INT div = 0;
-  INT k = count;
+    INT L_num = (LONG)num >> 1;
+    INT L_denum = (LONG)denum >> 1;
+    INT div = 0;
+    INT k = count;
 
-  FDK_ASSERT(num >= (FIXP_DBL)0);
-  FDK_ASSERT(denum > (FIXP_DBL)0);
-  FDK_ASSERT(num <= denum);
+    FDK_ASSERT(num >= (FIXP_DBL)0);
+    FDK_ASSERT(denum > (FIXP_DBL)0);
+    FDK_ASSERT(num <= denum);
 
-  if (L_num != 0)
-    while (--k) {
-      div <<= 1;
-      L_num <<= 1;
-      if (L_num >= L_denum) {
-        L_num -= L_denum;
-        div++;
-      }
-    }
-  return (FIXP_DBL)(div << (DFRACT_BITS - count));
+    if (L_num != 0)
+        while (--k) {
+            div <<= 1;
+            L_num <<= 1;
+            if (L_num >= L_denum) {
+                L_num -= L_denum;
+                div++;
+            }
+        }
+    return (FIXP_DBL)(div << (DFRACT_BITS - count));
 }
 
 #endif /* !defined(FUNCTION_schur_div) */
 
 #ifndef FUNCTION_fMultNorm
 FIXP_DBL fMultNorm(FIXP_DBL f1, FIXP_DBL f2, INT *result_e) {
-  INT product = 0;
-  INT norm_f1, norm_f2;
+    INT product = 0;
+    INT norm_f1, norm_f2;
 
-  if ((f1 == (FIXP_DBL)0) || (f2 == (FIXP_DBL)0)) {
-    *result_e = 0;
-    return (FIXP_DBL)0;
-  }
-  norm_f1 = CountLeadingBits(f1);
-  f1 = f1 << norm_f1;
-  norm_f2 = CountLeadingBits(f2);
-  f2 = f2 << norm_f2;
+    if ((f1 == (FIXP_DBL)0) || (f2 == (FIXP_DBL)0)) {
+        *result_e = 0;
+        return (FIXP_DBL)0;
+    }
+    norm_f1 = CountLeadingBits(f1);
+    f1 = f1 << norm_f1;
+    norm_f2 = CountLeadingBits(f2);
+    f2 = f2 << norm_f2;
 
-  if ((f1 == (FIXP_DBL)MINVAL_DBL) && (f2 == (FIXP_DBL)MINVAL_DBL)) {
-    product = -((FIXP_DBL)MINVAL_DBL >> 1);
-    *result_e = -(norm_f1 + norm_f2 - 1);
-  } else {
-    product = fMult(f1, f2);
-    *result_e = -(norm_f1 + norm_f2);
-  }
+    if ((f1 == (FIXP_DBL)MINVAL_DBL) && (f2 == (FIXP_DBL)MINVAL_DBL)) {
+        product = -((FIXP_DBL)MINVAL_DBL >> 1);
+        *result_e = -(norm_f1 + norm_f2 - 1);
+    } else {
+        product = fMult(f1, f2);
+        *result_e = -(norm_f1 + norm_f2);
+    }
 
-  return (FIXP_DBL)product;
+    return (FIXP_DBL)product;
 }
 #endif
 
 #ifndef FUNCTION_fDivNorm
 FIXP_DBL fDivNorm(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
-  FIXP_DBL div;
-  INT norm_num, norm_den;
+    FIXP_DBL div;
+    INT norm_num, norm_den;
 
-  FDK_ASSERT(L_num >= (FIXP_DBL)0);
-  FDK_ASSERT(L_denum > (FIXP_DBL)0);
+    FDK_ASSERT(L_num >= (FIXP_DBL)0);
+    FDK_ASSERT(L_denum > (FIXP_DBL)0);
 
-  if (L_num == (FIXP_DBL)0) {
-    *result_e = 0;
-    return ((FIXP_DBL)0);
-  }
+    if (L_num == (FIXP_DBL)0) {
+        *result_e = 0;
+        return ((FIXP_DBL)0);
+    }
 
-  norm_num = CountLeadingBits(L_num);
-  L_num = L_num << norm_num;
-  L_num = L_num >> 1;
-  *result_e = -norm_num + 1;
+    norm_num = CountLeadingBits(L_num);
+    L_num = L_num << norm_num;
+    L_num = L_num >> 1;
+    *result_e = -norm_num + 1;
 
-  norm_den = CountLeadingBits(L_denum);
-  L_denum = L_denum << norm_den;
-  *result_e -= -norm_den;
+    norm_den = CountLeadingBits(L_denum);
+    L_denum = L_denum << norm_den;
+    *result_e -= -norm_den;
 
-  div = schur_div(L_num, L_denum, FRACT_BITS);
+    div = schur_div(L_num, L_denum, FRACT_BITS);
 
-  return div;
+    return div;
 }
 #endif /* !FUNCTION_fDivNorm */
 
 #ifndef FUNCTION_fDivNorm
 FIXP_DBL fDivNorm(FIXP_DBL num, FIXP_DBL denom) {
-  INT e;
-  FIXP_DBL res;
+    INT e;
+    FIXP_DBL res;
 
-  FDK_ASSERT(denom >= num);
+    FDK_ASSERT(denom >= num);
 
-  res = fDivNorm(num, denom, &e);
+    res = fDivNorm(num, denom, &e);
 
-  /* Avoid overflow since we must output a value with exponent 0
-     there is no other choice than saturating to almost 1.0f */
-  if (res == (FIXP_DBL)(1 << (DFRACT_BITS - 2)) && e == 1) {
-    res = (FIXP_DBL)MAXVAL_DBL;
-  } else {
-    res = scaleValue(res, e);
-  }
+    /* Avoid overflow since we must output a value with exponent 0
+       there is no other choice than saturating to almost 1.0f */
+    if (res == (FIXP_DBL)(1 << (DFRACT_BITS - 2)) && e == 1) {
+        res = (FIXP_DBL)MAXVAL_DBL;
+    } else {
+        res = scaleValue(res, e);
+    }
 
-  return res;
+    return res;
 }
 #endif /* !FUNCTION_fDivNorm */
 
 #ifndef FUNCTION_fDivNormSigned
 FIXP_DBL fDivNormSigned(FIXP_DBL num, FIXP_DBL denom) {
-  INT e;
-  FIXP_DBL res;
-  int sign;
+    INT e;
+    FIXP_DBL res;
+    int sign;
 
-  if (denom == (FIXP_DBL)0) {
-    return (FIXP_DBL)MAXVAL_DBL;
-  }
-
-  sign = ((num >= (FIXP_DBL)0) != (denom >= (FIXP_DBL)0));
-  res = fDivNormSigned(num, denom, &e);
-
-  /* Saturate since we must output a value with exponent 0 */
-  if ((e > 0) && (fAbs(res) >= FL2FXCONST_DBL(0.5))) {
-    if (sign) {
-      res = (FIXP_DBL)MINVAL_DBL;
-    } else {
-      res = (FIXP_DBL)MAXVAL_DBL;
+    if (denom == (FIXP_DBL)0) {
+        return (FIXP_DBL)MAXVAL_DBL;
     }
-  } else {
-    res = scaleValue(res, e);
-  }
 
-  return res;
+    sign = ((num >= (FIXP_DBL)0) != (denom >= (FIXP_DBL)0));
+    res = fDivNormSigned(num, denom, &e);
+
+    /* Saturate since we must output a value with exponent 0 */
+    if ((e > 0) && (fAbs(res) >= FL2FXCONST_DBL(0.5))) {
+        if (sign) {
+            res = (FIXP_DBL)MINVAL_DBL;
+        } else {
+            res = (FIXP_DBL)MAXVAL_DBL;
+        }
+    } else {
+        res = scaleValue(res, e);
+    }
+
+    return res;
 }
 FIXP_DBL fDivNormSigned(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
-  FIXP_DBL div;
-  INT norm_num, norm_den;
-  int sign;
+    FIXP_DBL div;
+    INT norm_num, norm_den;
+    int sign;
 
-  sign = ((L_num >= (FIXP_DBL)0) != (L_denum >= (FIXP_DBL)0));
+    sign = ((L_num >= (FIXP_DBL)0) != (L_denum >= (FIXP_DBL)0));
 
-  if (L_num == (FIXP_DBL)0) {
-    *result_e = 0;
-    return ((FIXP_DBL)0);
-  }
-  if (L_denum == (FIXP_DBL)0) {
-    *result_e = 14;
-    return ((FIXP_DBL)MAXVAL_DBL);
-  }
+    if (L_num == (FIXP_DBL)0) {
+        *result_e = 0;
+        return ((FIXP_DBL)0);
+    }
+    if (L_denum == (FIXP_DBL)0) {
+        *result_e = 14;
+        return ((FIXP_DBL)MAXVAL_DBL);
+    }
 
-  norm_num = CountLeadingBits(L_num);
-  L_num = L_num << norm_num;
-  L_num = L_num >> 2;
-  L_num = fAbs(L_num);
-  *result_e = -norm_num + 1;
+    norm_num = CountLeadingBits(L_num);
+    L_num = L_num << norm_num;
+    L_num = L_num >> 2;
+    L_num = fAbs(L_num);
+    *result_e = -norm_num + 1;
 
-  norm_den = CountLeadingBits(L_denum);
-  L_denum = L_denum << norm_den;
-  L_denum = L_denum >> 1;
-  L_denum = fAbs(L_denum);
-  *result_e -= -norm_den;
+    norm_den = CountLeadingBits(L_denum);
+    L_denum = L_denum << norm_den;
+    L_denum = L_denum >> 1;
+    L_denum = fAbs(L_denum);
+    *result_e -= -norm_den;
 
-  div = schur_div(L_num, L_denum, FRACT_BITS);
+    div = schur_div(L_num, L_denum, FRACT_BITS);
 
-  if (sign) {
-    div = -div;
-  }
+    if (sign) {
+        div = -div;
+    }
 
-  return div;
+    return div;
 }
 #endif /* FUNCTION_fDivNormSigned */
 
 #ifndef FUNCTION_fDivNormHighPrec
 FIXP_DBL fDivNormHighPrec(FIXP_DBL num, FIXP_DBL denom, INT *result_e) {
-  FIXP_DBL div;
-  INT norm_num, norm_den;
+    FIXP_DBL div;
+    INT norm_num, norm_den;
 
-  FDK_ASSERT(num >= (FIXP_DBL)0);
-  FDK_ASSERT(denom > (FIXP_DBL)0);
+    FDK_ASSERT(num >= (FIXP_DBL)0);
+    FDK_ASSERT(denom > (FIXP_DBL)0);
 
-  if (num == (FIXP_DBL)0) {
-    *result_e = 0;
-    return ((FIXP_DBL)0);
-  }
+    if (num == (FIXP_DBL)0) {
+        *result_e = 0;
+        return ((FIXP_DBL)0);
+    }
 
-  norm_num = CountLeadingBits(num);
-  num = num << norm_num;
-  num = num >> 1;
-  *result_e = -norm_num + 1;
+    norm_num = CountLeadingBits(num);
+    num = num << norm_num;
+    num = num >> 1;
+    *result_e = -norm_num + 1;
 
-  norm_den = CountLeadingBits(denom);
-  denom = denom << norm_den;
-  *result_e -= -norm_den;
+    norm_den = CountLeadingBits(denom);
+    denom = denom << norm_den;
+    *result_e -= -norm_den;
 
-  div = schur_div(num, denom, 31);
-  return div;
+    div = schur_div(num, denom, 31);
+    return div;
 }
 #endif /* !FUNCTION_fDivNormHighPrec */
 
 #ifndef FUNCTION_fPow
 FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e, INT *result_e) {
-  FIXP_DBL frac_part, result_m;
-  INT int_part;
+    FIXP_DBL frac_part, result_m;
+    INT int_part;
 
-  if (exp_e > 0) {
-    INT exp_bits = DFRACT_BITS - 1 - exp_e;
-    int_part = exp_m >> exp_bits;
-    frac_part = exp_m - (FIXP_DBL)(int_part << exp_bits);
-    frac_part = frac_part << exp_e;
-  } else {
-    int_part = 0;
-    frac_part = exp_m >> -exp_e;
-  }
-
-  /* Best accuracy is around 0, so try to get there with the fractional part. */
-  if (frac_part > FL2FXCONST_DBL(0.5f)) {
-    int_part = int_part + 1;
-    frac_part = frac_part + FL2FXCONST_DBL(-1.0f);
-  }
-  if (frac_part < FL2FXCONST_DBL(-0.5f)) {
-    int_part = int_part - 1;
-    frac_part = -(FL2FXCONST_DBL(-1.0f) - frac_part);
-  }
-
-  /* "+ 1" compensates fMultAddDiv2() of the polynomial evaluation below. */
-  *result_e = int_part + 1;
-
-  /* Evaluate taylor polynomial which approximates 2^x */
-  {
-    FIXP_DBL p;
-
-    /* result_m ~= 2^frac_part */
-    p = frac_part;
-    /* First taylor series coefficient a_0 = 1.0, scaled by 0.5 due to
-     * fMultDiv2(). */
-    result_m = FL2FXCONST_DBL(1.0f / 2.0f);
-    for (INT i = 0; i < POW2_PRECISION; i++) {
-      /* next taylor series term: a_i * x^i, x=0 */
-      result_m = fMultAddDiv2(result_m, pow2Coeff[i], p);
-      p = fMult(p, frac_part);
+    if (exp_e > 0) {
+        INT exp_bits = DFRACT_BITS - 1 - exp_e;
+        int_part = exp_m >> exp_bits;
+        frac_part = exp_m - (FIXP_DBL)(int_part << exp_bits);
+        frac_part = frac_part << exp_e;
+    } else {
+        int_part = 0;
+        frac_part = exp_m >> -exp_e;
     }
-  }
-  return result_m;
+
+    /* Best accuracy is around 0, so try to get there with the fractional part. */
+    if (frac_part > FL2FXCONST_DBL(0.5f)) {
+        int_part = int_part + 1;
+        frac_part = frac_part + FL2FXCONST_DBL(-1.0f);
+    }
+    if (frac_part < FL2FXCONST_DBL(-0.5f)) {
+        int_part = int_part - 1;
+        frac_part = -(FL2FXCONST_DBL(-1.0f) - frac_part);
+    }
+
+    /* "+ 1" compensates fMultAddDiv2() of the polynomial evaluation below. */
+    *result_e = int_part + 1;
+
+    /* Evaluate taylor polynomial which approximates 2^x */
+    {
+        FIXP_DBL p;
+
+        /* result_m ~= 2^frac_part */
+        p = frac_part;
+        /* First taylor series coefficient a_0 = 1.0, scaled by 0.5 due to
+         * fMultDiv2(). */
+        result_m = FL2FXCONST_DBL(1.0f / 2.0f);
+        for (INT i = 0; i < POW2_PRECISION; i++) {
+            /* next taylor series term: a_i * x^i, x=0 */
+            result_m = fMultAddDiv2(result_m, pow2Coeff[i], p);
+            p = fMult(p, frac_part);
+        }
+    }
+    return result_m;
 }
 
 FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e) {
-  FIXP_DBL result_m;
-  INT result_e;
+    FIXP_DBL result_m;
+    INT result_e;
 
-  result_m = f2Pow(exp_m, exp_e, &result_e);
-  result_e = fixMin(DFRACT_BITS - 1, fixMax(-(DFRACT_BITS - 1), result_e));
+    result_m = f2Pow(exp_m, exp_e, &result_e);
+    result_e = fixMin(DFRACT_BITS - 1, fixMax(-(DFRACT_BITS - 1), result_e));
 
-  return scaleValue(result_m, result_e);
+    return scaleValue(result_m, result_e);
 }
 
 FIXP_DBL fPow(FIXP_DBL base_m, INT base_e, FIXP_DBL exp_m, INT exp_e,
               INT *result_e) {
-  INT ans_lg2_e, baselg2_e;
-  FIXP_DBL base_lg2, ans_lg2, result;
+    INT ans_lg2_e, baselg2_e;
+    FIXP_DBL base_lg2, ans_lg2, result;
 
-  /* Calc log2 of base */
-  base_lg2 = fLog2(base_m, base_e, &baselg2_e);
+    /* Calc log2 of base */
+    base_lg2 = fLog2(base_m, base_e, &baselg2_e);
 
-  /* Prepare exp */
-  {
-    INT leadingBits;
+    /* Prepare exp */
+    {
+        INT leadingBits;
 
-    leadingBits = CountLeadingBits(fAbs(exp_m));
-    exp_m = exp_m << leadingBits;
-    exp_e -= leadingBits;
-  }
+        leadingBits = CountLeadingBits(fAbs(exp_m));
+        exp_m = exp_m << leadingBits;
+        exp_e -= leadingBits;
+    }
 
-  /* Calc base pow exp */
-  ans_lg2 = fMult(base_lg2, exp_m);
-  ans_lg2_e = exp_e + baselg2_e;
+    /* Calc base pow exp */
+    ans_lg2 = fMult(base_lg2, exp_m);
+    ans_lg2_e = exp_e + baselg2_e;
 
-  /* Calc antilog */
-  result = f2Pow(ans_lg2, ans_lg2_e, result_e);
+    /* Calc antilog */
+    result = f2Pow(ans_lg2, ans_lg2_e, result_e);
 
-  return result;
+    return result;
 }
 
 FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e,
                 INT *result_e) {
-  INT ans_lg2_e;
-  FIXP_DBL ans_lg2, result;
+    INT ans_lg2_e;
+    FIXP_DBL ans_lg2, result;
 
-  /* Prepare exp */
-  {
-    INT leadingBits;
+    /* Prepare exp */
+    {
+        INT leadingBits;
 
-    leadingBits = CountLeadingBits(fAbs(exp_m));
-    exp_m = exp_m << leadingBits;
-    exp_e -= leadingBits;
-  }
+        leadingBits = CountLeadingBits(fAbs(exp_m));
+        exp_m = exp_m << leadingBits;
+        exp_e -= leadingBits;
+    }
 
-  /* Calc base pow exp */
-  ans_lg2 = fMult(baseLd_m, exp_m);
-  ans_lg2_e = exp_e + baseLd_e;
+    /* Calc base pow exp */
+    ans_lg2 = fMult(baseLd_m, exp_m);
+    ans_lg2_e = exp_e + baseLd_e;
 
-  /* Calc antilog */
-  result = f2Pow(ans_lg2, ans_lg2_e, result_e);
+    /* Calc antilog */
+    result = f2Pow(ans_lg2, ans_lg2_e, result_e);
 
-  return result;
+    return result;
 }
 
 FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e) {
-  FIXP_DBL result_m;
-  int result_e;
+    FIXP_DBL result_m;
+    int result_e;
 
-  result_m = fLdPow(baseLd_m, baseLd_e, exp_m, exp_e, &result_e);
+    result_m = fLdPow(baseLd_m, baseLd_e, exp_m, exp_e, &result_e);
 
-  return SATURATE_SHIFT(result_m, -result_e, DFRACT_BITS);
+    return SATURATE_SHIFT(result_m, -result_e, DFRACT_BITS);
 }
 
 FIXP_DBL fPowInt(FIXP_DBL base_m, INT base_e, INT exp, INT *pResult_e) {
-  FIXP_DBL result;
+    FIXP_DBL result;
 
-  if (exp != 0) {
-    INT result_e = 0;
+    if (exp != 0) {
+        INT result_e = 0;
 
-    if (base_m != (FIXP_DBL)0) {
-      {
-        INT leadingBits;
-        leadingBits = CountLeadingBits(base_m);
-        base_m <<= leadingBits;
-        base_e -= leadingBits;
-      }
+        if (base_m != (FIXP_DBL)0) {
+            {
+                INT leadingBits;
+                leadingBits = CountLeadingBits(base_m);
+                base_m <<= leadingBits;
+                base_e -= leadingBits;
+            }
 
-      result = base_m;
+            result = base_m;
 
-      {
-        int i;
-        for (i = 1; i < fAbs(exp); i++) {
-          result = fMult(result, base_m);
+            {
+                int i;
+                for (i = 1; i < fAbs(exp); i++) {
+                    result = fMult(result, base_m);
+                }
+            }
+
+            if (exp < 0) {
+                /* 1.0 / ans */
+                result = fDivNorm(FL2FXCONST_DBL(0.5f), result, &result_e);
+                result_e++;
+            } else {
+                int ansScale = CountLeadingBits(result);
+                result <<= ansScale;
+                result_e -= ansScale;
+            }
+
+            result_e += exp * base_e;
+
+        } else {
+            result = (FIXP_DBL)0;
         }
-      }
-
-      if (exp < 0) {
-        /* 1.0 / ans */
-        result = fDivNorm(FL2FXCONST_DBL(0.5f), result, &result_e);
-        result_e++;
-      } else {
-        int ansScale = CountLeadingBits(result);
-        result <<= ansScale;
-        result_e -= ansScale;
-      }
-
-      result_e += exp * base_e;
-
+        *pResult_e = result_e;
     } else {
-      result = (FIXP_DBL)0;
+        result = FL2FXCONST_DBL(0.5f);
+        *pResult_e = 1;
     }
-    *pResult_e = result_e;
-  } else {
-    result = FL2FXCONST_DBL(0.5f);
-    *pResult_e = 1;
-  }
 
-  return result;
+    return result;
 }
 #endif /* FUNCTION_fPow */
 
 #ifndef FUNCTION_fLog2
 FIXP_DBL CalcLog2(FIXP_DBL base_m, INT base_e, INT *result_e) {
-  return fLog2(base_m, base_e, result_e);
+    return fLog2(base_m, base_e, result_e);
 }
 #endif /* FUNCTION_fLog2 */
 
 INT fixp_floorToInt(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT floorInt = (INT)(f_inp >> ((DFRACT_BITS - 1) - sf));
-  return floorInt;
+    FDK_ASSERT(sf >= 0);
+    INT floorInt = (INT)(f_inp >> ((DFRACT_BITS - 1) - sf));
+    return floorInt;
 }
 
 FIXP_DBL fixp_floor(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT floorInt = fixp_floorToInt(f_inp, sf);
-  FIXP_DBL f_floor = (FIXP_DBL)(floorInt << ((DFRACT_BITS - 1) - sf));
-  return f_floor;
+    FDK_ASSERT(sf >= 0);
+    INT floorInt = fixp_floorToInt(f_inp, sf);
+    FIXP_DBL f_floor = (FIXP_DBL)(floorInt << ((DFRACT_BITS - 1) - sf));
+    return f_floor;
 }
 
 INT fixp_ceilToInt(FIXP_DBL f_inp, INT sf) // sf  mantissaBits left of dot
 {
-  FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
-  INT inpINT = (INT)f_inp;
+    FDK_ASSERT(sf >= 0);
+    INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
+    INT inpINT = (INT)f_inp;
 
-  INT mask = (0x1 << sx) - 1;
-  INT ceilInt = (INT)(f_inp >> sx);
+    INT mask = (0x1 << sx) - 1;
+    INT ceilInt = (INT)(f_inp >> sx);
 
-  if (inpINT & mask) {
-    ceilInt++; // increment only, if there is at least one set mantissaBit
-               // right of dot [in inpINT]
-  }
+    if (inpINT & mask) {
+        ceilInt++; // increment only, if there is at least one set mantissaBit
+        // right of dot [in inpINT]
+    }
 
-  return ceilInt;
+    return ceilInt;
 }
 
 FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;
-  INT ceilInt = fixp_ceilToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
-  ceilInt = ceilInt
-            << sx; // no fract warn bec. shift into saturation done on int side
+    FDK_ASSERT(sf >= 0);
+    INT sx = (DFRACT_BITS - 1) - sf;
+    INT ceilInt = fixp_ceilToInt(f_inp, sf);
+    ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
+    ceilInt = ceilInt
+              << sx; // no fract warn bec. shift into saturation done on int side
 
-  if ((f_inp > FL2FXCONST_DBL(0.0f)) && (ceilInt & mask)) {
-    --ceilInt;
-  }
-  FIXP_DBL f_ceil = (FIXP_DBL)ceilInt;
+    if ((f_inp > FL2FXCONST_DBL(0.0f)) && (ceilInt & mask)) {
+        --ceilInt;
+    }
+    FIXP_DBL f_ceil = (FIXP_DBL)ceilInt;
 
-  return f_ceil;
+    return f_ceil;
 }
 
 /*****************************************************************************
@@ -818,19 +820,19 @@ INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf) // sf  mantissaBits left  of dot
 // 32 this would be [sign]7.
 // supposed sf equals 8.
 {
-  FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
-  // at width 32 this would be        .24
-  // supposed sf equals 8.
-  INT fbaccu = (INT)f_inp;
-  INT mask = (0x1 << sx);
+    FDK_ASSERT(sf >= 0);
+    INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
+    // at width 32 this would be        .24
+    // supposed sf equals 8.
+    INT fbaccu = (INT)f_inp;
+    INT mask = (0x1 << sx);
 
-  if ((fbaccu < 0) && (fbaccu & (mask - 1))) {
-    fbaccu = fbaccu + mask;
-  }
+    if ((fbaccu < 0) && (fbaccu & (mask - 1))) {
+        fbaccu = fbaccu + mask;
+    }
 
-  fbaccu = fbaccu >> sx;
-  return fbaccu;
+    fbaccu = fbaccu >> sx;
+    return fbaccu;
 }
 
 /*****************************************************************************
@@ -840,10 +842,10 @@ INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf) // sf  mantissaBits left  of dot
    returns FIXP_DBL
 *****************************************************************************/
 FIXP_DBL fixp_truncate(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT truncateInt = fixp_truncateToInt(f_inp, sf);
-  FIXP_DBL f_truncate = (FIXP_DBL)(truncateInt << ((DFRACT_BITS - 1) - sf));
-  return f_truncate;
+    FDK_ASSERT(sf >= 0);
+    INT truncateInt = fixp_truncateToInt(f_inp, sf);
+    FIXP_DBL f_truncate = (FIXP_DBL)(truncateInt << ((DFRACT_BITS - 1) - sf));
+    return f_truncate;
 }
 
 /*****************************************************************************
@@ -854,28 +856,28 @@ FIXP_DBL fixp_truncate(FIXP_DBL f_inp, INT sf) {
   returns INT
 *****************************************************************************/
 INT fixp_roundToInt(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT sx = DFRACT_BITS - 1 - sf;
-  INT inp = (INT)f_inp;
-  INT mask1 = (0x1 << (sx - 1));
-  INT mask2 = (0x1 << (sx)) - 1;
-  INT mask3 = 0x7FFFFFFF;
-  INT iam = inp & mask2;
-  INT rnd;
+    FDK_ASSERT(sf >= 0);
+    INT sx = DFRACT_BITS - 1 - sf;
+    INT inp = (INT)f_inp;
+    INT mask1 = (0x1 << (sx - 1));
+    INT mask2 = (0x1 << (sx)) - 1;
+    INT mask3 = 0x7FFFFFFF;
+    INT iam = inp & mask2;
+    INT rnd;
 
-  if ((inp < 0) && !(iam == mask1))
-    rnd = inp + mask1;
-  else if ((inp > 0) && !(inp == mask3))
-    rnd = inp + mask1;
-  else
-    rnd = inp;
+    if ((inp < 0) && !(iam == mask1))
+        rnd = inp + mask1;
+    else if ((inp > 0) && !(inp == mask3))
+        rnd = inp + mask1;
+    else
+        rnd = inp;
 
-  rnd = rnd >> sx;
+    rnd = rnd >> sx;
 
-  if (inp == mask3)
-    rnd++;
+    if (inp == mask3)
+        rnd++;
 
-  return rnd;
+    return rnd;
 }
 
 /*****************************************************************************
@@ -886,16 +888,16 @@ INT fixp_roundToInt(FIXP_DBL f_inp, INT sf) {
   returns FIXP_DBL
 *****************************************************************************/
 FIXP_DBL fixp_round(FIXP_DBL f_inp, INT sf) {
-  FDK_ASSERT(sf >= 0);
-  INT sx = DFRACT_BITS - 1 - sf;
-  INT r = fixp_roundToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
-  r = r << sx;
+    FDK_ASSERT(sf >= 0);
+    INT sx = DFRACT_BITS - 1 - sf;
+    INT r = fixp_roundToInt(f_inp, sf);
+    ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
+    r = r << sx;
 
-  if ((f_inp > FL2FXCONST_DBL(0.0f)) && (r & mask)) {
-    --r;
-  }
+    if ((f_inp > FL2FXCONST_DBL(0.0f)) && (r & mask)) {
+        --r;
+    }
 
-  FIXP_DBL f_round = (FIXP_DBL)r;
-  return f_round;
+    FIXP_DBL f_round = (FIXP_DBL)r;
+    return f_round;
 }

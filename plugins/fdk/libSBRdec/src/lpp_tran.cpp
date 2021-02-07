@@ -150,25 +150,25 @@ amm-info@iis.fraunhofer.de
 
 static FIXP_DBL mapInvfMode(INVF_MODE mode, INVF_MODE prevMode,
                             WHITENING_FACTORS whFactors) {
-  switch (mode) {
-  case INVF_LOW_LEVEL:
-    if (prevMode == INVF_OFF)
-      return whFactors.transitionLevel;
-    else
-      return whFactors.lowLevel;
+    switch (mode) {
+    case INVF_LOW_LEVEL:
+        if (prevMode == INVF_OFF)
+            return whFactors.transitionLevel;
+        else
+            return whFactors.lowLevel;
 
-  case INVF_MID_LEVEL:
-    return whFactors.midLevel;
+    case INVF_MID_LEVEL:
+        return whFactors.midLevel;
 
-  case INVF_HIGH_LEVEL:
-    return whFactors.highLevel;
+    case INVF_HIGH_LEVEL:
+        return whFactors.highLevel;
 
-  default:
-    if (prevMode == INVF_LOW_LEVEL)
-      return whFactors.transitionLevel;
-    else
-      return whFactors.off;
-  }
+    default:
+        if (prevMode == INVF_LOW_LEVEL)
+            return whFactors.transitionLevel;
+        else
+            return whFactors.off;
+    }
 }
 
 /*!
@@ -186,25 +186,25 @@ static void inverseFilteringLevelEmphasis(
     INVF_MODE *sbr_invf_mode_prev, /*!< Previous inverse filtering modes */
     FIXP_DBL *bwVector             /*!< Resulting filtering levels */
 ) {
-  for (int i = 0; i < nInvfBands; i++) {
-    FIXP_DBL accu;
-    FIXP_DBL bwTmp = mapInvfMode(sbr_invf_mode[i], sbr_invf_mode_prev[i],
-                                 hLppTrans->pSettings->whFactors);
+    for (int i = 0; i < nInvfBands; i++) {
+        FIXP_DBL accu;
+        FIXP_DBL bwTmp = mapInvfMode(sbr_invf_mode[i], sbr_invf_mode_prev[i],
+                                     hLppTrans->pSettings->whFactors);
 
-    if (bwTmp < hLppTrans->bwVectorOld[i]) {
-      accu = fMultDiv2(FL2FXCONST_DBL(0.75f), bwTmp) +
-             fMultDiv2(FL2FXCONST_DBL(0.25f), hLppTrans->bwVectorOld[i]);
-    } else {
-      accu = fMultDiv2(FL2FXCONST_DBL(0.90625f), bwTmp) +
-             fMultDiv2(FL2FXCONST_DBL(0.09375f), hLppTrans->bwVectorOld[i]);
-    }
+        if (bwTmp < hLppTrans->bwVectorOld[i]) {
+            accu = fMultDiv2(FL2FXCONST_DBL(0.75f), bwTmp) +
+                   fMultDiv2(FL2FXCONST_DBL(0.25f), hLppTrans->bwVectorOld[i]);
+        } else {
+            accu = fMultDiv2(FL2FXCONST_DBL(0.90625f), bwTmp) +
+                   fMultDiv2(FL2FXCONST_DBL(0.09375f), hLppTrans->bwVectorOld[i]);
+        }
 
-    if (accu<FL2FXCONST_DBL(0.015625f)> > 1) {
-      bwVector[i] = FL2FXCONST_DBL(0.0f);
-    } else {
-      bwVector[i] = fixMin(accu << 1, FL2FXCONST_DBL(0.99609375f));
+        if (accu<FL2FXCONST_DBL(0.015625f)> > 1) {
+            bwVector[i] = FL2FXCONST_DBL(0.0f);
+        } else {
+            bwVector[i] = fixMin(accu << 1, FL2FXCONST_DBL(0.99609375f));
+        }
     }
-  }
 }
 
 /* Resulting autocorrelation determinant exponent */
@@ -222,18 +222,18 @@ static inline void calc_qmfBufferReal(FIXP_DBL **qmfBufferReal,
                                       const int stopSample, const UCHAR hiBand,
                                       const int dynamicScale, const int descale,
                                       const FIXP_SGL a0r, const FIXP_SGL a1r) {
-  FIXP_DBL accu1, accu2;
-  int i;
+    FIXP_DBL accu1, accu2;
+    int i;
 
-  for (i = 0; i < stopSample - startSample; i++) {
-    accu1 = fMultDiv2(a1r, lowBandReal[i]);
-    accu1 = (fMultDiv2(a0r, lowBandReal[i + 1]) + accu1);
-    accu1 = accu1 >> dynamicScale;
+    for (i = 0; i < stopSample - startSample; i++) {
+        accu1 = fMultDiv2(a1r, lowBandReal[i]);
+        accu1 = (fMultDiv2(a0r, lowBandReal[i + 1]) + accu1);
+        accu1 = accu1 >> dynamicScale;
 
-    accu1 <<= 1;
-    accu2 = (lowBandReal[i + 2] >> descale);
-    qmfBufferReal[i + startSample][hiBand] = accu1 + accu2;
-  }
+        accu1 <<= 1;
+        accu2 = (lowBandReal[i + 2] >> descale);
+        qmfBufferReal[i + startSample][hiBand] = accu1 + accu2;
+    }
 }
 
 /*!
@@ -271,585 +271,585 @@ void lppTransposer(
     INVF_MODE *sbr_invf_mode, /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
-  INT bwIndex[MAX_NUM_PATCHES];
-  FIXP_DBL bwVector[MAX_NUM_PATCHES]; /*!< pole moving factors */
-  FIXP_DBL preWhiteningGains[(64) / 2];
-  int preWhiteningGains_exp[(64) / 2];
+    INT bwIndex[MAX_NUM_PATCHES];
+    FIXP_DBL bwVector[MAX_NUM_PATCHES]; /*!< pole moving factors */
+    FIXP_DBL preWhiteningGains[(64) / 2];
+    int preWhiteningGains_exp[(64) / 2];
 
-  int i;
-  int loBand, start, stop;
-  TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
-  PATCH_PARAM *patchParam = pSettings->patchParam;
-  int patch;
+    int i;
+    int loBand, start, stop;
+    TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
+    PATCH_PARAM *patchParam = pSettings->patchParam;
+    int patch;
 
-  FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
-  FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
+    FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
+    FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
+    FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
 
-  int autoCorrLength;
+    int autoCorrLength;
 
-  FIXP_DBL k1, k1_below = 0, k1_below2 = 0;
+    FIXP_DBL k1, k1_below = 0, k1_below2 = 0;
 
-  ACORR_COEFS ac;
-  int startSample;
-  int stopSample;
-  int stopSampleClear;
+    ACORR_COEFS ac;
+    int startSample;
+    int stopSample;
+    int stopSampleClear;
 
-  int comLowBandScale;
-  int ovLowBandShift;
-  int lowBandShift;
-  /*  int ovHighBandShift;*/
+    int comLowBandScale;
+    int ovLowBandShift;
+    int lowBandShift;
+    /*  int ovHighBandShift;*/
 
-  alphai[0] = FL2FXCONST_SGL(0.0f);
-  alphai[1] = FL2FXCONST_SGL(0.0f);
+    alphai[0] = FL2FXCONST_SGL(0.0f);
+    alphai[1] = FL2FXCONST_SGL(0.0f);
 
-  startSample = firstSlotOffs * timeStep;
-  stopSample = pSettings->nCols + lastSlotOffs * timeStep;
-  FDK_ASSERT((lastSlotOffs * timeStep) <= pSettings->overlap);
+    startSample = firstSlotOffs * timeStep;
+    stopSample = pSettings->nCols + lastSlotOffs * timeStep;
+    FDK_ASSERT((lastSlotOffs * timeStep) <= pSettings->overlap);
 
-  inverseFilteringLevelEmphasis(hLppTrans, nInvfBands, sbr_invf_mode,
-                                sbr_invf_mode_prev, bwVector);
+    inverseFilteringLevelEmphasis(hLppTrans, nInvfBands, sbr_invf_mode,
+                                  sbr_invf_mode_prev, bwVector);
 
-  stopSampleClear = stopSample;
+    stopSampleClear = stopSample;
 
-  autoCorrLength = pSettings->nCols + pSettings->overlap;
+    autoCorrLength = pSettings->nCols + pSettings->overlap;
 
-  if (pSettings->noOfPatches > 0) {
-    /* Set upper subbands to zero:
-       This is required in case that the patches do not cover the complete
-       highband (because the last patch would be too short). Possible
-       optimization: Clearing bands up to usb would be sufficient here. */
-    int targetStopBand =
-        patchParam[pSettings->noOfPatches - 1].targetStartBand +
-        patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
+    if (pSettings->noOfPatches > 0) {
+        /* Set upper subbands to zero:
+           This is required in case that the patches do not cover the complete
+           highband (because the last patch would be too short). Possible
+           optimization: Clearing bands up to usb would be sufficient here. */
+        int targetStopBand =
+            patchParam[pSettings->noOfPatches - 1].targetStartBand +
+            patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
 
-    int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
+        int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
 
-    if (!useLP) {
-      for (i = startSample; i < stopSampleClear; i++) {
-        FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
-        FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
-      }
-    } else {
-      for (i = startSample; i < stopSampleClear; i++) {
-        FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
-      }
+        if (!useLP) {
+            for (i = startSample; i < stopSampleClear; i++) {
+                FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
+                FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
+            }
+        } else {
+            for (i = startSample; i < stopSampleClear; i++) {
+                FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
+            }
+        }
     }
-  }
 #ifdef __ANDROID__
-  else {
-    // Safetynet logging
-    android_errorWriteLog(0x534e4554, "112160868");
-  }
+    else {
+        // Safetynet logging
+        android_errorWriteLog(0x534e4554, "112160868");
+    }
 #endif
 
-  /* init bwIndex for each patch */
-  FDKmemclear(bwIndex, sizeof(bwIndex));
-
-  /*
-    Calc common low band scale factor
-  */
-  comLowBandScale =
-      fixMin(sbrScaleFactor->ov_lb_scale, sbrScaleFactor->lb_scale);
-
-  ovLowBandShift = sbrScaleFactor->ov_lb_scale - comLowBandScale;
-  lowBandShift = sbrScaleFactor->lb_scale - comLowBandScale;
-  /*  ovHighBandShift = firstSlotOffs == 0 ? ovLowBandShift:0;*/
-
-  if (fPreWhitening) {
-    sbrDecoder_calculateGainVec(
-        qmfBufferReal, qmfBufferImag,
-        DFRACT_BITS - 1 - 16 -
-            sbrScaleFactor->ov_lb_scale, /* convert scale to exponent */
-        DFRACT_BITS - 1 - 16 -
-            sbrScaleFactor->lb_scale, /* convert scale to exponent */
-        pSettings->overlap, preWhiteningGains, preWhiteningGains_exp,
-        v_k_master0, startSample, stopSample);
-  }
-
-  /* outer loop over bands to do analysis only once for each band */
-
-  if (!useLP) {
-    start = pSettings->lbStartPatching;
-    stop = pSettings->lbStopPatching;
-  } else {
-    start = fixMax(1, pSettings->lbStartPatching - 2);
-    stop = patchParam[0].targetStartBand;
-  }
-
-  for (loBand = start; loBand < stop; loBand++) {
-    FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL *plowBandReal = lowBandReal;
-    FIXP_DBL **pqmfBufferReal =
-        qmfBufferReal + firstSlotOffs * timeStep /* + pSettings->overlap */;
-    FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL *plowBandImag = lowBandImag;
-    FIXP_DBL **pqmfBufferImag =
-        qmfBufferImag + firstSlotOffs * timeStep /* + pSettings->overlap */;
-    int resetLPCCoeffs = 0;
-    int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
-    int acDetScale = 0; /* scaling of autocorrelation determinant */
-
-    for (i = 0;
-         i < LPC_ORDER + firstSlotOffs * timeStep /*+pSettings->overlap*/;
-         i++) {
-      *plowBandReal++ = hLppTrans->lpcFilterStatesRealLegSBR[i][loBand];
-      if (!useLP)
-        *plowBandImag++ = hLppTrans->lpcFilterStatesImagLegSBR[i][loBand];
-    }
+    /* init bwIndex for each patch */
+    FDKmemclear(bwIndex, sizeof(bwIndex));
 
     /*
-      Take old slope length qmf slot source values out of (overlap)qmf buffer
+      Calc common low band scale factor
     */
+    comLowBandScale =
+        fixMin(sbrScaleFactor->ov_lb_scale, sbrScaleFactor->lb_scale);
+
+    ovLowBandShift = sbrScaleFactor->ov_lb_scale - comLowBandScale;
+    lowBandShift = sbrScaleFactor->lb_scale - comLowBandScale;
+    /*  ovHighBandShift = firstSlotOffs == 0 ? ovLowBandShift:0;*/
+
+    if (fPreWhitening) {
+        sbrDecoder_calculateGainVec(
+            qmfBufferReal, qmfBufferImag,
+            DFRACT_BITS - 1 - 16 -
+            sbrScaleFactor->ov_lb_scale, /* convert scale to exponent */
+            DFRACT_BITS - 1 - 16 -
+            sbrScaleFactor->lb_scale, /* convert scale to exponent */
+            pSettings->overlap, preWhiteningGains, preWhiteningGains_exp,
+            v_k_master0, startSample, stopSample);
+    }
+
+    /* outer loop over bands to do analysis only once for each band */
+
     if (!useLP) {
-      for (i = 0;
-           i < pSettings->nCols + pSettings->overlap - firstSlotOffs * timeStep;
-           i++) {
-        *plowBandReal++ = (*pqmfBufferReal++)[loBand];
-        *plowBandImag++ = (*pqmfBufferImag++)[loBand];
-      }
+        start = pSettings->lbStartPatching;
+        stop = pSettings->lbStopPatching;
     } else {
-      /* pSettings->overlap is always even */
-      FDK_ASSERT((pSettings->overlap & 1) == 0);
-      for (i = 0; i < ((pSettings->nCols + pSettings->overlap -
-                        firstSlotOffs * timeStep) >>
-                       1);
-           i++) {
-        *plowBandReal++ = (*pqmfBufferReal++)[loBand];
-        *plowBandReal++ = (*pqmfBufferReal++)[loBand];
-      }
-      if (pSettings->nCols & 1) {
-        *plowBandReal++ = (*pqmfBufferReal++)[loBand];
-      }
+        start = fixMax(1, pSettings->lbStartPatching - 2);
+        stop = patchParam[0].targetStartBand;
     }
 
-    /*
-      Determine dynamic scaling value.
-     */
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(lowBandReal, LPC_ORDER + pSettings->overlap) +
-                   ovLowBandShift);
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(&lowBandReal[LPC_ORDER + pSettings->overlap],
-                              pSettings->nCols) +
-                   lowBandShift);
-    if (!useLP) {
-      dynamicScale =
-          fixMin(dynamicScale,
-                 getScalefactor(lowBandImag, LPC_ORDER + pSettings->overlap) +
-                     ovLowBandShift);
-      dynamicScale =
-          fixMin(dynamicScale,
-                 getScalefactor(&lowBandImag[LPC_ORDER + pSettings->overlap],
-                                pSettings->nCols) +
-                     lowBandShift);
-    }
-    dynamicScale = fixMax(
-        0, dynamicScale - 1); /* one additional bit headroom to prevent -1.0 */
+    for (loBand = start; loBand < stop; loBand++) {
+        FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+        FIXP_DBL *plowBandReal = lowBandReal;
+        FIXP_DBL **pqmfBufferReal =
+            qmfBufferReal + firstSlotOffs * timeStep /* + pSettings->overlap */;
+        FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+        FIXP_DBL *plowBandImag = lowBandImag;
+        FIXP_DBL **pqmfBufferImag =
+            qmfBufferImag + firstSlotOffs * timeStep /* + pSettings->overlap */;
+        int resetLPCCoeffs = 0;
+        int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
+        int acDetScale = 0; /* scaling of autocorrelation determinant */
 
-    /*
-      Scale temporal QMF buffer.
-     */
-    scaleValues(&lowBandReal[0], LPC_ORDER + pSettings->overlap,
-                dynamicScale - ovLowBandShift);
-    scaleValues(&lowBandReal[LPC_ORDER + pSettings->overlap], pSettings->nCols,
-                dynamicScale - lowBandShift);
-
-    if (!useLP) {
-      scaleValues(&lowBandImag[0], LPC_ORDER + pSettings->overlap,
-                  dynamicScale - ovLowBandShift);
-      scaleValues(&lowBandImag[LPC_ORDER + pSettings->overlap],
-                  pSettings->nCols, dynamicScale - lowBandShift);
-    }
-
-    if (!useLP) {
-      acDetScale += autoCorr2nd_cplx(&ac, lowBandReal + LPC_ORDER,
-                                     lowBandImag + LPC_ORDER, autoCorrLength);
-    } else {
-      acDetScale +=
-          autoCorr2nd_real(&ac, lowBandReal + LPC_ORDER, autoCorrLength);
-    }
-
-    /* Examine dynamic of determinant in autocorrelation. */
-    acDetScale += 2 * (comLowBandScale + dynamicScale);
-    acDetScale *= 2;            /* two times reflection coefficent scaling */
-    acDetScale += ac.det_scale; /* ac scaling of determinant */
-
-    /* In case of determinant < 10^-38, resetLPCCoeffs=1 has to be enforced. */
-    if (acDetScale > 126) {
-      resetLPCCoeffs = 1;
-    }
-
-    alphar[1] = FL2FXCONST_SGL(0.0f);
-    if (!useLP)
-      alphai[1] = FL2FXCONST_SGL(0.0f);
-
-    if (ac.det != FL2FXCONST_DBL(0.0f)) {
-      FIXP_DBL tmp, absTmp, absDet;
-
-      absDet = fixp_abs(ac.det);
-
-      if (!useLP) {
-        tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
-              ((fMultDiv2(ac.r01i, ac.r12i) + fMultDiv2(ac.r02r, ac.r11r)) >>
-               (LPC_SCALE_FACTOR - 1));
-      } else {
-        tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
-              (fMultDiv2(ac.r02r, ac.r11r) >> (LPC_SCALE_FACTOR - 1));
-      }
-      absTmp = fixp_abs(tmp);
-
-      /*
-        Quick check: is first filter coeff >= 1(4)
-       */
-      {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
-        scale = scale + ac.det_scale;
-
-        if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
-          resetLPCCoeffs = 1;
-        } else {
-          alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
-          if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
-            alphar[1] = -alphar[1];
-          }
+        for (i = 0;
+                i < LPC_ORDER + firstSlotOffs * timeStep /*+pSettings->overlap*/;
+                i++) {
+            *plowBandReal++ = hLppTrans->lpcFilterStatesRealLegSBR[i][loBand];
+            if (!useLP)
+                *plowBandImag++ = hLppTrans->lpcFilterStatesImagLegSBR[i][loBand];
         }
-      }
-
-      if (!useLP) {
-        tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
-              ((fMultDiv2(ac.r01r, ac.r12i) -
-                (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
-               (LPC_SCALE_FACTOR - 1));
-
-        absTmp = fixp_abs(tmp);
 
         /*
-        Quick check: is second filter coeff >= 1(4)
+          Take old slope length qmf slot source values out of (overlap)qmf buffer
         */
-        {
-          INT scale;
-          FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
-          scale = scale + ac.det_scale;
-
-          if ((scale > 0) &&
-              (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >>
-               scale)) {
-            resetLPCCoeffs = 1;
-          } else {
-            alphai[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
-            if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
-              alphai[1] = -alphai[1];
+        if (!useLP) {
+            for (i = 0;
+                    i < pSettings->nCols + pSettings->overlap - firstSlotOffs * timeStep;
+                    i++) {
+                *plowBandReal++ = (*pqmfBufferReal++)[loBand];
+                *plowBandImag++ = (*pqmfBufferImag++)[loBand];
             }
-          }
+        } else {
+            /* pSettings->overlap is always even */
+            FDK_ASSERT((pSettings->overlap & 1) == 0);
+            for (i = 0; i < ((pSettings->nCols + pSettings->overlap -
+                              firstSlotOffs * timeStep) >>
+                             1);
+                    i++) {
+                *plowBandReal++ = (*pqmfBufferReal++)[loBand];
+                *plowBandReal++ = (*pqmfBufferReal++)[loBand];
+            }
+            if (pSettings->nCols & 1) {
+                *plowBandReal++ = (*pqmfBufferReal++)[loBand];
+            }
         }
-      }
-    }
-
-    alphar[0] = FL2FXCONST_SGL(0.0f);
-    if (!useLP)
-      alphai[0] = FL2FXCONST_SGL(0.0f);
-
-    if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
-      /* ac.r11r is always >=0 */
-      FIXP_DBL tmp, absTmp;
-
-      if (!useLP) {
-        tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
-              (fMultDiv2(alphar[1], ac.r12r) + fMultDiv2(alphai[1], ac.r12i));
-      } else {
-        if (ac.r01r >= FL2FXCONST_DBL(0.0f))
-          tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
-                fMultDiv2(alphar[1], ac.r12r);
-        else
-          tmp = -((-ac.r01r) >> (LPC_SCALE_FACTOR + 1)) +
-                fMultDiv2(alphar[1], ac.r12r);
-      }
-
-      absTmp = fixp_abs(tmp);
-
-      /*
-        Quick check: is first filter coeff >= 1(4)
-      */
-
-      if (absTmp >= (ac.r11r >> 1)) {
-        resetLPCCoeffs = 1;
-      } else {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
-        alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
-
-        if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
-          alphar[0] = -alphar[0];
-      }
-
-      if (!useLP) {
-        tmp = (ac.r01i >> (LPC_SCALE_FACTOR + 1)) +
-              (fMultDiv2(alphai[1], ac.r12r) - fMultDiv2(alphar[1], ac.r12i));
-
-        absTmp = fixp_abs(tmp);
 
         /*
-        Quick check: is second filter coeff >= 1(4)
-        */
-        if (absTmp >= (ac.r11r >> 1)) {
-          resetLPCCoeffs = 1;
-        } else {
-          INT scale;
-          FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
-          alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
-          if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
-            alphai[0] = -alphai[0];
+          Determine dynamic scaling value.
+         */
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(lowBandReal, LPC_ORDER + pSettings->overlap) +
+                   ovLowBandShift);
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(&lowBandReal[LPC_ORDER + pSettings->overlap],
+                                  pSettings->nCols) +
+                   lowBandShift);
+        if (!useLP) {
+            dynamicScale =
+                fixMin(dynamicScale,
+                       getScalefactor(lowBandImag, LPC_ORDER + pSettings->overlap) +
+                       ovLowBandShift);
+            dynamicScale =
+                fixMin(dynamicScale,
+                       getScalefactor(&lowBandImag[LPC_ORDER + pSettings->overlap],
+                                      pSettings->nCols) +
+                       lowBandShift);
         }
-      }
-    }
+        dynamicScale = fixMax(
+                           0, dynamicScale - 1); /* one additional bit headroom to prevent -1.0 */
 
-    if (!useLP) {
-      /* Now check the quadratic criteria */
-      if ((fMultDiv2(alphar[0], alphar[0]) + fMultDiv2(alphai[0], alphai[0])) >=
-          FL2FXCONST_DBL(0.5f))
-        resetLPCCoeffs = 1;
-      if ((fMultDiv2(alphar[1], alphar[1]) + fMultDiv2(alphai[1], alphai[1])) >=
-          FL2FXCONST_DBL(0.5f))
-        resetLPCCoeffs = 1;
-    }
+        /*
+          Scale temporal QMF buffer.
+         */
+        scaleValues(&lowBandReal[0], LPC_ORDER + pSettings->overlap,
+                    dynamicScale - ovLowBandShift);
+        scaleValues(&lowBandReal[LPC_ORDER + pSettings->overlap], pSettings->nCols,
+                    dynamicScale - lowBandShift);
 
-    if (resetLPCCoeffs) {
-      alphar[0] = FL2FXCONST_SGL(0.0f);
-      alphar[1] = FL2FXCONST_SGL(0.0f);
-      if (!useLP) {
-        alphai[0] = FL2FXCONST_SGL(0.0f);
-        alphai[1] = FL2FXCONST_SGL(0.0f);
-      }
-    }
+        if (!useLP) {
+            scaleValues(&lowBandImag[0], LPC_ORDER + pSettings->overlap,
+                        dynamicScale - ovLowBandShift);
+            scaleValues(&lowBandImag[LPC_ORDER + pSettings->overlap],
+                        pSettings->nCols, dynamicScale - lowBandShift);
+        }
+
+        if (!useLP) {
+            acDetScale += autoCorr2nd_cplx(&ac, lowBandReal + LPC_ORDER,
+                                           lowBandImag + LPC_ORDER, autoCorrLength);
+        } else {
+            acDetScale +=
+                autoCorr2nd_real(&ac, lowBandReal + LPC_ORDER, autoCorrLength);
+        }
+
+        /* Examine dynamic of determinant in autocorrelation. */
+        acDetScale += 2 * (comLowBandScale + dynamicScale);
+        acDetScale *= 2;            /* two times reflection coefficent scaling */
+        acDetScale += ac.det_scale; /* ac scaling of determinant */
+
+        /* In case of determinant < 10^-38, resetLPCCoeffs=1 has to be enforced. */
+        if (acDetScale > 126) {
+            resetLPCCoeffs = 1;
+        }
+
+        alphar[1] = FL2FXCONST_SGL(0.0f);
+        if (!useLP)
+            alphai[1] = FL2FXCONST_SGL(0.0f);
+
+        if (ac.det != FL2FXCONST_DBL(0.0f)) {
+            FIXP_DBL tmp, absTmp, absDet;
+
+            absDet = fixp_abs(ac.det);
+
+            if (!useLP) {
+                tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
+                      ((fMultDiv2(ac.r01i, ac.r12i) + fMultDiv2(ac.r02r, ac.r11r)) >>
+                       (LPC_SCALE_FACTOR - 1));
+            } else {
+                tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
+                      (fMultDiv2(ac.r02r, ac.r11r) >> (LPC_SCALE_FACTOR - 1));
+            }
+            absTmp = fixp_abs(tmp);
+
+            /*
+              Quick check: is first filter coeff >= 1(4)
+             */
+            {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+                scale = scale + ac.det_scale;
+
+                if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
+                    resetLPCCoeffs = 1;
+                } else {
+                    alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
+                    if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
+                        alphar[1] = -alphar[1];
+                    }
+                }
+            }
+
+            if (!useLP) {
+                tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
+                      ((fMultDiv2(ac.r01r, ac.r12i) -
+                        (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
+                       (LPC_SCALE_FACTOR - 1));
+
+                absTmp = fixp_abs(tmp);
+
+                /*
+                Quick check: is second filter coeff >= 1(4)
+                */
+                {
+                    INT scale;
+                    FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+                    scale = scale + ac.det_scale;
+
+                    if ((scale > 0) &&
+                            (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >>
+                             scale)) {
+                        resetLPCCoeffs = 1;
+                    } else {
+                        alphai[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
+                        if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
+                            alphai[1] = -alphai[1];
+                        }
+                    }
+                }
+            }
+        }
+
+        alphar[0] = FL2FXCONST_SGL(0.0f);
+        if (!useLP)
+            alphai[0] = FL2FXCONST_SGL(0.0f);
+
+        if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
+            /* ac.r11r is always >=0 */
+            FIXP_DBL tmp, absTmp;
+
+            if (!useLP) {
+                tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
+                      (fMultDiv2(alphar[1], ac.r12r) + fMultDiv2(alphai[1], ac.r12i));
+            } else {
+                if (ac.r01r >= FL2FXCONST_DBL(0.0f))
+                    tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
+                          fMultDiv2(alphar[1], ac.r12r);
+                else
+                    tmp = -((-ac.r01r) >> (LPC_SCALE_FACTOR + 1)) +
+                          fMultDiv2(alphar[1], ac.r12r);
+            }
+
+            absTmp = fixp_abs(tmp);
+
+            /*
+              Quick check: is first filter coeff >= 1(4)
+            */
+
+            if (absTmp >= (ac.r11r >> 1)) {
+                resetLPCCoeffs = 1;
+            } else {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+                alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
+
+                if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
+                    alphar[0] = -alphar[0];
+            }
+
+            if (!useLP) {
+                tmp = (ac.r01i >> (LPC_SCALE_FACTOR + 1)) +
+                      (fMultDiv2(alphai[1], ac.r12r) - fMultDiv2(alphar[1], ac.r12i));
+
+                absTmp = fixp_abs(tmp);
+
+                /*
+                Quick check: is second filter coeff >= 1(4)
+                */
+                if (absTmp >= (ac.r11r >> 1)) {
+                    resetLPCCoeffs = 1;
+                } else {
+                    INT scale;
+                    FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+                    alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
+                    if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
+                        alphai[0] = -alphai[0];
+                }
+            }
+        }
+
+        if (!useLP) {
+            /* Now check the quadratic criteria */
+            if ((fMultDiv2(alphar[0], alphar[0]) + fMultDiv2(alphai[0], alphai[0])) >=
+                    FL2FXCONST_DBL(0.5f))
+                resetLPCCoeffs = 1;
+            if ((fMultDiv2(alphar[1], alphar[1]) + fMultDiv2(alphai[1], alphai[1])) >=
+                    FL2FXCONST_DBL(0.5f))
+                resetLPCCoeffs = 1;
+        }
+
+        if (resetLPCCoeffs) {
+            alphar[0] = FL2FXCONST_SGL(0.0f);
+            alphar[1] = FL2FXCONST_SGL(0.0f);
+            if (!useLP) {
+                alphai[0] = FL2FXCONST_SGL(0.0f);
+                alphai[1] = FL2FXCONST_SGL(0.0f);
+            }
+        }
+
+        if (useLP) {
+            /* Aliasing detection */
+            if (ac.r11r == FL2FXCONST_DBL(0.0f)) {
+                k1 = FL2FXCONST_DBL(0.0f);
+            } else {
+                if (fixp_abs(ac.r01r) >= fixp_abs(ac.r11r)) {
+                    if (fMultDiv2(ac.r01r, ac.r11r) < FL2FX_DBL(0.0f)) {
+                        k1 = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_SGL(1.0f)*/;
+                    } else {
+                        /* Since this value is squared later, it must not ever become -1.0f.
+                         */
+                        k1 = (FIXP_DBL)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
+                    }
+                } else {
+                    INT scale;
+                    FIXP_DBL result =
+                        fDivNorm(fixp_abs(ac.r01r), fixp_abs(ac.r11r), &scale);
+                    k1 = scaleValue(result, scale);
+
+                    if (!((ac.r01r < FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))) {
+                        k1 = -k1;
+                    }
+                }
+            }
+            if ((loBand > 1) && (loBand < v_k_master0)) {
+                /* Check if the gain should be locked */
+                FIXP_DBL deg =
+                    /*FL2FXCONST_DBL(1.0f)*/ (FIXP_DBL)MAXVAL_DBL - fPow2(k1_below);
+                degreeAlias[loBand] = FL2FXCONST_DBL(0.0f);
+                if (((loBand & 1) == 0) && (k1 < FL2FXCONST_DBL(0.0f))) {
+                    if (k1_below < FL2FXCONST_DBL(0.0f)) { /* 2-Ch Aliasing Detection */
+                        degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
+                        if (k1_below2 >
+                                FL2FXCONST_DBL(0.0f)) { /* 3-Ch Aliasing Detection */
+                            degreeAlias[loBand - 1] = deg;
+                        }
+                    } else if (k1_below2 >
+                               FL2FXCONST_DBL(0.0f)) { /* 3-Ch Aliasing Detection */
+                        degreeAlias[loBand] = deg;
+                    }
+                }
+                if (((loBand & 1) == 1) && (k1 > FL2FXCONST_DBL(0.0f))) {
+                    if (k1_below > FL2FXCONST_DBL(0.0f)) { /* 2-CH Aliasing Detection */
+                        degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
+                        if (k1_below2 <
+                                FL2FXCONST_DBL(0.0f)) { /* 3-CH Aliasing Detection */
+                            degreeAlias[loBand - 1] = deg;
+                        }
+                    } else if (k1_below2 <
+                               FL2FXCONST_DBL(0.0f)) { /* 3-CH Aliasing Detection */
+                        degreeAlias[loBand] = deg;
+                    }
+                }
+            }
+            /* remember k1 values of the 2 QMF channels below the current channel */
+            k1_below2 = k1_below;
+            k1_below = k1;
+        }
+
+        patch = 0;
+
+        while (patch < pSettings->noOfPatches) { /* inner loop over every patch */
+
+            int hiBand = loBand + patchParam[patch].targetBandOffs;
+
+            if (loBand < patchParam[patch].sourceStartBand ||
+                    loBand >= patchParam[patch].sourceStopBand
+                    //|| hiBand >= hLppTrans->pSettings->noChannels
+               ) {
+                /* Lowband not in current patch - proceed */
+                patch++;
+                continue;
+            }
+
+            FDK_ASSERT(hiBand < (64));
+
+            /* bwIndex[patch] is already initialized with value from previous band
+             * inside this patch */
+            while (hiBand >= pSettings->bwBorders[bwIndex[patch]] &&
+                    bwIndex[patch] < MAX_NUM_PATCHES - 1) {
+                bwIndex[patch]++;
+            }
+
+            /*
+              Filter Step 2: add the left slope with the current filter to the buffer
+                             pure source values are already in there
+            */
+            bw = FX_DBL2FX_SGL(bwVector[bwIndex[patch]]);
+
+            a0r = FX_DBL2FX_SGL(
+                      fMult(bw, alphar[0])); /* Apply current bandwidth expansion factor */
+
+            if (!useLP)
+                a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
+            bw = FX_DBL2FX_SGL(fPow2(bw));
+            a1r = FX_DBL2FX_SGL(fMult(bw, alphar[1]));
+            if (!useLP)
+                a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
+
+            /*
+              Filter Step 3: insert the middle part which won't be windowed
+            */
+            if (bw <= FL2FXCONST_SGL(0.0f)) {
+                if (!useLP) {
+                    int descale =
+                        fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+                    for (i = startSample; i < stopSample; i++) {
+                        FIXP_DBL accu1, accu2;
+                        accu1 = lowBandReal[LPC_ORDER + i] >> descale;
+                        accu2 = lowBandImag[LPC_ORDER + i] >> descale;
+                        if (fPreWhitening) {
+                            accu1 = scaleValueSaturate(
+                                        fMultDiv2(accu1, preWhiteningGains[loBand]),
+                                        preWhiteningGains_exp[loBand] + 1);
+                            accu2 = scaleValueSaturate(
+                                        fMultDiv2(accu2, preWhiteningGains[loBand]),
+                                        preWhiteningGains_exp[loBand] + 1);
+                        }
+                        qmfBufferReal[i][hiBand] = accu1;
+                        qmfBufferImag[i][hiBand] = accu2;
+                    }
+                } else {
+                    int descale =
+                        fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+                    for (i = startSample; i < stopSample; i++) {
+                        qmfBufferReal[i][hiBand] = lowBandReal[LPC_ORDER + i] >> descale;
+                    }
+                }
+            } else { /* bw <= 0 */
+
+                if (!useLP) {
+                    int descale =
+                        fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+#ifdef FUNCTION_LPPTRANSPOSER_func1
+                    lppTransposer_func1(
+                        lowBandReal + LPC_ORDER + startSample,
+                        lowBandImag + LPC_ORDER + startSample,
+                        qmfBufferReal + startSample, qmfBufferImag + startSample,
+                        stopSample - startSample, (int)hiBand, dynamicScale, descale, a0r,
+                        a0i, a1r, a1i, fPreWhitening, preWhiteningGains[loBand],
+                        preWhiteningGains_exp[loBand] + 1);
+#else
+                    for (i = startSample; i < stopSample; i++) {
+                        FIXP_DBL accu1, accu2;
+
+                        accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
+                                 fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +
+                                 fMultDiv2(a1r, lowBandReal[LPC_ORDER + i - 2]) -
+                                 fMultDiv2(a1i, lowBandImag[LPC_ORDER + i - 2])) >>
+                                dynamicScale;
+                        accu2 = (fMultDiv2(a0i, lowBandReal[LPC_ORDER + i - 1]) +
+                                 fMultDiv2(a0r, lowBandImag[LPC_ORDER + i - 1]) +
+                                 fMultDiv2(a1i, lowBandReal[LPC_ORDER + i - 2]) +
+                                 fMultDiv2(a1r, lowBandImag[LPC_ORDER + i - 2])) >>
+                                dynamicScale;
+
+                        accu1 = (lowBandReal[LPC_ORDER + i] >> descale) + (accu1 << 1);
+                        accu2 = (lowBandImag[LPC_ORDER + i] >> descale) + (accu2 << 1);
+                        if (fPreWhitening) {
+                            accu1 = scaleValueSaturate(
+                                        fMultDiv2(accu1, preWhiteningGains[loBand]),
+                                        preWhiteningGains_exp[loBand] + 1);
+                            accu2 = scaleValueSaturate(
+                                        fMultDiv2(accu2, preWhiteningGains[loBand]),
+                                        preWhiteningGains_exp[loBand] + 1);
+                        }
+                        qmfBufferReal[i][hiBand] = accu1;
+                        qmfBufferImag[i][hiBand] = accu2;
+                    }
+#endif
+                } else {
+                    FDK_ASSERT(dynamicScale >= 0);
+                    calc_qmfBufferReal(
+                        qmfBufferReal, &(lowBandReal[LPC_ORDER + startSample - 2]),
+                        startSample, stopSample, hiBand, dynamicScale,
+                        fMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale)), a0r,
+                        a1r);
+                }
+            } /* bw <= 0 */
+
+            patch++;
+
+        } /* inner loop over patches */
+
+        /*
+         * store the unmodified filter coefficients if there is
+         * an overlapping envelope
+         *****************************************************************/
+
+    } /* outer loop over bands (loBand) */
 
     if (useLP) {
-      /* Aliasing detection */
-      if (ac.r11r == FL2FXCONST_DBL(0.0f)) {
-        k1 = FL2FXCONST_DBL(0.0f);
-      } else {
-        if (fixp_abs(ac.r01r) >= fixp_abs(ac.r11r)) {
-          if (fMultDiv2(ac.r01r, ac.r11r) < FL2FX_DBL(0.0f)) {
-            k1 = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_SGL(1.0f)*/;
-          } else {
-            /* Since this value is squared later, it must not ever become -1.0f.
-             */
-            k1 = (FIXP_DBL)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
-          }
-        } else {
-          INT scale;
-          FIXP_DBL result =
-              fDivNorm(fixp_abs(ac.r01r), fixp_abs(ac.r11r), &scale);
-          k1 = scaleValue(result, scale);
+        for (loBand = pSettings->lbStartPatching;
+                loBand < pSettings->lbStopPatching; loBand++) {
+            patch = 0;
+            while (patch < pSettings->noOfPatches) {
+                UCHAR hiBand = loBand + patchParam[patch].targetBandOffs;
 
-          if (!((ac.r01r < FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))) {
-            k1 = -k1;
-          }
-        }
-      }
-      if ((loBand > 1) && (loBand < v_k_master0)) {
-        /* Check if the gain should be locked */
-        FIXP_DBL deg =
-            /*FL2FXCONST_DBL(1.0f)*/ (FIXP_DBL)MAXVAL_DBL - fPow2(k1_below);
-        degreeAlias[loBand] = FL2FXCONST_DBL(0.0f);
-        if (((loBand & 1) == 0) && (k1 < FL2FXCONST_DBL(0.0f))) {
-          if (k1_below < FL2FXCONST_DBL(0.0f)) { /* 2-Ch Aliasing Detection */
-            degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
-            if (k1_below2 >
-                FL2FXCONST_DBL(0.0f)) { /* 3-Ch Aliasing Detection */
-              degreeAlias[loBand - 1] = deg;
+                if (loBand < patchParam[patch].sourceStartBand ||
+                        loBand >= patchParam[patch].sourceStopBand ||
+                        hiBand >= (64) /* Highband out of range (biterror) */
+                   ) {
+                    /* Lowband not in current patch or highband out of range (might be
+                     * caused by biterrors)- proceed */
+                    patch++;
+                    continue;
+                }
+
+                if (hiBand != patchParam[patch].targetStartBand)
+                    degreeAlias[hiBand] = degreeAlias[loBand];
+
+                patch++;
             }
-          } else if (k1_below2 >
-                     FL2FXCONST_DBL(0.0f)) { /* 3-Ch Aliasing Detection */
-            degreeAlias[loBand] = deg;
-          }
-        }
-        if (((loBand & 1) == 1) && (k1 > FL2FXCONST_DBL(0.0f))) {
-          if (k1_below > FL2FXCONST_DBL(0.0f)) { /* 2-CH Aliasing Detection */
-            degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
-            if (k1_below2 <
-                FL2FXCONST_DBL(0.0f)) { /* 3-CH Aliasing Detection */
-              degreeAlias[loBand - 1] = deg;
-            }
-          } else if (k1_below2 <
-                     FL2FXCONST_DBL(0.0f)) { /* 3-CH Aliasing Detection */
-            degreeAlias[loBand] = deg;
-          }
-        }
-      }
-      /* remember k1 values of the 2 QMF channels below the current channel */
-      k1_below2 = k1_below;
-      k1_below = k1;
+        } /* end  for loop */
     }
 
-    patch = 0;
-
-    while (patch < pSettings->noOfPatches) { /* inner loop over every patch */
-
-      int hiBand = loBand + patchParam[patch].targetBandOffs;
-
-      if (loBand < patchParam[patch].sourceStartBand ||
-          loBand >= patchParam[patch].sourceStopBand
-          //|| hiBand >= hLppTrans->pSettings->noChannels
-      ) {
-        /* Lowband not in current patch - proceed */
-        patch++;
-        continue;
-      }
-
-      FDK_ASSERT(hiBand < (64));
-
-      /* bwIndex[patch] is already initialized with value from previous band
-       * inside this patch */
-      while (hiBand >= pSettings->bwBorders[bwIndex[patch]] &&
-             bwIndex[patch] < MAX_NUM_PATCHES - 1) {
-        bwIndex[patch]++;
-      }
-
-      /*
-        Filter Step 2: add the left slope with the current filter to the buffer
-                       pure source values are already in there
-      */
-      bw = FX_DBL2FX_SGL(bwVector[bwIndex[patch]]);
-
-      a0r = FX_DBL2FX_SGL(
-          fMult(bw, alphar[0])); /* Apply current bandwidth expansion factor */
-
-      if (!useLP)
-        a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
-      bw = FX_DBL2FX_SGL(fPow2(bw));
-      a1r = FX_DBL2FX_SGL(fMult(bw, alphar[1]));
-      if (!useLP)
-        a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
-
-      /*
-        Filter Step 3: insert the middle part which won't be windowed
-      */
-      if (bw <= FL2FXCONST_SGL(0.0f)) {
-        if (!useLP) {
-          int descale =
-              fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
-          for (i = startSample; i < stopSample; i++) {
-            FIXP_DBL accu1, accu2;
-            accu1 = lowBandReal[LPC_ORDER + i] >> descale;
-            accu2 = lowBandImag[LPC_ORDER + i] >> descale;
-            if (fPreWhitening) {
-              accu1 = scaleValueSaturate(
-                  fMultDiv2(accu1, preWhiteningGains[loBand]),
-                  preWhiteningGains_exp[loBand] + 1);
-              accu2 = scaleValueSaturate(
-                  fMultDiv2(accu2, preWhiteningGains[loBand]),
-                  preWhiteningGains_exp[loBand] + 1);
-            }
-            qmfBufferReal[i][hiBand] = accu1;
-            qmfBufferImag[i][hiBand] = accu2;
-          }
-        } else {
-          int descale =
-              fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
-          for (i = startSample; i < stopSample; i++) {
-            qmfBufferReal[i][hiBand] = lowBandReal[LPC_ORDER + i] >> descale;
-          }
-        }
-      } else { /* bw <= 0 */
-
-        if (!useLP) {
-          int descale =
-              fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
-#ifdef FUNCTION_LPPTRANSPOSER_func1
-          lppTransposer_func1(
-              lowBandReal + LPC_ORDER + startSample,
-              lowBandImag + LPC_ORDER + startSample,
-              qmfBufferReal + startSample, qmfBufferImag + startSample,
-              stopSample - startSample, (int)hiBand, dynamicScale, descale, a0r,
-              a0i, a1r, a1i, fPreWhitening, preWhiteningGains[loBand],
-              preWhiteningGains_exp[loBand] + 1);
-#else
-          for (i = startSample; i < stopSample; i++) {
-            FIXP_DBL accu1, accu2;
-
-            accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
-                     fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +
-                     fMultDiv2(a1r, lowBandReal[LPC_ORDER + i - 2]) -
-                     fMultDiv2(a1i, lowBandImag[LPC_ORDER + i - 2])) >>
-                    dynamicScale;
-            accu2 = (fMultDiv2(a0i, lowBandReal[LPC_ORDER + i - 1]) +
-                     fMultDiv2(a0r, lowBandImag[LPC_ORDER + i - 1]) +
-                     fMultDiv2(a1i, lowBandReal[LPC_ORDER + i - 2]) +
-                     fMultDiv2(a1r, lowBandImag[LPC_ORDER + i - 2])) >>
-                    dynamicScale;
-
-            accu1 = (lowBandReal[LPC_ORDER + i] >> descale) + (accu1 << 1);
-            accu2 = (lowBandImag[LPC_ORDER + i] >> descale) + (accu2 << 1);
-            if (fPreWhitening) {
-              accu1 = scaleValueSaturate(
-                  fMultDiv2(accu1, preWhiteningGains[loBand]),
-                  preWhiteningGains_exp[loBand] + 1);
-              accu2 = scaleValueSaturate(
-                  fMultDiv2(accu2, preWhiteningGains[loBand]),
-                  preWhiteningGains_exp[loBand] + 1);
-            }
-            qmfBufferReal[i][hiBand] = accu1;
-            qmfBufferImag[i][hiBand] = accu2;
-          }
-#endif
-        } else {
-          FDK_ASSERT(dynamicScale >= 0);
-          calc_qmfBufferReal(
-              qmfBufferReal, &(lowBandReal[LPC_ORDER + startSample - 2]),
-              startSample, stopSample, hiBand, dynamicScale,
-              fMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale)), a0r,
-              a1r);
-        }
-      } /* bw <= 0 */
-
-      patch++;
-
-    } /* inner loop over patches */
+    for (i = 0; i < nInvfBands; i++) {
+        hLppTrans->bwVectorOld[i] = bwVector[i];
+    }
 
     /*
-     * store the unmodified filter coefficients if there is
-     * an overlapping envelope
-     *****************************************************************/
-
-  } /* outer loop over bands (loBand) */
-
-  if (useLP) {
-    for (loBand = pSettings->lbStartPatching;
-         loBand < pSettings->lbStopPatching; loBand++) {
-      patch = 0;
-      while (patch < pSettings->noOfPatches) {
-        UCHAR hiBand = loBand + patchParam[patch].targetBandOffs;
-
-        if (loBand < patchParam[patch].sourceStartBand ||
-            loBand >= patchParam[patch].sourceStopBand ||
-            hiBand >= (64) /* Highband out of range (biterror) */
-        ) {
-          /* Lowband not in current patch or highband out of range (might be
-           * caused by biterrors)- proceed */
-          patch++;
-          continue;
-        }
-
-        if (hiBand != patchParam[patch].targetStartBand)
-          degreeAlias[hiBand] = degreeAlias[loBand];
-
-        patch++;
-      }
-    } /* end  for loop */
-  }
-
-  for (i = 0; i < nInvfBands; i++) {
-    hLppTrans->bwVectorOld[i] = bwVector[i];
-  }
-
-  /*
-    set high band scale factor
-  */
-  sbrScaleFactor->hb_scale = comLowBandScale - (LPC_SCALE_FACTOR);
+      set high band scale factor
+    */
+    sbrScaleFactor->hb_scale = comLowBandScale - (LPC_SCALE_FACTOR);
 }
 
 void lppTransposerHBE(
@@ -867,356 +867,356 @@ void lppTransposerHBE(
     INVF_MODE *sbr_invf_mode, /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
-  INT bwIndex;
-  FIXP_DBL bwVector[MAX_NUM_PATCHES_HBE]; /*!< pole moving factors */
+    INT bwIndex;
+    FIXP_DBL bwVector[MAX_NUM_PATCHES_HBE]; /*!< pole moving factors */
 
-  int i;
-  int loBand, start, stop;
-  TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
-  PATCH_PARAM *patchParam = pSettings->patchParam;
+    int i;
+    int loBand, start, stop;
+    TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
+    PATCH_PARAM *patchParam = pSettings->patchParam;
 
-  FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
-  FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
+    FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
+    FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
+    FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
 
-  int autoCorrLength;
+    int autoCorrLength;
 
-  ACORR_COEFS ac;
-  int startSample;
-  int stopSample;
-  int stopSampleClear;
+    ACORR_COEFS ac;
+    int startSample;
+    int stopSample;
+    int stopSampleClear;
 
-  int comBandScale;
-  int ovLowBandShift;
-  int lowBandShift;
-  /*  int ovHighBandShift;*/
+    int comBandScale;
+    int ovLowBandShift;
+    int lowBandShift;
+    /*  int ovHighBandShift;*/
 
-  alphai[0] = FL2FXCONST_SGL(0.0f);
-  alphai[1] = FL2FXCONST_SGL(0.0f);
-
-  startSample = firstSlotOffs * timeStep;
-  stopSample = pSettings->nCols + lastSlotOffs * timeStep;
-
-  inverseFilteringLevelEmphasis(hLppTrans, nInvfBands, sbr_invf_mode,
-                                sbr_invf_mode_prev, bwVector);
-
-  stopSampleClear = stopSample;
-
-  autoCorrLength = pSettings->nCols + pSettings->overlap;
-
-  if (pSettings->noOfPatches > 0) {
-    /* Set upper subbands to zero:
-       This is required in case that the patches do not cover the complete
-       highband (because the last patch would be too short). Possible
-       optimization: Clearing bands up to usb would be sufficient here. */
-    int targetStopBand =
-        patchParam[pSettings->noOfPatches - 1].targetStartBand +
-        patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
-
-    int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
-
-    for (i = startSample; i < stopSampleClear; i++) {
-      FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
-      FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
-    }
-  }
-#ifdef __ANDROID__
-  else {
-    // Safetynet logging
-    android_errorWriteLog(0x534e4554, "112160868");
-  }
-#endif
-
-  /*
-  Calc common low band scale factor
-  */
-  comBandScale = sbrScaleFactor->hb_scale;
-
-  ovLowBandShift = sbrScaleFactor->hb_scale - comBandScale;
-  lowBandShift = sbrScaleFactor->hb_scale - comBandScale;
-  /*  ovHighBandShift = firstSlotOffs == 0 ? ovLowBandShift:0;*/
-
-  /* outer loop over bands to do analysis only once for each band */
-
-  start = hQmfTransposer->startBand;
-  stop = hQmfTransposer->stopBand;
-
-  for (loBand = start; loBand < stop; loBand++) {
-    bwIndex = 0;
-
-    FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-
-    int resetLPCCoeffs = 0;
-    int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
-    int acDetScale = 0; /* scaling of autocorrelation determinant */
-
-    for (i = 0; i < LPC_ORDER; i++) {
-      lowBandReal[i] = hLppTrans->lpcFilterStatesRealHBE[i][loBand];
-      lowBandImag[i] = hLppTrans->lpcFilterStatesImagHBE[i][loBand];
-    }
-
-    for (; i < LPC_ORDER + firstSlotOffs * timeStep; i++) {
-      lowBandReal[i] = hLppTrans->lpcFilterStatesRealHBE[i][loBand];
-      lowBandImag[i] = hLppTrans->lpcFilterStatesImagHBE[i][loBand];
-    }
-
-    /*
-    Take old slope length qmf slot source values out of (overlap)qmf buffer
-    */
-    for (i = firstSlotOffs * timeStep;
-         i < pSettings->nCols + pSettings->overlap; i++) {
-      lowBandReal[i + LPC_ORDER] = qmfBufferReal[i][loBand];
-      lowBandImag[i + LPC_ORDER] = qmfBufferImag[i][loBand];
-    }
-
-    /* store unmodified values to buffer */
-    for (i = 0; i < LPC_ORDER + pSettings->overlap; i++) {
-      hLppTrans->lpcFilterStatesRealHBE[i][loBand] =
-          qmfBufferReal[pSettings->nCols - LPC_ORDER + i][loBand];
-      hLppTrans->lpcFilterStatesImagHBE[i][loBand] =
-          qmfBufferImag[pSettings->nCols - LPC_ORDER + i][loBand];
-    }
-
-    /*
-    Determine dynamic scaling value.
-    */
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(lowBandReal, LPC_ORDER + pSettings->overlap) +
-                   ovLowBandShift);
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(&lowBandReal[LPC_ORDER + pSettings->overlap],
-                              pSettings->nCols) +
-                   lowBandShift);
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(lowBandImag, LPC_ORDER + pSettings->overlap) +
-                   ovLowBandShift);
-    dynamicScale =
-        fixMin(dynamicScale,
-               getScalefactor(&lowBandImag[LPC_ORDER + pSettings->overlap],
-                              pSettings->nCols) +
-                   lowBandShift);
-
-    dynamicScale = fixMax(
-        0, dynamicScale - 1); /* one additional bit headroom to prevent -1.0 */
-
-    /*
-    Scale temporal QMF buffer.
-    */
-    scaleValues(&lowBandReal[0], LPC_ORDER + pSettings->overlap,
-                dynamicScale - ovLowBandShift);
-    scaleValues(&lowBandReal[LPC_ORDER + pSettings->overlap], pSettings->nCols,
-                dynamicScale - lowBandShift);
-    scaleValues(&lowBandImag[0], LPC_ORDER + pSettings->overlap,
-                dynamicScale - ovLowBandShift);
-    scaleValues(&lowBandImag[LPC_ORDER + pSettings->overlap], pSettings->nCols,
-                dynamicScale - lowBandShift);
-
-    acDetScale += autoCorr2nd_cplx(&ac, lowBandReal + LPC_ORDER,
-                                   lowBandImag + LPC_ORDER, autoCorrLength);
-
-    /* Examine dynamic of determinant in autocorrelation. */
-    acDetScale += 2 * (comBandScale + dynamicScale);
-    acDetScale *= 2;            /* two times reflection coefficent scaling */
-    acDetScale += ac.det_scale; /* ac scaling of determinant */
-
-    /* In case of determinant < 10^-38, resetLPCCoeffs=1 has to be enforced. */
-    if (acDetScale > 126) {
-      resetLPCCoeffs = 1;
-    }
-
-    alphar[1] = FL2FXCONST_SGL(0.0f);
+    alphai[0] = FL2FXCONST_SGL(0.0f);
     alphai[1] = FL2FXCONST_SGL(0.0f);
 
-    if (ac.det != FL2FXCONST_DBL(0.0f)) {
-      FIXP_DBL tmp, absTmp, absDet;
+    startSample = firstSlotOffs * timeStep;
+    stopSample = pSettings->nCols + lastSlotOffs * timeStep;
 
-      absDet = fixp_abs(ac.det);
+    inverseFilteringLevelEmphasis(hLppTrans, nInvfBands, sbr_invf_mode,
+                                  sbr_invf_mode_prev, bwVector);
 
-      tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
-            ((fMultDiv2(ac.r01i, ac.r12i) + fMultDiv2(ac.r02r, ac.r11r)) >>
-             (LPC_SCALE_FACTOR - 1));
-      absTmp = fixp_abs(tmp);
+    stopSampleClear = stopSample;
 
-      /*
-      Quick check: is first filter coeff >= 1(4)
-      */
-      {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
-        scale = scale + ac.det_scale;
+    autoCorrLength = pSettings->nCols + pSettings->overlap;
 
-        if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
-          resetLPCCoeffs = 1;
-        } else {
-          alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
-          if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
-            alphar[1] = -alphar[1];
-          }
+    if (pSettings->noOfPatches > 0) {
+        /* Set upper subbands to zero:
+           This is required in case that the patches do not cover the complete
+           highband (because the last patch would be too short). Possible
+           optimization: Clearing bands up to usb would be sufficient here. */
+        int targetStopBand =
+            patchParam[pSettings->noOfPatches - 1].targetStartBand +
+            patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
+
+        int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
+
+        for (i = startSample; i < stopSampleClear; i++) {
+            FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
+            FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
         }
-      }
-
-      tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
-            ((fMultDiv2(ac.r01r, ac.r12i) -
-              (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
-             (LPC_SCALE_FACTOR - 1));
-
-      absTmp = fixp_abs(tmp);
-
-      /*
-      Quick check: is second filter coeff >= 1(4)
-      */
-      {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
-        scale = scale + ac.det_scale;
-
-        if ((scale > 0) &&
-            (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >> scale)) {
-          resetLPCCoeffs = 1;
-        } else {
-          alphai[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
-          if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
-            alphai[1] = -alphai[1];
-          }
-        }
-      }
     }
-
-    alphar[0] = FL2FXCONST_SGL(0.0f);
-    alphai[0] = FL2FXCONST_SGL(0.0f);
-
-    if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
-      /* ac.r11r is always >=0 */
-      FIXP_DBL tmp, absTmp;
-
-      tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
-            (fMultDiv2(alphar[1], ac.r12r) + fMultDiv2(alphai[1], ac.r12i));
-
-      absTmp = fixp_abs(tmp);
-
-      /*
-      Quick check: is first filter coeff >= 1(4)
-      */
-
-      if (absTmp >= (ac.r11r >> 1)) {
-        resetLPCCoeffs = 1;
-      } else {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
-        alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
-
-        if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
-          alphar[0] = -alphar[0];
-      }
-
-      tmp = (ac.r01i >> (LPC_SCALE_FACTOR + 1)) +
-            (fMultDiv2(alphai[1], ac.r12r) - fMultDiv2(alphar[1], ac.r12i));
-
-      absTmp = fixp_abs(tmp);
-
-      /*
-      Quick check: is second filter coeff >= 1(4)
-      */
-      if (absTmp >= (ac.r11r >> 1)) {
-        resetLPCCoeffs = 1;
-      } else {
-        INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
-        alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
-        if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f))) {
-          alphai[0] = -alphai[0];
-        }
-      }
+#ifdef __ANDROID__
+    else {
+        // Safetynet logging
+        android_errorWriteLog(0x534e4554, "112160868");
     }
-
-    /* Now check the quadratic criteria */
-    if ((fMultDiv2(alphar[0], alphar[0]) + fMultDiv2(alphai[0], alphai[0])) >=
-        FL2FXCONST_DBL(0.5f)) {
-      resetLPCCoeffs = 1;
-    }
-    if ((fMultDiv2(alphar[1], alphar[1]) + fMultDiv2(alphai[1], alphai[1])) >=
-        FL2FXCONST_DBL(0.5f)) {
-      resetLPCCoeffs = 1;
-    }
-
-    if (resetLPCCoeffs) {
-      alphar[0] = FL2FXCONST_SGL(0.0f);
-      alphar[1] = FL2FXCONST_SGL(0.0f);
-      alphai[0] = FL2FXCONST_SGL(0.0f);
-      alphai[1] = FL2FXCONST_SGL(0.0f);
-    }
-
-    while (bwIndex < MAX_NUM_PATCHES - 1 &&
-           loBand >= pSettings->bwBorders[bwIndex]) {
-      bwIndex++;
-    }
+#endif
 
     /*
-    Filter Step 2: add the left slope with the current filter to the buffer
-    pure source values are already in there
+    Calc common low band scale factor
     */
-    bw = FX_DBL2FX_SGL(bwVector[bwIndex]);
+    comBandScale = sbrScaleFactor->hb_scale;
 
-    a0r = FX_DBL2FX_SGL(
-        fMult(bw, alphar[0])); /* Apply current bandwidth expansion factor */
-    a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
-    bw = FX_DBL2FX_SGL(fPow2(bw));
-    a1r = FX_DBL2FX_SGL(fMult(bw, alphar[1]));
-    a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
+    ovLowBandShift = sbrScaleFactor->hb_scale - comBandScale;
+    lowBandShift = sbrScaleFactor->hb_scale - comBandScale;
+    /*  ovHighBandShift = firstSlotOffs == 0 ? ovLowBandShift:0;*/
+
+    /* outer loop over bands to do analysis only once for each band */
+
+    start = hQmfTransposer->startBand;
+    stop = hQmfTransposer->stopBand;
+
+    for (loBand = start; loBand < stop; loBand++) {
+        bwIndex = 0;
+
+        FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+        FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+
+        int resetLPCCoeffs = 0;
+        int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
+        int acDetScale = 0; /* scaling of autocorrelation determinant */
+
+        for (i = 0; i < LPC_ORDER; i++) {
+            lowBandReal[i] = hLppTrans->lpcFilterStatesRealHBE[i][loBand];
+            lowBandImag[i] = hLppTrans->lpcFilterStatesImagHBE[i][loBand];
+        }
+
+        for (; i < LPC_ORDER + firstSlotOffs * timeStep; i++) {
+            lowBandReal[i] = hLppTrans->lpcFilterStatesRealHBE[i][loBand];
+            lowBandImag[i] = hLppTrans->lpcFilterStatesImagHBE[i][loBand];
+        }
+
+        /*
+        Take old slope length qmf slot source values out of (overlap)qmf buffer
+        */
+        for (i = firstSlotOffs * timeStep;
+                i < pSettings->nCols + pSettings->overlap; i++) {
+            lowBandReal[i + LPC_ORDER] = qmfBufferReal[i][loBand];
+            lowBandImag[i + LPC_ORDER] = qmfBufferImag[i][loBand];
+        }
+
+        /* store unmodified values to buffer */
+        for (i = 0; i < LPC_ORDER + pSettings->overlap; i++) {
+            hLppTrans->lpcFilterStatesRealHBE[i][loBand] =
+                qmfBufferReal[pSettings->nCols - LPC_ORDER + i][loBand];
+            hLppTrans->lpcFilterStatesImagHBE[i][loBand] =
+                qmfBufferImag[pSettings->nCols - LPC_ORDER + i][loBand];
+        }
+
+        /*
+        Determine dynamic scaling value.
+        */
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(lowBandReal, LPC_ORDER + pSettings->overlap) +
+                   ovLowBandShift);
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(&lowBandReal[LPC_ORDER + pSettings->overlap],
+                                  pSettings->nCols) +
+                   lowBandShift);
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(lowBandImag, LPC_ORDER + pSettings->overlap) +
+                   ovLowBandShift);
+        dynamicScale =
+            fixMin(dynamicScale,
+                   getScalefactor(&lowBandImag[LPC_ORDER + pSettings->overlap],
+                                  pSettings->nCols) +
+                   lowBandShift);
+
+        dynamicScale = fixMax(
+                           0, dynamicScale - 1); /* one additional bit headroom to prevent -1.0 */
+
+        /*
+        Scale temporal QMF buffer.
+        */
+        scaleValues(&lowBandReal[0], LPC_ORDER + pSettings->overlap,
+                    dynamicScale - ovLowBandShift);
+        scaleValues(&lowBandReal[LPC_ORDER + pSettings->overlap], pSettings->nCols,
+                    dynamicScale - lowBandShift);
+        scaleValues(&lowBandImag[0], LPC_ORDER + pSettings->overlap,
+                    dynamicScale - ovLowBandShift);
+        scaleValues(&lowBandImag[LPC_ORDER + pSettings->overlap], pSettings->nCols,
+                    dynamicScale - lowBandShift);
+
+        acDetScale += autoCorr2nd_cplx(&ac, lowBandReal + LPC_ORDER,
+                                       lowBandImag + LPC_ORDER, autoCorrLength);
+
+        /* Examine dynamic of determinant in autocorrelation. */
+        acDetScale += 2 * (comBandScale + dynamicScale);
+        acDetScale *= 2;            /* two times reflection coefficent scaling */
+        acDetScale += ac.det_scale; /* ac scaling of determinant */
+
+        /* In case of determinant < 10^-38, resetLPCCoeffs=1 has to be enforced. */
+        if (acDetScale > 126) {
+            resetLPCCoeffs = 1;
+        }
+
+        alphar[1] = FL2FXCONST_SGL(0.0f);
+        alphai[1] = FL2FXCONST_SGL(0.0f);
+
+        if (ac.det != FL2FXCONST_DBL(0.0f)) {
+            FIXP_DBL tmp, absTmp, absDet;
+
+            absDet = fixp_abs(ac.det);
+
+            tmp = (fMultDiv2(ac.r01r, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) -
+                  ((fMultDiv2(ac.r01i, ac.r12i) + fMultDiv2(ac.r02r, ac.r11r)) >>
+                   (LPC_SCALE_FACTOR - 1));
+            absTmp = fixp_abs(tmp);
+
+            /*
+            Quick check: is first filter coeff >= 1(4)
+            */
+            {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+                scale = scale + ac.det_scale;
+
+                if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
+                    resetLPCCoeffs = 1;
+                } else {
+                    alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
+                    if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
+                        alphar[1] = -alphar[1];
+                    }
+                }
+            }
+
+            tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
+                  ((fMultDiv2(ac.r01r, ac.r12i) -
+                    (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
+                   (LPC_SCALE_FACTOR - 1));
+
+            absTmp = fixp_abs(tmp);
+
+            /*
+            Quick check: is second filter coeff >= 1(4)
+            */
+            {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+                scale = scale + ac.det_scale;
+
+                if ((scale > 0) &&
+                        (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >> scale)) {
+                    resetLPCCoeffs = 1;
+                } else {
+                    alphai[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
+                    if ((tmp < FL2FX_DBL(0.0f)) ^ (ac.det < FL2FX_DBL(0.0f))) {
+                        alphai[1] = -alphai[1];
+                    }
+                }
+            }
+        }
+
+        alphar[0] = FL2FXCONST_SGL(0.0f);
+        alphai[0] = FL2FXCONST_SGL(0.0f);
+
+        if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
+            /* ac.r11r is always >=0 */
+            FIXP_DBL tmp, absTmp;
+
+            tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
+                  (fMultDiv2(alphar[1], ac.r12r) + fMultDiv2(alphai[1], ac.r12i));
+
+            absTmp = fixp_abs(tmp);
+
+            /*
+            Quick check: is first filter coeff >= 1(4)
+            */
+
+            if (absTmp >= (ac.r11r >> 1)) {
+                resetLPCCoeffs = 1;
+            } else {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+                alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
+
+                if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
+                    alphar[0] = -alphar[0];
+            }
+
+            tmp = (ac.r01i >> (LPC_SCALE_FACTOR + 1)) +
+                  (fMultDiv2(alphai[1], ac.r12r) - fMultDiv2(alphar[1], ac.r12i));
+
+            absTmp = fixp_abs(tmp);
+
+            /*
+            Quick check: is second filter coeff >= 1(4)
+            */
+            if (absTmp >= (ac.r11r >> 1)) {
+                resetLPCCoeffs = 1;
+            } else {
+                INT scale;
+                FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+                alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
+                if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f))) {
+                    alphai[0] = -alphai[0];
+                }
+            }
+        }
+
+        /* Now check the quadratic criteria */
+        if ((fMultDiv2(alphar[0], alphar[0]) + fMultDiv2(alphai[0], alphai[0])) >=
+                FL2FXCONST_DBL(0.5f)) {
+            resetLPCCoeffs = 1;
+        }
+        if ((fMultDiv2(alphar[1], alphar[1]) + fMultDiv2(alphai[1], alphai[1])) >=
+                FL2FXCONST_DBL(0.5f)) {
+            resetLPCCoeffs = 1;
+        }
+
+        if (resetLPCCoeffs) {
+            alphar[0] = FL2FXCONST_SGL(0.0f);
+            alphar[1] = FL2FXCONST_SGL(0.0f);
+            alphai[0] = FL2FXCONST_SGL(0.0f);
+            alphai[1] = FL2FXCONST_SGL(0.0f);
+        }
+
+        while (bwIndex < MAX_NUM_PATCHES - 1 &&
+                loBand >= pSettings->bwBorders[bwIndex]) {
+            bwIndex++;
+        }
+
+        /*
+        Filter Step 2: add the left slope with the current filter to the buffer
+        pure source values are already in there
+        */
+        bw = FX_DBL2FX_SGL(bwVector[bwIndex]);
+
+        a0r = FX_DBL2FX_SGL(
+                  fMult(bw, alphar[0])); /* Apply current bandwidth expansion factor */
+        a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
+        bw = FX_DBL2FX_SGL(fPow2(bw));
+        a1r = FX_DBL2FX_SGL(fMult(bw, alphar[1]));
+        a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
+
+        /*
+        Filter Step 3: insert the middle part which won't be windowed
+        */
+        if (bw <= FL2FXCONST_SGL(0.0f)) {
+            int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+            for (i = startSample; i < stopSample; i++) {
+                qmfBufferReal[i][loBand] = lowBandReal[LPC_ORDER + i] >> descale;
+                qmfBufferImag[i][loBand] = lowBandImag[LPC_ORDER + i] >> descale;
+            }
+        } else { /* bw <= 0 */
+
+            int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+
+            for (i = startSample; i < stopSample; i++) {
+                FIXP_DBL accu1, accu2;
+
+                accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
+                         fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +
+                         fMultDiv2(a1r, lowBandReal[LPC_ORDER + i - 2]) -
+                         fMultDiv2(a1i, lowBandImag[LPC_ORDER + i - 2])) >>
+                        dynamicScale;
+                accu2 = (fMultDiv2(a0i, lowBandReal[LPC_ORDER + i - 1]) +
+                         fMultDiv2(a0r, lowBandImag[LPC_ORDER + i - 1]) +
+                         fMultDiv2(a1i, lowBandReal[LPC_ORDER + i - 2]) +
+                         fMultDiv2(a1r, lowBandImag[LPC_ORDER + i - 2])) >>
+                        dynamicScale;
+
+                qmfBufferReal[i][loBand] =
+                    (lowBandReal[LPC_ORDER + i] >> descale) + (accu1 << 1);
+                qmfBufferImag[i][loBand] =
+                    (lowBandImag[LPC_ORDER + i] >> descale) + (accu2 << 1);
+            }
+        } /* bw <= 0 */
+
+        /*
+         * store the unmodified filter coefficients if there is
+         * an overlapping envelope
+         *****************************************************************/
+
+    } /* outer loop over bands (loBand) */
+
+    for (i = 0; i < nInvfBands; i++) {
+        hLppTrans->bwVectorOld[i] = bwVector[i];
+    }
 
     /*
-    Filter Step 3: insert the middle part which won't be windowed
+    set high band scale factor
     */
-    if (bw <= FL2FXCONST_SGL(0.0f)) {
-      int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
-      for (i = startSample; i < stopSample; i++) {
-        qmfBufferReal[i][loBand] = lowBandReal[LPC_ORDER + i] >> descale;
-        qmfBufferImag[i][loBand] = lowBandImag[LPC_ORDER + i] >> descale;
-      }
-    } else { /* bw <= 0 */
-
-      int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
-
-      for (i = startSample; i < stopSample; i++) {
-        FIXP_DBL accu1, accu2;
-
-        accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
-                 fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +
-                 fMultDiv2(a1r, lowBandReal[LPC_ORDER + i - 2]) -
-                 fMultDiv2(a1i, lowBandImag[LPC_ORDER + i - 2])) >>
-                dynamicScale;
-        accu2 = (fMultDiv2(a0i, lowBandReal[LPC_ORDER + i - 1]) +
-                 fMultDiv2(a0r, lowBandImag[LPC_ORDER + i - 1]) +
-                 fMultDiv2(a1i, lowBandReal[LPC_ORDER + i - 2]) +
-                 fMultDiv2(a1r, lowBandImag[LPC_ORDER + i - 2])) >>
-                dynamicScale;
-
-        qmfBufferReal[i][loBand] =
-            (lowBandReal[LPC_ORDER + i] >> descale) + (accu1 << 1);
-        qmfBufferImag[i][loBand] =
-            (lowBandImag[LPC_ORDER + i] >> descale) + (accu2 << 1);
-      }
-    } /* bw <= 0 */
-
-    /*
-     * store the unmodified filter coefficients if there is
-     * an overlapping envelope
-     *****************************************************************/
-
-  } /* outer loop over bands (loBand) */
-
-  for (i = 0; i < nInvfBands; i++) {
-    hLppTrans->bwVectorOld[i] = bwVector[i];
-  }
-
-  /*
-  set high band scale factor
-  */
-  sbrScaleFactor->hb_scale = comBandScale - (LPC_SCALE_FACTOR);
+    sbrScaleFactor->hb_scale = comBandScale - (LPC_SCALE_FACTOR);
 }
 
 /*!
@@ -1240,54 +1240,54 @@ createLppTransposer(
     UINT fs,                /*!< Sample Frequency */
     const int chan,         /*!< Channel number */
     const int overlap) {
-  /* FB inverse filtering settings */
-  hs->pSettings = pSettings;
+    /* FB inverse filtering settings */
+    hs->pSettings = pSettings;
 
-  pSettings->nCols = nCols;
-  pSettings->overlap = overlap;
+    pSettings->nCols = nCols;
+    pSettings->overlap = overlap;
 
-  switch (timeSlots) {
-  case 15:
-  case 16:
-    break;
+    switch (timeSlots) {
+    case 15:
+    case 16:
+        break;
 
-  default:
-    return SBRDEC_UNSUPPORTED_CONFIG; /* Unimplemented */
-  }
+    default:
+        return SBRDEC_UNSUPPORTED_CONFIG; /* Unimplemented */
+    }
 
-  if (chan == 0) {
-    /* Init common data only once */
-    hs->pSettings->nCols = nCols;
+    if (chan == 0) {
+        /* Init common data only once */
+        hs->pSettings->nCols = nCols;
 
-    return resetLppTransposer(hs, highBandStartSb, v_k_master, numMaster,
-                              noiseBandTable, noNoiseBands, usb, fs);
-  }
-  return SBRDEC_OK;
+        return resetLppTransposer(hs, highBandStartSb, v_k_master, numMaster,
+                                  noiseBandTable, noNoiseBands, usb, fs);
+    }
+    return SBRDEC_OK;
 }
 
 static int findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster,
                             UCHAR direction) {
-  int index;
+    int index;
 
-  if (goalSb <= v_k_master[0])
-    return v_k_master[0];
+    if (goalSb <= v_k_master[0])
+        return v_k_master[0];
 
-  if (goalSb >= v_k_master[numMaster])
-    return v_k_master[numMaster];
+    if (goalSb >= v_k_master[numMaster])
+        return v_k_master[numMaster];
 
-  if (direction) {
-    index = 0;
-    while (v_k_master[index] < goalSb) {
-      index++;
+    if (direction) {
+        index = 0;
+        while (v_k_master[index] < goalSb) {
+            index++;
+        }
+    } else {
+        index = numMaster;
+        while (v_k_master[index] > goalSb) {
+            index--;
+        }
     }
-  } else {
-    index = numMaster;
-    while (v_k_master[index] > goalSb) {
-      index--;
-    }
-  }
 
-  return v_k_master[index];
+    return v_k_master[index];
 }
 
 /*!
@@ -1307,172 +1307,172 @@ resetLppTransposer(
     UCHAR usb,             /*!< High band area: stop subband */
     UINT fs                /*!< SBR output sampling frequency */
 ) {
-  TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
-  PATCH_PARAM *patchParam = pSettings->patchParam;
+    TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
+    PATCH_PARAM *patchParam = pSettings->patchParam;
 
-  int i, patch;
-  int targetStopBand;
-  int sourceStartBand;
-  int patchDistance;
-  int numBandsInPatch;
+    int i, patch;
+    int targetStopBand;
+    int sourceStartBand;
+    int patchDistance;
+    int numBandsInPatch;
 
-  int lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
+    int lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
                             terms*/
-  int xoverOffset = highBandStartSb -
-                    lsb; /* Calculate distance in QMF bands between k0 and kx */
-  int startFreqHz;
+    int xoverOffset = highBandStartSb -
+                      lsb; /* Calculate distance in QMF bands between k0 and kx */
+    int startFreqHz;
 
-  int desiredBorder;
+    int desiredBorder;
 
-  usb = fixMin(usb, v_k_master[numMaster]); /* Avoid endless loops (compare with
+    usb = fixMin(usb, v_k_master[numMaster]); /* Avoid endless loops (compare with
                                              float code). */
 
-  /*
-   * Plausibility check
-   */
-
-  if (pSettings->nCols == 64) {
-    if (lsb < 4) {
-      /* 4:1 SBR Requirement k0 >= 4 missed! */
-      return SBRDEC_UNSUPPORTED_CONFIG;
-    }
-  } else if (lsb - SHIFT_START_SB < 4) {
-    return SBRDEC_UNSUPPORTED_CONFIG;
-  }
-
-  /*
-   * Initialize the patching parameter
-   */
-  /* ISO/IEC 14496-3 (Figure 4.48): goalSb = round( 2.048e6 / fs ) */
-  desiredBorder = (((2048000 * 2) / fs) + 1) >> 1;
-
-  desiredBorder = findClosestEntry(desiredBorder, v_k_master, numMaster,
-                                   1); /* Adapt region to master-table */
-
-  /* First patch */
-  sourceStartBand = SHIFT_START_SB + xoverOffset;
-  targetStopBand = lsb + xoverOffset; /* upperBand */
-
-  /* Even (odd) numbered channel must be patched to even (odd) numbered channel
-   */
-  patch = 0;
-  while (targetStopBand < usb) {
-    /* Too many patches?
-       Allow MAX_NUM_PATCHES+1 patches here.
-       we need to check later again, since patch might be the highest patch
-       AND contain less than 3 bands => actual number of patches will be reduced
-       by 1.
-    */
-    if (patch > MAX_NUM_PATCHES) {
-      return SBRDEC_UNSUPPORTED_CONFIG;
-    }
-
-    patchParam[patch].guardStartBand = targetStopBand;
-    patchParam[patch].targetStartBand = targetStopBand;
-
-    numBandsInPatch =
-        desiredBorder - targetStopBand; /* Get the desired range of the patch */
-
-    if (numBandsInPatch >= lsb - sourceStartBand) {
-      /* Desired number bands are not available -> patch whole source range */
-      patchDistance =
-          targetStopBand - sourceStartBand; /* Get the targetOffset */
-      patchDistance =
-          patchDistance & ~1; /* Rounding off odd numbers and make all even */
-      numBandsInPatch =
-          lsb - (targetStopBand -
-                 patchDistance); /* Update number of bands to be patched */
-      numBandsInPatch = findClosestEntry(targetStopBand + numBandsInPatch,
-                                         v_k_master, numMaster, 0) -
-                        targetStopBand; /* Adapt region to master-table */
-    }
+    /*
+     * Plausibility check
+     */
 
     if (pSettings->nCols == 64) {
-      if (numBandsInPatch == 0 && sourceStartBand == SHIFT_START_SB) {
+        if (lsb < 4) {
+            /* 4:1 SBR Requirement k0 >= 4 missed! */
+            return SBRDEC_UNSUPPORTED_CONFIG;
+        }
+    } else if (lsb - SHIFT_START_SB < 4) {
         return SBRDEC_UNSUPPORTED_CONFIG;
-      }
     }
 
-    /* Desired number bands are available -> get the minimal even patching
-     * distance */
-    patchDistance =
-        numBandsInPatch + targetStopBand - lsb; /* Get minimal distance */
-    patchDistance = (patchDistance + 1) &
-                    ~1; /* Rounding up odd numbers and make all even */
+    /*
+     * Initialize the patching parameter
+     */
+    /* ISO/IEC 14496-3 (Figure 4.48): goalSb = round( 2.048e6 / fs ) */
+    desiredBorder = (((2048000 * 2) / fs) + 1) >> 1;
 
-    if (numBandsInPatch > 0) {
-      patchParam[patch].sourceStartBand = targetStopBand - patchDistance;
-      patchParam[patch].targetBandOffs = patchDistance;
-      patchParam[patch].numBandsInPatch = numBandsInPatch;
-      patchParam[patch].sourceStopBand =
-          patchParam[patch].sourceStartBand + numBandsInPatch;
+    desiredBorder = findClosestEntry(desiredBorder, v_k_master, numMaster,
+                                     1); /* Adapt region to master-table */
 
-      targetStopBand += patchParam[patch].numBandsInPatch;
-      patch++;
+    /* First patch */
+    sourceStartBand = SHIFT_START_SB + xoverOffset;
+    targetStopBand = lsb + xoverOffset; /* upperBand */
+
+    /* Even (odd) numbered channel must be patched to even (odd) numbered channel
+     */
+    patch = 0;
+    while (targetStopBand < usb) {
+        /* Too many patches?
+           Allow MAX_NUM_PATCHES+1 patches here.
+           we need to check later again, since patch might be the highest patch
+           AND contain less than 3 bands => actual number of patches will be reduced
+           by 1.
+        */
+        if (patch > MAX_NUM_PATCHES) {
+            return SBRDEC_UNSUPPORTED_CONFIG;
+        }
+
+        patchParam[patch].guardStartBand = targetStopBand;
+        patchParam[patch].targetStartBand = targetStopBand;
+
+        numBandsInPatch =
+            desiredBorder - targetStopBand; /* Get the desired range of the patch */
+
+        if (numBandsInPatch >= lsb - sourceStartBand) {
+            /* Desired number bands are not available -> patch whole source range */
+            patchDistance =
+                targetStopBand - sourceStartBand; /* Get the targetOffset */
+            patchDistance =
+                patchDistance & ~1; /* Rounding off odd numbers and make all even */
+            numBandsInPatch =
+                lsb - (targetStopBand -
+                       patchDistance); /* Update number of bands to be patched */
+            numBandsInPatch = findClosestEntry(targetStopBand + numBandsInPatch,
+                                               v_k_master, numMaster, 0) -
+                              targetStopBand; /* Adapt region to master-table */
+        }
+
+        if (pSettings->nCols == 64) {
+            if (numBandsInPatch == 0 && sourceStartBand == SHIFT_START_SB) {
+                return SBRDEC_UNSUPPORTED_CONFIG;
+            }
+        }
+
+        /* Desired number bands are available -> get the minimal even patching
+         * distance */
+        patchDistance =
+            numBandsInPatch + targetStopBand - lsb; /* Get minimal distance */
+        patchDistance = (patchDistance + 1) &
+                        ~1; /* Rounding up odd numbers and make all even */
+
+        if (numBandsInPatch > 0) {
+            patchParam[patch].sourceStartBand = targetStopBand - patchDistance;
+            patchParam[patch].targetBandOffs = patchDistance;
+            patchParam[patch].numBandsInPatch = numBandsInPatch;
+            patchParam[patch].sourceStopBand =
+                patchParam[patch].sourceStartBand + numBandsInPatch;
+
+            targetStopBand += patchParam[patch].numBandsInPatch;
+            patch++;
+        }
+
+        /* All patches but first */
+        sourceStartBand = SHIFT_START_SB;
+
+        /* Check if we are close to desiredBorder */
+        if (desiredBorder - targetStopBand < 3) /* MPEG doc */
+        {
+            desiredBorder = usb;
+        }
     }
 
-    /* All patches but first */
-    sourceStartBand = SHIFT_START_SB;
-
-    /* Check if we are close to desiredBorder */
-    if (desiredBorder - targetStopBand < 3) /* MPEG doc */
-    {
-      desiredBorder = usb;
-    }
-  }
-
-  patch--;
-
-  /* If highest patch contains less than three subband: skip it */
-  if ((patch > 0) && (patchParam[patch].numBandsInPatch < 3)) {
     patch--;
-    targetStopBand =
-        patchParam[patch].targetStartBand + patchParam[patch].numBandsInPatch;
-  }
 
-  /* now check if we don't have one too many */
-  if (patch >= MAX_NUM_PATCHES) {
-    return SBRDEC_UNSUPPORTED_CONFIG;
-  }
+    /* If highest patch contains less than three subband: skip it */
+    if ((patch > 0) && (patchParam[patch].numBandsInPatch < 3)) {
+        patch--;
+        targetStopBand =
+            patchParam[patch].targetStartBand + patchParam[patch].numBandsInPatch;
+    }
 
-  pSettings->noOfPatches = patch + 1;
+    /* now check if we don't have one too many */
+    if (patch >= MAX_NUM_PATCHES) {
+        return SBRDEC_UNSUPPORTED_CONFIG;
+    }
 
-  /* Check lowest and highest source subband */
-  pSettings->lbStartPatching = targetStopBand;
-  pSettings->lbStopPatching = 0;
-  for (patch = 0; patch < pSettings->noOfPatches; patch++) {
-    pSettings->lbStartPatching =
-        fixMin(pSettings->lbStartPatching, patchParam[patch].sourceStartBand);
-    pSettings->lbStopPatching =
-        fixMax(pSettings->lbStopPatching, patchParam[patch].sourceStopBand);
-  }
+    pSettings->noOfPatches = patch + 1;
 
-  for (i = 0; i < noNoiseBands; i++) {
-    pSettings->bwBorders[i] = noiseBandTable[i + 1];
-  }
-  for (; i < MAX_NUM_NOISE_VALUES; i++) {
-    pSettings->bwBorders[i] = 255;
-  }
+    /* Check lowest and highest source subband */
+    pSettings->lbStartPatching = targetStopBand;
+    pSettings->lbStopPatching = 0;
+    for (patch = 0; patch < pSettings->noOfPatches; patch++) {
+        pSettings->lbStartPatching =
+            fixMin(pSettings->lbStartPatching, patchParam[patch].sourceStartBand);
+        pSettings->lbStopPatching =
+            fixMax(pSettings->lbStopPatching, patchParam[patch].sourceStopBand);
+    }
 
-  /*
-   * Choose whitening factors
-   */
+    for (i = 0; i < noNoiseBands; i++) {
+        pSettings->bwBorders[i] = noiseBandTable[i + 1];
+    }
+    for (; i < MAX_NUM_NOISE_VALUES; i++) {
+        pSettings->bwBorders[i] = 255;
+    }
 
-  startFreqHz =
-      ((lsb + xoverOffset) * fs) >> 7; /* Shift does a division by 2*(64) */
+    /*
+     * Choose whitening factors
+     */
 
-  for (i = 1; i < NUM_WHFACTOR_TABLE_ENTRIES; i++) {
-    if (startFreqHz < FDK_sbrDecoder_sbr_whFactorsIndex[i])
-      break;
-  }
-  i--;
+    startFreqHz =
+        ((lsb + xoverOffset) * fs) >> 7; /* Shift does a division by 2*(64) */
 
-  pSettings->whFactors.off = FDK_sbrDecoder_sbr_whFactorsTable[i][0];
-  pSettings->whFactors.transitionLevel =
-      FDK_sbrDecoder_sbr_whFactorsTable[i][1];
-  pSettings->whFactors.lowLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][2];
-  pSettings->whFactors.midLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][3];
-  pSettings->whFactors.highLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][4];
+    for (i = 1; i < NUM_WHFACTOR_TABLE_ENTRIES; i++) {
+        if (startFreqHz < FDK_sbrDecoder_sbr_whFactorsIndex[i])
+            break;
+    }
+    i--;
 
-  return SBRDEC_OK;
+    pSettings->whFactors.off = FDK_sbrDecoder_sbr_whFactorsTable[i][0];
+    pSettings->whFactors.transitionLevel =
+        FDK_sbrDecoder_sbr_whFactorsTable[i][1];
+    pSettings->whFactors.lowLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][2];
+    pSettings->whFactors.midLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][3];
+    pSettings->whFactors.highLevel = FDK_sbrDecoder_sbr_whFactorsTable[i][4];
+
+    return SBRDEC_OK;
 }

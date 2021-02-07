@@ -110,14 +110,14 @@ amm-info@iis.fraunhofer.de
 #define MAX_BUFSIZE_BYTES (0x10000000)
 
 typedef struct {
-  UINT ValidBits;
-  UINT ReadOffset;
-  UINT WriteOffset;
-  UINT BitNdx;
+    UINT ValidBits;
+    UINT ReadOffset;
+    UINT WriteOffset;
+    UINT BitNdx;
 
-  UCHAR *Buffer;
-  UINT bufSize;
-  UINT bufBits;
+    UCHAR *Buffer;
+    UINT bufSize;
+    UINT bufBits;
 } FDK_BITBUF;
 
 typedef FDK_BITBUF *HANDLE_FDK_BITBUF;

@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic) IBOutlet NSSearchField *searchField;
 @property(weak, nonatomic, nullable) id<MediaLibrarySearchCellViewDelegate>
-    delegate;
+delegate;
 
 @end
 

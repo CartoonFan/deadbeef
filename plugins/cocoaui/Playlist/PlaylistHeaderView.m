@@ -33,356 +33,359 @@
 @implementation PlaylistHeaderView
 
 - (NSColor *)headerTextColor {
-  NSColor *textColor = NSColor.controlTextColor;
-  if (!self.isKeyWindow) {
-    textColor = [textColor colorWithAlphaComponent:0.7];
-  }
-  return textColor;
+    NSColor *textColor = NSColor.controlTextColor;
+    if (!self.isKeyWindow) {
+        textColor = [textColor colorWithAlphaComponent:0.7];
+    }
+    return textColor;
 }
 
 - (void)updateTextAttributes {
-  if (self.window.isKeyWindow == self.isKeyWindow &&
-      self.titleAttributesCurrent) {
-    return;
-  }
+    if (self.window.isKeyWindow == self.isKeyWindow &&
+            self.titleAttributesCurrent) {
+        return;
+    }
 
-  self.isKeyWindow = self.window.isKeyWindow;
+    self.isKeyWindow = self.window.isKeyWindow;
 
-  NSMutableParagraphStyle *textStyle =
-      [NSParagraphStyle.defaultParagraphStyle mutableCopy];
+    NSMutableParagraphStyle *textStyle =
+        [NSParagraphStyle.defaultParagraphStyle mutableCopy];
 
-  textStyle.alignment = NSTextAlignmentLeft;
-  textStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    textStyle.alignment = NSTextAlignmentLeft;
+    textStyle.lineBreakMode = NSLineBreakByTruncatingTail;
 
-  self.titleAttributesCurrent = @{
-    NSFontAttributeName :
+    self.titleAttributesCurrent = @ {
+NSFontAttributeName :
         [NSFont controlContentFontOfSize:NSFont.smallSystemFontSize],
-    NSBaselineOffsetAttributeName : @0,
-    NSForegroundColorAttributeName : self.headerTextColor,
-    NSParagraphStyleAttributeName : textStyle
-  };
+NSBaselineOffsetAttributeName :
+        @0,
+NSForegroundColorAttributeName :
+        self.headerTextColor,
+NSParagraphStyleAttributeName :
+        textStyle
+    };
 }
 
 - (NSDictionary *)titleAttributes {
-  [self updateTextAttributes];
+    [self updateTextAttributes];
 
-  return self.titleAttributesCurrent;
+    return self.titleAttributesCurrent;
 }
 
 - (PlaylistHeaderView *)initWithFrame:(NSRect)rect {
-  self = [super initWithFrame:rect];
-  self.dragging = -1;
-  self.sizing = -1;
-  self.separatorColor = [NSColor.headerColor colorWithAlphaComponent:0.5];
-  NSTrackingAreaOptions options =
-      NSTrackingInVisibleRect | NSTrackingCursorUpdate | NSTrackingMouseMoved |
-      NSTrackingActiveInActiveApp;
-  NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:NSZeroRect
-                                                      options:options
-                                                        owner:self
-                                                     userInfo:nil];
-  [self addTrackingArea:area];
+    self = [super initWithFrame:rect];
+    self.dragging = -1;
+    self.sizing = -1;
+    self.separatorColor = [NSColor.headerColor colorWithAlphaComponent:0.5];
+    NSTrackingAreaOptions options =
+        NSTrackingInVisibleRect | NSTrackingCursorUpdate | NSTrackingMouseMoved |
+        NSTrackingActiveInActiveApp;
+    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:NSZeroRect
+                                                   options:options
+                                                   owner:self
+                                                   userInfo:nil];
+    [self addTrackingArea:area];
 
-  [NSNotificationCenter.defaultCenter
-      addObserver:self
-         selector:@selector(windowDidBecomeOrResignKey:)
-             name:NSWindowDidBecomeKeyNotification
-           object:self.window];
-  [NSNotificationCenter.defaultCenter
-      addObserver:self
-         selector:@selector(windowDidBecomeOrResignKey:)
-             name:NSWindowDidResignKeyNotification
-           object:self.window];
+    [NSNotificationCenter.defaultCenter
+     addObserver:self
+     selector:@selector(windowDidBecomeOrResignKey:)
+     name:NSWindowDidBecomeKeyNotification
+     object:self.window];
+    [NSNotificationCenter.defaultCenter
+     addObserver:self
+     selector:@selector(windowDidBecomeOrResignKey:)
+     name:NSWindowDidResignKeyNotification
+     object:self.window];
 
-  return self;
+    return self;
 }
 
 - (void)windowDidBecomeOrResignKey:(NSNotification *)notification {
-  self.needsDisplay = YES;
+    self.needsDisplay = YES;
 }
 
 - (void)drawColumnHeader:(DdbListviewCol_t)col inRect:(NSRect)rect {
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-  int columnCount = delegate.columnCount;
-  int sortColumnIndex = delegate.sortColumnIndex;
-  if (col < columnCount) {
-    CGFloat width = rect.size.width - 6;
-    if (col == sortColumnIndex) {
-      width -= 16;
-    }
-    if (width < 0) {
-      width = 0;
-    }
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+    int columnCount = delegate.columnCount;
+    int sortColumnIndex = delegate.sortColumnIndex;
+    if (col < columnCount) {
+        CGFloat width = rect.size.width - 6;
+        if (col == sortColumnIndex) {
+            width -= 16;
+        }
+        if (width < 0) {
+            width = 0;
+        }
 
-    [[delegate columnTitleAtIndex:col]
-            drawInRect:NSMakeRect(rect.origin.x + 4, rect.origin.y - 2, width,
-                                  rect.size.height - 2)
-        withAttributes:self.titleAttributes];
+        [[delegate columnTitleAtIndex:col]
+         drawInRect:NSMakeRect(rect.origin.x + 4, rect.origin.y - 2, width,
+                               rect.size.height - 2)
+         withAttributes:self.titleAttributes];
 
-    enum ddb_sort_order_t sortOrder = [delegate columnSortOrderAtIndex:col];
+        enum ddb_sort_order_t sortOrder = [delegate columnSortOrderAtIndex:col];
 
-    if (col == sortColumnIndex) {
-      [[NSColor.controlTextColor highlightWithLevel:0.5] set];
-      NSBezierPath *path = [NSBezierPath new];
-      path.lineWidth = 2;
-      if (sortOrder == DDB_SORT_ASCENDING) {
-        [path moveToPoint:NSMakePoint(rect.origin.x + 4 + width + 4,
-                                      rect.origin.y + 10)];
-        [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 8,
-                                      rect.origin.y + 10 + 4)];
-        [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 12,
-                                      rect.origin.y + 10)];
-      } else if (sortOrder == DDB_SORT_DESCENDING) {
-        [path moveToPoint:NSMakePoint(rect.origin.x + 4 + width + 4,
-                                      rect.origin.y + 10 + 4)];
-        [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 8,
-                                      rect.origin.y + 10)];
-        [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 12,
-                                      rect.origin.y + 10 + 4)];
-      }
-      [path stroke];
+        if (col == sortColumnIndex) {
+            [[NSColor.controlTextColor highlightWithLevel:0.5] set];
+            NSBezierPath *path = [NSBezierPath new];
+            path.lineWidth = 2;
+            if (sortOrder == DDB_SORT_ASCENDING) {
+                [path moveToPoint:NSMakePoint(rect.origin.x + 4 + width + 4,
+                                              rect.origin.y + 10)];
+                [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 8,
+                                              rect.origin.y + 10 + 4)];
+                [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 12,
+                                              rect.origin.y + 10)];
+            } else if (sortOrder == DDB_SORT_DESCENDING) {
+                [path moveToPoint:NSMakePoint(rect.origin.x + 4 + width + 4,
+                                              rect.origin.y + 10 + 4)];
+                [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 8,
+                                              rect.origin.y + 10)];
+                [path lineToPoint:NSMakePoint(rect.origin.x + 4 + width + 12,
+                                              rect.origin.y + 10 + 4)];
+            }
+            [path stroke];
+        }
     }
-  }
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-  [super drawRect:dirtyRect];
-
-  NSScrollView *sv = [self.listview.contentView enclosingScrollView];
-  NSRect rc = [sv documentVisibleRect];
-
-  NSRect rect = self.bounds;
-
-  [self.separatorColor set];
-  [NSBezierPath fillRect:NSMakeRect(rect.origin.x, 0, rect.size.width, 1)];
-
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-
-  CGFloat x = -rc.origin.x;
-  for (DdbListviewCol_t col = [delegate firstColumn];
-       col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
-    int w = [delegate columnWidth:col];
-
-    NSRect colRect = NSMakeRect(x, 0, w, self.frame.size.height);
-    if (self.dragging != col) {
-      if (CGRectIntersectsRect(dirtyRect, colRect)) {
-        [self drawColumnHeader:col inRect:colRect];
-      }
-    }
-    [self.separatorColor set];
-    [NSBezierPath
-        fillRect:NSMakeRect(colRect.origin.x + colRect.size.width - 1,
-                            colRect.origin.y + 3, 1, colRect.size.height - 6)];
-    x += w;
-  }
-
-  x = -rc.origin.x;
-  for (DdbListviewCol_t col = [delegate firstColumn];
-       col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
-    int w = [delegate columnWidth:col];
-
-    CGFloat cx = x;
-    if (self.dragging == col) {
-      cx = self.dragColPos + self.dragDelta;
-      NSRect colRect = NSMakeRect(cx, 1, w, self.frame.size.height - 2);
-      if (CGRectIntersectsRect(dirtyRect, colRect)) {
-        [[NSColor.whiteColor colorWithAlphaComponent:0.4] set];
-        [NSBezierPath fillRect:colRect];
-
-        [self drawColumnHeader:col inRect:colRect];
-        [self.separatorColor set];
-        [NSBezierPath fillRect:NSMakeRect(colRect.origin.x, colRect.origin.y, 1,
-                                          colRect.size.height)];
-        [NSBezierPath
-            fillRect:NSMakeRect(colRect.origin.x + colRect.size.width - 1,
-                                colRect.origin.y, 1, colRect.size.height)];
-      }
-    }
-    x += w;
-  }
-}
-
-- (void)mouseMoved:(NSEvent *)event {
-  [self cursorUpdate:event];
-}
-
-- (void)cursorUpdate:(NSEvent *)event {
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-  NSScrollView *sv = [self.listview.contentView enclosingScrollView];
-  NSRect rc = [sv documentVisibleRect];
-  CGFloat x = -rc.origin.x;
-  int idx = 0;
-  NSPoint pt = [self convertPoint:[event locationInWindow] fromView:nil];
-  for (DdbListviewCol_t col = [delegate firstColumn];
-       col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
-    int w = [delegate columnWidth:col];
-    x += w;
-    if (fabs(pt.x - x) < 5) {
-      if (idx == 0) {
-        [[NSCursor resizeRightCursor] set];
-      } else {
-        [[NSCursor resizeLeftRightCursor] set];
-      }
-      return;
-    }
-    idx++;
-  }
-  [[NSCursor arrowCursor] set];
-}
-
-- (void)mouseDown:(NSEvent *)theEvent {
-  NSScrollView *sv = [self.listview.contentView enclosingScrollView];
-  NSRect rc = [sv documentVisibleRect];
-
-  NSPoint convPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-
-  CGFloat x = -rc.origin.x;
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-
-  self.dragging = [delegate invalidColumn];
-  self.sizing = [delegate invalidColumn];
-  self.prepare = YES;
-
-  int idx = 0;
-  for (DdbListviewCol_t col = [delegate firstColumn];
-       col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
-    int w = [delegate columnWidth:col];
-
-    if ((idx == 0 || convPt.x - x > 5) && convPt.x < x + w - 5) {
-      self.dragDelta = 0;
-      self.dragging = col;
-      self.dragPt = convPt;
-      self.dragColPos = x;
-      self.listview.needsDisplay = YES;
-      break;
-    }
-
-    x += w;
-
-    if (fabs(convPt.x - x) < 5) {
-      self.sizing = col;
-      self.dragPt = convPt;
-      self.origColWidth = [delegate columnWidth:col];
-      break;
-    }
-  }
-}
-
-- (void)mouseUp:(NSEvent *)theEvent {
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-
-  if (self.dragging != delegate.invalidColumn && self.prepare) { // clicked
-    self.sortColumn = self.dragging;
-    [delegate sortColumn:self.dragging];
-  } else if (self.dragging != [delegate invalidColumn] ||
-             self.sizing != [delegate invalidColumn]) {
-    [delegate columnsChanged];
-    [self.listview.contentView updateContentFrame];
-  }
-  self.dragging = [delegate invalidColumn];
-  self.sizing = [delegate invalidColumn];
-  self.listview.contentView.needsDisplay = YES;
-}
-
-- (void)mouseDragged:(NSEvent *)theEvent {
-  NSPoint convPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-  self.prepare = NO;
-
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-  if (self.sizing != [delegate invalidColumn]) {
-    CGFloat dx = convPt.x - self.dragPt.x;
-
-    int w = self.origColWidth + (int)dx;
-    if (w < 10) {
-      w = 10;
-    }
-    if ([delegate columnWidth:self.sizing] != w) {
-      NSScrollView *sv = [self.listview.contentView enclosingScrollView];
-      NSRect rc = [sv documentVisibleRect];
-
-      CGFloat scroll = -rc.origin.x;
-
-      [delegate setColumnWidth:w forColumn:self.sizing];
-      [self.listview.contentView updateContentFrame];
-      self.listview.contentView.needsDisplay = YES;
-      self.needsDisplay = YES;
-
-      rc = [sv documentVisibleRect];
-      scroll += rc.origin.x;
-      self.dragPt = NSMakePoint(self.dragPt.x - scroll, self.dragPt.y);
-      [self.listview.contentView reloadData];
-    }
-  } else if (self.dragging != [delegate invalidColumn]) {
-    self.dragDelta = convPt.x - self.dragPt.x;
+    [super drawRect:dirtyRect];
 
     NSScrollView *sv = [self.listview.contentView enclosingScrollView];
     NSRect rc = [sv documentVisibleRect];
 
+    NSRect rect = self.bounds;
+
+    [self.separatorColor set];
+    [NSBezierPath fillRect:NSMakeRect(rect.origin.x, 0, rect.size.width, 1)];
+
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+
     CGFloat x = -rc.origin.x;
+    for (DdbListviewCol_t col = [delegate firstColumn];
+            col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
+        int w = [delegate columnWidth:col];
 
-    DdbListviewCol_t inspos = [delegate invalidColumn];
-
-    // FIXME: DdbListviewCol_t is not always index -- account for this
-    CGFloat cx = self.dragColPos + self.dragDelta;
-    for (DdbListviewCol_t cc = [delegate firstColumn];
-         cc != [delegate invalidColumn]; cc = [delegate nextColumn:cc]) {
-      int cw = [delegate columnWidth:cc];
-
-      if (cc < self.dragging && cx <= x + cw / 2) {
-        inspos = cc;
-        break;
-      } else if (cc > self.dragging &&
-                 cx > x + cw / 2 - [delegate columnWidth:self.dragging]) {
-        inspos = cc;
-      }
-
-      x += cw;
+        NSRect colRect = NSMakeRect(x, 0, w, self.frame.size.height);
+        if (self.dragging != col) {
+            if (CGRectIntersectsRect(dirtyRect, colRect)) {
+                [self drawColumnHeader:col inRect:colRect];
+            }
+        }
+        [self.separatorColor set];
+        [NSBezierPath
+         fillRect:NSMakeRect(colRect.origin.x + colRect.size.width - 1,
+                             colRect.origin.y + 3, 1, colRect.size.height - 6)];
+        x += w;
     }
 
-    if (inspos != [delegate invalidColumn] && inspos != self.dragging) {
-      [delegate moveColumn:self.dragging to:inspos];
-      self.dragging = inspos;
-      self.sortColumn = [delegate invalidColumn];
-      [self.listview.contentView reloadData];
-    } else {
-      self.needsDisplay = YES;
+    x = -rc.origin.x;
+    for (DdbListviewCol_t col = [delegate firstColumn];
+            col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
+        int w = [delegate columnWidth:col];
+
+        CGFloat cx = x;
+        if (self.dragging == col) {
+            cx = self.dragColPos + self.dragDelta;
+            NSRect colRect = NSMakeRect(cx, 1, w, self.frame.size.height - 2);
+            if (CGRectIntersectsRect(dirtyRect, colRect)) {
+                [[NSColor.whiteColor colorWithAlphaComponent:0.4] set];
+                [NSBezierPath fillRect:colRect];
+
+                [self drawColumnHeader:col inRect:colRect];
+                [self.separatorColor set];
+                [NSBezierPath fillRect:NSMakeRect(colRect.origin.x, colRect.origin.y, 1,
+                                                  colRect.size.height)];
+                [NSBezierPath
+                 fillRect:NSMakeRect(colRect.origin.x + colRect.size.width - 1,
+                                     colRect.origin.y, 1, colRect.size.height)];
+            }
+        }
+        x += w;
     }
-  }
+}
+
+- (void)mouseMoved:(NSEvent *)event {
+    [self cursorUpdate:event];
+}
+
+- (void)cursorUpdate:(NSEvent *)event {
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+    NSScrollView *sv = [self.listview.contentView enclosingScrollView];
+    NSRect rc = [sv documentVisibleRect];
+    CGFloat x = -rc.origin.x;
+    int idx = 0;
+    NSPoint pt = [self convertPoint:[event locationInWindow] fromView:nil];
+    for (DdbListviewCol_t col = [delegate firstColumn];
+            col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
+        int w = [delegate columnWidth:col];
+        x += w;
+        if (fabs(pt.x - x) < 5) {
+            if (idx == 0) {
+                [[NSCursor resizeRightCursor] set];
+            } else {
+                [[NSCursor resizeLeftRightCursor] set];
+            }
+            return;
+        }
+        idx++;
+    }
+    [[NSCursor arrowCursor] set];
+}
+
+- (void)mouseDown:(NSEvent *)theEvent {
+    NSScrollView *sv = [self.listview.contentView enclosingScrollView];
+    NSRect rc = [sv documentVisibleRect];
+
+    NSPoint convPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+
+    CGFloat x = -rc.origin.x;
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+
+    self.dragging = [delegate invalidColumn];
+    self.sizing = [delegate invalidColumn];
+    self.prepare = YES;
+
+    int idx = 0;
+    for (DdbListviewCol_t col = [delegate firstColumn];
+            col != [delegate invalidColumn]; col = [delegate nextColumn:col]) {
+        int w = [delegate columnWidth:col];
+
+        if ((idx == 0 || convPt.x - x > 5) && convPt.x < x + w - 5) {
+            self.dragDelta = 0;
+            self.dragging = col;
+            self.dragPt = convPt;
+            self.dragColPos = x;
+            self.listview.needsDisplay = YES;
+            break;
+        }
+
+        x += w;
+
+        if (fabs(convPt.x - x) < 5) {
+            self.sizing = col;
+            self.dragPt = convPt;
+            self.origColWidth = [delegate columnWidth:col];
+            break;
+        }
+    }
+}
+
+- (void)mouseUp:(NSEvent *)theEvent {
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+
+    if (self.dragging != delegate.invalidColumn && self.prepare) { // clicked
+        self.sortColumn = self.dragging;
+        [delegate sortColumn:self.dragging];
+    } else if (self.dragging != [delegate invalidColumn] ||
+               self.sizing != [delegate invalidColumn]) {
+        [delegate columnsChanged];
+        [self.listview.contentView updateContentFrame];
+    }
+    self.dragging = [delegate invalidColumn];
+    self.sizing = [delegate invalidColumn];
+    self.listview.contentView.needsDisplay = YES;
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent {
+    NSPoint convPt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    self.prepare = NO;
+
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+    if (self.sizing != [delegate invalidColumn]) {
+        CGFloat dx = convPt.x - self.dragPt.x;
+
+        int w = self.origColWidth + (int)dx;
+        if (w < 10) {
+            w = 10;
+        }
+        if ([delegate columnWidth:self.sizing] != w) {
+            NSScrollView *sv = [self.listview.contentView enclosingScrollView];
+            NSRect rc = [sv documentVisibleRect];
+
+            CGFloat scroll = -rc.origin.x;
+
+            [delegate setColumnWidth:w forColumn:self.sizing];
+            [self.listview.contentView updateContentFrame];
+            self.listview.contentView.needsDisplay = YES;
+            self.needsDisplay = YES;
+
+            rc = [sv documentVisibleRect];
+            scroll += rc.origin.x;
+            self.dragPt = NSMakePoint(self.dragPt.x - scroll, self.dragPt.y);
+            [self.listview.contentView reloadData];
+        }
+    } else if (self.dragging != [delegate invalidColumn]) {
+        self.dragDelta = convPt.x - self.dragPt.x;
+
+        NSScrollView *sv = [self.listview.contentView enclosingScrollView];
+        NSRect rc = [sv documentVisibleRect];
+
+        CGFloat x = -rc.origin.x;
+
+        DdbListviewCol_t inspos = [delegate invalidColumn];
+
+        // FIXME: DdbListviewCol_t is not always index -- account for this
+        CGFloat cx = self.dragColPos + self.dragDelta;
+        for (DdbListviewCol_t cc = [delegate firstColumn];
+                cc != [delegate invalidColumn]; cc = [delegate nextColumn:cc]) {
+            int cw = [delegate columnWidth:cc];
+
+            if (cc < self.dragging && cx <= x + cw / 2) {
+                inspos = cc;
+                break;
+            } else if (cc > self.dragging &&
+                       cx > x + cw / 2 - [delegate columnWidth:self.dragging]) {
+                inspos = cc;
+            }
+
+            x += cw;
+        }
+
+        if (inspos != [delegate invalidColumn] && inspos != self.dragging) {
+            [delegate moveColumn:self.dragging to:inspos];
+            self.dragging = inspos;
+            self.sortColumn = [delegate invalidColumn];
+            [self.listview.contentView reloadData];
+        } else {
+            self.needsDisplay = YES;
+        }
+    }
 }
 
 - (DdbListviewCol_t)columnIndexForCoord:(NSPoint)theCoord {
-  id<DdbListviewDelegate> delegate = [self.listview delegate];
-  NSScrollView *sv = [self.listview.contentView enclosingScrollView];
-  NSRect rc = [sv documentVisibleRect];
-  NSPoint convPt = [self convertPoint:theCoord fromView:nil];
+    id<DdbListviewDelegate> delegate = [self.listview delegate];
+    NSScrollView *sv = [self.listview.contentView enclosingScrollView];
+    NSRect rc = [sv documentVisibleRect];
+    NSPoint convPt = [self convertPoint:theCoord fromView:nil];
 
-  CGFloat x = -rc.origin.x;
-  DdbListviewCol_t col;
-  for (col = [delegate firstColumn]; col != [delegate invalidColumn];
-       col = [delegate nextColumn:col]) {
-    int w = [delegate columnWidth:col];
+    CGFloat x = -rc.origin.x;
+    DdbListviewCol_t col;
+    for (col = [delegate firstColumn]; col != [delegate invalidColumn];
+            col = [delegate nextColumn:col]) {
+        int w = [delegate columnWidth:col];
 
-    if (CGRectContainsPoint(NSMakeRect(x, 0, w, self.bounds.size.height),
-                            convPt)) {
-      break;
+        if (CGRectContainsPoint(NSMakeRect(x, 0, w, self.bounds.size.height),
+                                convPt)) {
+            break;
+        }
+
+        x += w;
     }
-
-    x += w;
-  }
-  return col;
+    return col;
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
-  if ((event.type == NSEventTypeRightMouseDown ||
-       event.type == NSEventTypeLeftMouseDown) &&
-      (event.buttonNumber == 1 ||
-       (event.buttonNumber == 0 &&
-        (event.modifierFlags & NSEventModifierFlagControl)))) {
-    id<DdbListviewDelegate> delegate = [self.listview delegate];
-    DdbListviewCol_t col = [self columnIndexForCoord:[event locationInWindow]];
-    return [delegate contextMenuForColumn:col withEvent:event forView:self];
-  }
-  return nil;
+    if ((event.type == NSEventTypeRightMouseDown ||
+            event.type == NSEventTypeLeftMouseDown) &&
+            (event.buttonNumber == 1 ||
+             (event.buttonNumber == 0 &&
+              (event.modifierFlags & NSEventModifierFlagControl)))) {
+        id<DdbListviewDelegate> delegate = [self.listview delegate];
+        DdbListviewCol_t col = [self columnIndexForCoord:[event locationInWindow]];
+        return [delegate contextMenuForColumn:col withEvent:event forView:self];
+    }
+    return nil;
 }
 
 @end

@@ -118,19 +118,19 @@ enum FB_TYPE { FB_LC = 0, FB_LD = 1, FB_ELD = 2 };
 /* Block types */
 #define N_BLOCKTYPES 6
 enum {
-  LONG_WINDOW = 0,
-  START_WINDOW,
-  SHORT_WINDOW,
-  STOP_WINDOW,
-  _LOWOV_WINDOW, /* Do not use this block type out side of block_switch.cpp */
-  WRONG_WINDOW
+    LONG_WINDOW = 0,
+    START_WINDOW,
+    SHORT_WINDOW,
+    STOP_WINDOW,
+    _LOWOV_WINDOW, /* Do not use this block type out side of block_switch.cpp */
+    WRONG_WINDOW
 };
 
 /* Window shapes */
 enum {
-  SINE_WINDOW = 0,
-  KBD_WINDOW = 1,
-  LOL_WINDOW = 2 /* Low OverLap window shape for AAC-LD */
+    SINE_WINDOW = 0,
+    KBD_WINDOW = 1,
+    LOL_WINDOW = 2 /* Low OverLap window shape for AAC-LD */
 };
 
 /*

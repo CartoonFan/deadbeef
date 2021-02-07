@@ -122,43 +122,43 @@ amm-info@iis.fraunhofer.de
 /** Data for each PVC instance which needs to be persistent accross SBR frames
  */
 typedef struct {
-  UCHAR kx_last;        /**< Xover frequency of last frame */
-  UCHAR pvc_mode_last;  /**< PVC mode of last frame */
-  UCHAR Esg_slot_index; /**< Ring buffer index to current Esg time slot */
-  UCHAR pvcBorder0;     /**< Start SBR time slot of PVC frame */
-  FIXP_DBL Esg[PVC_NS_MAX][PVC_NBLOW]; /**< Esg(ksg,t) of current and 15
+    UCHAR kx_last;        /**< Xover frequency of last frame */
+    UCHAR pvc_mode_last;  /**< PVC mode of last frame */
+    UCHAR Esg_slot_index; /**< Ring buffer index to current Esg time slot */
+    UCHAR pvcBorder0;     /**< Start SBR time slot of PVC frame */
+    FIXP_DBL Esg[PVC_NS_MAX][PVC_NBLOW]; /**< Esg(ksg,t) of current and 15
                                         previous time slots (ring buffer) in
                                         logarithmical domain */
 } PVC_STATIC_DATA;
 
 /** Data for each PVC instance which is valid during one SBR frame */
 typedef struct {
-  UCHAR pvc_mode;   /**< PVC mode 1 or 2, 0 means legacy SBR */
-  UCHAR pvcBorder0; /**< Start SBR time slot of PVC frame */
-  UCHAR kx;         /**< Index of the first QMF subband in the SBR range */
-  UCHAR RATE;       /**< Number of QMF subband samples per time slot (2 or 4) */
-  UCHAR ns; /**< Number of time slots for time-domain smoothing of Esg(ksg,t) */
-  const UCHAR
-      *pPvcID; /**< Pointer to prediction coefficient matrix index table */
-  UCHAR pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
+    UCHAR pvc_mode;   /**< PVC mode 1 or 2, 0 means legacy SBR */
+    UCHAR pvcBorder0; /**< Start SBR time slot of PVC frame */
+    UCHAR kx;         /**< Index of the first QMF subband in the SBR range */
+    UCHAR RATE;       /**< Number of QMF subband samples per time slot (2 or 4) */
+    UCHAR ns; /**< Number of time slots for time-domain smoothing of Esg(ksg,t) */
+    const UCHAR
+    *pPvcID; /**< Pointer to prediction coefficient matrix index table */
+    UCHAR pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
                               for smoothing filter */
-  const FIXP_SGL *pSCcoeffs; /**< Pointer to smoothing window table */
-  SCHAR
-  sg_offset_low[PVC_NBLOW + 1]; /**< Offset table for PVC grouping of SBR
+    const FIXP_SGL *pSCcoeffs; /**< Pointer to smoothing window table */
+    SCHAR
+    sg_offset_low[PVC_NBLOW + 1]; /**< Offset table for PVC grouping of SBR
                                  subbands below SBR range */
-  SCHAR sg_offset_high_kx[PVC_NBHIGH_MAX + 1]; /**< Offset table for PVC
+    SCHAR sg_offset_high_kx[PVC_NBHIGH_MAX + 1]; /**< Offset table for PVC
                                                 grouping of SBR subbands in
                                                 SBR range (relativ to kx) */
-  UCHAR nbHigh; /**< Number of grouped QMF subbands in the SBR range */
-  const SCHAR *pScalingCoef; /**< Pointer to scaling coeff table */
-  const UCHAR *pPVCTab1;     /**< PVC mode 1 table */
-  const UCHAR *pPVCTab2;     /**< PVC mode 2 table */
-  const UCHAR *pPVCTab1_dp;  /**< Mapping of pvcID to PVC mode 1 table */
-  FIXP_DBL predEsg[PVC_NTIMESLOT]
-                  [PVC_NBHIGH_MAX]; /**< Predicted Energy in linear domain */
-  int predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
+    UCHAR nbHigh; /**< Number of grouped QMF subbands in the SBR range */
+    const SCHAR *pScalingCoef; /**< Pointer to scaling coeff table */
+    const UCHAR *pPVCTab1;     /**< PVC mode 1 table */
+    const UCHAR *pPVCTab2;     /**< PVC mode 2 table */
+    const UCHAR *pPVCTab1_dp;  /**< Mapping of pvcID to PVC mode 1 table */
+    FIXP_DBL predEsg[PVC_NTIMESLOT]
+    [PVC_NBHIGH_MAX]; /**< Predicted Energy in linear domain */
+    int predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
                                      domain */
-  int predEsg_expMax;               /**< Maximum of predEsg_exp[] */
+    int predEsg_expMax;               /**< Maximum of predEsg_exp[] */
 } PVC_DYNAMIC_DATA;
 
 /**
