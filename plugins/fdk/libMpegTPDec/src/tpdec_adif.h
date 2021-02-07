@@ -108,12 +108,12 @@ amm-info@iis.fraunhofer.de
 #define MIN_ADIF_HEADERLENGTH 63 /* in bits */
 
 typedef struct {
-  INT NumProgramConfigElements;
-  UINT BitRate;
-  UCHAR CopyrightIdPresent;
-  UCHAR OriginalCopy;
-  UCHAR Home;
-  UCHAR BitstreamType;
+    INT NumProgramConfigElements;
+    UINT BitRate;
+    UCHAR CopyrightIdPresent;
+    UCHAR OriginalCopy;
+    UCHAR Home;
+    UCHAR BitstreamType;
 } CAdifHeader;
 
 /**
@@ -128,7 +128,7 @@ typedef struct {
  * \return TRANSPORTDEC_ERROR error code
  */
 TRANSPORTDEC_ERROR adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
-                                         CProgramConfig *pPce,
-                                         HANDLE_FDK_BITSTREAM bs);
+        CProgramConfig *pPce,
+        HANDLE_FDK_BITSTREAM bs);
 
 #endif /* TPDEC_ADIF_H */

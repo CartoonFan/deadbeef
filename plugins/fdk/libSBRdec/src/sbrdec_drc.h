@@ -109,26 +109,26 @@ amm-info@iis.fraunhofer.de
 #define SBRDEC_MAX_DRC_BANDS (16)
 
 typedef struct {
-  FIXP_DBL prevFact_mag[(64)];
-  INT prevFact_exp;
+    FIXP_DBL prevFact_mag[(64)];
+    INT prevFact_exp;
 
-  FIXP_DBL currFact_mag[SBRDEC_MAX_DRC_BANDS];
-  FIXP_DBL nextFact_mag[SBRDEC_MAX_DRC_BANDS];
-  INT currFact_exp;
-  INT nextFact_exp;
+    FIXP_DBL currFact_mag[SBRDEC_MAX_DRC_BANDS];
+    FIXP_DBL nextFact_mag[SBRDEC_MAX_DRC_BANDS];
+    INT currFact_exp;
+    INT nextFact_exp;
 
-  UINT numBandsCurr;
-  UINT numBandsNext;
-  USHORT bandTopCurr[SBRDEC_MAX_DRC_BANDS];
-  USHORT bandTopNext[SBRDEC_MAX_DRC_BANDS];
+    UINT numBandsCurr;
+    UINT numBandsNext;
+    USHORT bandTopCurr[SBRDEC_MAX_DRC_BANDS];
+    USHORT bandTopNext[SBRDEC_MAX_DRC_BANDS];
 
-  SHORT drcInterpolationSchemeCurr;
-  SHORT drcInterpolationSchemeNext;
+    SHORT drcInterpolationSchemeCurr;
+    SHORT drcInterpolationSchemeNext;
 
-  SHORT enable;
+    SHORT enable;
 
-  UCHAR winSequenceCurr;
-  UCHAR winSequenceNext;
+    UCHAR winSequenceCurr;
+    UCHAR winSequenceNext;
 
 } SBRDEC_DRC_CHANNEL;
 

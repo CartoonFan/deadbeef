@@ -152,42 +152,42 @@ amm-info@iis.fraunhofer.de
                 transposing         */
 
 typedef enum {
-  SBRDEC_OK = 0, /*!< All fine. */
-  /* SBRDEC_CONCEAL, */
-  /* SBRDEC_NOSYNCH, */
-  /* SBRDEC_ILLEGAL_PROGRAM, */
-  /* SBRDEC_ILLEGAL_TAG, */
-  /* SBRDEC_ILLEGAL_CHN_CONFIG, */
-  /* SBRDEC_ILLEGAL_SECTION, */
-  /* SBRDEC_ILLEGAL_SCFACTORS, */
-  /* SBRDEC_ILLEGAL_PULSE_DATA, */
-  /* SBRDEC_MAIN_PROFILE_NOT_IMPLEMENTED, */
-  /* SBRDEC_GC_NOT_IMPLEMENTED, */
-  /* SBRDEC_ILLEGAL_PLUS_ELE_ID, */
-  SBRDEC_INVALID_ARGUMENT,   /*!<   */
-  SBRDEC_CREATE_ERROR,       /*!<       */
-  SBRDEC_NOT_INITIALIZED,    /*!<    */
-  SBRDEC_MEM_ALLOC_FAILED,   /*!< Memory allocation failed. Probably not enough
+    SBRDEC_OK = 0, /*!< All fine. */
+    /* SBRDEC_CONCEAL, */
+    /* SBRDEC_NOSYNCH, */
+    /* SBRDEC_ILLEGAL_PROGRAM, */
+    /* SBRDEC_ILLEGAL_TAG, */
+    /* SBRDEC_ILLEGAL_CHN_CONFIG, */
+    /* SBRDEC_ILLEGAL_SECTION, */
+    /* SBRDEC_ILLEGAL_SCFACTORS, */
+    /* SBRDEC_ILLEGAL_PULSE_DATA, */
+    /* SBRDEC_MAIN_PROFILE_NOT_IMPLEMENTED, */
+    /* SBRDEC_GC_NOT_IMPLEMENTED, */
+    /* SBRDEC_ILLEGAL_PLUS_ELE_ID, */
+    SBRDEC_INVALID_ARGUMENT,   /*!<   */
+    SBRDEC_CREATE_ERROR,       /*!<       */
+    SBRDEC_NOT_INITIALIZED,    /*!<    */
+    SBRDEC_MEM_ALLOC_FAILED,   /*!< Memory allocation failed. Probably not enough
                         memory available. */
-  SBRDEC_PARSE_ERROR,        /*!<        */
-  SBRDEC_UNSUPPORTED_CONFIG, /*!< */
-  SBRDEC_SET_PARAM_FAIL,     /*!<     */
-  SBRDEC_OUTPUT_BUFFER_TOO_SMALL /*!< */
+    SBRDEC_PARSE_ERROR,        /*!<        */
+    SBRDEC_UNSUPPORTED_CONFIG, /*!< */
+    SBRDEC_SET_PARAM_FAIL,     /*!<     */
+    SBRDEC_OUTPUT_BUFFER_TOO_SMALL /*!< */
 } SBR_ERROR;
 
 typedef enum {
-  SBR_SYSTEM_BITSTREAM_DELAY, /*!< System: Switch to enable an additional SBR
+    SBR_SYSTEM_BITSTREAM_DELAY, /*!< System: Switch to enable an additional SBR
                          bitstream delay of one frame. */
-  SBR_QMF_MODE,               /*!< Set QMF mode, either complex or low power. */
-  SBR_LD_QMF_TIME_ALIGN, /*!< Set QMF type, either LD-MPS or CLDFB. Relevant for
+    SBR_QMF_MODE,               /*!< Set QMF mode, either complex or low power. */
+    SBR_LD_QMF_TIME_ALIGN, /*!< Set QMF type, either LD-MPS or CLDFB. Relevant for
                     ELD streams only. */
-  SBR_FLUSH_DATA,     /*!< Set internal state to flush the decoder with the next
+    SBR_FLUSH_DATA,     /*!< Set internal state to flush the decoder with the next
                  process call. */
-  SBR_CLEAR_HISTORY,  /*!< Clear all internal states (delay lines, QMF states,
+    SBR_CLEAR_HISTORY,  /*!< Clear all internal states (delay lines, QMF states,
                  ...). */
-  SBR_BS_INTERRUPTION /*!< Signal bit stream interruption. Value is ignored. */
-  ,
-  SBR_SKIP_QMF /*!< Enable skipping of QMF step: 1 skip analysis, 2 skip
+    SBR_BS_INTERRUPTION /*!< Signal bit stream interruption. Value is ignored. */
+    ,
+    SBR_SKIP_QMF /*!< Enable skipping of QMF step: 1 skip analysis, 2 skip
           synthesis */
 } SBRDEC_PARAM;
 

@@ -344,87 +344,87 @@ typedef enum { PCW_BODY, PCW_BODY_SIGN, PCW_BODY_SIGN_ESC } PCW_TYPE;
 
 /* interface Decoder <---> HCR */
 typedef struct {
-  UINT errorLog;
-  SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
-  int quantizedSpectralCoefficientsIdx;
-  SHORT lengthOfReorderedSpectralData;
-  SHORT numSection;
-  SHORT *pNumLineInSect;
-  INT bitstreamAnchor;
-  SCHAR lengthOfLongestCodeword;
-  UCHAR *pCodebook;
+    UINT errorLog;
+    SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
+    int quantizedSpectralCoefficientsIdx;
+    SHORT lengthOfReorderedSpectralData;
+    SHORT numSection;
+    SHORT *pNumLineInSect;
+    INT bitstreamAnchor;
+    SCHAR lengthOfLongestCodeword;
+    UCHAR *pCodebook;
 } HCR_INPUT_OUTPUT;
 
 typedef struct {
-  const UCHAR *pMinOfCbPair;
-  const UCHAR *pMaxOfCbPair;
+    const UCHAR *pMinOfCbPair;
+    const UCHAR *pMaxOfCbPair;
 } HCR_CB_PAIRS;
 
 typedef struct {
-  const USHORT *pLargestAbsVal;
-  const UCHAR *pMaxCwLength;
-  const UCHAR *pCbDimension;
-  const UCHAR *pCbDimShift;
-  const UCHAR *pCbSign;
-  const UCHAR *pCbPriority;
+    const USHORT *pLargestAbsVal;
+    const UCHAR *pMaxCwLength;
+    const UCHAR *pCbDimension;
+    const UCHAR *pCbDimShift;
+    const UCHAR *pCbSign;
+    const UCHAR *pCbPriority;
 } HCR_TABLE_INFO;
 
 typedef struct {
-  UINT numSegment;
-  UINT pSegmentBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  UINT pCodewordBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  UINT segmentOffset;
-  INT pLeftStartOfSegment[1024 >> 1];
-  INT pRightStartOfSegment[1024 >> 1];
-  SCHAR pRemainingBitsInSegment[1024 >> 1];
-  UCHAR readDirection;
-  UCHAR numWordForBitfield;
-  USHORT pNumBitValidInLastWord;
+    UINT numSegment;
+    UINT pSegmentBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
+    UINT pCodewordBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
+    UINT segmentOffset;
+    INT pLeftStartOfSegment[1024 >> 1];
+    INT pRightStartOfSegment[1024 >> 1];
+    SCHAR pRemainingBitsInSegment[1024 >> 1];
+    UCHAR readDirection;
+    UCHAR numWordForBitfield;
+    USHORT pNumBitValidInLastWord;
 } HCR_SEGMENT_INFO;
 
 typedef struct {
-  UINT numCodeword;
-  UINT numSortedSection;
-  USHORT pNumCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumSortedCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
-  int numExtendedSortedCodewordInSectionIdx;
-  USHORT pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
-  int numExtendedSortedSectionsInSetsIdx;
-  USHORT pReorderOffset[MAX_SFB_HCR];
-  UCHAR pSortedCodebook[MAX_SFB_HCR];
+    UINT numCodeword;
+    UINT numSortedSection;
+    USHORT pNumCodewordInSection[MAX_SFB_HCR];
+    USHORT pNumSortedCodewordInSection[MAX_SFB_HCR];
+    USHORT pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
+    int numExtendedSortedCodewordInSectionIdx;
+    USHORT pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
+    int numExtendedSortedSectionsInSetsIdx;
+    USHORT pReorderOffset[MAX_SFB_HCR];
+    UCHAR pSortedCodebook[MAX_SFB_HCR];
 
-  UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
-  int extendedSortedCodebookIdx;
-  UCHAR pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
-  int maxLenOfCbInExtSrtSecIdx;
-  UCHAR pCodebookSwitch[MAX_SFB_HCR];
+    UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
+    int extendedSortedCodebookIdx;
+    UCHAR pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
+    int maxLenOfCbInExtSrtSecIdx;
+    UCHAR pCodebookSwitch[MAX_SFB_HCR];
 } HCR_SECTION_INFO;
 
 typedef UINT (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
 
 typedef struct {
-  /* worst-case and 1024/4 non-PCWs exist in worst-case */
-  FIXP_DBL
-  *pResultBase; /* Base address for spectral data output target buffer */
-  UINT iNode[1024 >> 2]; /* Helper indices for code books */
-  USHORT
-  iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
-  UINT pEscapeSequenceInfo[1024 >> 2];
-  UINT codewordOffset;
-  STATEFUNC pState;
-  UCHAR pCodebook[1024 >> 2];
-  UCHAR pCntSign[1024 >> 2];
-  /* this array holds the states coded as integer values within the range
-   * [0,1,..,7] */
-  SCHAR pSta[1024 >> 2];
+    /* worst-case and 1024/4 non-PCWs exist in worst-case */
+    FIXP_DBL
+    *pResultBase; /* Base address for spectral data output target buffer */
+    UINT iNode[1024 >> 2]; /* Helper indices for code books */
+    USHORT
+    iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
+    UINT pEscapeSequenceInfo[1024 >> 2];
+    UINT codewordOffset;
+    STATEFUNC pState;
+    UCHAR pCodebook[1024 >> 2];
+    UCHAR pCntSign[1024 >> 2];
+    /* this array holds the states coded as integer values within the range
+     * [0,1,..,7] */
+    SCHAR pSta[1024 >> 2];
 } HCR_NON_PCW_SIDEINFO;
 
 typedef struct {
-  HCR_INPUT_OUTPUT decInOut;
-  HCR_SEGMENT_INFO segmentInfo;
-  HCR_SECTION_INFO sectionInfo;
-  HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
+    HCR_INPUT_OUTPUT decInOut;
+    HCR_SEGMENT_INFO segmentInfo;
+    HCR_SECTION_INFO sectionInfo;
+    HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
 } CErHcrInfo;
 
 typedef CErHcrInfo *H_HCR_INFO;

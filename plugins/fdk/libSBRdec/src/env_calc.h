@@ -111,35 +111,35 @@ amm-info@iis.fraunhofer.de
 #include "sbrdecoder.h"
 
 typedef struct {
-  FIXP_DBL filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
+    FIXP_DBL filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
                                         smoothing) */
-  FIXP_DBL filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
+    FIXP_DBL filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
                                         (required for smoothing) */
-  SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
-  SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
+    SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
+    SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
 
-  int startUp;     /*!< flag to signal initial conditions in buffers */
-  int phaseIndex;  /*!< Index for randomPase array */
-  int prevTranEnv; /*!< The transient envelope of the previous frame. */
+    int startUp;     /*!< flag to signal initial conditions in buffers */
+    int phaseIndex;  /*!< Index for randomPase array */
+    int prevTranEnv; /*!< The transient envelope of the previous frame. */
 
-  ULONG harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
-  /*!< Words with 16 flags each indicating where a sine was added in the
-   * previous frame.*/
-  UCHAR harmIndex;     /*!< Current phase of synthetic sine */
-  int sbrPatchingMode; /*!< Current patching mode           */
+    ULONG harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
+    /*!< Words with 16 flags each indicating where a sine was added in the
+     * previous frame.*/
+    UCHAR harmIndex;     /*!< Current phase of synthetic sine */
+    int sbrPatchingMode; /*!< Current patching mode           */
 
-  FIXP_SGL prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
-  UCHAR prevNNfb;
-  UCHAR prevNSfb[2];
-  UCHAR prevLoSubband;
-  UCHAR prevHiSubband;
-  UCHAR prev_ov_highSubband;
-  UCHAR *prevFreqBandTable[2];
-  UCHAR prevFreqBandTableLo[MAX_FREQ_COEFFS / 2 + 1];
-  UCHAR prevFreqBandTableHi[MAX_FREQ_COEFFS + 1];
-  UCHAR prevFreqBandTableNoise[MAX_NOISE_COEFFS + 1];
-  SCHAR sinusoidal_positionPrev;
-  ULONG harmFlagsPrevActive[ADD_HARMONICS_FLAGS_SIZE];
+    FIXP_SGL prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
+    UCHAR prevNNfb;
+    UCHAR prevNSfb[2];
+    UCHAR prevLoSubband;
+    UCHAR prevHiSubband;
+    UCHAR prev_ov_highSubband;
+    UCHAR *prevFreqBandTable[2];
+    UCHAR prevFreqBandTableLo[MAX_FREQ_COEFFS / 2 + 1];
+    UCHAR prevFreqBandTableHi[MAX_FREQ_COEFFS + 1];
+    UCHAR prevFreqBandTableNoise[MAX_NOISE_COEFFS + 1];
+    SCHAR sinusoidal_positionPrev;
+    ULONG harmFlagsPrevActive[ADD_HARMONICS_FLAGS_SIZE];
 } SBR_CALCULATE_ENVELOPE;
 
 typedef SBR_CALCULATE_ENVELOPE *HANDLE_SBR_CALCULATE_ENVELOPE;
@@ -150,7 +150,7 @@ void calculateSbrEnvelope(
     HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_SBR_FRAME_DATA hFrameData,
     PVC_DYNAMIC_DATA *pPvcDynamicData, FIXP_DBL **analysBufferReal,
     FIXP_DBL *
-        *analysBufferImag, /*!< Imag part of subband samples to be processed */
+    *analysBufferImag, /*!< Imag part of subband samples to be processed */
     const int useLP,
     FIXP_DBL *degreeAlias, /*!< Estimated aliasing for each QMF channel */
     const UINT flags, const int frameErrorFlag);

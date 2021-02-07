@@ -120,33 +120,33 @@ amm-info@iis.fraunhofer.de
 #include "FDK_crc.h"
 
 typedef struct {
-  /* ADTS header fields */
-  UCHAR mpeg_id;
-  UCHAR layer;
-  UCHAR protection_absent;
-  UCHAR profile;
-  UCHAR sample_freq_index;
-  UCHAR private_bit;
-  UCHAR channel_config;
-  UCHAR original;
-  UCHAR home;
-  UCHAR copyright_id;
-  UCHAR copyright_start;
-  USHORT frame_length;
-  USHORT adts_fullness;
-  UCHAR num_raw_blocks;
-  UCHAR num_pce_bits;
+    /* ADTS header fields */
+    UCHAR mpeg_id;
+    UCHAR layer;
+    UCHAR protection_absent;
+    UCHAR profile;
+    UCHAR sample_freq_index;
+    UCHAR private_bit;
+    UCHAR channel_config;
+    UCHAR original;
+    UCHAR home;
+    UCHAR copyright_id;
+    UCHAR copyright_start;
+    USHORT frame_length;
+    USHORT adts_fullness;
+    UCHAR num_raw_blocks;
+    UCHAR num_pce_bits;
 } STRUCT_ADTS_BS;
 
 struct STRUCT_ADTS {
-  STRUCT_ADTS_BS bs;
+    STRUCT_ADTS_BS bs;
 
-  UCHAR decoderCanDoMpeg4;
-  UCHAR BufferFullnesStartFlag;
+    UCHAR decoderCanDoMpeg4;
+    UCHAR BufferFullnesStartFlag;
 
-  FDK_CRCINFO crcInfo;        /* CRC state info */
-  USHORT crcReadValue;        /* CRC value read from bitstream data */
-  USHORT rawDataBlockDist[4]; /* distance between each raw data block. Not the
+    FDK_CRCINFO crcInfo;        /* CRC state info */
+    USHORT crcReadValue;        /* CRC value read from bitstream data */
+    USHORT rawDataBlockDist[4]; /* distance between each raw data block. Not the
                          same as found in the bitstream */
 };
 
@@ -214,9 +214,9 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts);
  * \return  error status
  */
 TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
-                                         CSAudioSpecificConfig *pAsc,
-                                         HANDLE_FDK_BITSTREAM bs,
-                                         const INT ignoreBufferFullness);
+        CSAudioSpecificConfig *pAsc,
+        HANDLE_FDK_BITSTREAM bs,
+        const INT ignoreBufferFullness);
 
 /**
  * \brief Get the raw data block length of the given block number.

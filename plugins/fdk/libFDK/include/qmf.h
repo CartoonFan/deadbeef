@@ -167,36 +167,36 @@ amm-info@iis.fraunhofer.de
 #define ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK 1
 
 typedef struct {
-  int lb_scale;    /*!< Scale of low band area                   */
-  int ov_lb_scale; /*!< Scale of adjusted overlap low band area  */
-  int hb_scale;    /*!< Scale of high band area                  */
-  int ov_hb_scale; /*!< Scale of adjusted overlap high band area */
+    int lb_scale;    /*!< Scale of low band area                   */
+    int ov_lb_scale; /*!< Scale of adjusted overlap low band area  */
+    int hb_scale;    /*!< Scale of high band area                  */
+    int ov_hb_scale; /*!< Scale of adjusted overlap high band area */
 } QMF_SCALE_FACTOR;
 
 struct QMF_FILTER_BANK {
-  const FIXP_PFT *p_filter; /*!< Pointer to filter coefficients */
+    const FIXP_PFT *p_filter; /*!< Pointer to filter coefficients */
 
-  void *FilterStates;    /*!< Pointer to buffer of filter states
+    void *FilterStates;    /*!< Pointer to buffer of filter states
                       FIXP_PCM in analyse and
                       FIXP_DBL in synthesis filter */
-  int FilterSize;        /*!< Size of prototype filter. */
-  const FIXP_QTW *t_cos; /*!< Modulation tables. */
-  const FIXP_QTW *t_sin;
-  int filterScale; /*!< filter scale */
+    int FilterSize;        /*!< Size of prototype filter. */
+    const FIXP_QTW *t_cos; /*!< Modulation tables. */
+    const FIXP_QTW *t_sin;
+    int filterScale; /*!< filter scale */
 
-  int no_channels; /*!< Total number of channels (subbands) */
-  int no_col;      /*!< Number of time slots       */
-  int lsb;         /*!< Top of low subbands */
-  int usb;         /*!< Top of high subbands */
+    int no_channels; /*!< Total number of channels (subbands) */
+    int no_col;      /*!< Number of time slots       */
+    int lsb;         /*!< Top of low subbands */
+    int usb;         /*!< Top of high subbands */
 
-  int synScalefactor; /*!< Scale factor of synthesis qmf (syn only) */
-  int outScalefactor; /*!< Scale factor of output data (syn only) */
-  FIXP_DBL outGain_m; /*!< Mantissa of gain output data (syn only) (init with
+    int synScalefactor; /*!< Scale factor of synthesis qmf (syn only) */
+    int outScalefactor; /*!< Scale factor of output data (syn only) */
+    FIXP_DBL outGain_m; /*!< Mantissa of gain output data (syn only) (init with
                  0x80000000 to ignore) */
-  int outGain_e;      /*!< Exponent of gain output data (syn only) */
+    int outGain_e;      /*!< Exponent of gain output data (syn only) */
 
-  UINT flags;     /*!< flags */
-  UCHAR p_stride; /*!< Stride Factor of polyphase filters */
+    UINT flags;     /*!< flags */
+    UCHAR p_stride; /*!< Stride Factor of polyphase filters */
 };
 
 typedef struct QMF_FILTER_BANK *HANDLE_QMF_FILTER_BANK;

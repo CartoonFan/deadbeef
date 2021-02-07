@@ -123,15 +123,15 @@ amm-info@iis.fraunhofer.de
 int DecodeHuffmanCW(Huffman h, /*!< pointer to huffman codebook table */
                     HANDLE_FDK_BITSTREAM hBs) /*!< Handle to Bitbuffer */
 {
-  SCHAR index = 0;
-  int value, bit;
+    SCHAR index = 0;
+    int value, bit;
 
-  while (index >= 0) {
-    bit = FDKreadBits(hBs, 1);
-    index = h[index][bit];
-  }
+    while (index >= 0) {
+        bit = FDKreadBits(hBs, 1);
+        index = h[index][bit];
+    }
 
-  value = index + 64; /* Add offset */
+    value = index + 64; /* Add offset */
 
-  return value;
+    return value;
 }

@@ -136,34 +136,34 @@ amm-info@iis.fraunhofer.de
  * bbWordSize))*/
 
 struct AAC_ENC {
-  AACENC_CONFIG *config;
+    AACENC_CONFIG *config;
 
-  INT ancillaryBitsPerFrame; /* ancillary bits per frame calculated from
+    INT ancillaryBitsPerFrame; /* ancillary bits per frame calculated from
                         ancillary rate */
 
-  CHANNEL_MAPPING channelMapping;
+    CHANNEL_MAPPING channelMapping;
 
-  QC_STATE *qcKernel;
-  QC_OUT *qcOut[(1)];
+    QC_STATE *qcKernel;
+    QC_OUT *qcOut[(1)];
 
-  PSY_OUT *psyOut[(1)];
-  PSY_INTERNAL *psyKernel;
+    PSY_OUT *psyOut[(1)];
+    PSY_INTERNAL *psyKernel;
 
-  /* lifetime vars */
+    /* lifetime vars */
 
-  CHANNEL_MODE encoderMode;
-  INT bandwidth90dB;
-  AACENC_BITRATE_MODE bitrateMode;
+    CHANNEL_MODE encoderMode;
+    INT bandwidth90dB;
+    AACENC_BITRATE_MODE bitrateMode;
 
-  INT dontWriteAdif; /* use: write ADIF header only before 1st frame */
+    INT dontWriteAdif; /* use: write ADIF header only before 1st frame */
 
-  FIXP_DBL *dynamic_RAM;
+    FIXP_DBL *dynamic_RAM;
 
-  INT maxChannels; /* used while allocation */
-  INT maxElements;
-  INT maxFrames;
+    INT maxChannels; /* used while allocation */
+    INT maxElements;
+    INT maxFrames;
 
-  AUDIO_OBJECT_TYPE aot; /* AOT to be used while encoding.  */
+    AUDIO_OBJECT_TYPE aot; /* AOT to be used while encoding.  */
 };
 
 #define maxSize(a, b) (((a) > (b)) ? (a) : (b))
