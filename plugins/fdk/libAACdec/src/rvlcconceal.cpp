@@ -609,7 +609,7 @@ void StatisticalEstimation(CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   int sumNrgFwd, sumNrgBwd; /* sum of noise energy data forward/backward */
   int sumScfFwd, sumScfBwd; /* sum of scalefactor data forward/backward */
   int useIsFwd, useNrgFwd, useScfFwd; /* the flags signals the elements which
-                                   are used for the final result */
+                                 are used for the final result */
 
   sumIsFwd = sumIsBwd = sumNrgFwd = sumNrgBwd = sumScfFwd = sumScfBwd = 0;
   useIsFwd = useNrgFwd = useScfFwd = 0;

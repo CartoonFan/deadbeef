@@ -128,7 +128,7 @@ typedef struct {
   int headerBits;       /*!< Header bit demand for the current raw data block */
   int currentBlock;     /*!< Index of current raw data block */
   int subFrameStartBit; /*!< Bit position where the current raw data block
-                     begins */
+                   begins */
   FDK_CRCINFO crcInfo;
 } STRUCT_ADTS;
 

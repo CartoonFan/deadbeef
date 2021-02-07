@@ -134,8 +134,8 @@ static void FDKaacEnc_quantizeLines(INT gain, INT noOfLines,
       accu = -accu;
       /* normalize */
       INT accuShift = CntLeadingZeros(accu) - 1; /* CountLeadingBits() is not
-                                  necessary here since test
-                                  value is always > 0 */
+                            necessary here since test
+                            value is always > 0 */
       accu <<= accuShift;
       INT tabIndex =
           (INT)(accu >> (DFRACT_BITS - 2 - MANT_DIGITS)) & (~MANT_SIZE);
@@ -150,8 +150,8 @@ static void FDKaacEnc_quantizeLines(INT gain, INT noOfLines,
     } else if (accu > FL2FXCONST_DBL(0.0f)) {
       /* normalize */
       INT accuShift = CntLeadingZeros(accu) - 1; /* CountLeadingBits() is not
-                                  necessary here since test
-                                  value is always > 0 */
+                            necessary here since test
+                            value is always > 0 */
       accu <<= accuShift;
       INT tabIndex =
           (INT)(accu >> (DFRACT_BITS - 2 - MANT_DIGITS)) & (~MANT_SIZE);

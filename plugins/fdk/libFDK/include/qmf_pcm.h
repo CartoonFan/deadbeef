@@ -182,7 +182,7 @@ void qmfSynPrototypeFirSlot_fallback(
       }
       if (scale >= 0) {
         FDK_ASSERT(Are <= (Are + rnd_val)); /* Round-addition must not overflow,
-                       might be equal for rnd_val=0 */
+               might be equal for rnd_val=0 */
         tmp = (INT_PCM_QMFOUT)(
             SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
       } else {

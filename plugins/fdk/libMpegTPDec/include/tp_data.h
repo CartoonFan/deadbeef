@@ -199,9 +199,9 @@ typedef struct {
   UCHAR isValid; /*!< Flag showing if PCE has been read successfully. */
   UCHAR
   NumChannels; /*!< Amount of audio channels summing all channel elements
-            including LFEs */
+          including LFEs */
   UCHAR NumEffectiveChannels; /*!< Amount of audio channels summing only SCEs
-                           and CPEs */
+                         and CPEs */
   UCHAR elCounter;
 
 } CProgramConfig;
@@ -276,8 +276,8 @@ typedef struct {
   UCHAR m_coreSbrFrameLengthIndex;
   UCHAR m_sbrRatioIndex;
   UCHAR m_nUsacChannels; /* number of audio channels signaled in
-                      UsacDecoderConfig() / rsv603daDecoderConfig() via
-                      numElements and usacElementType */
+                    UsacDecoderConfig() / rsv603daDecoderConfig() via
+                    numElements and usacElementType */
   UCHAR m_channelConfigurationIndex;
   UINT m_usacNumElements;
   CSUsacElementConfig element[TP_USAC_MAX_ELEMENTS];
@@ -320,26 +320,26 @@ typedef struct {
   SCHAR m_hcrFlag;   /**< aacSpectralDataResilienceFlag                    */
 
   SCHAR m_sbrPresentFlag; /**< Flag indicating the presence of SBR data in the
-                       bitstream               */
+                     bitstream               */
   SCHAR
   m_psPresentFlag; /**< Flag indicating the presence of parametric stereo
-                data in the bitstream */
+              data in the bitstream */
   UCHAR m_samplingFrequencyIndex;          /**< Samplerate index          */
   UCHAR m_extensionSamplingFrequencyIndex; /**< Samplerate index */
   SCHAR m_extensionChannelConfiguration;   /**< Channel configuration index   */
 
   UCHAR
   configMode; /**< The flag indicates if the callback shall work in memory
-           allocation mode or in config change detection mode */
+         allocation mode or in config change detection mode */
   UCHAR AacConfigChanged; /**< The flag will be set if at least one aac config
-                       parameter has changed that requires a memory
-                       reconfiguration, otherwise it will be cleared */
+                     parameter has changed that requires a memory
+                     reconfiguration, otherwise it will be cleared */
   UCHAR SbrConfigChanged; /**< The flag will be set if at least one sbr config
-                       parameter has changed that requires a memory
-                       reconfiguration, otherwise it will be cleared */
+                     parameter has changed that requires a memory
+                     reconfiguration, otherwise it will be cleared */
   UCHAR SacConfigChanged; /**< The flag will be set if at least one sac config
-                       parameter has changed that requires a memory
-                       reconfiguration, otherwise it will be cleared */
+                     parameter has changed that requires a memory
+                     reconfiguration, otherwise it will be cleared */
 
   UCHAR
   config[TP_USAC_MAX_CONFIG_LEN]; /**< Configuration stored as bitstream */
@@ -353,12 +353,12 @@ typedef struct {
   SCHAR buildUpCnt;    /**< Build up frame counter */
   UCHAR buildUpStatus; /**< Flag indicates build up mode: on|off */
   UCHAR cfgChanged; /**< Flag indicates that the config changed and the decoder
-                 needs to be initialized again via callback. Make sure
-                 that memory is freed before initialization. */
+               needs to be initialized again via callback. Make sure
+               that memory is freed before initialization. */
   UCHAR contentChanged; /**< Flag indicates that the content changed i.e. a
-                     right truncation occured before */
+                   right truncation occured before */
   UCHAR forceCfgChange; /**< Flag indicates if config change has to be forced
-                     even if new config is the same */
+                   even if new config is the same */
 } CCtrlCFGChange;
 
 typedef INT (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *,
@@ -390,15 +390,15 @@ typedef INT (*cbUniDrc_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
 
 typedef struct {
   cbUpdateConfig_t cbUpdateConfig; /*!< Function pointer for Config change
-                                notify callback.  */
+                              notify callback.  */
   void *cbUpdateConfigData; /*!< User data pointer for Config change notify
-                         callback. */
+                       callback. */
   cbFreeMem_t cbFreeMem;    /*!< Function pointer for free memory callback.  */
   void *cbFreeMemData;      /*!< User data pointer for free memory callback. */
   cbCtrlCFGChange_t cbCtrlCFGChange; /*!< Function pointer for config change
-                                  control callback. */
+                                control callback. */
   void *cbCtrlCFGChangeData; /*!< User data pointer for config change control
-                          callback. */
+                        callback. */
   cbSsc_t cbSsc;             /*!< Function pointer for SSC parser callback. */
   void *cbSscData;           /*!< User data pointer for SSC parser callback. */
   cbSbr_t cbSbr;   /*!< Function pointer for SBR header parser callback. */
@@ -406,9 +406,9 @@ typedef struct {
   cbUsac_t cbUsac;
   void *cbUsacData;
   cbUniDrc_t cbUniDrc; /*!< Function pointer for uniDrcConfig and
-                    loudnessInfoSet parser callback. */
+                  loudnessInfoSet parser callback. */
   void *cbUniDrcData;  /*!< User data pointer for uniDrcConfig and
-                    loudnessInfoSet parser callback. */
+                  loudnessInfoSet parser callback. */
 } CSTpCallBacks;
 
 static const UINT SamplingRateTable[] = {

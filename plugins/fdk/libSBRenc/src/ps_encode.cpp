@@ -226,7 +226,7 @@ static FIXP_DBL quantizeCoef(const FIXP_DBL *RESTRICT input, const INT nBands,
     }
     quantErr += (fixp_abs(input[band] - quantTable[idx]) >>
                  PS_QUANT_SCALE); /* don't scale before subtraction; diff
-                         smaller (64-25)/64 */
+                     smaller (64-25)/64 */
     quantOut[band] = idx - idxOffset;
   }
 

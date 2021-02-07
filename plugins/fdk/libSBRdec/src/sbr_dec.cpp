@@ -735,7 +735,7 @@ void sbr_dec(
         fMin(DFRACT_BITS - 1, fMax(-(DFRACT_BITS - 1), scaleFactorHighBand));
 
     if (h_ps_d->procFrameBased == 1) /* If we have switched from frame to slot
-                            based processing copy filter states */
+                        based processing copy filter states */
     {                                /* procFrameBased will be unset later */
       /* copy filter states from left to right */
       /* was ((640)-(64))*sizeof(FIXP_QSS)

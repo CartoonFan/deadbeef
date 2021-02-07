@@ -130,8 +130,8 @@ amm-info@iis.fraunhofer.de
  */
 typedef struct {
   ULONG packed; /*! Packed huffman entry:
-              - lower 8 bit are reservoed for length information
-              - upper 24 bit contains huffman value */
+            - lower 8 bit are reservoed for length information
+            - upper 24 bit contains huffman value */
 } HUFF_ENTRY;
 
 typedef struct {

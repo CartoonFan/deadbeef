@@ -573,8 +573,8 @@ SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
 
   FDKbyteAlign(bitstream,
                cfgStartPos); /* ISO/IEC FDIS 23003-1: 5.2. ... byte alignment
-                          with respect to the beginning of the syntactic
-                          element in which ByteAlign() occurs. */
+                        with respect to the beginning of the syntactic
+                        element in which ByteAlign() occurs. */
 
   numHeaderBits = cfgStartPos - (INT)FDKgetValidBits(bitstream);
   bitsAvailable -= numHeaderBits;
@@ -593,7 +593,7 @@ SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
 
   FDKbyteAlign(bitstream,
                cfgStartPos); /* Same alignment anchor as above because
-                          SpatialExtensionConfig() always reads full bytes */
+                        SpatialExtensionConfig() always reads full bytes */
 
   pSpatialSpecificConfig->coreCodec = coreCodec;
 
@@ -976,8 +976,8 @@ SpatialDecParseFrameData(spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
   int bsNumOutputChannels =
       treePropertyTable[pSpatialSpecificConfig->treeConfig]
           .numOutputChannels; /* CAUTION: Maybe different to
-                                       pSpatialSpecificConfig->treeConfig in
-                                 some modes! */
+                                         pSpatialSpecificConfig->treeConfig in
+                                   some modes! */
   int paramSetErr = 0;
   UINT alignAnchor = FDKgetValidBits(
       bitstream); /* Anchor for ByteAlign() function. See comment below. */
@@ -1199,10 +1199,9 @@ SpatialDecParseFrameData(spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
   }
 
   if (1 && (!(syntaxFlags & (SACDEC_SYNTAX_USAC)))) {
-    FDKbyteAlign(bitstream,
-                 alignAnchor); /* ISO/IEC FDIS 23003-1: 5.2. ... byte alignment
-                      with respect to the beginning of the syntactic
-                      element in which ByteAlign() occurs. */
+    FDKbyteAlign(bitstream, alignAnchor); /* ISO/IEC FDIS 23003-1: 5.2. ... byte
+                             alignment with respect to the beginning of the
+                             syntactic element in which ByteAlign() occurs. */
   }
 
 bail:
@@ -1662,14 +1661,14 @@ static SACDEC_ERROR decodeAndMapFrameOtt(HANDLE_SPATIAL_DEC self,
           &pCurBs->CLDLosslessData[i], /* LOSSLESSDATA *llData,*/
           self->ottCLD__FDK, self->outIdxData,
           pCurBs->cmpOttCLDidx, /* int
-             cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-           */
+ cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+*/
           NULL,                 /* no differential data */
           i, /*  int   xttIdx,  Which ott/ttt index to use for input and
 output buffers */
           self->ottCLDidxPrev,                        /* int
-                       idxPrev[MAX_NUM_OTT][MAX_PARAMETER_BANDS],
-                     */
+           idxPrev[MAX_NUM_OTT][MAX_PARAMETER_BANDS],
+         */
           i, t_CLD, 0,                                /* int   startBand, */
           self->pConfigCurrent->bitstreamOttBands[i], /*  int   stopBand, */
           self->pConfigCurrent->ottCLDdefault[i],     /* int   defaultValue, */
@@ -1689,8 +1688,8 @@ output buffers */
         &pCurBs->ICCLosslessData[ottIdx], /* LOSSLESSDATA *llData,*/
         self->ottICC__FDK, self->outIdxData,
         pCurBs->cmpOttICCidx, /* int
-               cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-             */
+     cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+   */
         self->ottICCdiffidx,  /* differential data */
         ottIdx, /* int   xttIdx,  Which ott/ttt index to use for input and
 output buffers */

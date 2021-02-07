@@ -118,16 +118,16 @@ typedef struct backsubst_data {
   FIXP_CHB Lnorm1d[3]; /*!< Normalized L matrix */
   SCHAR Lnorm1d_sf[3];
   FIXP_CHB Lnormii[3]; /*!< The diagonal data points [i][i] of the normalized L
-                      matrix */
+                    matrix */
   SCHAR Lnormii_sf[3];
   FIXP_CHB Bmul0[4]; /*!< To normalize L*x=b, Bmul0 is what we need to multiply
-                    b with. */
+                  b with. */
   SCHAR Bmul0_sf[4];
   FIXP_CHB LnormInv1d[6]; /*!< Normalized inverted L matrix (L') */
   SCHAR LnormInv1d_sf[6];
   FIXP_CHB
   Bmul1[4]; /*!< To normalize L'*x=b, Bmul1 is what we need to multiply b
-         with. */
+       with. */
   SCHAR Bmul1_sf[4];
 } backsubst_data;
 
@@ -642,7 +642,7 @@ static void backsubst_bw(const int numBands, const FIXP_DBL *const b,
   for (i = POLY_ORDER - 1, m = 0; i >= 0; i--) {
     FIXP_DBL sum = b[i] >> SUM_SAFETY;
     int sum_sf = x_sf[i]; /* sum's sf but disregarding SUM_SAFETY (added at the
-                 iteration's end) */
+             iteration's end) */
 
     for (k = i + 1; k <= POLY_ORDER; ++k, ++m) {
       int e;

@@ -828,15 +828,14 @@ static int CConcealment_ApplyNoise(
   case ConcealState_Mute: {
     /* set dummy window parameters */
     pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
-    pIcsInfo->WindowShape =
-        pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
-                    (required for F/T transform) */
+    pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid
+                                WindowShape (required for F/T transform) */
     pIcsInfo->WindowSequence =
         CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
     pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for
-                                              next frame (spectrum in
-                                              concealment buffer can't
-                                              be used at all) */
+                                      next frame (spectrum in
+                                      concealment buffer can't
+                                      be used at all) */
 
     /* mute spectral data */
     FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));
@@ -1088,15 +1087,14 @@ CConcealment_ApplyInter(CConcealmentInfo *pConcealmentInfo,
   case ConcealState_Mute: {
     /* set dummy window parameters */
     pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
-    pIcsInfo->WindowShape =
-        pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
-                    (required for F/T transform) */
+    pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid
+                                WindowShape (required for F/T transform) */
     pIcsInfo->WindowSequence =
         CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
     pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for
-                                              next frame (spectrum in
-                                              concealment buffer can't
-                                              be used at all) */
+                                      next frame (spectrum in
+                                      concealment buffer can't
+                                      be used at all) */
 
     /* mute spectral data */
     FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));
@@ -1361,7 +1359,7 @@ static void CConcealment_UpdateState(
       break;
 
     case ConcealState_Single: /* Just a pre-stage before fade-out begins.
-             Stay here only one frame! */
+     Stay here only one frame! */
       if (frameOk) {
         /* change to state OK */
         pConcealmentInfo->concealState = ConcealState_Ok;
@@ -1461,8 +1459,8 @@ static void CConcealment_UpdateState(
           pConcealmentInfo->attGrpOffset[1] = 0;
 
           pConcealmentInfo->cntFadeFrames--; /* decrease because
-              CConcealment_ApplyFadeOut() will
-              increase, accordingly */
+CConcealment_ApplyFadeOut() will
+increase, accordingly */
           /* mode 0 just updates the Fading counter */
           CConcealment_ApplyFadeOut(
               /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo,

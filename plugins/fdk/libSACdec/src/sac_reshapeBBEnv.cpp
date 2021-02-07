@@ -408,8 +408,8 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
     {
       getSlotNrgHQ(&pReal[12], &pImag[12], slotNrg, clz,
                    fixMin(42, self->hybridBands)); /* scale slotNrg:
-                                    2*(staticScale-clz) +
-                                    SF_FACTOR_SLOT */
+                              2*(staticScale-clz) +
+                              SF_FACTOR_SLOT */
     }
 
     slotNrgSF = 2 * (staticScale - clz) + SF_FACTOR_SLOT;
@@ -651,8 +651,8 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
 
       /* calculate common scale factor */
       scale = fixMax(3, fixMax(dryFacSF, slotAmpSF)); /* scale is at least with
-                                       3 bits to avoid overflows
-                                       when calculating dryFac  */
+                                 3 bits to avoid overflows
+                                 when calculating dryFac  */
       dryFac = dryFac >> (scale - dryFacSF);
       slotAmp_ratio = slotAmp_ratio >> (scale - slotAmpSF);
 
@@ -664,7 +664,7 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       dryFac = fixMin(FL2FXCONST_DBL(0.50f) >>
                           (INT)fixMin(2 * scale - 3, DFRACT_BITS - 1),
                       dryFac); /* reduce shift bits by 3, because upper
-       limit 4.0 is scaled with 3 bits */
+ limit 4.0 is scaled with 3 bits */
       scale = 2 * scale + 1;
 
       /* improve precision for dryFac */

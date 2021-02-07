@@ -137,19 +137,19 @@ typedef enum {
   /* set only system (not user) parameters */
   DRC_DEC_DOWNMIX_ID,
   DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED, /**< number of output channels
-                                       notified to FDK_drcDecLib for
-                                       choosing an appropriate
-                                       downmixInstruction */
+                                     notified to FDK_drcDecLib for
+                                     choosing an appropriate
+                                     downmixInstruction */
   DRC_DEC_BASE_CHANNEL_COUNT,
   /* get only system parameters */
   DRC_DEC_IS_MULTIBAND_DRC_1,
   DRC_DEC_IS_MULTIBAND_DRC_2,
   DRC_DEC_IS_ACTIVE, /**< MPEG-D DRC payload is present and at least one of
-                  Dynamic Range Control (DRC) or Loudness Normalization
-                  (LN) is activated */
+                Dynamic Range Control (DRC) or Loudness Normalization
+                (LN) is activated */
   DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED /**< number of output channels if
-                                     appropriate downmixInstruction exists
-                                   */
+                                   appropriate downmixInstruction exists
+                                 */
 } DRC_DEC_USERPARAM;
 
 typedef enum {

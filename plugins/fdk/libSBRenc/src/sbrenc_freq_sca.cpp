@@ -396,11 +396,11 @@ of target bands per octave (or lower the sampling frequency) */
   /* Test for invalid  k0 k2 combinations */
   if ((srCore == 22050) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS44100))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-       fs=44.1kHz */
+   fs=44.1kHz */
 
   if ((srCore >= 24000) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS48000))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-       fs>=48kHz */
+   fs>=48kHz */
 
   if ((*k2 - *k0) > MAX_FREQ_COEFFS)
     return (1); /*Number of bands exceeds valid range of MAX_FREQ_COEFFS */
@@ -456,7 +456,7 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       warp = FL2FXCONST_DBL(1.0f / 2.6f); /* 1.0/(1.3*2.0); */
 
     if (4 * k2 >= 9 * k0) /*two or more regions (how many times the basis band
-                 is copied)*/
+             is copied)*/
     {
       k1 = 2 * k0;
 

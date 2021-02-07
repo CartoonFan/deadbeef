@@ -3145,8 +3145,8 @@ static void dynacompile(struct YAM_STATE *state) {
   C(0x8B)
   C(0xAF)
   C32(STATEOFS(mdec_ct)) // mov ebp,[edi+<OFS32:mdec_ct>]
-      C(0x8B) C(0xB7)
-          C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov esi,[edi+<OFS32:acc>]
+  C(0x8B)
+  C(0xB7) C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov esi,[edi+<OFS32:acc>]
       // 16 bytes
       //
       // Each instruction
@@ -3210,11 +3210,11 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0xAC)
       C(0xD0)
       C(0x0C) // shrd eax,edx,12
-          // 11 bytes max
-          //
-          // Add B if necessary
-          //
-          if ((mpro->__kisxzbon & 0x08) == 0) {
+      // 11 bytes max
+      //
+      // Add B if necessary
+      //
+      if ((mpro->__kisxzbon & 0x08) == 0) {
         if (mpro->negb == 0) {
           if ((mpro->__kisxzbon & 0x04) == 0) {
             C(0x03)
@@ -3245,7 +3245,8 @@ static void dynacompile(struct YAM_STATE *state) {
       C32(STATEOFS(
           inputs[mpro->i_00rrrrrr])) // mov edx, [edi+<OFS32:INPUTS+4*IRA>]
       C(0xC1)
-      C(0xFA) C(0x0B) // sar edx,11
+      C(0xFA)
+      C(0x0B) // sar edx,11
           C(0x89) C(0x97) C32(STATEOFS(
               yychoice[YYCHOICE_Y_REG_H])) // mov [edi+<OFS32:yychoice2>],edx
           C(0x8B) C(0x97) C32(STATEOFS(
@@ -3266,7 +3267,7 @@ static void dynacompile(struct YAM_STATE *state) {
         C(0xC1)
         C(0xE2)
         C(8 + (mpro->m_wrAFyyYh & 1))      // shl edx,<BYTE:8+sh>
-            C(0xC1) C(0xFA) C(0x08)        // sar edx,8
+        C(0xC1) C(0xFA) C(0x08)            // sar edx,8
                                            // 8 bytes max
       } else {                             // saturate
         if ((mpro->m_wrAFyyYh & 1) == 0) { // NOT shifting left
@@ -3274,25 +3275,27 @@ static void dynacompile(struct YAM_STATE *state) {
           C(0x96)
           C32(0x00800000) // lea edx,[esi+800000h]
           C(0xF7)
-          C(0xC2) C32(0xFF000000) // test edx,0FF000000h
-              C(0x89) C(0xF2)     // mov edx,esi
-                                  // 14 bytes max
-        } else {                  // shifting left
+          C(0xC2)
+          C32(0xFF000000)     // test edx,0FF000000h
+              C(0x89) C(0xF2) // mov edx,esi
+                              // 14 bytes max
+        } else {              // shifting left
           C(0x8D)
           C(0x94)
           C(0x36)
-          C32(0x00800000)                     // lea edx,[esi+esi+800000h]
-              C(0xF7) C(0xC2) C32(0xFF000000) // test edx,0FF000000h
-              C(0x8D) C(0x14) C(0x36)         // lea edx,[esi+esi]
-                                              // 16 bytes max
+          C32(0x00800000) // lea edx,[esi+esi+800000h]
+          C(0xF7)
+          C(0xC2) C32(0xFF000000)     // test edx,0FF000000h
+              C(0x8D) C(0x14) C(0x36) // lea edx,[esi+esi]
+                                      // 16 bytes max
         }
         C(0x74)
         C(0x09) // je +9bytes
         C(0xC1)
         C(0xFA)
-        C(0x1F)                             // sar edx,1Fh
-            C(0x81) C(0xF2) C32(0x007FFFFF) // xor edx,7FFFFFh
-                                            // 27 bytes max
+        C(0x1F)                         // sar edx,1Fh
+        C(0x81) C(0xF2) C32(0x007FFFFF) // xor edx,7FFFFFh
+                                        // 27 bytes max
       }
     }
     // 27 bytes max
@@ -3329,7 +3332,8 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0x4D)
       C(mpro->t_Twwwwwww) // lea ecx,[ebp+<BYTE:TWA>]
       C(0x83)
-      C(0xE1) C(0x7F) // and ecx,7Fh
+      C(0xE1)
+      C(0x7F) // and ecx,7Fh
           C(0x89) C(0x94) C(0x8F)
               C32(STATEOFS(temp)) // mov [edi+ecx*4+<OFS32:temp>],edx
     }
@@ -3343,8 +3347,9 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0xC1)
       C(0xF8)
       C(0x08) // sar eax,8
-          C(0x89) C(0x87) C32(STATEOFS(
-              efreg[mpro->e_000Twwww])) // mov [edi+<OFS32:EFREG+4*EWA>],eax
+      C(0x89)
+      C(0x87) C32(STATEOFS(
+          efreg[mpro->e_000Twwww])) // mov [edi+<OFS32:EFREG+4*EWA>],eax
     }
     // 11 bytes max
     //
@@ -3382,7 +3387,8 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0xC3)
       C32(state->rbp / 2) // add ebx,<DWORD:rbp/2>
       C(0x81)
-      C(0xE3) C32(state->ram_mask / 2) // and ebx,<DWORD:RAMMASK/2>
+      C(0xE3)
+      C32(state->ram_mask / 2) // and ebx,<DWORD:RAMMASK/2>
           if ((state->mem_word_address_xor / 2) != 0) {
         C(0x83)
         C(0xF3) C(state->mem_word_address_xor / 2) // xor ebx,<BYTE:memwxor/2>
@@ -3419,17 +3425,17 @@ static void dynacompile(struct YAM_STATE *state) {
         C(0xBF)
         C(0x8C)
         C(0x1B)
-            C32(state->ram_ptr) // movsx ecx, word ptr [ebx+ebx+<DWORD:RAMPTR>]
-            C(0xE8) C32CALL(float16_to_int24) // call float16_to_int24
-                                              // 13 bytes max
-      } else {                                // NOFL=1:
+        C32(state->ram_ptr) // movsx ecx, word ptr [ebx+ebx+<DWORD:RAMPTR>]
+        C(0xE8) C32CALL(float16_to_int24) // call float16_to_int24
+                                          // 13 bytes max
+      } else {                            // NOFL=1:
         C(0x0F)
         C(0xBF)
         C(0x84)
         C(0x1B)
-            C32(state->ram_ptr) // movsx eax, word ptr [ebx+ebx+<DWORD:RAMPTR>]
-            C(0xC1) C(0xE0) C(0x08) // shl eax,8
-                                    // 11 bytes max
+        C32(state->ram_ptr)     // movsx eax, word ptr [ebx+ebx+<DWORD:RAMPTR>]
+        C(0xC1) C(0xE0) C(0x08) // shl eax,8
+                                // 11 bytes max
       }
       C(0x89)
       C(0x87)
@@ -3446,17 +3452,17 @@ static void dynacompile(struct YAM_STATE *state) {
         C(0xE8)
         C32CALL(int24_to_float16) // call int24_to_float16
         C(0x66)
-        C(0x89) C(0x84) C(0x1B)
-            C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],ax
-                                // 15 bytes max
-      } else {                  // NOFL=1:
+        C(0x89)
+        C(0x84) C(0x1B) C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],ax
+                                            // 15 bytes max
+      } else {                              // NOFL=1:
         C(0xC1)
         C(0xFA)
         C(0x08) // sar edx,8
         C(0x66)
-        C(0x89) C(0x94) C(0x1B)
-            C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],dx
-                                // 11 bytes max
+        C(0x89)
+        C(0x94) C(0x1B) C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],dx
+                                            // 11 bytes max
       }
       // 15 bytes max
     }

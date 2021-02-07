@@ -947,7 +947,7 @@ QmfTransposerCreate(HANDLE_HBE_TRANSPOSER *hQmfTransposer, const int frameSize,
     } else {
       hQmfTran->noCols = (bSbr41 + 1) * 2 * frameSize /
                          QMF_SYNTH_CHANNELS; /* 32 for 32:64 and 64 for 16:64 ->
-                              identical to sbrdec->no_cols */
+                        identical to sbrdec->no_cols */
     }
 
     hQmfTran->noChannels = frameSize / hQmfTran->noCols;
@@ -1221,7 +1221,7 @@ inline void scaleUp(FIXP_DBL *real_m, FIXP_DBL *imag_m, INT *_e) {
             1;
   reserve = fMax(reserve - 1,
                  0); /* Leave one bit headroom such that (real_m^2 + imag_m^2)
-                  does not overflow later if both are 0x80000000. */
+                does not overflow later if both are 0x80000000. */
   reserve = fMin(reserve, *_e);
   FDK_ASSERT(reserve >= 0);
   *real_m <<= reserve;
@@ -1717,8 +1717,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           sign = -1;
 
           sourceband = 2 * band / stretch - qmfOffset; /* consistent with the
-                            already computed for
-                            stretch = 3,4. */
+                  already computed for
+                  stretch = 3,4. */
           FDK_ASSERT(sourceband >= 0);
 
           FIXP_DBL sqmag0R_F =
@@ -2029,12 +2029,12 @@ center */
             FIXP_DBL cos_twid = twid_m_new[stretch - 2 - modstretch4][0];
             FIXP_DBL sin_twid = sign * twid_m_new[stretch - 2 - modstretch4][1];
 
-            gammaOutReal_m[0] = fMult(tmpReal_m, cos_twid) -
-                                fMult(tmpImag_m, sin_twid); /* sum should be <=
-                           1 because of sin/cos multiplication */
-            gammaOutImag_m[0] = fMult(tmpImag_m, cos_twid) +
-                                fMult(tmpReal_m, sin_twid); /* sum should be <=
-                           1 because of sin/cos multiplication */
+            gammaOutReal_m[0] =
+                fMult(tmpReal_m, cos_twid) - fMult(tmpImag_m, sin_twid); /* sum
+                            should be <= 1 because of sin/cos multiplication */
+            gammaOutImag_m[0] =
+                fMult(tmpImag_m, cos_twid) + fMult(tmpReal_m, sin_twid); /* sum
+                            should be <= 1 because of sin/cos multiplication */
 
             /* wingain */
             for (k = 0; k < 2; k++) {
@@ -2049,8 +2049,8 @@ center */
 
             /* OLA including window scaling by wingain/3 */
             for (k = 0; k < 2; k++) /* need k=1 to correspond to
-   grainModImag[slotOffset] -> out to
-   j*2+(slotOffset-offset)  */
+grainModImag[slotOffset] -> out to
+j*2+(slotOffset-offset)  */
             {
               hQmfTransposer->qmfHBEBufReal_F[(k + slotOffset - 1)][band] +=
                   gammaOutReal_m[k] >> (scale_factor_hbe - gammaOut_e[k]);
@@ -2148,12 +2148,12 @@ center */
           ppQmfBufferOutReal_F[i][band] =
               fMult(tmpR, cos_F[band]) -
               fMult(tmpI, (-cos_F[64 - band - 1])); /* sum should be <= 1
-                         because of sin/cos
-                         multiplication */
+               because of sin/cos
+               multiplication */
           ppQmfBufferOutImag_F[i][band] =
               fMult(tmpR, (-cos_F[64 - band - 1])) +
               fMult(tmpI, cos_F[band]); /* sum should by <= 1 because of sin/cos
-             multiplication */
+   multiplication */
         }
       }
     } else {
@@ -2166,12 +2166,12 @@ center */
           ppQmfBufferOutReal_F[i + ov_len][band] =
               fMult(tmpR, cos_F[band]) -
               fMult(tmpI, (-cos_F[64 - band - 1])); /* sum should be <= 1
-                         because of sin/cos
-                         multiplication */
+               because of sin/cos
+               multiplication */
           ppQmfBufferOutImag_F[i + ov_len][band] =
               fMult(tmpR, (-cos_F[64 - band - 1])) +
               fMult(tmpI, cos_F[band]); /* sum should by <= 1 because of sin/cos
-             multiplication */
+   multiplication */
         }
       }
     }

@@ -143,7 +143,7 @@ typedef enum {
   PSENC_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
   PSENC_INIT_ERROR = 0x0040,   /*!< General initialization error. */
   PSENC_ENCODE_ERROR = 0x0060  /*!< The encoding process was interrupted by an
-                            unexpected error. */
+                          unexpected error. */
 
 } FDK_PSENC_ERROR;
 

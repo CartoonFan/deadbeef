@@ -286,7 +286,7 @@ FDK_INLINE int GetScaleFromValue(FIXP_DBL value, unsigned int lsb) {
     return CntLeadingZeros(value) - scale - 2;
   } else
     return 0; /* Return zero, because its useless to scale a zero value, saves
-     workload and avoids scaling overshifts. */
+ workload and avoids scaling overshifts. */
 }
 
 /*!

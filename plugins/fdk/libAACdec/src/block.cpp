@@ -616,7 +616,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
 GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
 groupwin++, window++) */
   }   /* for (window=0, group=0; group <
-   GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
+ GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
 
   return AAC_DEC_OK;
 }

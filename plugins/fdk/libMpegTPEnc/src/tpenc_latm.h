@@ -149,7 +149,7 @@ typedef struct {
 
   UCHAR
   audioMuxVersion; /* AMV1 supports transmission of taraBufferFullness and
-                ASC lengths */
+              ASC lengths */
   UCHAR audioMuxVersionA; /* for future extensions */
 
   UCHAR noProgram;

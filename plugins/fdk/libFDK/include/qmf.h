@@ -177,8 +177,8 @@ struct QMF_FILTER_BANK {
   const FIXP_PFT *p_filter; /*!< Pointer to filter coefficients */
 
   void *FilterStates;    /*!< Pointer to buffer of filter states
-                        FIXP_PCM in analyse and
-                        FIXP_DBL in synthesis filter */
+                      FIXP_PCM in analyse and
+                      FIXP_DBL in synthesis filter */
   int FilterSize;        /*!< Size of prototype filter. */
   const FIXP_QTW *t_cos; /*!< Modulation tables. */
   const FIXP_QTW *t_sin;
@@ -192,7 +192,7 @@ struct QMF_FILTER_BANK {
   int synScalefactor; /*!< Scale factor of synthesis qmf (syn only) */
   int outScalefactor; /*!< Scale factor of output data (syn only) */
   FIXP_DBL outGain_m; /*!< Mantissa of gain output data (syn only) (init with
-                   0x80000000 to ignore) */
+                 0x80000000 to ignore) */
   int outGain_e;      /*!< Exponent of gain output data (syn only) */
 
   UINT flags;     /*!< flags */

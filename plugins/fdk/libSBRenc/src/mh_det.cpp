@@ -129,8 +129,8 @@ static const DETECTOR_PARAMETERS_MH paramsAac = {
         FL2FXCONST_DBL(-0.000112993269),
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresBelowLD64 */
         FL2FXCONST_DBL(-0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
-              derivThresAboveLD64
-            */
+derivThresAboveLD64
+*/
     },
     50 /*!< maxComp */
 };
@@ -154,8 +154,8 @@ static const DETECTOR_PARAMETERS_MH paramsAacLd = {
         FL2FXCONST_DBL(-0.000112993269),
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresBelowLD64 */
         FL2FXCONST_DBL(-0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
-              derivThresAboveLD64
-            */
+derivThresAboveLD64
+*/
     },
     50 /*!< maxComp */
 };

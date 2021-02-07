@@ -286,7 +286,7 @@ CLatmDemux_ReadStreamMuxConfig(HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
                                CSAudioSpecificConfig *pAsc, int *pfConfigFound,
                                UCHAR configMode, UCHAR configChanged) {
   CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
-                               after that new config can be parsed */
+                             after that new config can be parsed */
   CSAudioSpecificConfig *pAscDummy;
   pAscDummy = &ascDummy;
   pLatmDemux->usacExplicitCfgChanged = 0;
@@ -468,7 +468,7 @@ CLatmDemux_ReadStreamMuxConfig(HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
                         .m_sc.m_usacConfig.element[0]
                         .extElement.usacExtElementHasAudioPreRoll) {
                   pLatmDemux->newCfgHasAudioPreRoll = 1; /* if dummy parsed cfg
-              has audioPreRoll we first flush before applying new cfg */
+has audioPreRoll we first flush before applying new cfg */
                 }
               }
             }

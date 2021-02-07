@@ -124,7 +124,8 @@ public:
   // _samplesPerCallbackRemainder; 				if
   // (_samplesTillCallbackRemainder
   // >= CALLBACKS_PER_SECOND) {
-  // _samplesTillCallback++; 					_samplesTillCallbackRemainder
+  // _samplesTillCallback++;
+  // _samplesTillCallbackRemainder
   // -= CALLBACKS_PER_SECOND;
   // 				}
   // 			}

@@ -266,9 +266,9 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self->params.targetRefLevel != (SCHAR)value) {
         self->params.targetRefLevel = (SCHAR)value;
         self->progRefLevel = (SCHAR)value; /* Always set the program reference
-                        level equal to the target level
-                        according to 4.5.2.7.3 of
-                        ISO/IEC 14496-3. */
+                level equal to the target level
+                according to 4.5.2.7.3 of
+                ISO/IEC 14496-3. */
       }
       self->update = 1;
     }
@@ -1131,8 +1131,8 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
       FIXP_DBL dmxTmp;
       int e_log, e_mult;
       dmxTmp = fDivNorm(self->numOutChannels, aacNumChannels); /* inverse
-                                                  division -> negative
-                                                  sign after logarithm */
+                                            division -> negative
+                                            sign after logarithm */
       dmxTmp = fLog2(dmxTmp, 0, &e_log);
       dmxTmp = fMultNorm(
           dmxTmp, FL2FXCONST_DBL(4.0f * 20.0f * 0.30103f / (float)(1 << 5)),
@@ -1159,7 +1159,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
         /* derive scaling of light DRC */
         FIXP_DBL calcFactor_norm;
         INT calcFactor; /* fraction of DRC gains that is minimally needed for
-     clipping prevention */
+clipping prevention */
         calcFactor_norm =
             fDivNorm(-dHr, -eHr); /* 0.0 < calcFactor_norm < 1.0 */
         calcFactor_norm = calcFactor_norm >> DRC_PARAM_SCALE;
