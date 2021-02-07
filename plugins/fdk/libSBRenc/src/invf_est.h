@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef INVF_EST_H
 #define INVF_EST_H
 
-#include "sbr_encoder.h"
 #include "sbr_def.h"
+#include "sbr_encoder.h"
 
 #define INVF_SMOOTHING_LENGTH 2
 

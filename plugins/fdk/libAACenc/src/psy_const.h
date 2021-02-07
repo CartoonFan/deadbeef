@@ -139,18 +139,18 @@ enum {
 enum { SI_MS_MASK_NONE = 0, SI_MS_MASK_SOME = 1, SI_MS_MASK_ALL = 2 };
 
 #define MAX_NO_OF_GROUPS 4
-#define MAX_SFB_LONG                                                      \
-  51 /* 51 for a memory optimized implementation, maybe 64 for convenient \
+#define MAX_SFB_LONG                                                           \
+  51 /* 51 for a memory optimized implementation, maybe 64 for convenient      \
         debugging */
-#define MAX_SFB_SHORT                                                     \
-  15 /* 15 for a memory optimized implementation, maybe 16 for convenient \
+#define MAX_SFB_SHORT                                                          \
+  15 /* 15 for a memory optimized implementation, maybe 16 for convenient      \
         debugging */
 
-#define MAX_SFB \
+#define MAX_SFB                                                                \
   (MAX_SFB_SHORT > MAX_SFB_LONG ? MAX_SFB_SHORT : MAX_SFB_LONG) /* = 51 */
-#define MAX_GROUPED_SFB                            \
-  (MAX_NO_OF_GROUPS * MAX_SFB_SHORT > MAX_SFB_LONG \
-       ? MAX_NO_OF_GROUPS * MAX_SFB_SHORT          \
+#define MAX_GROUPED_SFB                                                        \
+  (MAX_NO_OF_GROUPS * MAX_SFB_SHORT > MAX_SFB_LONG                             \
+       ? MAX_NO_OF_GROUPS * MAX_SFB_SHORT                                      \
        : MAX_SFB_LONG) /* = 60 */
 
 #define MAX_INPUT_BUFFER_SIZE (2 * (1024)) /* 2048 */

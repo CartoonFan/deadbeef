@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Joe Bliss <pcpepik0@gmail.com>, 2013,2016,2020
 # Joe Bliss <pcpepik0@gmail.com>, 2013

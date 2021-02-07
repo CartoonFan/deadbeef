@@ -113,7 +113,7 @@ typedef enum {
   /* Synchronization errors. Wait for new input data and try again. */
   tpdec_sync_error_start = 0x100,
   TRANSPORTDEC_NOT_ENOUGH_BITS, /*!< Out of bits. Provide more bits and try
-                                   again.              */
+                                 again.              */
   TRANSPORTDEC_SYNC_ERROR, /*!< No sync was found or sync got lost. Keep trying.
                             */
   tpdec_sync_error_end,
@@ -121,9 +121,9 @@ typedef enum {
   /* Decode errors. Mostly caused due to bit errors. */
   tpdec_decode_error_start = 0x400,
   TRANSPORTDEC_PARSE_ERROR, /*!< Bitstream data showed inconsistencies (wrong
-                               syntax).      */
+                             syntax).      */
   TRANSPORTDEC_UNSUPPORTED_FORMAT, /*!< Unsupported format or feature found in
-                                      the bitstream data. */
+                                    the bitstream data. */
   TRANSPORTDEC_CRC_ERROR, /*!< CRC error encountered in bitstream data. */
   tpdec_decode_error_end,
 
@@ -131,23 +131,23 @@ typedef enum {
   tpdec_fatal_error_start = 0x200,
   TRANSPORTDEC_UNKOWN_ERROR,      /*!< An unknown error occured.      */
   TRANSPORTDEC_INVALID_PARAMETER, /*!< An invalid parameter was passed to a
-                                     function.             */
+                                   function.             */
   TRANSPORTDEC_NEED_TO_RESTART,   /*!< The decoder needs to be restarted, since
-                                     the requiered   configuration change cannot
-                                     be   performed.                  */
+                                   the requiered   configuration change cannot
+                                   be   performed.                  */
   TRANSPORTDEC_TOO_MANY_BITS,     /*!< In case of packet based formats: Supplied
-                                     number of bits     exceed the size of the
-                                     internal     bit buffer.                */
+                                   number of bits     exceed the size of the
+                                   internal     bit buffer.                */
   tpdec_fatal_error_end
 
 } TRANSPORTDEC_ERROR;
 
 /** Macro to identify decode errors. */
-#define TPDEC_IS_DECODE_ERROR(err)                                            \
-  (((err >= tpdec_decode_error_start) && (err <= tpdec_decode_error_end)) ? 1 \
+#define TPDEC_IS_DECODE_ERROR(err)                                             \
+  (((err >= tpdec_decode_error_start) && (err <= tpdec_decode_error_end)) ? 1  \
                                                                           : 0)
 /** Macro to identify fatal errors. */
-#define TPDEC_IS_FATAL_ERROR(err) \
+#define TPDEC_IS_FATAL_ERROR(err)                                              \
   (((err >= tpdec_fatal_error_start) && (err <= tpdec_fatal_error_end)) ? 1 : 0)
 
 /**
@@ -155,17 +155,17 @@ typedef enum {
  */
 typedef enum {
   TPDEC_PARAM_MINIMIZE_DELAY = 1, /** Delay minimization strategy. 0: none, 1:
-                                     discard as many frames as possible. */
+                                   discard as many frames as possible. */
   TPDEC_PARAM_EARLY_CONFIG,       /** Enable early config discovery. */
   TPDEC_PARAM_IGNORE_BUFFERFULLNESS, /** Ignore buffer fullness. */
   TPDEC_PARAM_SET_BITRATE,  /** Set average bit rate for bit stream interruption
-                               frame misses estimation. */
+                             frame misses estimation. */
   TPDEC_PARAM_RESET,        /** Reset transport decoder instance status. */
   TPDEC_PARAM_BURST_PERIOD, /** Set data reception burst period in mili seconds.
                              */
   TPDEC_PARAM_TARGETLAYOUT, /** Set CICP target layout */
   TPDEC_PARAM_FORCE_CONFIG_CHANGE, /** Force config change for next received
-                                      config */
+                                    config */
   TPDEC_PARAM_USE_ELEM_SKIPPING
 } TPDEC_PARAM;
 
@@ -310,10 +310,11 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
  *
  * \return  Total element count including all SCE, CPE and LFE.
  */
-TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
-    CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs,
-    int fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
-    UCHAR configChanged, AUDIO_OBJECT_TYPE m_aot);
+TRANSPORTDEC_ERROR
+AudioSpecificConfig_Parse(CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs,
+                          int fExplicitBackwardCompatible, CSTpCallBacks *cb,
+                          UCHAR configMode, UCHAR configChanged,
+                          AUDIO_OBJECT_TYPE m_aot);
 
 /* CELP stuff */
 enum { MPE = 0, RPE = 1, fs8KHz = 0, fs16KHz = 1 };
@@ -322,15 +323,15 @@ enum { MPE = 0, RPE = 1, fs8KHz = 0, fs16KHz = 1 };
 #define TP_FLAG_MPEG4 1
 
 /* Capability flags */
-#define CAPF_TPDEC_ADIF \
+#define CAPF_TPDEC_ADIF                                                        \
   0x00001000 /**< Flag indicating support for ADIF transport format.        */
-#define CAPF_TPDEC_ADTS \
+#define CAPF_TPDEC_ADTS                                                        \
   0x00002000 /**< Flag indicating support for ADTS transport format.        */
-#define CAPF_TPDEC_LOAS \
+#define CAPF_TPDEC_LOAS                                                        \
   0x00004000 /**< Flag indicating support for LOAS transport format.        */
-#define CAPF_TPDEC_LATM \
+#define CAPF_TPDEC_LATM                                                        \
   0x00008000 /**< Flag indicating support for LATM transport format.        */
-#define CAPF_TPDEC_RAWPACKETS \
+#define CAPF_TPDEC_RAWPACKETS                                                  \
   0x00010000 /**< Flag indicating support for raw packets transport format. */
 
 typedef struct TRANSPORTDEC *HANDLE_TRANSPORTDEC;
@@ -366,10 +367,11 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(const HANDLE_TRANSPORTDEC hTp,
  *
  * \return        Error code.
  */
-TRANSPORTDEC_ERROR transportDec_InBandConfig(
-    const HANDLE_TRANSPORTDEC hTp, UCHAR *newConfig, const UINT newConfigLength,
-    const UCHAR buildUpStatus, UCHAR *configChanged, const UINT layer,
-    UCHAR *implicitExplicitCfgDiff);
+TRANSPORTDEC_ERROR
+transportDec_InBandConfig(const HANDLE_TRANSPORTDEC hTp, UCHAR *newConfig,
+                          const UINT newConfigLength, const UCHAR buildUpStatus,
+                          UCHAR *configChanged, const UINT layer,
+                          UCHAR *implicitExplicitCfgDiff);
 
 /**
  * \brief Open Transport medium for reading.
@@ -591,8 +593,9 @@ TRANSPORTDEC_ERROR transportDec_EndAccessUnit(const HANDLE_TRANSPORTDEC hTp);
  * frame count will be stored into.
  * \return     Error code.
  */
-TRANSPORTDEC_ERROR transportDec_GetMissingAccessUnitCount(
-    INT *pNAccessUnits, HANDLE_TRANSPORTDEC hTp);
+TRANSPORTDEC_ERROR
+transportDec_GetMissingAccessUnitCount(INT *pNAccessUnits,
+                                       HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief        Set a given setting.

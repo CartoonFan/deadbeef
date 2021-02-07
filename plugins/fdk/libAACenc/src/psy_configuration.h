@@ -106,15 +106,15 @@ amm-info@iis.fraunhofer.de
 #include "aacenc.h"
 #include "common_fix.h"
 
-#include "psy_const.h"
-#include "aacenc_tns.h"
 #include "aacenc_pns.h"
+#include "aacenc_tns.h"
+#include "psy_const.h"
 
 #define THR_SHIFTBITS 4
 #define PCM_QUANT_THR_SCALE 16
 #define BITS_PER_LINE_SHIFT 3
 
-#define C_RATIO \
+#define C_RATIO                                                                \
   (FIXP_DBL)0x02940a10 /* FL2FXCONST_DBL(0.001258925f) << THR_SHIFTBITS; */ /* pow(10.0f, -(29.0f/10.0f)) */
 
 typedef struct {

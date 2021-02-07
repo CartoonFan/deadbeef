@@ -104,4 +104,3 @@ gtkui-gresources.c: $(resource_files)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $<
 
 endif
-

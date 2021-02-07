@@ -21,28 +21,26 @@
  3. This notice may not be removed or altered from any source distribution.
  */
 
-#include <string.h>
 #include "mp3_mad.h"
+#include <string.h>
 
 //#define trace(...) { fprintf(stderr, __VA_ARGS__); }
-#define trace(fmt,...)
+#define trace(fmt, ...)
 
-#define min(x,y) ((x)<(y)?(x):(y))
+#define min(x, y) ((x) < (y) ? (x) : (y))
 
-void
-mp3_mad_init (mp3_info_t *info) {
-    mad_stream_init(&info->mad_stream);
-    mad_stream_options (&info->mad_stream, MAD_OPTION_IGNORECRC);
-    mad_frame_init(&info->mad_frame);
-    mad_synth_init(&info->mad_synth);
-    info->input_remaining_bytes = 0;
+void mp3_mad_init(mp3_info_t *info) {
+  mad_stream_init(&info->mad_stream);
+  mad_stream_options(&info->mad_stream, MAD_OPTION_IGNORECRC);
+  mad_frame_init(&info->mad_frame);
+  mad_synth_init(&info->mad_synth);
+  info->input_remaining_bytes = 0;
 }
 
-void
-mp3_mad_free (mp3_info_t *info) {
-    mad_synth_finish (&info->mad_synth);
-    mad_frame_finish (&info->mad_frame);
-    mad_stream_finish (&info->mad_stream);
+void mp3_mad_free(mp3_info_t *info) {
+  mad_synth_finish(&info->mad_synth);
+  mad_frame_finish(&info->mad_frame);
+  mad_stream_finish(&info->mad_stream);
 }
 
 #if 0
@@ -85,9 +83,8 @@ MadFixedToSshort(mad_fixed_t Fixed)
 }
 #endif
 
-static inline float
-MadFixedToFloat (mad_fixed_t Fixed) {
-    return (float)((Fixed) / (float)(1L << MAD_F_FRACBITS));
+static inline float MadFixedToFloat(mad_fixed_t Fixed) {
+  return (float)((Fixed) / (float)(1L << MAD_F_FRACBITS));
 }
 
 #define MadErrorString(x) mad_stream_errorstr(x)
@@ -111,7 +108,7 @@ mp3_mad_decode_int16 (mp3_info_t *info) {
         }
     }
     // mono
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1){
+    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1) {
         while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
             *((int16_t*)info->out) = MadFixedToSshort (info->mad_synth.pcm.samples[0][idx]);
             info->bytes_to_decode -= 2;
@@ -147,136 +144,143 @@ mp3_mad_decode_int16 (mp3_info_t *info) {
 }
 #endif
 
-void
-mp3_mad_consume_decoded_data (mp3_info_t *info) {
-    // copy synthesized samples into readbuffer
-    int idx = info->mad_synth.pcm.length-info->decoded_samples_remaining;
-    // stereo
-    if (MAD_NCHANNELS(&info->mad_frame.header) == 2 && info->info.fmt.channels == 2) {
-        while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
-            *((float*)info->out) = MadFixedToFloat (info->mad_synth.pcm.samples[0][idx]);
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            *((float*)info->out) = MadFixedToFloat (info->mad_synth.pcm.samples[1][idx]);
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            info->decoded_samples_remaining--;
-            idx++;
-        }
+void mp3_mad_consume_decoded_data(mp3_info_t *info) {
+  // copy synthesized samples into readbuffer
+  int idx = info->mad_synth.pcm.length - info->decoded_samples_remaining;
+  // stereo
+  if (MAD_NCHANNELS(&info->mad_frame.header) == 2 &&
+      info->info.fmt.channels == 2) {
+    while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
+      *((float *)info->out) =
+          MadFixedToFloat(info->mad_synth.pcm.samples[0][idx]);
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      *((float *)info->out) =
+          MadFixedToFloat(info->mad_synth.pcm.samples[1][idx]);
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      info->decoded_samples_remaining--;
+      idx++;
     }
-    // mono
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1){
-        while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
-            *((float*)info->out) = MadFixedToFloat (info->mad_synth.pcm.samples[0][idx]);
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            info->decoded_samples_remaining--;
-            idx++;
-        }
+  }
+  // mono
+  else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 &&
+           info->info.fmt.channels == 1) {
+    while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
+      *((float *)info->out) =
+          MadFixedToFloat(info->mad_synth.pcm.samples[0][idx]);
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      info->decoded_samples_remaining--;
+      idx++;
     }
-    // workaround for bad mp3s that have both mono and stereo frames
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 2) {
-        while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
-            int16_t sample = MadFixedToFloat (info->mad_synth.pcm.samples[0][idx]);
-            *((float*)info->out) = sample;
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            *((float*)info->out) = sample;
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            info->decoded_samples_remaining--;
-            idx++;
-        }
+  }
+  // workaround for bad mp3s that have both mono and stereo frames
+  else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 &&
+           info->info.fmt.channels == 2) {
+    while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
+      int16_t sample = MadFixedToFloat(info->mad_synth.pcm.samples[0][idx]);
+      *((float *)info->out) = sample;
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      *((float *)info->out) = sample;
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      info->decoded_samples_remaining--;
+      idx++;
     }
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 2 && info->info.fmt.channels == 1) {
-        while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
-            float sample = MadFixedToFloat (info->mad_synth.pcm.samples[0][idx]);
-            *((float*)info->out) = sample;
-            info->bytes_to_decode -= 4;
-            info->out += 4;
-            info->decoded_samples_remaining--;
-            idx++;
-        }
+  } else if (MAD_NCHANNELS(&info->mad_frame.header) == 2 &&
+             info->info.fmt.channels == 1) {
+    while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
+      float sample = MadFixedToFloat(info->mad_synth.pcm.samples[0][idx]);
+      *((float *)info->out) = sample;
+      info->bytes_to_decode -= 4;
+      info->out += 4;
+      info->decoded_samples_remaining--;
+      idx++;
     }
+  }
 }
 
-int
-mp3_mad_decode_next_packet (mp3_info_t *info) {
-    int eof = 0;
-    while (!eof && (info->mad_stream.buffer == NULL || info->decoded_samples_remaining <= 0)) {
-        // read more MPEG data if needed
-        if(info->mad_stream.buffer==NULL || info->mad_stream.error==MAD_ERROR_BUFLEN) {
-            // copy part of last frame to beginning
-            if (info->mad_stream.next_frame && info->mad_stream.bufend <= info->mad_stream.next_frame) {
-                eof = 1;
-                break;
-            }
-            if (info->mad_stream.next_frame != NULL) {
-                info->input_remaining_bytes = info->mad_stream.bufend - info->mad_stream.next_frame;
-                memmove (info->input, info->mad_stream.next_frame, info->input_remaining_bytes);
-            }
-            long size = READBUFFER - info->input_remaining_bytes;
-            size_t bytesread = 0;
-            uint8_t *bytes = (uint8_t *)(info->input + info->input_remaining_bytes);
-            bytesread = deadbeef->fread (bytes, 1, size, info->file);
-            if (!bytesread) {
-                // add guard
-                eof = 1;
-                memset (bytes, 0, 8);
-                bytesread = 8;
-            }
-            if (bytesread < size) {
-                // end of file
-                bytes += bytesread;
-            }
-            bytesread += info->input_remaining_bytes;
-            mad_stream_buffer(&info->mad_stream,(const unsigned char *)info->input,bytesread);
-            if (info->mad_stream.buffer==NULL) {
-                // check sync bits
-                if (bytes[0] != 0xff || (bytes[1]&(3<<5)) != (3<<5)) {
-                    trace ("mp3: read didn't start at frame boundary!\ncmp3_scan_stream is broken\n");
-                }
-                else {
-                    trace ("mp3: streambuffer=NULL\n");
-                }
-            }
-        }
-        info->mad_stream.error=0;
-
-        // decode next frame
-    retry:
-        if(mad_frame_decode(&info->mad_frame, &info->mad_stream))
-        {
-            if(MAD_RECOVERABLE(info->mad_stream.error))
-            {
-                // MAD_ERROR_BADDATAPTR is reported when bit reservoir doesn't have enough data from previous frames,
-                // however we want to synth those frames anyway.
-                // For any other recoverable errors, just rerun mad_frame_decode.
-                if (info->mad_stream.error != MAD_ERROR_BADDATAPTR) {
-                    goto retry;
-                }
-            }
-            else {
-                if(info->mad_stream.error==MAD_ERROR_BUFLEN) {
-                    continue;
-                }
-                else
-                {
-                    return -1; // fatal error
-                }
-            }
-        }
-        mad_synth_frame(&info->mad_synth,&info->mad_frame);
-
-        info->info.fmt.samplerate = info->mad_frame.header.samplerate;
-
-        // synthesize single frame
-        info->decoded_samples_remaining = info->mad_synth.pcm.length;
-        deadbeef->streamer_set_bitrate ((int)(info->mad_frame.header.bitrate/1000));
+int mp3_mad_decode_next_packet(mp3_info_t *info) {
+  int eof = 0;
+  while (!eof && (info->mad_stream.buffer == NULL ||
+                  info->decoded_samples_remaining <= 0)) {
+    // read more MPEG data if needed
+    if (info->mad_stream.buffer == NULL ||
+        info->mad_stream.error == MAD_ERROR_BUFLEN) {
+      // copy part of last frame to beginning
+      if (info->mad_stream.next_frame &&
+          info->mad_stream.bufend <= info->mad_stream.next_frame) {
+        eof = 1;
         break;
+      }
+      if (info->mad_stream.next_frame != NULL) {
+        info->input_remaining_bytes =
+            info->mad_stream.bufend - info->mad_stream.next_frame;
+        memmove(info->input, info->mad_stream.next_frame,
+                info->input_remaining_bytes);
+      }
+      long size = READBUFFER - info->input_remaining_bytes;
+      size_t bytesread = 0;
+      uint8_t *bytes = (uint8_t *)(info->input + info->input_remaining_bytes);
+      bytesread = deadbeef->fread(bytes, 1, size, info->file);
+      if (!bytesread) {
+        // add guard
+        eof = 1;
+        memset(bytes, 0, 8);
+        bytesread = 8;
+      }
+      if (bytesread < size) {
+        // end of file
+        bytes += bytesread;
+      }
+      bytesread += info->input_remaining_bytes;
+      mad_stream_buffer(&info->mad_stream, (const unsigned char *)info->input,
+                        bytesread);
+      if (info->mad_stream.buffer == NULL) {
+        // check sync bits
+        if (bytes[0] != 0xff || (bytes[1] & (3 << 5)) != (3 << 5)) {
+          trace("mp3: read didn't start at frame boundary!\ncmp3_scan_stream "
+                "is broken\n");
+        } else {
+          trace("mp3: streambuffer=NULL\n");
+        }
+      }
     }
-    
-    return eof;
+    info->mad_stream.error = 0;
+
+    // decode next frame
+  retry:
+    if (mad_frame_decode(&info->mad_frame, &info->mad_stream)) {
+      if (MAD_RECOVERABLE(info->mad_stream.error)) {
+        // MAD_ERROR_BADDATAPTR is reported when bit reservoir doesn't have
+        // enough data from previous frames, however we want to synth those
+        // frames anyway. For any other recoverable errors, just rerun
+        // mad_frame_decode.
+        if (info->mad_stream.error != MAD_ERROR_BADDATAPTR) {
+          goto retry;
+        }
+      } else {
+        if (info->mad_stream.error == MAD_ERROR_BUFLEN) {
+          continue;
+        } else {
+          return -1; // fatal error
+        }
+      }
+    }
+    mad_synth_frame(&info->mad_synth, &info->mad_frame);
+
+    info->info.fmt.samplerate = info->mad_frame.header.samplerate;
+
+    // synthesize single frame
+    info->decoded_samples_remaining = info->mad_synth.pcm.length;
+    deadbeef->streamer_set_bitrate(
+        (int)(info->mad_frame.header.bitrate / 1000));
+    break;
+  }
+
+  return eof;
 }
 
 mp3_decoder_api_t mad_api = {

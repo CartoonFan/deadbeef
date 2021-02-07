@@ -165,8 +165,8 @@ static void calcTaperWin(FIXP_WIN *pTaperWin, INT timeSlots) {
   pTaperWin[timeSlots] = FX_DBL2FX_WIN((FIXP_DBL)MAXVAL_DBL);
 }
 
-FDK_SACENC_ERROR fdk_sacenc_frameWindow_Create(
-    HANDLE_FRAMEWINDOW *phFrameWindow) {
+FDK_SACENC_ERROR
+fdk_sacenc_frameWindow_Create(HANDLE_FRAMEWINDOW *phFrameWindow) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == phFrameWindow) {
@@ -211,15 +211,17 @@ FDK_SACENC_ERROR fdk_sacenc_frameWindow_Init(
     hFrameWindow->taperAnaLen =
         hFrameWindow->startRect - hFrameWindow->startSlope;
     for (ts = 0; ts < hFrameWindow->taperAnaLen; ts++) {
-      { hFrameWindow->pTaperAna__FDK[ts] = winMaxVal; }
+      {
+        hFrameWindow->pTaperAna__FDK[ts] = winMaxVal;
+      }
     }
   }
 
   return error;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_frameWindow_Destroy(
-    HANDLE_FRAMEWINDOW *phFrameWindow) {
+FDK_SACENC_ERROR
+fdk_sacenc_frameWindow_Destroy(HANDLE_FRAMEWINDOW *phFrameWindow) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((NULL != phFrameWindow) && (NULL != *phFrameWindow)) {
@@ -267,8 +269,8 @@ static FDK_SACENC_ERROR FrameWindowList_Add(FRAMEWIN_LIST *const pFrameWinList,
   return error;
 }
 
-static FDK_SACENC_ERROR FrameWindowList_Remove(
-    FRAMEWIN_LIST *const pFrameWinList, const INT idx) {
+static FDK_SACENC_ERROR
+FrameWindowList_Remove(FRAMEWIN_LIST *const pFrameWinList, const INT idx) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == pFrameWinList) {
@@ -292,9 +294,9 @@ static FDK_SACENC_ERROR FrameWindowList_Remove(
   return error;
 }
 
-static FDK_SACENC_ERROR FrameWindowList_Limit(
-    FRAMEWIN_LIST *const pFrameWinList, const INT ll /*lower limit*/,
-    const INT ul /*upper limit*/
+static FDK_SACENC_ERROR
+FrameWindowList_Limit(FRAMEWIN_LIST *const pFrameWinList,
+                      const INT ll /*lower limit*/, const INT ul /*upper limit*/
 ) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
@@ -352,7 +354,8 @@ FDK_SACENC_ERROR fdk_sacenc_frameWindow_GetWindow(
     }
 
     /* Reset */
-    if (SACENC_OK != (error = FrameWinList_Reset(pFrameWinList))) goto bail;
+    if (SACENC_OK != (error = FrameWinList_Reset(pFrameWinList)))
+      goto bail;
 
     FDKmemclear(applyRightWindowGain__FDK, sizeof(applyRightWindowGain__FDK));
 
@@ -362,31 +365,31 @@ FDK_SACENC_ERROR fdk_sacenc_frameWindow_GetWindow(
 
       /* Create Parameter Positions */
       switch (varType) {
-        case VAR_HOLD:
-          if (SACENC_OK !=
-              (error = FrameWindowList_Add(pFrameWinList, p_l - 1, FW_HOLD)))
-            goto bail;
-          if (SACENC_OK !=
-              (error = FrameWindowList_Add(pFrameWinList, p_l, FW_INTP)))
-            goto bail;
-          break;
-        case VAR_ISOLATE:
-          if (SACENC_OK !=
-              (error = FrameWindowList_Add(pFrameWinList, p_l - 1, FW_HOLD)))
-            goto bail;
-          if (SACENC_OK !=
-              (error = FrameWindowList_Add(pFrameWinList, p_l, FW_INTP)))
-            goto bail;
-          if (SACENC_OK != (error = FrameWindowList_Add(pFrameWinList,
-                                                        p_l + tranL, FW_HOLD)))
-            goto bail;
-          if (SACENC_OK != (error = FrameWindowList_Add(
-                                pFrameWinList, p_l + tranL + 1, FW_INTP)))
-            goto bail;
-          break;
-        default:
-          error = SACENC_INVALID_CONFIG;
-          break;
+      case VAR_HOLD:
+        if (SACENC_OK !=
+            (error = FrameWindowList_Add(pFrameWinList, p_l - 1, FW_HOLD)))
+          goto bail;
+        if (SACENC_OK !=
+            (error = FrameWindowList_Add(pFrameWinList, p_l, FW_INTP)))
+          goto bail;
+        break;
+      case VAR_ISOLATE:
+        if (SACENC_OK !=
+            (error = FrameWindowList_Add(pFrameWinList, p_l - 1, FW_HOLD)))
+          goto bail;
+        if (SACENC_OK !=
+            (error = FrameWindowList_Add(pFrameWinList, p_l, FW_INTP)))
+          goto bail;
+        if (SACENC_OK !=
+            (error = FrameWindowList_Add(pFrameWinList, p_l + tranL, FW_HOLD)))
+          goto bail;
+        if (SACENC_OK != (error = FrameWindowList_Add(
+                              pFrameWinList, p_l + tranL + 1, FW_INTP)))
+          goto bail;
+        break;
+      default:
+        error = SACENC_INVALID_CONFIG;
+        break;
       }
 
       /* Outside of frame? => Kick Out */
@@ -517,11 +520,12 @@ bail:
   return error;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_analysisWindowing(
-    const INT nTimeSlots, const INT startTimeSlot,
-    FIXP_WIN *pFrameWindowAna__FDK, const FIXP_DPK *const *const ppDataIn__FDK,
-    FIXP_DPK *const *const ppDataOut__FDK, const INT nHybridBands,
-    const INT dim) {
+FDK_SACENC_ERROR
+fdk_sacenc_analysisWindowing(const INT nTimeSlots, const INT startTimeSlot,
+                             FIXP_WIN *pFrameWindowAna__FDK,
+                             const FIXP_DPK *const *const ppDataIn__FDK,
+                             FIXP_DPK *const *const ppDataOut__FDK,
+                             const INT nHybridBands, const INT dim) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((pFrameWindowAna__FDK == NULL) || (ppDataIn__FDK == NULL) ||

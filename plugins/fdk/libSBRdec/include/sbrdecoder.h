@@ -105,12 +105,12 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#include "FDK_bitstream.h"
 #include "FDK_audio.h"
+#include "FDK_bitstream.h"
 
 #include "FDK_qmf_domain.h"
 
-#define SBR_DEBUG_EXTHLP \
+#define SBR_DEBUG_EXTHLP                                                       \
   "\
 --- SBR ---\n\
     0x00000010 Ancillary data and SBR-Header\n\
@@ -124,31 +124,31 @@ amm-info@iis.fraunhofer.de
 "
 
 /* Capability flags */
-#define CAPF_SBR_LP \
+#define CAPF_SBR_LP                                                            \
   0x00000001 /*!< Flag indicating library's capability of Low Power mode. */
-#define CAPF_SBR_HQ                                                          \
-  0x00000002 /*!< Flag indicating library's capability of High Quality mode. \
+#define CAPF_SBR_HQ                                                            \
+  0x00000002 /*!< Flag indicating library's capability of High Quality mode.   \
               */
 #define CAPF_SBR_DRM_BS                                                        \
   0x00000004 /*!< Flag indicating library's capability to decode DRM SBR data. \
               */
-#define CAPF_SBR_CONCEALMENT                                                \
-  0x00000008 /*!< Flag indicating library's capability to conceal erroneous \
+#define CAPF_SBR_CONCEALMENT                                                   \
+  0x00000008 /*!< Flag indicating library's capability to conceal erroneous    \
                 frames.          */
-#define CAPF_SBR_DRC                                                     \
-  0x00000010 /*!< Flag indicating library's capability for Dynamic Range \
+#define CAPF_SBR_DRC                                                           \
+  0x00000010 /*!< Flag indicating library's capability for Dynamic Range       \
                 Control.            */
-#define CAPF_SBR_PS_MPEG                                                     \
-  0x00000020 /*!< Flag indicating library's capability to do MPEG Parametric \
+#define CAPF_SBR_PS_MPEG                                                       \
+  0x00000020 /*!< Flag indicating library's capability to do MPEG Parametric   \
                 Stereo.         */
-#define CAPF_SBR_PS_DRM                                                     \
-  0x00000040 /*!< Flag indicating library's capability to do DRM Parametric \
+#define CAPF_SBR_PS_DRM                                                        \
+  0x00000040 /*!< Flag indicating library's capability to do DRM Parametric    \
                 Stereo.          */
-#define CAPF_SBR_ELD_DOWNSCALE                                               \
-  0x00000080 /*!< Flag indicating library's capability to do ELD decoding in \
+#define CAPF_SBR_ELD_DOWNSCALE                                                 \
+  0x00000080 /*!< Flag indicating library's capability to do ELD decoding in   \
                 downscaled mode */
-#define CAPF_SBR_HBEHQ                                                   \
-  0x00000100 /*!< Flag indicating library's capability to do HQ Harmonic \
+#define CAPF_SBR_HBEHQ                                                         \
+  0x00000100 /*!< Flag indicating library's capability to do HQ Harmonic       \
                 transposing         */
 
 typedef enum {
@@ -168,7 +168,7 @@ typedef enum {
   SBRDEC_CREATE_ERROR,       /*!<       */
   SBRDEC_NOT_INITIALIZED,    /*!<    */
   SBRDEC_MEM_ALLOC_FAILED,   /*!< Memory allocation failed. Probably not enough
-                                memory available. */
+                              memory available. */
   SBRDEC_PARSE_ERROR,        /*!<        */
   SBRDEC_UNSUPPORTED_CONFIG, /*!< */
   SBRDEC_SET_PARAM_FAIL,     /*!<     */
@@ -177,18 +177,18 @@ typedef enum {
 
 typedef enum {
   SBR_SYSTEM_BITSTREAM_DELAY, /*!< System: Switch to enable an additional SBR
-                                 bitstream delay of one frame. */
+                               bitstream delay of one frame. */
   SBR_QMF_MODE,               /*!< Set QMF mode, either complex or low power. */
   SBR_LD_QMF_TIME_ALIGN, /*!< Set QMF type, either LD-MPS or CLDFB. Relevant for
-                            ELD streams only. */
+                          ELD streams only. */
   SBR_FLUSH_DATA,     /*!< Set internal state to flush the decoder with the next
-                         process call. */
+                       process call. */
   SBR_CLEAR_HISTORY,  /*!< Clear all internal states (delay lines, QMF states,
-                         ...). */
+                       ...). */
   SBR_BS_INTERRUPTION /*!< Signal bit stream interruption. Value is ignored. */
   ,
   SBR_SKIP_QMF /*!< Enable skipping of QMF step: 1 skip analysis, 2 skip
-                  synthesis */
+                synthesis */
 } SBRDEC_PARAM;
 
 typedef struct SBR_DECODER_INSTANCE *HANDLE_SBRDECODER;

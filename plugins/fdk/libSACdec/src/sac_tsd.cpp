@@ -193,7 +193,8 @@ static int longcompare(USHORT a[], USHORT b[], int len) {
   int i;
 
   for (i = len - 1; i > 0; i--) {
-    if (a[i] != b[i]) break;
+    if (a[i] != b[i])
+      break;
   }
   return (a[i] >= b[i]) ? 1 : 0;
 }
@@ -209,16 +210,16 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData) {
   const UCHAR *nBitsTsdCW_tab = NULL;
 
   switch (numSlots) {
-    case 32:
-      nBitsTrSlots = 4;
-      nBitsTsdCW_tab = nBitsTsdCW_32slots;
-      break;
-    case 64:
-      nBitsTrSlots = 5;
-      nBitsTsdCW_tab = nBitsTsdCW_64slots;
-      break;
-    default:
-      return 1;
+  case 32:
+    nBitsTrSlots = 4;
+    nBitsTsdCW_tab = nBitsTsdCW_32slots;
+    break;
+  case 64:
+    nBitsTrSlots = 5;
+    nBitsTsdCW_tab = nBitsTsdCW_64slots;
+    break;
+  default:
+    return 1;
   }
 
   /*** Read TempShapeData for bsTempShapeConfig == 3 ***/

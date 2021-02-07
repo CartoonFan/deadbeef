@@ -116,9 +116,9 @@ amm-info@iis.fraunhofer.de
 /* ------------------------------------------------ */
 /* ----------- basic HCR configuration ------------ */
 
-#define MAX_SFB_HCR                                                          \
-  (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs \
-                                         are split in units for blocktype    \
+#define MAX_SFB_HCR                                                            \
+  (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs   \
+                                         are split in units for blocktype      \
                                          short */
 #define NUMBER_OF_UNIT_GROUPS (LINES_PER_UNIT * 8)
 #define LINES_PER_UNIT_GROUP (1024 / NUMBER_OF_UNIT_GROUPS) /* 15 16 30 32 */
@@ -139,8 +139,8 @@ amm-info@iis.fraunhofer.de
 
 #define MAX_CB 32 /* last used CB is cb #31 when VCB11 is used */
 
-#define MAX_CB_CHECK                                                         \
-  32 /* support for VCB11 available -- is more general, could therefore used \
+#define MAX_CB_CHECK                                                           \
+  32 /* support for VCB11 available -- is more general, could therefore used   \
         in both cases */
 
 #define NUMBER_OF_BIT_IN_WORD 32
@@ -156,7 +156,7 @@ amm-info@iis.fraunhofer.de
 #define LEN_OF_LONGEST_CW_TOP_LENGTH 49
 
 /* qsc's of high level */
-#define Q_VALUE_INVALID \
+#define Q_VALUE_INVALID                                                        \
   8192 /* mark a invalid line with this value (to be concealed later on) */
 #define HCR_DIRAC 500 /* a line of high level */
 
@@ -182,23 +182,23 @@ amm-info@iis.fraunhofer.de
 #define ERROR_LOLC 0  /* offset: error if different from zero */
 
 /* segments are earlier empty as expected when decoding PCWs */
-#define ERROR_PCW_BODY                                                   \
-  0 /* set a positive values to trigger the error (make segments earlyer \
+#define ERROR_PCW_BODY                                                         \
+  0 /* set a positive values to trigger the error (make segments earlyer       \
        appear to be empty) */
-#define ERROR_PCW_BODY_SIGN                                              \
-  0 /* set a positive values to trigger the error (make segments earlyer \
+#define ERROR_PCW_BODY_SIGN                                                    \
+  0 /* set a positive values to trigger the error (make segments earlyer       \
        appear to be empty) */
-#define ERROR_PCW_BODY_SIGN_ESC                                          \
-  0 /* set a positive values to trigger the error (make segments earlyer \
+#define ERROR_PCW_BODY_SIGN_ESC                                                \
+  0 /* set a positive values to trigger the error (make segments earlyer       \
        appear to be empty) */
 
 /* pretend there are too many bits decoded (enlarge length of codeword) at PCWs
  * -- use a positive value */
-#define ERROR_PCW_BODY_ONLY_TOO_LONG \
+#define ERROR_PCW_BODY_ONLY_TOO_LONG                                           \
   0 /* set a positive values to trigger the error */
-#define ERROR_PCW_BODY_SIGN_TOO_LONG \
+#define ERROR_PCW_BODY_SIGN_TOO_LONG                                           \
   0 /* set a positive values to trigger the error */
-#define ERROR_PCW_BODY_SIGN_ESC_TOO_LONG \
+#define ERROR_PCW_BODY_SIGN_ESC_TOO_LONG                                       \
   0 /* set a positive values to trigger the error */
 
 /* modify HCR bitstream block */
@@ -245,7 +245,7 @@ amm-info@iis.fraunhofer.de
 /* -    conceal HCR errors      - */
 /* ------------------------------ */
 
-#define HCR_ERROR_CONCEALMENT \
+#define HCR_ERROR_CONCEALMENT                                                  \
   1 /* if set to '1', HCR _mutes_ the erred quantized spectral coefficients */
 
 // ------------------------------------------------------------------------------------------------------------------
@@ -257,85 +257,85 @@ amm-info@iis.fraunhofer.de
 // ------------------------------------------------------------------------------------------------------------------------
 // bit  fatal  location    meaning
 // ----+-----+-----------+--------------------------------------
-#define SEGMENT_OVERRIDE_ERR_PCW_BODY \
-  0x80000000  //  31   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
-#define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN \
-  0x40000000  //  30   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
-#define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN_ESC \
-  0x20000000  //  29   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
-#define EXTENDED_SORTED_COUNTER_OVERFLOW \
-  0x10000000  //  28   yes   Init-Dec    Error during extending sideinfo
-              //  (neither a PCW nor a nonPCW was decoded so far)
-              // 0x08000000 //  27                     reserved
-              // 0x04000000 //  26                     reserved
-              // 0x02000000 //  25                     reserved
-              // 0x01000000 //  24                     reserved
-              // 0x00800000 //  23                     reserved
-              // 0x00400000 //  22                     reserved
-              // 0x00200000 //  21                     reserved
-              // 0x00100000 //  20                     reserved
+#define SEGMENT_OVERRIDE_ERR_PCW_BODY                                          \
+  0x80000000 //  31   no    PCW-Dec     During PCW decoding it is checked after
+//  every PCW if there are too many bits decoded (immediate
+//  check).
+#define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN                                     \
+  0x40000000 //  30   no    PCW-Dec     During PCW decoding it is checked after
+//  every PCW if there are too many bits decoded (immediate
+//  check).
+#define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN_ESC                                 \
+  0x20000000 //  29   no    PCW-Dec     During PCW decoding it is checked after
+//  every PCW if there are too many bits decoded (immediate
+//  check).
+#define EXTENDED_SORTED_COUNTER_OVERFLOW                                       \
+  0x10000000 //  28   yes   Init-Dec    Error during extending sideinfo
+//  (neither a PCW nor a nonPCW was decoded so far)
+// 0x08000000 //  27                     reserved
+// 0x04000000 //  26                     reserved
+// 0x02000000 //  25                     reserved
+// 0x01000000 //  24                     reserved
+// 0x00800000 //  23                     reserved
+// 0x00400000 //  22                     reserved
+// 0x00200000 //  21                     reserved
+// 0x00100000 //  20                     reserved
 
 /* special errors */
-#define TOO_MANY_PCW_BODY_BITS_DECODED \
-  0x00080000  //  19   yes   PCW-Dec     During PCW-body-decoding too many bits
-              //  have been read from bitstream -- advice: skip non-PCW decoding
-#define TOO_MANY_PCW_BODY_SIGN_BITS_DECODED \
-  0x00040000  //  18   yes   PCW-Dec     During PCW-body-sign-decoding too many
-              //  bits have been read from bitstream -- advice: skip non-PCW
-              //  decoding
-#define TOO_MANY_PCW_BODY_SIGN_ESC_BITS_DECODED \
-  0x00020000  //  17   yes   PCW-Dec     During PCW-body-sign-esc-decoding too
-              //  many bits have been read from bitstream -- advice: skip
-              //  non-PCW decoding
+#define TOO_MANY_PCW_BODY_BITS_DECODED                                         \
+  0x00080000 //  19   yes   PCW-Dec     During PCW-body-decoding too many bits
+//  have been read from bitstream -- advice: skip non-PCW decoding
+#define TOO_MANY_PCW_BODY_SIGN_BITS_DECODED                                    \
+  0x00040000 //  18   yes   PCW-Dec     During PCW-body-sign-decoding too many
+//  bits have been read from bitstream -- advice: skip non-PCW
+//  decoding
+#define TOO_MANY_PCW_BODY_SIGN_ESC_BITS_DECODED                                \
+  0x00020000 //  17   yes   PCW-Dec     During PCW-body-sign-esc-decoding too
+//  many bits have been read from bitstream -- advice: skip
+//  non-PCW decoding
 
 // 0x00010000 //  16                     reserved
-#define STATE_ERROR_BODY_ONLY \
-  0x00008000  //  15   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN__BODY \
-  0x00004000  //  14   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN__SIGN \
-  0x00002000  //  13   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN_ESC__BODY \
-  0x00001000  //  12   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN_ESC__SIGN \
-  0x00000800  //  11   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN_ESC__ESC_PREFIX \
-  0x00000400  //  10   no    NonPCW-Dec  State machine returned with error
-#define STATE_ERROR_BODY_SIGN_ESC__ESC_WORD \
-  0x00000200  //   9   no    NonPCW-Dec  State machine returned with error
-#define HCR_SI_LENGTHS_FAILURE \
-  0x00000100  //   8   yes   Init-Dec    LengthOfLongestCodeword must not be
-              //   less than lenghtOfReorderedSpectralData
-#define NUM_SECT_OUT_OF_RANGE_SHORT_BLOCK \
-  0x00000080  //   7   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (short block)
-#define NUM_SECT_OUT_OF_RANGE_LONG_BLOCK \
-  0x00000040  //   6   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (long block)
-#define LINE_IN_SECT_OUT_OF_RANGE_SHORT_BLOCK \
-  0x00000020  //   5   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (short block)
-#define CB_OUT_OF_RANGE_SHORT_BLOCK \
-  0x00000010  //   4   yes   Init-Dec    The codebook is not within the allowed
-              //   range (short block)
-#define LINE_IN_SECT_OUT_OF_RANGE_LONG_BLOCK \
-  0x00000008  //   3   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (long block)
-#define CB_OUT_OF_RANGE_LONG_BLOCK \
-  0x00000004  //   2   yes   Init-Dec    The codebook is not within the allowed
-              //   range (long block)
-#define LAV_VIOLATION \
-  0x00000002  //   1   no    Final       The absolute value of at least one
-              //   decoded line was too high for the according codebook.
-#define BIT_IN_SEGMENTATION_ERROR \
-  0x00000001  //   0   no    Final       After PCW and non-PWC-decoding at least
-              //   one segment is not zero (global check).
+#define STATE_ERROR_BODY_ONLY                                                  \
+  0x00008000 //  15   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN__BODY                                            \
+  0x00004000 //  14   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN__SIGN                                            \
+  0x00002000 //  13   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN_ESC__BODY                                        \
+  0x00001000 //  12   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN_ESC__SIGN                                        \
+  0x00000800 //  11   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN_ESC__ESC_PREFIX                                  \
+  0x00000400 //  10   no    NonPCW-Dec  State machine returned with error
+#define STATE_ERROR_BODY_SIGN_ESC__ESC_WORD                                    \
+  0x00000200 //   9   no    NonPCW-Dec  State machine returned with error
+#define HCR_SI_LENGTHS_FAILURE                                                 \
+  0x00000100 //   8   yes   Init-Dec    LengthOfLongestCodeword must not be
+//   less than lenghtOfReorderedSpectralData
+#define NUM_SECT_OUT_OF_RANGE_SHORT_BLOCK                                      \
+  0x00000080 //   7   yes   Init-Dec    The number of sections is not within
+//   the allowed range (short block)
+#define NUM_SECT_OUT_OF_RANGE_LONG_BLOCK                                       \
+  0x00000040 //   6   yes   Init-Dec    The number of sections is not within
+//   the allowed range (long block)
+#define LINE_IN_SECT_OUT_OF_RANGE_SHORT_BLOCK                                  \
+  0x00000020 //   5   yes   Init-Dec    The number of lines per section is not
+//   within the allowed range (short block)
+#define CB_OUT_OF_RANGE_SHORT_BLOCK                                            \
+  0x00000010 //   4   yes   Init-Dec    The codebook is not within the allowed
+//   range (short block)
+#define LINE_IN_SECT_OUT_OF_RANGE_LONG_BLOCK                                   \
+  0x00000008 //   3   yes   Init-Dec    The number of lines per section is not
+//   within the allowed range (long block)
+#define CB_OUT_OF_RANGE_LONG_BLOCK                                             \
+  0x00000004 //   2   yes   Init-Dec    The codebook is not within the allowed
+//   range (long block)
+#define LAV_VIOLATION                                                          \
+  0x00000002 //   1   no    Final       The absolute value of at least one
+//   decoded line was too high for the according codebook.
+#define BIT_IN_SEGMENTATION_ERROR                                              \
+  0x00000001 //   0   no    Final       After PCW and non-PWC-decoding at least
+//   one segment is not zero (global check).
 
 /*----------*/
 #define HCR_FATAL_PCW_ERROR_MASK 0x100E01FC

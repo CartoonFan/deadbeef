@@ -305,25 +305,33 @@ static const AUTO_PNS_TAB levelTable_stereo[] = {
 
 static const PNS_INFO_TAB pnsInfoTab[] = {
     /*0   pns off */
-    /*1*/ {4000, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.06), 1150, 1200,
-           FL2FXCONST_SGL(0.02), 8,
-           USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
-               USE_TNS_PNS /*| JUST_LONG_WINDOW*/},
+    /*1*/ {
+        4000, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.06), 1150, 1200,
+        FL2FXCONST_SGL(0.02), 8,
+        USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
+            USE_TNS_PNS /*| JUST_LONG_WINDOW*/
+    },
     /*2*/
-    {4000, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.07), 1130, 1300,
-     FL2FXCONST_SGL(0.05), 8,
-     USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
-         USE_TNS_PNS /*| JUST_LONG_WINDOW*/},
+    {
+        4000, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.07), 1130, 1300,
+        FL2FXCONST_SGL(0.05), 8,
+        USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
+            USE_TNS_PNS /*| JUST_LONG_WINDOW*/
+    },
     /*3*/
-    {4100, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.07), 1100, 1400,
-     FL2FXCONST_SGL(0.10), 8,
-     USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
-         USE_TNS_PNS /*| JUST_LONG_WINDOW*/},
+    {
+        4100, FL2FXCONST_SGL(0.04), FL2FXCONST_SGL(0.07), 1100, 1400,
+        FL2FXCONST_SGL(0.10), 8,
+        USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
+            USE_TNS_PNS /*| JUST_LONG_WINDOW*/
+    },
     /*4*/
-    {4100, FL2FXCONST_SGL(0.03), FL2FXCONST_SGL(0.10), 1100, 1400,
-     FL2FXCONST_SGL(0.15), 8,
-     USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
-         USE_TNS_PNS /*| JUST_LONG_WINDOW*/},
+    {
+        4100, FL2FXCONST_SGL(0.03), FL2FXCONST_SGL(0.10), 1100, 1400,
+        FL2FXCONST_SGL(0.15), 8,
+        USE_POWER_DISTRIBUTION | USE_PSYCH_TONALITY | USE_TNS_GAIN_THR |
+            USE_TNS_PNS /*| JUST_LONG_WINDOW*/
+    },
     /*5*/
     {4300, FL2FXCONST_SGL(0.03), FL2FXCONST_SGL(0.10), 1100, 1400,
      FL2FXCONST_SGL(0.15), 8,
@@ -459,29 +467,29 @@ int FDKaacEnc_lookUpPnsUse(int bitRate, int sampleRate, int numChan,
   }
 
   switch (sampleRate) {
-    case 16000:
-      hUsePns = levelTable[i].S16000;
-      break;
-    case 22050:
-      hUsePns = levelTable[i].S22050;
-      break;
-    case 24000:
-      hUsePns = levelTable[i].S24000;
-      break;
-    case 32000:
-      hUsePns = levelTable[i].S32000;
-      break;
-    case 44100:
-      hUsePns = levelTable[i].S44100;
-      break;
-    case 48000:
+  case 16000:
+    hUsePns = levelTable[i].S16000;
+    break;
+  case 22050:
+    hUsePns = levelTable[i].S22050;
+    break;
+  case 24000:
+    hUsePns = levelTable[i].S24000;
+    break;
+  case 32000:
+    hUsePns = levelTable[i].S32000;
+    break;
+  case 44100:
+    hUsePns = levelTable[i].S44100;
+    break;
+  case 48000:
+    hUsePns = levelTable[i].S48000;
+    break;
+  default:
+    if (isLC) {
       hUsePns = levelTable[i].S48000;
-      break;
-    default:
-      if (isLC) {
-        hUsePns = levelTable[i].S48000;
-      }
-      break;
+    }
+    break;
   }
 
   return (hUsePns);
@@ -505,7 +513,8 @@ AAC_ENCODER_ERROR FDKaacEnc_GetPnsParam(NOISEPARAMS *np, INT bitRate,
   int i, hUsePns;
   const PNS_INFO_TAB *pnsInfo;
 
-  if (*usePns <= 0) return AAC_ENC_OK;
+  if (*usePns <= 0)
+    return AAC_ENC_OK;
 
   if (isLC) {
     np->detectionAlgorithmFlags = IS_LOW_COMPLEXITY;
@@ -536,7 +545,8 @@ AAC_ENCODER_ERROR FDKaacEnc_GetPnsParam(NOISEPARAMS *np, INT bitRate,
       *usePns = 0;
       return AAC_ENC_OK;
     }
-    if (hUsePns == PNS_TABLE_ERROR) return AAC_ENC_PNS_TABLE_ERROR;
+    if (hUsePns == PNS_TABLE_ERROR)
+      return AAC_ENC_PNS_TABLE_ERROR;
 
     /* select correct row of tuning table */
     pnsInfo += hUsePns - 1;

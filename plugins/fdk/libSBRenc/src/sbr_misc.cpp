@@ -123,7 +123,8 @@ void FDKsbrEnc_Shellsort_fract(FIXP_DBL *in, INT n) {
       while (in[j - inc - 1] > v) {
         in[j - 1] = in[j - inc - 1];
         j -= inc;
-        if (j <= inc) break;
+        if (j <= inc)
+          break;
       }
       in[j - 1] = v;
     }
@@ -147,7 +148,8 @@ void FDKsbrEnc_Shellsort_int(INT *in, INT n) {
       while (in[j - inc - 1] > v) {
         in[j - 1] = in[j - inc - 1];
         j -= inc;
-        if (j <= inc) break;
+        if (j <= inc)
+          break;
       }
       in[j - 1] = v;
     }
@@ -186,7 +188,8 @@ void FDKsbrEnc_AddVecLeft(INT *dst, INT *length_dst, INT *src, INT length_src) {
 void FDKsbrEnc_AddLeft(INT *vector, INT *length_vector, INT value) {
   INT i;
 
-  for (i = *length_vector; i > 0; i--) vector[i] = vector[i - 1];
+  for (i = *length_vector; i > 0; i--)
+    vector[i] = vector[i - 1];
   vector[0] = value;
   (*length_vector)++;
 }
@@ -221,7 +224,8 @@ void FDKsbrEnc_AddRight(INT *vector, INT *length_vector, INT value) {
 void FDKsbrEnc_AddVecRight(INT *dst, INT *length_dst, INT *src,
                            INT length_src) {
   INT i;
-  for (i = 0; i < length_src; i++) FDKsbrEnc_AddRight(dst, length_dst, src[i]);
+  for (i = 0; i < length_src; i++)
+    FDKsbrEnc_AddRight(dst, length_dst, src[i]);
 }
 
 /*****************************************************************************

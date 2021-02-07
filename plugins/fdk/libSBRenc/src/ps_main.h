@@ -105,11 +105,11 @@ amm-info@iis.fraunhofer.de
 
 /* Includes ******************************************************************/
 
-#include "sbr_def.h"
-#include "qmf.h"
-#include "ps_encode.h"
 #include "FDK_bitstream.h"
 #include "FDK_hybrid.h"
+#include "ps_encode.h"
+#include "qmf.h"
+#include "sbr_def.h"
 
 /* Data Types ****************************************************************/
 typedef enum {
@@ -134,7 +134,7 @@ typedef struct {
   PSENC_STEREO_BANDS_CONFIG nStereoBands;
   PSENC_NENV_CONFIG nEnvelopes;
   LONG iidQuantErrorThreshold; /* quantization threshold to switch between
-                                  coarse and fine iid quantization */
+                                coarse and fine iid quantization */
 
 } psTuningTable_t;
 

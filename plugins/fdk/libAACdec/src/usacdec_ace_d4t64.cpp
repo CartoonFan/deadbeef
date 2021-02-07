@@ -300,25 +300,25 @@ static void D_ACELP_decode_4p_4N(LONG index, SHORT N, SHORT offset,
   n_1 = N - 1;
   j = offset + (1 << n_1);
   switch ((index >> ((4 * N) - 2)) & 3) {
-    case 0:
-      if (((index >> ((4 * n_1) + 1)) & 1) == 0) {
-        D_ACELP_decode_4p_4N1(index, n_1, offset, pos);
-      } else {
-        D_ACELP_decode_4p_4N1(index, n_1, j, pos);
-      }
-      break;
-    case 1:
-      D_ACELP_decode_1p_N1((index >> ((3 * n_1) + 1)), n_1, offset, pos);
-      D_ACELP_decode_3p_3N1(index, n_1, j, pos + 1);
-      break;
-    case 2:
-      D_ACELP_decode_2p_2N1((index >> ((2 * n_1) + 1)), n_1, offset, pos);
-      D_ACELP_decode_2p_2N1(index, n_1, j, pos + 2);
-      break;
-    case 3:
-      D_ACELP_decode_3p_3N1((index >> (n_1 + 1)), n_1, offset, pos);
-      D_ACELP_decode_1p_N1(index, n_1, j, pos + 3);
-      break;
+  case 0:
+    if (((index >> ((4 * n_1) + 1)) & 1) == 0) {
+      D_ACELP_decode_4p_4N1(index, n_1, offset, pos);
+    } else {
+      D_ACELP_decode_4p_4N1(index, n_1, j, pos);
+    }
+    break;
+  case 1:
+    D_ACELP_decode_1p_N1((index >> ((3 * n_1) + 1)), n_1, offset, pos);
+    D_ACELP_decode_3p_3N1(index, n_1, j, pos + 1);
+    break;
+  case 2:
+    D_ACELP_decode_2p_2N1((index >> ((2 * n_1) + 1)), n_1, offset, pos);
+    D_ACELP_decode_2p_2N1(index, n_1, j, pos + 2);
+    break;
+  case 3:
+    D_ACELP_decode_3p_3N1((index >> (n_1 + 1)), n_1, offset, pos);
+    D_ACELP_decode_1p_N1(index, n_1, j, pos + 3);
+    break;
   }
   return;
 }
@@ -361,79 +361,79 @@ void D_ACELP_decode_4t64(SHORT index[], int nbits, FIXP_COD code[]) {
 
   /* decode the positions and signs of pulses and build the codeword */
   switch (nbits) {
-    case 12:
-      for (k = 0; k < 4; k += 2) {
-        L_index = index[2 * (k / 2) + 1];
-        D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 1, 2 * (index[2 * (k / 2)]) + k / 2, code);
-      }
-      break;
-    case 16: {
-      int i = 0;
-      int offset = index[i++];
-      offset = (offset == 0) ? 1 : 3;
-      for (k = 0; k < 4; k++) {
-        if (k != offset) {
-          L_index = index[i++];
-          D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
-          D_ACELP_add_pulse(pos, 1, k, code);
-        }
-      }
-    } break;
-    case 20:
-      for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
+  case 12:
+    for (k = 0; k < 4; k += 2) {
+      L_index = index[2 * (k / 2) + 1];
+      D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 1, 2 * (index[2 * (k / 2)]) + k / 2, code);
+    }
+    break;
+  case 16: {
+    int i = 0;
+    int offset = index[i++];
+    offset = (offset == 0) ? 1 : 3;
+    for (k = 0; k < 4; k++) {
+      if (k != offset) {
+        L_index = index[i++];
         D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 1, k, code);
       }
-      break;
-    case 28:
-      for (k = 0; k < 4 - 2; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 2, k, code);
-      }
-      for (k = 2; k < 4; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 1, k, code);
-      }
-      break;
-    case 36:
-      for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 2, k, code);
-      }
-      break;
-    case 44:
-      for (k = 0; k < 4 - 2; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 3, k, code);
-      }
-      for (k = 2; k < 4; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 2, k, code);
-      }
-      break;
-    case 52:
-      for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
-        D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 3, k, code);
-      }
-      break;
-    case 64:
-      for (k = 0; k < 4; k++) {
-        L_index = (((LONG)index[k] << 14) + (LONG)index[k + 4]);
-        D_ACELP_decode_4p_4N(L_index, 4, 0, pos);
-        D_ACELP_add_pulse(pos, 4, k, code);
-      }
-      break;
-    default:
-      FDK_ASSERT(0);
+    }
+  } break;
+  case 20:
+    for (k = 0; k < 4; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 1, k, code);
+    }
+    break;
+  case 28:
+    for (k = 0; k < 4 - 2; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 2, k, code);
+    }
+    for (k = 2; k < 4; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 1, k, code);
+    }
+    break;
+  case 36:
+    for (k = 0; k < 4; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 2, k, code);
+    }
+    break;
+  case 44:
+    for (k = 0; k < 4 - 2; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 3, k, code);
+    }
+    for (k = 2; k < 4; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 2, k, code);
+    }
+    break;
+  case 52:
+    for (k = 0; k < 4; k++) {
+      L_index = (LONG)index[k];
+      D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 3, k, code);
+    }
+    break;
+  case 64:
+    for (k = 0; k < 4; k++) {
+      L_index = (((LONG)index[k] << 14) + (LONG)index[k + 4]);
+      D_ACELP_decode_4p_4N(L_index, 4, 0, pos);
+      D_ACELP_add_pulse(pos, 4, k, code);
+    }
+    break;
+  default:
+    FDK_ASSERT(0);
   }
   return;
 }

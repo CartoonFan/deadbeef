@@ -103,9 +103,9 @@ amm-info@iis.fraunhofer.de
 #ifndef PSY_MAIN_H
 #define PSY_MAIN_H
 
+#include "aacenc_pns.h"
 #include "psy_configuration.h"
 #include "qc_data.h"
-#include "aacenc_pns.h"
 
 /*
   psych internal
@@ -144,10 +144,11 @@ AAC_ENCODER_ERROR FDKaacEnc_psyInit(PSY_INTERNAL *hPsy, PSY_OUT **phpsyOut,
                                     const AUDIO_OBJECT_TYPE audioObjectType,
                                     CHANNEL_MAPPING *cm);
 
-AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
-    PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType, CHANNEL_MAPPING *cm,
-    INT sampleRate, INT granuleLength, INT bitRate, INT tnsMask, INT bandwidth,
-    INT usePns, INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags);
+AAC_ENCODER_ERROR
+FDKaacEnc_psyMainInit(PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType,
+                      CHANNEL_MAPPING *cm, INT sampleRate, INT granuleLength,
+                      INT bitRate, INT tnsMask, INT bandwidth, INT usePns,
+                      INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags);
 
 AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
                                     PSY_DYNAMIC *psyDynamic,

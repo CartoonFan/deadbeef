@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "tpenc_adif.h"
 
-#include "tpenc_lib.h"
 #include "tpenc_asc.h"
+#include "tpenc_lib.h"
 
 int adifWrite_EncodeHeader(ADIF_INFO *adif, HANDLE_FDK_BITSTREAM hBs,
                            INT adif_buffer_fullness) {
@@ -118,7 +118,8 @@ int adifWrite_EncodeHeader(ADIF_INFO *adif, HANDLE_FDK_BITSTREAM hBs,
 
   INT totalBitRate = adif->bitRate;
 
-  if (adif->headerWritten) return 0;
+  if (adif->headerWritten)
+    return 0;
 
   /* Align inside PCE with respect to the first bit of the header */
   UINT alignAnchor = FDKgetValidBits(hBs);
@@ -161,7 +162,8 @@ int adifWrite_GetHeaderBits(ADIF_INFO *adif) {
   /* ADIF definitions */
   const int copyRightIdPresent = 0;
 
-  if (adif->headerWritten) return 0;
+  if (adif->headerWritten)
+    return 0;
 
   int bits = 0;
 
@@ -169,7 +171,8 @@ int adifWrite_GetHeaderBits(ADIF_INFO *adif) {
 
   bits += 1; /* Copyright present */
 
-  if (copyRightIdPresent) bits += 72; /* Copyright ID */
+  if (copyRightIdPresent)
+    bits += 72; /* Copyright ID */
 
   bits += 26;
 

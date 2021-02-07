@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_AUDIO_H
 #define FDK_AUDIO_H
 
-#include "machine_type.h"
 #include "genericStds.h"
+#include "machine_type.h"
 #include "syslib_channelMapDescr.h"
 
 #ifdef __cplusplus
@@ -135,13 +135,13 @@ typedef enum {
 typedef enum {
   TT_UNKNOWN = -1, /**< Unknown format.            */
   TT_MP4_RAW = 0,  /**< "as is" access units (packet based since there is
-                      obviously no sync layer) */
+                    obviously no sync layer) */
   TT_MP4_ADIF = 1, /**< ADIF bitstream format.     */
   TT_MP4_ADTS = 2, /**< ADTS bitstream format.     */
 
   TT_MP4_LATM_MCP1 = 6, /**< Audio Mux Elements with muxConfigPresent = 1 */
   TT_MP4_LATM_MCP0 = 7, /**< Audio Mux Elements with muxConfigPresent = 0, out
-                           of band StreamMuxConfig */
+                         of band StreamMuxConfig */
 
   TT_MP4_LOAS = 10, /**< Audio Sync Stream.         */
 
@@ -149,8 +149,8 @@ typedef enum {
 
 } TRANSPORT_TYPE;
 
-#define TT_IS_PACKET(x)                                                   \
-  (((x) == TT_MP4_RAW) || ((x) == TT_DRM) || ((x) == TT_MP4_LATM_MCP0) || \
+#define TT_IS_PACKET(x)                                                        \
+  (((x) == TT_MP4_RAW) || ((x) == TT_DRM) || ((x) == TT_MP4_LATM_MCP0) ||      \
    ((x) == TT_MP4_LATM_MCP1))
 
 /**
@@ -219,8 +219,8 @@ typedef enum {
 
 } AUDIO_OBJECT_TYPE;
 
-#define CAN_DO_PS(aot)                                           \
-  ((aot) == AOT_AAC_LC || (aot) == AOT_SBR || (aot) == AOT_PS || \
+#define CAN_DO_PS(aot)                                                         \
+  ((aot) == AOT_AAC_LC || (aot) == AOT_SBR || (aot) == AOT_PS ||               \
    (aot) == AOT_ER_BSAC || (aot) == AOT_DRM_AAC)
 
 #define IS_USAC(aot) ((aot) == AOT_USAC)
@@ -290,14 +290,14 @@ typedef enum {
 /**
  * Audio Codec flags.
  */
-#define AC_ER_VCB11                                                           \
-  0x000001 /*!< aacSectionDataResilienceFlag     flag (from ASC): 1 means use \
+#define AC_ER_VCB11                                                            \
+  0x000001 /*!< aacSectionDataResilienceFlag     flag (from ASC): 1 means use  \
               virtual codebooks  */
 #define AC_ER_RVLC                                                             \
   0x000002 /*!< aacSpectralDataResilienceFlag     flag (from ASC): 1 means use \
               huffman codeword reordering */
-#define AC_ER_HCR                                                             \
-  0x000004 /*!< aacSectionDataResilienceFlag     flag (from ASC): 1 means use \
+#define AC_ER_HCR                                                              \
+  0x000004 /*!< aacSectionDataResilienceFlag     flag (from ASC): 1 means use  \
               virtual codebooks  */
 #define AC_SCALABLE 0x000008    /*!< AAC Scalable*/
 #define AC_ELD 0x000010         /*!< AAC-ELD */
@@ -309,11 +309,11 @@ typedef enum {
 #define AC_HDAAC 0x000400       /*!< HD-AAC */
 #define AC_RSVD50 0x004000      /*!< Rsvd50 */
 #define AC_SBR_PRESENT 0x008000 /*!< SBR present flag (from ASC) */
-#define AC_SBRCRC \
+#define AC_SBRCRC                                                              \
   0x010000 /*!< SBR CRC present flag. Only relevant for AAC-ELD for now. */
 #define AC_PS_PRESENT 0x020000 /*!< PS present flag (from ASC or implicit)  */
-#define AC_MPS_PRESENT                                                     \
-  0x040000                    /*!< MPS present flag (from ASC or implicit) \
+#define AC_MPS_PRESENT                                                         \
+  0x040000                    /*!< MPS present flag (from ASC or implicit)     \
                                */
 #define AC_DRM 0x080000       /*!< DRM bit stream syntax */
 #define AC_INDEP 0x100000     /*!< Independency flag */
@@ -322,19 +322,19 @@ typedef enum {
 #define AC_DAB 0x800000            /*!< DAB bit stream syntax */
 #define AC_ELD_DOWNSCALE 0x1000000 /*!< ELD Downscaled playout */
 #define AC_LD_MPS 0x2000000        /*!< Low Delay MPS. */
-#define AC_DRC_PRESENT                                   \
-  0x4000000 /*!< Dynamic Range Control (DRC) data found. \
+#define AC_DRC_PRESENT                                                         \
+  0x4000000 /*!< Dynamic Range Control (DRC) data found.                       \
              */
-#define AC_USAC_SCFGI3 \
+#define AC_USAC_SCFGI3                                                         \
   0x8000000 /*!< USAC flag: If stereoConfigIndex is 3 the flag is set. */
 /**
  * Audio Codec flags (reconfiguration).
  */
-#define AC_CM_DET_CFG_CHANGE                                                 \
-  0x000001 /*!< Config mode signalizes the callback to work in config change \
+#define AC_CM_DET_CFG_CHANGE                                                   \
+  0x000001 /*!< Config mode signalizes the callback to work in config change   \
               detection mode */
-#define AC_CM_ALLOC_MEM                                               \
-  0x000002 /*!< Config mode signalizes the callback to work in memory \
+#define AC_CM_ALLOC_MEM                                                        \
+  0x000002 /*!< Config mode signalizes the callback to work in memory          \
               allocation mode */
 
 /**
@@ -343,7 +343,7 @@ typedef enum {
 #define AC_EL_USAC_TW 0x000001    /*!< USAC time warped filter bank is active */
 #define AC_EL_USAC_NOISE 0x000002 /*!< USAC noise filling is active */
 #define AC_EL_USAC_ITES 0x000004  /*!< USAC SBR inter-TES tool is active */
-#define AC_EL_USAC_PVC \
+#define AC_EL_USAC_PVC                                                         \
   0x000008 /*!< USAC SBR predictive vector coding tool is active */
 #define AC_EL_USAC_MPS212 0x000010 /*!< USAC MPS212 tool is active */
 #define AC_EL_USAC_LFE 0x000020    /*!< USAC element is LFE */
@@ -379,33 +379,33 @@ typedef struct {
   AUDIO_OBJECT_TYPE extAOT;  /**< Extension Audio Object Type (SBR). */
   CHANNEL_MODE channelMode;  /**< Channel mode.                      */
   UCHAR channelConfigZero;   /**< Use channel config zero + pce although a
-                                standard channel config could be signaled. */
+                              standard channel config could be signaled. */
   INT samplingRate;          /**< Sampling rate.                     */
   INT extSamplingRate;       /**< Extended samplerate (SBR).         */
   INT downscaleSamplingRate; /**< Downscale sampling rate (ELD downscaled mode)
                               */
   INT bitRate;               /**< Average bitrate.                   */
   int samplesPerFrame; /**< Number of PCM samples per codec frame and audio
-                          channel. */
+                        channel. */
   int noChannels;      /**< Number of audio channels.          */
   int bitsFrame;
   int nSubFrames; /**< Amount of encoder subframes. 1 means no subframing. */
   int BSACnumOfSubFrame; /**< The number of the sub-frames which are grouped and
-                            transmitted in a super-frame (BSAC). */
+                          transmitted in a super-frame (BSAC). */
   int BSAClayerLength; /**< The average length of the large-step layers in bytes
-                          (BSAC).                            */
+                        (BSAC).                            */
   UINT flags;          /**< flags */
   UCHAR matrixMixdownA; /**< Matrix mixdown index to put into PCE. Default value
-                           0 means no mixdown coefficient, valid values are 1-4
-                           which correspond to matrix_mixdown_idx 0-3. */
+                         0 means no mixdown coefficient, valid values are 1-4
+                         which correspond to matrix_mixdown_idx 0-3. */
   UCHAR headerPeriod;   /**< Frame period for sending in band configuration
-                           buffers in the transport layer. */
+                         buffers in the transport layer. */
 
   UCHAR stereoConfigIndex;       /**< USAC MPS stereo mode */
   UCHAR sbrMode;                 /**< USAC SBR mode */
   SBR_PS_SIGNALING sbrSignaling; /**< 0: implicit signaling, 1: backwards
-                                    compatible explicit signaling, 2:
-                                    hierarcical explicit signaling */
+                                  compatible explicit signaling, 2:
+                                  hierarcical explicit signaling */
 
   UCHAR rawConfig[64]; /**< raw codec specific config as bit stream */
   int rawConfigBits;   /**< Size of rawConfig in bits */
@@ -425,7 +425,7 @@ typedef enum {
   ID_CCE = 2,   /**< Coupling Channel Element.              */
   ID_LFE = 3,   /**< LFE Channel Element.                   */
   ID_DSE = 4,   /**< Currently one Data Stream Element for ancillary data is
-                   supported. */
+                 supported. */
   ID_PCE = 5,   /**< Program Config Element.                */
   ID_FIL = 6,   /**< Fill Element.                          */
   ID_END = 7,   /**< Arnie (End Element = Terminator).      */
@@ -455,12 +455,12 @@ typedef enum {
   /* > 128 => reserved for use outside of ISO scope */
 } CONFIG_EXT_ID;
 
-#define IS_CHANNEL_ELEMENT(elementId)                                         \
-  ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || \
-   (elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE ||                \
+#define IS_CHANNEL_ELEMENT(elementId)                                          \
+  ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE ||  \
+   (elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE ||                 \
    (elementId) == ID_USAC_LFE)
 
-#define IS_MP4_CHANNEL_ELEMENT(elementId) \
+#define IS_MP4_CHANNEL_ELEMENT(elementId)                                      \
   ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE)
 
 #define EXT_ID_BITS 4 /**< Size in bits of extension payload type tags. */
@@ -480,8 +480,8 @@ typedef enum {
   EXT_SBR_DATA_CRC = 0x0e
 } EXT_PAYLOAD_TYPE;
 
-#define IS_USAC_CHANNEL_ELEMENT(elementId)                     \
-  ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || \
+#define IS_USAC_CHANNEL_ELEMENT(elementId)                                     \
+  ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE ||                 \
    (elementId) == ID_USAC_LFE)
 
 /** MPEG-D USAC & RSVD60 3D audio Extension Element Types. */
@@ -546,143 +546,143 @@ typedef enum {
 
 /* AAC capability flags */
 #define CAPF_AAC_LC 0x00000001 /**< Support flag for AAC Low Complexity. */
-#define CAPF_ER_AAC_LD                                                        \
-  0x00000002 /**< Support flag for AAC Low Delay with Error Resilience tools. \
+#define CAPF_ER_AAC_LD                                                         \
+  0x00000002 /**< Support flag for AAC Low Delay with Error Resilience tools.  \
               */
 #define CAPF_ER_AAC_SCAL 0x00000004 /**< Support flag for AAC Scalable. */
-#define CAPF_ER_AAC_LC                                                      \
-  0x00000008 /**< Support flag for AAC Low Complexity with Error Resilience \
+#define CAPF_ER_AAC_LC                                                         \
+  0x00000008 /**< Support flag for AAC Low Complexity with Error Resilience    \
                 tools. */
-#define CAPF_AAC_480 \
+#define CAPF_AAC_480                                                           \
   0x00000010 /**< Support flag for AAC with 480 framelength.  */
-#define CAPF_AAC_512 \
+#define CAPF_AAC_512                                                           \
   0x00000020 /**< Support flag for AAC with 512 framelength.  */
-#define CAPF_AAC_960 \
+#define CAPF_AAC_960                                                           \
   0x00000040 /**< Support flag for AAC with 960 framelength.  */
-#define CAPF_AAC_1024 \
+#define CAPF_AAC_1024                                                          \
   0x00000080 /**< Support flag for AAC with 1024 framelength. */
-#define CAPF_AAC_HCR \
+#define CAPF_AAC_HCR                                                           \
   0x00000100 /**< Support flag for AAC with Huffman Codeword Reordering.    */
-#define CAPF_AAC_VCB11 \
+#define CAPF_AAC_VCB11                                                         \
   0x00000200 /**< Support flag for AAC Virtual Codebook 11.    */
-#define CAPF_AAC_RVLC \
+#define CAPF_AAC_RVLC                                                          \
   0x00000400 /**< Support flag for AAC Reversible Variable Length Coding.   */
 #define CAPF_AAC_MPEG4 0x00000800 /**< Support flag for MPEG file format. */
-#define CAPF_AAC_DRC \
+#define CAPF_AAC_DRC                                                           \
   0x00001000 /**< Support flag for AAC Dynamic Range Control. */
-#define CAPF_AAC_CONCEALMENT \
+#define CAPF_AAC_CONCEALMENT                                                   \
   0x00002000 /**< Support flag for AAC concealment.           */
-#define CAPF_AAC_DRM_BSFORMAT \
+#define CAPF_AAC_DRM_BSFORMAT                                                  \
   0x00004000 /**< Support flag for AAC DRM bistream format. */
-#define CAPF_ER_AAC_ELD                                              \
-  0x00008000 /**< Support flag for AAC Enhanced Low Delay with Error \
+#define CAPF_ER_AAC_ELD                                                        \
+  0x00008000 /**< Support flag for AAC Enhanced Low Delay with Error           \
                 Resilience tools.  */
-#define CAPF_ER_AAC_BSAC \
+#define CAPF_ER_AAC_BSAC                                                       \
   0x00010000 /**< Support flag for AAC BSAC.                           */
-#define CAPF_AAC_ELD_DOWNSCALE \
+#define CAPF_AAC_ELD_DOWNSCALE                                                 \
   0x00040000 /**< Support flag for AAC-ELD Downscaling           */
-#define CAPF_AAC_USAC_LP \
+#define CAPF_AAC_USAC_LP                                                       \
   0x00100000 /**< Support flag for USAC low power mode. */
-#define CAPF_AAC_USAC \
+#define CAPF_AAC_USAC                                                          \
   0x00200000 /**< Support flag for Unified Speech and Audio Coding (USAC). */
-#define CAPF_ER_AAC_ELDV2 \
+#define CAPF_ER_AAC_ELDV2                                                      \
   0x00800000 /**< Support flag for AAC Enhanced Low Delay with MPS 212.  */
-#define CAPF_AAC_UNIDRC \
+#define CAPF_AAC_UNIDRC                                                        \
   0x01000000 /**< Support flag for MPEG-D Dynamic Range Control (uniDrc). */
 
 /* Transport capability flags */
-#define CAPF_ADTS \
+#define CAPF_ADTS                                                              \
   0x00000001 /**< Support flag for ADTS transport format.        */
-#define CAPF_ADIF \
+#define CAPF_ADIF                                                              \
   0x00000002 /**< Support flag for ADIF transport format.        */
-#define CAPF_LATM \
+#define CAPF_LATM                                                              \
   0x00000004 /**< Support flag for LATM transport format.        */
-#define CAPF_LOAS \
+#define CAPF_LOAS                                                              \
   0x00000008 /**< Support flag for LOAS transport format.        */
-#define CAPF_RAWPACKETS \
+#define CAPF_RAWPACKETS                                                        \
   0x00000010 /**< Support flag for RAW PACKETS transport format. */
-#define CAPF_DRM \
+#define CAPF_DRM                                                               \
   0x00000020 /**< Support flag for DRM/DRM+ transport format.    */
-#define CAPF_RSVD50 \
+#define CAPF_RSVD50                                                            \
   0x00000040 /**< Support flag for RSVD50 transport format       */
 
 /* SBR capability flags */
-#define CAPF_SBR_LP \
+#define CAPF_SBR_LP                                                            \
   0x00000001 /**< Support flag for SBR Low Power mode.           */
-#define CAPF_SBR_HQ \
+#define CAPF_SBR_HQ                                                            \
   0x00000002 /**< Support flag for SBR High Quality mode.        */
-#define CAPF_SBR_DRM_BS \
+#define CAPF_SBR_DRM_BS                                                        \
   0x00000004 /**< Support flag for                               */
-#define CAPF_SBR_CONCEALMENT \
+#define CAPF_SBR_CONCEALMENT                                                   \
   0x00000008 /**< Support flag for SBR concealment.              */
-#define CAPF_SBR_DRC \
+#define CAPF_SBR_DRC                                                           \
   0x00000010 /**< Support flag for SBR Dynamic Range Control.    */
-#define CAPF_SBR_PS_MPEG \
+#define CAPF_SBR_PS_MPEG                                                       \
   0x00000020 /**< Support flag for MPEG Parametric Stereo.       */
-#define CAPF_SBR_PS_DRM \
+#define CAPF_SBR_PS_DRM                                                        \
   0x00000040 /**< Support flag for DRM Parametric Stereo.        */
-#define CAPF_SBR_ELD_DOWNSCALE \
+#define CAPF_SBR_ELD_DOWNSCALE                                                 \
   0x00000080 /**< Support flag for ELD reduced delay mode        */
-#define CAPF_SBR_HBEHQ \
+#define CAPF_SBR_HBEHQ                                                         \
   0x00000100 /**< Support flag for HQ HBE                        */
 
 /* PCM utils capability flags */
-#define CAPF_DMX_BLIND \
+#define CAPF_DMX_BLIND                                                         \
   0x00000001 /**< Support flag for blind downmixing.             */
-#define CAPF_DMX_PCE                                                      \
-  0x00000002 /**< Support flag for guided downmix with data from MPEG-2/4 \
+#define CAPF_DMX_PCE                                                           \
+  0x00000002 /**< Support flag for guided downmix with data from MPEG-2/4      \
                 Program Config Elements (PCE). */
-#define CAPF_DMX_ARIB                                                         \
-  0x00000004 /**< Support flag for PCE guided downmix with slightly different \
+#define CAPF_DMX_ARIB                                                          \
+  0x00000004 /**< Support flag for PCE guided downmix with slightly different  \
                 equations and levels to fulfill ARIB standard. */
 #define CAPF_DMX_DVB                                                           \
   0x00000008 /**< Support flag for guided downmix with data from DVB ancillary \
                 data fields. */
-#define CAPF_DMX_CH_EXP                                                       \
-  0x00000010 /**< Support flag for simple upmixing by dublicating channels or \
+#define CAPF_DMX_CH_EXP                                                        \
+  0x00000010 /**< Support flag for simple upmixing by dublicating channels or  \
                 adding zero channels. */
-#define CAPF_DMX_6_CH                                                   \
-  0x00000020 /**< Support flag for 5.1 channel configuration (input and \
+#define CAPF_DMX_6_CH                                                          \
+  0x00000020 /**< Support flag for 5.1 channel configuration (input and        \
                 output). */
 #define CAPF_DMX_8_CH                                                          \
   0x00000040 /**< Support flag for 6 and 7.1 channel configurations (input and \
                 output). */
-#define CAPF_DMX_24_CH                                                   \
-  0x00000080 /**< Support flag for 22.2 channel configuration (input and \
+#define CAPF_DMX_24_CH                                                         \
+  0x00000080 /**< Support flag for 22.2 channel configuration (input and       \
                 output). */
-#define CAPF_LIMITER                                      \
-  0x00002000 /**< Support flag for signal level limiting. \
+#define CAPF_LIMITER                                                           \
+  0x00002000 /**< Support flag for signal level limiting.                      \
               */
 
 /* MPEG Surround capability flags */
-#define CAPF_MPS_STD \
+#define CAPF_MPS_STD                                                           \
   0x00000001 /**< Support flag for MPEG Surround.           */
-#define CAPF_MPS_LD                                         \
-  0x00000002 /**< Support flag for Low Delay MPEG Surround. \
+#define CAPF_MPS_LD                                                            \
+  0x00000002 /**< Support flag for Low Delay MPEG Surround.                    \
               */
-#define CAPF_MPS_USAC \
+#define CAPF_MPS_USAC                                                          \
   0x00000004 /**< Support flag for USAC MPEG Surround.      */
-#define CAPF_MPS_HQ                                                     \
-  0x00000010 /**< Support flag indicating if high quality processing is \
+#define CAPF_MPS_HQ                                                            \
+  0x00000010 /**< Support flag indicating if high quality processing is        \
                 supported */
-#define CAPF_MPS_LP                                                        \
-  0x00000020 /**< Support flag indicating if partially complex (low power) \
+#define CAPF_MPS_LP                                                            \
+  0x00000020 /**< Support flag indicating if partially complex (low power)     \
                 processing is supported */
-#define CAPF_MPS_BLIND \
+#define CAPF_MPS_BLIND                                                         \
   0x00000040 /**< Support flag indicating if blind processing is supported */
-#define CAPF_MPS_BINAURAL \
+#define CAPF_MPS_BINAURAL                                                      \
   0x00000080 /**< Support flag indicating if binaural output is possible */
-#define CAPF_MPS_2CH_OUT \
+#define CAPF_MPS_2CH_OUT                                                       \
   0x00000100 /**< Support flag indicating if 2ch output is possible      */
-#define CAPF_MPS_6CH_OUT \
+#define CAPF_MPS_6CH_OUT                                                       \
   0x00000200 /**< Support flag indicating if 6ch output is possible      */
-#define CAPF_MPS_8CH_OUT \
+#define CAPF_MPS_8CH_OUT                                                       \
   0x00000400 /**< Support flag indicating if 8ch output is possible      */
-#define CAPF_MPS_1CH_IN \
+#define CAPF_MPS_1CH_IN                                                        \
   0x00001000 /**< Support flag indicating if 1ch dmx input is possible   */
-#define CAPF_MPS_2CH_IN \
+#define CAPF_MPS_2CH_IN                                                        \
   0x00002000 /**< Support flag indicating if 2ch dmx input is possible   */
-#define CAPF_MPS_6CH_IN \
+#define CAPF_MPS_6CH_IN                                                        \
   0x00004000 /**< Support flag indicating if 5ch dmx input is possible   */
 
 /* \endcond */
@@ -700,8 +700,8 @@ typedef enum {
  * \param lev1  2nd level of version number.
  * \param lev2  3rd level of version number.
  */
-#define LIB_VERSION(lev0, lev1, lev2)                      \
-  ((lev0 << 24 & 0xff000000) | (lev1 << 16 & 0x00ff0000) | \
+#define LIB_VERSION(lev0, lev1, lev2)                                          \
+  ((lev0 << 24 & 0xff000000) | (lev1 << 16 & 0x00ff0000) |                     \
    (lev2 << 8 & 0x0000ff00))
 
 /**
@@ -716,9 +716,9 @@ typedef enum {
  *  Library information.
  */
 typedef struct LIB_INFO {
-  const char* title;
-  const char* build_date;
-  const char* build_time;
+  const char *title;
+  const char *build_date;
+  const char *build_time;
   FDK_MODULE_ID module_id;
   INT version;
   UINT flags;
@@ -732,7 +732,7 @@ typedef struct LIB_INFO {
 #endif
 
 /** Initialize library info. */
-static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO* info) {
+static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO *info) {
   int i;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
@@ -742,7 +742,7 @@ static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO* info) {
 
 /** Aquire supported features of library. */
 static FDK_AUDIO_INLINE UINT
-FDKlibInfo_getCapabilities(const LIB_INFO* info, FDK_MODULE_ID module_id) {
+FDKlibInfo_getCapabilities(const LIB_INFO *info, FDK_MODULE_ID module_id) {
   int i;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
@@ -754,15 +754,18 @@ FDKlibInfo_getCapabilities(const LIB_INFO* info, FDK_MODULE_ID module_id) {
 }
 
 /** Search for next free tab. */
-static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO* info,
+static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO *info,
                                               FDK_MODULE_ID module_id) {
   int i = -1;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == module_id) return -1;
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == module_id)
+      return -1;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
-  if (i == FDK_MODULE_LAST) return -1;
+  if (i == FDK_MODULE_LAST)
+    return -1;
 
   return i;
 }
@@ -777,18 +780,18 @@ static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO* info,
  *  I/O buffer descriptor.
  */
 typedef struct FDK_bufDescr {
-  void** ppBase;  /*!< Pointer to an array containing buffer base addresses.
-                       Set to NULL for buffer requirement info. */
-  UINT* pBufSize; /*!< Pointer to an array containing the number of elements
-                     that can be placed in the specific buffer. */
-  UINT* pEleSize; /*!< Pointer to an array containing the element size for each
-                     buffer in bytes. That is mostly the number returned by the
-                     sizeof() operator for the data type used for the specific
-                     buffer. */
-  UINT*
-      pBufType; /*!< Pointer to an array of bit fields containing a description
-                     for each buffer. See XXX below for more details.  */
-  UINT numBufs; /*!< Total number of buffers. */
+  void **ppBase;  /*!< Pointer to an array containing buffer base addresses.
+                     Set to NULL for buffer requirement info. */
+  UINT *pBufSize; /*!< Pointer to an array containing the number of elements
+                   that can be placed in the specific buffer. */
+  UINT *pEleSize; /*!< Pointer to an array containing the element size for each
+                   buffer in bytes. That is mostly the number returned by the
+                   sizeof() operator for the data type used for the specific
+                   buffer. */
+  UINT
+      *pBufType; /*!< Pointer to an array of bit fields containing a description
+                        for each buffer. See XXX below for more details.  */
+  UINT numBufs;  /*!< Total number of buffers. */
 
 } FDK_bufDescr;
 

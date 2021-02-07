@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "usacdec_ace_ltp.h"
 
-#include "genericStds.h"
 #include "common_fix.h"
+#include "genericStds.h"
 
 #define UP_SAMP 4
 #define L_INTERPOL2 16

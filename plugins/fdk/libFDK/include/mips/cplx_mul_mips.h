@@ -115,16 +115,26 @@ amm-info@iis.fraunhofer.de
 #if defined(FUNCTION_cplxMultDiv2_32x32X2)
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, FIXP_DBL a_Re,
                          FIXP_DBL a_Im, FIXP_DBL b_Re, FIXP_DBL b_Im) {
-  *c_Re = (((long long)a_Re * (long long)b_Re) - ((long long)a_Im * (long long)b_Im))>>32;
-  *c_Im = (((long long)a_Re * (long long)b_Im) + ((long long)a_Im * (long long)b_Re))>>32;
+  *c_Re = (((long long)a_Re * (long long)b_Re) -
+           ((long long)a_Im * (long long)b_Im)) >>
+          32;
+  *c_Im = (((long long)a_Re * (long long)b_Im) +
+           ((long long)a_Im * (long long)b_Re)) >>
+          32;
 }
 #endif
 
 #if defined(FUNCTION_cplxMult_32x32X2)
 inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, FIXP_DBL a_Re,
                      FIXP_DBL a_Im, FIXP_DBL b_Re, FIXP_DBL b_Im) {
-  *c_Re = ((((long long)a_Re * (long long)b_Re) - ((long long)a_Im * (long long)b_Im))>>32)<<1;
-  *c_Im = ((((long long)a_Re * (long long)b_Im) + ((long long)a_Im * (long long)b_Re))>>32)<<1;
+  *c_Re = ((((long long)a_Re * (long long)b_Re) -
+            ((long long)a_Im * (long long)b_Im)) >>
+           32)
+          << 1;
+  *c_Im = ((((long long)a_Re * (long long)b_Im) +
+            ((long long)a_Im * (long long)b_Re)) >>
+           32)
+          << 1;
 }
 #endif
 

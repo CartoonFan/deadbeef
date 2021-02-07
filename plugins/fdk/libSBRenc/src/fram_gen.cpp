@@ -494,29 +494,103 @@ FDKsbrEnc_frameInfoGenerator(HANDLE_SBR_ENVELOPE_FRAME hSbrEnvFrame,
     }
 
     switch (frameClass) {
-      case FIXFIXonly:
-        FDK_ASSERT(ldGrid);
-        tranPosInternal = tranPos;
-        generateFixFixOnly(&(hSbrEnvFrame->SbrFrameInfo),
-                           &(hSbrEnvFrame->SbrGrid), tranPosInternal,
-                           numberTimeSlots, hSbrEnvFrame->fResTransIsLow);
+    case FIXFIXonly:
+      FDK_ASSERT(ldGrid);
+      tranPosInternal = tranPos;
+      generateFixFixOnly(&(hSbrEnvFrame->SbrFrameInfo),
+                         &(hSbrEnvFrame->SbrGrid), tranPosInternal,
+                         numberTimeSlots, hSbrEnvFrame->fResTransIsLow);
 
-        return &(hSbrEnvFrame->SbrFrameInfo);
+      return &(hSbrEnvFrame->SbrFrameInfo);
 
-      case FIXVAR:
+    case FIXVAR:
 
+      /*--------------------------------------------------------------------------
+         Design remaining parts of T/F-grid (assuming next frame is VarFix)
+      ---------------------------------------------------------------------------*/
+
+      /*--------------------------------------------------------------------------
+        Fill region before new transient:
+      ---------------------------------------------------------------------------*/
+      fillFramePre(dmax, v_bord, length_v_bord, v_freq, length_v_freq, bmin,
+                   bmin - bufferFrameStart); /* FH 00-06-26 */
+
+      /*--------------------------------------------------------------------------
+        Fill region after new transient:
+      ---------------------------------------------------------------------------*/
+      fillFramePost(&parts, &d, dmax, v_bord, length_v_bord, v_freq,
+                    length_v_freq, bmax, bufferFrameStart, numberTimeSlots,
+                    fmax);
+
+      /*--------------------------------------------------------------------------
+        Take care of special case:
+      ---------------------------------------------------------------------------*/
+      if (parts == 1 && d < dmin) /* no fill, short last envelope */
+        specialCase(spreadFlag, allowSpread, v_bord, length_v_bord, v_freq,
+                    length_v_freq, &parts, d);
+
+      /*--------------------------------------------------------------------------
+        Calculate common border (split-point)
+      ---------------------------------------------------------------------------*/
+      calcCmonBorder(&i_cmon, &i_tran, v_bord, length_v_bord, tranPosInternal,
+                     bufferFrameStart, numberTimeSlots); /* FH 00-06-26 */
+
+      /*--------------------------------------------------------------------------
+        Extract data for proper follow-up in next frame
+      ---------------------------------------------------------------------------*/
+      keepForFollowUp(v_bordFollow, length_v_bordFollow, v_freqFollow,
+                      length_v_freqFollow, i_tranFollow, i_fillFollow, v_bord,
+                      length_v_bord, v_freq, i_cmon, i_tran, parts,
+                      numberTimeSlots); /* FH 00-06-26 */
+
+      /*--------------------------------------------------------------------------
+        Calculate control signal
+      ---------------------------------------------------------------------------*/
+      calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bord, *length_v_bord,
+                     v_freq, *length_v_freq, i_cmon, i_tran, *spreadFlag, DC);
+      break;
+    case VARFIX:
+      /*--------------------------------------------------------------------------
+        Follow-up old transient - calculate control signal
+      ---------------------------------------------------------------------------*/
+      calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bordFollow,
+                     *length_v_bordFollow, v_freqFollow, *length_v_freqFollow,
+                     DC, *i_tranFollow, *spreadFlag, DC);
+      break;
+    case VARVAR:
+      if (*spreadFlag) { /* spread across three frames */
         /*--------------------------------------------------------------------------
-           Design remaining parts of T/F-grid (assuming next frame is VarFix)
+          Follow-up old transient - calculate control signal
         ---------------------------------------------------------------------------*/
+        calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bordFollow,
+                       *length_v_bordFollow, v_freqFollow, *length_v_freqFollow,
+                       DC, *i_tranFollow, *spreadFlag, DC);
+
+        *spreadFlag = 0;
 
         /*--------------------------------------------------------------------------
-          Fill region before new transient:
+          Extract data for proper follow-up in next frame
         ---------------------------------------------------------------------------*/
-        fillFramePre(dmax, v_bord, length_v_bord, v_freq, length_v_freq, bmin,
-                     bmin - bufferFrameStart); /* FH 00-06-26 */
+        v_bordFollow[0] = hSbrEnvFrame->SbrGrid.bs_abs_bord_1 -
+                          numberTimeSlots; /* FH 00-06-26 */
+        v_freqFollow[0] = 1;
+        *length_v_bordFollow = 1;
+        *length_v_freqFollow = 1;
+
+        *i_tranFollow = -DC;
+        *i_fillFollow = -DC;
+      } else {
+        /*--------------------------------------------------------------------------
+          Design remaining parts of T/F-grid (assuming next frame is VarFix)
+          adapt or fill region before new transient:
+        ---------------------------------------------------------------------------*/
+        fillFrameInter(&nL, v_tuningSegm, v_bord, length_v_bord, bmin, v_freq,
+                       length_v_freq, v_bordFollow, length_v_bordFollow,
+                       v_freqFollow, length_v_freqFollow, *i_fillFollow, dmin,
+                       dmax, numberTimeSlots);
 
         /*--------------------------------------------------------------------------
-          Fill region after new transient:
+          Fill after transient:
         ---------------------------------------------------------------------------*/
         fillFramePost(&parts, &d, dmax, v_bord, length_v_bord, v_freq,
                       length_v_freq, bmax, bufferFrameStart, numberTimeSlots,
@@ -525,7 +599,7 @@ FDKsbrEnc_frameInfoGenerator(HANDLE_SBR_ENVELOPE_FRAME hSbrEnvFrame,
         /*--------------------------------------------------------------------------
           Take care of special case:
         ---------------------------------------------------------------------------*/
-        if (parts == 1 && d < dmin) /* no fill, short last envelope */
+        if (parts == 1 && d < dmin) /*% no fill, short last envelope */
           specialCase(spreadFlag, allowSpread, v_bord, length_v_bord, v_freq,
                       length_v_freq, &parts, d);
 
@@ -533,7 +607,7 @@ FDKsbrEnc_frameInfoGenerator(HANDLE_SBR_ENVELOPE_FRAME hSbrEnvFrame,
           Calculate common border (split-point)
         ---------------------------------------------------------------------------*/
         calcCmonBorder(&i_cmon, &i_tran, v_bord, length_v_bord, tranPosInternal,
-                       bufferFrameStart, numberTimeSlots); /* FH 00-06-26 */
+                       bufferFrameStart, numberTimeSlots);
 
         /*--------------------------------------------------------------------------
           Extract data for proper follow-up in next frame
@@ -541,104 +615,28 @@ FDKsbrEnc_frameInfoGenerator(HANDLE_SBR_ENVELOPE_FRAME hSbrEnvFrame,
         keepForFollowUp(v_bordFollow, length_v_bordFollow, v_freqFollow,
                         length_v_freqFollow, i_tranFollow, i_fillFollow, v_bord,
                         length_v_bord, v_freq, i_cmon, i_tran, parts,
-                        numberTimeSlots); /* FH 00-06-26 */
+                        numberTimeSlots);
 
         /*--------------------------------------------------------------------------
           Calculate control signal
         ---------------------------------------------------------------------------*/
         calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bord,
                        *length_v_bord, v_freq, *length_v_freq, i_cmon, i_tran,
-                       *spreadFlag, DC);
-        break;
-      case VARFIX:
-        /*--------------------------------------------------------------------------
-          Follow-up old transient - calculate control signal
-        ---------------------------------------------------------------------------*/
-        calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bordFollow,
-                       *length_v_bordFollow, v_freqFollow, *length_v_freqFollow,
-                       DC, *i_tranFollow, *spreadFlag, DC);
-        break;
-      case VARVAR:
-        if (*spreadFlag) { /* spread across three frames */
-          /*--------------------------------------------------------------------------
-            Follow-up old transient - calculate control signal
-          ---------------------------------------------------------------------------*/
-          calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bordFollow,
-                         *length_v_bordFollow, v_freqFollow,
-                         *length_v_freqFollow, DC, *i_tranFollow, *spreadFlag,
-                         DC);
+                       0, nL);
+      }
+      break;
+    case FIXFIX:
+      if (tranPos == 0)
+        numEnv = 1;
+      else
+        numEnv = 2;
 
-          *spreadFlag = 0;
+      hSbrEnvFrame->SbrGrid.bs_num_env = numEnv;
+      hSbrEnvFrame->SbrGrid.frameClass = frameClass;
 
-          /*--------------------------------------------------------------------------
-            Extract data for proper follow-up in next frame
-          ---------------------------------------------------------------------------*/
-          v_bordFollow[0] = hSbrEnvFrame->SbrGrid.bs_abs_bord_1 -
-                            numberTimeSlots; /* FH 00-06-26 */
-          v_freqFollow[0] = 1;
-          *length_v_bordFollow = 1;
-          *length_v_freqFollow = 1;
-
-          *i_tranFollow = -DC;
-          *i_fillFollow = -DC;
-        } else {
-          /*--------------------------------------------------------------------------
-            Design remaining parts of T/F-grid (assuming next frame is VarFix)
-            adapt or fill region before new transient:
-          ---------------------------------------------------------------------------*/
-          fillFrameInter(&nL, v_tuningSegm, v_bord, length_v_bord, bmin, v_freq,
-                         length_v_freq, v_bordFollow, length_v_bordFollow,
-                         v_freqFollow, length_v_freqFollow, *i_fillFollow, dmin,
-                         dmax, numberTimeSlots);
-
-          /*--------------------------------------------------------------------------
-            Fill after transient:
-          ---------------------------------------------------------------------------*/
-          fillFramePost(&parts, &d, dmax, v_bord, length_v_bord, v_freq,
-                        length_v_freq, bmax, bufferFrameStart, numberTimeSlots,
-                        fmax);
-
-          /*--------------------------------------------------------------------------
-            Take care of special case:
-          ---------------------------------------------------------------------------*/
-          if (parts == 1 && d < dmin) /*% no fill, short last envelope */
-            specialCase(spreadFlag, allowSpread, v_bord, length_v_bord, v_freq,
-                        length_v_freq, &parts, d);
-
-          /*--------------------------------------------------------------------------
-            Calculate common border (split-point)
-          ---------------------------------------------------------------------------*/
-          calcCmonBorder(&i_cmon, &i_tran, v_bord, length_v_bord,
-                         tranPosInternal, bufferFrameStart, numberTimeSlots);
-
-          /*--------------------------------------------------------------------------
-            Extract data for proper follow-up in next frame
-          ---------------------------------------------------------------------------*/
-          keepForFollowUp(v_bordFollow, length_v_bordFollow, v_freqFollow,
-                          length_v_freqFollow, i_tranFollow, i_fillFollow,
-                          v_bord, length_v_bord, v_freq, i_cmon, i_tran, parts,
-                          numberTimeSlots);
-
-          /*--------------------------------------------------------------------------
-            Calculate control signal
-          ---------------------------------------------------------------------------*/
-          calcCtrlSignal(&hSbrEnvFrame->SbrGrid, frameClass, v_bord,
-                         *length_v_bord, v_freq, *length_v_freq, i_cmon, i_tran,
-                         0, nL);
-        }
-        break;
-      case FIXFIX:
-        if (tranPos == 0)
-          numEnv = 1;
-        else
-          numEnv = 2;
-
-        hSbrEnvFrame->SbrGrid.bs_num_env = numEnv;
-        hSbrEnvFrame->SbrGrid.frameClass = frameClass;
-
-        break;
-      default:
-        FDK_ASSERT(0);
+      break;
+    default:
+      FDK_ASSERT(0);
     }
   }
 
@@ -666,25 +664,26 @@ static void generateFixFixOnly(HANDLE_SBR_FRAME_INFO hSbrFrameInfo,
   const FREQ_RES *freqResTable = NULL;
 
   switch (numberTimeSlots) {
-    case 8: {
-      pTable = envelopeTable_8[tranPosInternal];
-    }
-      freqResTable = freqRes_table_8;
-      break;
-    case 15:
-      pTable = envelopeTable_15[tranPosInternal];
-      freqResTable = freqRes_table_16;
-      break;
-    case 16:
-      pTable = envelopeTable_16[tranPosInternal];
-      freqResTable = freqRes_table_16;
-      break;
+  case 8: {
+    pTable = envelopeTable_8[tranPosInternal];
+  }
+    freqResTable = freqRes_table_8;
+    break;
+  case 15:
+    pTable = envelopeTable_15[tranPosInternal];
+    freqResTable = freqRes_table_16;
+    break;
+  case 16:
+    pTable = envelopeTable_16[tranPosInternal];
+    freqResTable = freqRes_table_16;
+    break;
   }
 
   /* look number of envolpes in table */
   nEnv = pTable[0];
   /* look up envolpe distribution in table */
-  for (i = 1; i < nEnv; i++) hSbrFrameInfo->borders[i] = pTable[i + 2];
+  for (i = 1; i < nEnv; i++)
+    hSbrFrameInfo->borders[i] = pTable[i + 2];
 
   /* open and close frame border */
   hSbrFrameInfo->borders[0] = 0;
@@ -771,32 +770,32 @@ void FDKsbrEnc_initFrameInfoGenerator(HANDLE_SBR_ENVELOPE_FRAME hSbrEnvFrame,
     hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
   } else
     switch (timeSlots) {
-      case NUMBER_TIME_SLOTS_1920:
-        hSbrEnvFrame->dmin = 4;
-        hSbrEnvFrame->dmax = 12;
-        hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
-        hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_1920;
-        break;
-      case NUMBER_TIME_SLOTS_2048:
-        hSbrEnvFrame->dmin = 4;
-        hSbrEnvFrame->dmax = 12;
-        hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
-        hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_2048;
-        break;
-      case NUMBER_TIME_SLOTS_1152:
-        hSbrEnvFrame->dmin = 2;
-        hSbrEnvFrame->dmax = 8;
-        hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
-        hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_1152;
-        break;
-      case NUMBER_TIME_SLOTS_2304:
-        hSbrEnvFrame->dmin = 4;
-        hSbrEnvFrame->dmax = 15;
-        hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
-        hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_2304;
-        break;
-      default:
-        FDK_ASSERT(0);
+    case NUMBER_TIME_SLOTS_1920:
+      hSbrEnvFrame->dmin = 4;
+      hSbrEnvFrame->dmax = 12;
+      hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
+      hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_1920;
+      break;
+    case NUMBER_TIME_SLOTS_2048:
+      hSbrEnvFrame->dmin = 4;
+      hSbrEnvFrame->dmax = 12;
+      hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
+      hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_2048;
+      break;
+    case NUMBER_TIME_SLOTS_1152:
+      hSbrEnvFrame->dmin = 2;
+      hSbrEnvFrame->dmax = 8;
+      hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
+      hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_1152;
+      break;
+    case NUMBER_TIME_SLOTS_2304:
+      hSbrEnvFrame->dmin = 4;
+      hSbrEnvFrame->dmax = 15;
+      hSbrEnvFrame->SbrGrid.bufferFrameStart = 0;
+      hSbrEnvFrame->frameMiddleSlot = FRAME_MIDDLE_SLOT_2304;
+      break;
+    default:
+      FDK_ASSERT(0);
     }
 }
 
@@ -880,11 +879,13 @@ static void fillFrameTran(
   /*  calc min and max values of mandatory borders */
   *bmin = v_bord[0];
   for (i = 0; i < *length_v_bord; i++)
-    if (v_bord[i] < *bmin) *bmin = v_bord[i];
+    if (v_bord[i] < *bmin)
+      *bmin = v_bord[i];
 
   *bmax = v_bord[0];
   for (i = 0; i < *length_v_bord; i++)
-    if (v_bord[i] > *bmax) *bmax = v_bord[i];
+    if (v_bord[i] > *bmax)
+      *bmax = v_bord[i];
 }
 
 /*******************************************************************************
@@ -974,27 +975,27 @@ static int calcFillLengthMax(
     calculate transient position within envelope buffer
   */
   switch (numberTimeSlots) {
-    case NUMBER_TIME_SLOTS_2048:
-      if (tranPos < 4)
-        fmax = 6;
-      else if (tranPos == 4 || tranPos == 5)
-        fmax = 4;
-      else
-        fmax = 8;
-      break;
-
-    case NUMBER_TIME_SLOTS_1920:
-      if (tranPos < 4)
-        fmax = 5;
-      else if (tranPos == 4 || tranPos == 5)
-        fmax = 3;
-      else
-        fmax = 7;
-      break;
-
-    default:
+  case NUMBER_TIME_SLOTS_2048:
+    if (tranPos < 4)
+      fmax = 6;
+    else if (tranPos == 4 || tranPos == 5)
+      fmax = 4;
+    else
       fmax = 8;
-      break;
+    break;
+
+  case NUMBER_TIME_SLOTS_1920:
+    if (tranPos < 4)
+      fmax = 5;
+    else if (tranPos == 4 || tranPos == 5)
+      fmax = 3;
+    else
+      fmax = 7;
+    break;
+
+  default:
+    fmax = 8;
+    break;
   }
 
   return fmax;
@@ -1158,9 +1159,11 @@ static void fillFrameInter(INT *nL, const int *v_tuningSegm, INT *v_bord,
             *nL = *nL - 1;
           } else { /* remove new "transient" border and concatenate */
 
-            for (i = 0; i < *length_v_bord - 1; i++) v_bord[i] = v_bord[i + 1];
+            for (i = 0; i < *length_v_bord - 1; i++)
+              v_bord[i] = v_bord[i + 1];
 
-            for (i = 0; i < *length_v_freq - 1; i++) v_freq[i] = v_freq[i + 1];
+            for (i = 0; i < *length_v_freq - 1; i++)
+              v_freq[i] = v_freq[i + 1];
 
             *length_v_bord = b_new - 1;
             *length_v_freq = b_new - 1;
@@ -1214,7 +1217,8 @@ static void fillFrameInter(INT *nL, const int *v_tuningSegm, INT *v_bord,
     /* first remove old non-fill-borders... */
     while (middle < 0) {
       /* ...but don't remove all of them */
-      if (numBordFollow == 1) break;
+      if (numBordFollow == 1)
+        break;
 
       numBordFollow--;
       bordMaxFollow = v_bordFollow[numBordFollow - 1];
@@ -1278,9 +1282,11 @@ static void fillFrameInter(INT *nL, const int *v_tuningSegm, INT *v_bord,
         *nL = *nL - 1;
       } else {
         /* remove new border and concatenate */
-        for (i = 0; i < *length_v_bord - 1; i++) v_bord[i] = v_bord[i + 1];
+        for (i = 0; i < *length_v_bord - 1; i++)
+          v_bord[i] = v_bord[i + 1];
 
-        for (i = 0; i < *length_v_freq - 1; i++) v_freq[i] = v_freq[i + 1];
+        for (i = 0; i < *length_v_freq - 1; i++)
+          v_freq[i] = v_freq[i + 1];
 
         *length_v_bord = b_new - 1;
         *length_v_freq = b_new - 1;
@@ -1324,41 +1330,41 @@ static void fillFrameInter(INT *nL, const int *v_tuningSegm, INT *v_bord,
 static void calcFrameClass(FRAME_CLASS *frameClass, FRAME_CLASS *frameClassOld,
                            INT tranFlag, INT *spreadFlag) {
   switch (*frameClassOld) {
-    case FIXFIXonly:
-    case FIXFIX:
-      if (tranFlag)
-        *frameClass = FIXVAR;
-      else
-        *frameClass = FIXFIX;
-      break;
-    case FIXVAR:
-      if (tranFlag) {
+  case FIXFIXonly:
+  case FIXFIX:
+    if (tranFlag)
+      *frameClass = FIXVAR;
+    else
+      *frameClass = FIXFIX;
+    break;
+  case FIXVAR:
+    if (tranFlag) {
+      *frameClass = VARVAR;
+      *spreadFlag = 0;
+    } else {
+      if (*spreadFlag)
         *frameClass = VARVAR;
-        *spreadFlag = 0;
-      } else {
-        if (*spreadFlag)
-          *frameClass = VARVAR;
-        else
-          *frameClass = VARFIX;
-      }
-      break;
-    case VARFIX:
-      if (tranFlag)
-        *frameClass = FIXVAR;
       else
-        *frameClass = FIXFIX;
-      break;
-    case VARVAR:
-      if (tranFlag) {
+        *frameClass = VARFIX;
+    }
+    break;
+  case VARFIX:
+    if (tranFlag)
+      *frameClass = FIXVAR;
+    else
+      *frameClass = FIXFIX;
+    break;
+  case VARVAR:
+    if (tranFlag) {
+      *frameClass = VARVAR;
+      *spreadFlag = 0;
+    } else {
+      if (*spreadFlag)
         *frameClass = VARVAR;
-        *spreadFlag = 0;
-      } else {
-        if (*spreadFlag)
-          *frameClass = VARVAR;
-        else
-          *frameClass = VARFIX;
-      }
-      break;
+      else
+        *frameClass = VARFIX;
+    }
+    break;
   };
 
   *frameClassOld = *frameClass;
@@ -1527,152 +1533,155 @@ static void calcCtrlSignal(HANDLE_SBR_GRID hSbrGrid, FRAME_CLASS frameClass,
   INT length_v_rL = 0;
 
   switch (frameClass) {
-    case FIXVAR:
-      /* absolute border: */
+  case FIXVAR:
+    /* absolute border: */
 
-      a = v_bord[i_cmon];
+    a = v_bord[i_cmon];
+
+    /* relative borders: */
+    length_v_r = 0;
+    i = i_cmon;
+
+    while (i >= 1) {
+      r = v_bord[i] - v_bord[i - 1];
+      FDKsbrEnc_AddRight(v_r, &length_v_r, r);
+      i--;
+    }
+
+    /*  number of relative borders: */
+    n = length_v_r;
+
+    /* freq res: */
+    for (i = 0; i < i_cmon; i++)
+      v_f[i] = v_freq[i_cmon - 1 - i];
+    v_f[i_cmon] = 1;
+
+    /* pointer: */
+    p = (i_cmon >= i_tran && i_tran != EMPTY) ? (i_cmon - i_tran + 1) : (0);
+
+    hSbrGrid->frameClass = frameClass;
+    hSbrGrid->bs_abs_bord = a;
+    hSbrGrid->n = n;
+    hSbrGrid->p = p;
+
+    break;
+  case VARFIX:
+    /* absolute border: */
+    a = v_bord[0];
+
+    /* relative borders: */
+    length_v_r = 0;
+
+    for (i = 1; i < length_v_bord; i++) {
+      r = v_bord[i] - v_bord[i - 1];
+      FDKsbrEnc_AddRight(v_r, &length_v_r, r);
+    }
+
+    /* number of relative borders: */
+    n = length_v_r;
+
+    /* freq res: */
+    FDKmemcpy(v_f, v_freq, length_v_freq * sizeof(INT));
+
+    /* pointer: */
+    p = (i_tran >= 0 && i_tran != EMPTY) ? (i_tran + 1) : (0);
+
+    hSbrGrid->frameClass = frameClass;
+    hSbrGrid->bs_abs_bord = a;
+    hSbrGrid->n = n;
+    hSbrGrid->p = p;
+
+    break;
+  case VARVAR:
+    if (spreadFlag) {
+      /* absolute borders: */
+      b = length_v_bord;
+
+      aL = v_bord[0];
+      aR = v_bord[b - 1];
+
+      /* number of relative borders:    */
+      ntot = b - 2;
+
+      nmax = 2; /* n: {0,1,2} */
+      if (ntot > nmax) {
+        nL = nmax;
+        nR = ntot - nmax;
+      } else {
+        nL = ntot;
+        nR = 0;
+      }
 
       /* relative borders: */
-      length_v_r = 0;
-      i = i_cmon;
-
-      while (i >= 1) {
+      length_v_rL = 0;
+      for (i = 1; i <= nL; i++) {
         r = v_bord[i] - v_bord[i - 1];
-        FDKsbrEnc_AddRight(v_r, &length_v_r, r);
+        FDKsbrEnc_AddRight(v_rL, &length_v_rL, r);
+      }
+
+      length_v_rR = 0;
+      i = b - 1;
+      while (i >= b - nR) {
+        r = v_bord[i] - v_bord[i - 1];
+        FDKsbrEnc_AddRight(v_rR, &length_v_rR, r);
         i--;
       }
 
-      /*  number of relative borders: */
-      n = length_v_r;
+      /* pointer (only one due to constraint in frame info): */
+      p = (i_tran > 0 && i_tran != EMPTY) ? (b - i_tran) : (0);
 
       /* freq res: */
-      for (i = 0; i < i_cmon; i++) v_f[i] = v_freq[i_cmon - 1 - i];
-      v_f[i_cmon] = 1;
 
-      /* pointer: */
-      p = (i_cmon >= i_tran && i_tran != EMPTY) ? (i_cmon - i_tran + 1) : (0);
+      for (i = 0; i < b - 1; i++)
+        v_fLR[i] = v_freq[i];
+    } else {
+      length_v_bord = i_cmon + 1;
 
-      hSbrGrid->frameClass = frameClass;
-      hSbrGrid->bs_abs_bord = a;
-      hSbrGrid->n = n;
-      hSbrGrid->p = p;
+      /* absolute borders: */
+      b = length_v_bord;
 
-      break;
-    case VARFIX:
-      /* absolute border: */
-      a = v_bord[0];
+      aL = v_bord[0];
+      aR = v_bord[b - 1];
+
+      /* number of relative borders:   */
+      ntot = b - 2;
+      nR = ntot - nL;
 
       /* relative borders: */
-      length_v_r = 0;
-
-      for (i = 1; i < length_v_bord; i++) {
+      length_v_rL = 0;
+      for (i = 1; i <= nL; i++) {
         r = v_bord[i] - v_bord[i - 1];
-        FDKsbrEnc_AddRight(v_r, &length_v_r, r);
+        FDKsbrEnc_AddRight(v_rL, &length_v_rL, r);
       }
 
-      /* number of relative borders: */
-      n = length_v_r;
+      length_v_rR = 0;
+      i = b - 1;
+      while (i >= b - nR) {
+        r = v_bord[i] - v_bord[i - 1];
+        FDKsbrEnc_AddRight(v_rR, &length_v_rR, r);
+        i--;
+      }
+
+      /* pointer (only one due to constraint in frame info): */
+      p = (i_cmon >= i_tran && i_tran != EMPTY) ? (i_cmon - i_tran + 1) : (0);
 
       /* freq res: */
-      FDKmemcpy(v_f, v_freq, length_v_freq * sizeof(INT));
+      for (i = 0; i < b - 1; i++)
+        v_fLR[i] = v_freq[i];
+    }
 
-      /* pointer: */
-      p = (i_tran >= 0 && i_tran != EMPTY) ? (i_tran + 1) : (0);
+    hSbrGrid->frameClass = frameClass;
+    hSbrGrid->bs_abs_bord_0 = aL;
+    hSbrGrid->bs_abs_bord_1 = aR;
+    hSbrGrid->bs_num_rel_0 = nL;
+    hSbrGrid->bs_num_rel_1 = nR;
+    hSbrGrid->p = p;
 
-      hSbrGrid->frameClass = frameClass;
-      hSbrGrid->bs_abs_bord = a;
-      hSbrGrid->n = n;
-      hSbrGrid->p = p;
+    break;
 
-      break;
-    case VARVAR:
-      if (spreadFlag) {
-        /* absolute borders: */
-        b = length_v_bord;
-
-        aL = v_bord[0];
-        aR = v_bord[b - 1];
-
-        /* number of relative borders:    */
-        ntot = b - 2;
-
-        nmax = 2; /* n: {0,1,2} */
-        if (ntot > nmax) {
-          nL = nmax;
-          nR = ntot - nmax;
-        } else {
-          nL = ntot;
-          nR = 0;
-        }
-
-        /* relative borders: */
-        length_v_rL = 0;
-        for (i = 1; i <= nL; i++) {
-          r = v_bord[i] - v_bord[i - 1];
-          FDKsbrEnc_AddRight(v_rL, &length_v_rL, r);
-        }
-
-        length_v_rR = 0;
-        i = b - 1;
-        while (i >= b - nR) {
-          r = v_bord[i] - v_bord[i - 1];
-          FDKsbrEnc_AddRight(v_rR, &length_v_rR, r);
-          i--;
-        }
-
-        /* pointer (only one due to constraint in frame info): */
-        p = (i_tran > 0 && i_tran != EMPTY) ? (b - i_tran) : (0);
-
-        /* freq res: */
-
-        for (i = 0; i < b - 1; i++) v_fLR[i] = v_freq[i];
-      } else {
-        length_v_bord = i_cmon + 1;
-
-        /* absolute borders: */
-        b = length_v_bord;
-
-        aL = v_bord[0];
-        aR = v_bord[b - 1];
-
-        /* number of relative borders:   */
-        ntot = b - 2;
-        nR = ntot - nL;
-
-        /* relative borders: */
-        length_v_rL = 0;
-        for (i = 1; i <= nL; i++) {
-          r = v_bord[i] - v_bord[i - 1];
-          FDKsbrEnc_AddRight(v_rL, &length_v_rL, r);
-        }
-
-        length_v_rR = 0;
-        i = b - 1;
-        while (i >= b - nR) {
-          r = v_bord[i] - v_bord[i - 1];
-          FDKsbrEnc_AddRight(v_rR, &length_v_rR, r);
-          i--;
-        }
-
-        /* pointer (only one due to constraint in frame info): */
-        p = (i_cmon >= i_tran && i_tran != EMPTY) ? (i_cmon - i_tran + 1) : (0);
-
-        /* freq res: */
-        for (i = 0; i < b - 1; i++) v_fLR[i] = v_freq[i];
-      }
-
-      hSbrGrid->frameClass = frameClass;
-      hSbrGrid->bs_abs_bord_0 = aL;
-      hSbrGrid->bs_abs_bord_1 = aR;
-      hSbrGrid->bs_num_rel_0 = nL;
-      hSbrGrid->bs_num_rel_1 = nR;
-      hSbrGrid->p = p;
-
-      break;
-
-    default:
-      /* do nothing */
-      break;
+  default:
+    /* do nothing */
+    break;
   }
 }
 
@@ -1695,71 +1704,71 @@ static void calcCtrlSignal(HANDLE_SBR_GRID hSbrGrid, FRAME_CLASS frameClass,
 static void createDefFrameInfo(HANDLE_SBR_FRAME_INFO hSbrFrameInfo, INT nEnv,
                                INT nTimeSlots) {
   switch (nEnv) {
-    case 1:
-      switch (nTimeSlots) {
-        case NUMBER_TIME_SLOTS_1920:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo1_1920, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2048:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo1_2048, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_1152:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo1_1152, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2304:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo1_2304, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_512LD:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo1_512LD, sizeof(SBR_FRAME_INFO));
-          break;
-        default:
-          FDK_ASSERT(0);
-      }
+  case 1:
+    switch (nTimeSlots) {
+    case NUMBER_TIME_SLOTS_1920:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo1_1920, sizeof(SBR_FRAME_INFO));
       break;
-    case 2:
-      switch (nTimeSlots) {
-        case NUMBER_TIME_SLOTS_1920:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo2_1920, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2048:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo2_2048, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_1152:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo2_1152, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2304:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo2_2304, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_512LD:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo2_512LD, sizeof(SBR_FRAME_INFO));
-          break;
-        default:
-          FDK_ASSERT(0);
-      }
+    case NUMBER_TIME_SLOTS_2048:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo1_2048, sizeof(SBR_FRAME_INFO));
       break;
-    case 4:
-      switch (nTimeSlots) {
-        case NUMBER_TIME_SLOTS_1920:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo4_1920, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2048:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo4_2048, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_1152:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo4_1152, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_2304:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo4_2304, sizeof(SBR_FRAME_INFO));
-          break;
-        case NUMBER_TIME_SLOTS_512LD:
-          FDKmemcpy(hSbrFrameInfo, &frameInfo4_512LD, sizeof(SBR_FRAME_INFO));
-          break;
-        default:
-          FDK_ASSERT(0);
-      }
+    case NUMBER_TIME_SLOTS_1152:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo1_1152, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_2304:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo1_2304, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_512LD:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo1_512LD, sizeof(SBR_FRAME_INFO));
       break;
     default:
       FDK_ASSERT(0);
+    }
+    break;
+  case 2:
+    switch (nTimeSlots) {
+    case NUMBER_TIME_SLOTS_1920:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo2_1920, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_2048:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo2_2048, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_1152:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo2_1152, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_2304:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo2_2304, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_512LD:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo2_512LD, sizeof(SBR_FRAME_INFO));
+      break;
+    default:
+      FDK_ASSERT(0);
+    }
+    break;
+  case 4:
+    switch (nTimeSlots) {
+    case NUMBER_TIME_SLOTS_1920:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo4_1920, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_2048:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo4_2048, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_1152:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo4_1152, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_2304:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo4_2304, sizeof(SBR_FRAME_INFO));
+      break;
+    case NUMBER_TIME_SLOTS_512LD:
+      FDKmemcpy(hSbrFrameInfo, &frameInfo4_512LD, sizeof(SBR_FRAME_INFO));
+      break;
+    default:
+      FDK_ASSERT(0);
+    }
+    break;
+  default:
+    FDK_ASSERT(0);
   }
 }
 
@@ -1797,161 +1806,161 @@ static void ctrlSignal2FrameInfo(
   INT numberTimeSlots = hSbrGrid->numberTimeSlots;
 
   switch (frameClass) {
-    case FIXFIX:
-      createDefFrameInfo(hSbrFrameInfo, hSbrGrid->bs_num_env, numberTimeSlots);
+  case FIXFIX:
+    createDefFrameInfo(hSbrFrameInfo, hSbrGrid->bs_num_env, numberTimeSlots);
 
-      frameSplit = (hSbrFrameInfo->nEnvelopes > 1);
-      for (i = 0; i < hSbrFrameInfo->nEnvelopes; i++) {
-        hSbrGrid->v_f[i] = hSbrFrameInfo->freqRes[i] =
-            freq_res_fixfix[frameSplit];
-      }
-      break;
+    frameSplit = (hSbrFrameInfo->nEnvelopes > 1);
+    for (i = 0; i < hSbrFrameInfo->nEnvelopes; i++) {
+      hSbrGrid->v_f[i] = hSbrFrameInfo->freqRes[i] =
+          freq_res_fixfix[frameSplit];
+    }
+    break;
 
-    case FIXVAR:
-    case VARFIX:
-      nEnv = hSbrGrid->n + 1; /* read n [SBR_NUM_BITS bits] */ /*? snd*/
-      FDK_ASSERT(nEnv <= MAX_ENVELOPES_FIXVAR_VARFIX);
+  case FIXVAR:
+  case VARFIX:
+    nEnv = hSbrGrid->n + 1; /* read n [SBR_NUM_BITS bits] */ /*? snd*/
+    FDK_ASSERT(nEnv <= MAX_ENVELOPES_FIXVAR_VARFIX);
 
-      hSbrFrameInfo->nEnvelopes = nEnv;
+    hSbrFrameInfo->nEnvelopes = nEnv;
 
-      border = hSbrGrid->bs_abs_bord; /* read the absolute border */
+    border = hSbrGrid->bs_abs_bord; /* read the absolute border */
 
-      if (nEnv == 1)
-        hSbrFrameInfo->nNoiseEnvelopes = 1;
-      else
-        hSbrFrameInfo->nNoiseEnvelopes = 2;
+    if (nEnv == 1)
+      hSbrFrameInfo->nNoiseEnvelopes = 1;
+    else
+      hSbrFrameInfo->nNoiseEnvelopes = 2;
 
-      break;
+    break;
 
-    default:
-      /* do nothing */
-      break;
+  default:
+    /* do nothing */
+    break;
   }
 
   switch (frameClass) {
-    case FIXVAR:
-      hSbrFrameInfo->borders[0] =
-          bufferFrameStart; /* start-position of 1st envelope */
+  case FIXVAR:
+    hSbrFrameInfo->borders[0] =
+        bufferFrameStart; /* start-position of 1st envelope */
 
-      hSbrFrameInfo->borders[nEnv] = border;
+    hSbrFrameInfo->borders[nEnv] = border;
 
-      for (k = 0, i = nEnv - 1; k < nEnv - 1; k++, i--) {
-        border -= v_r[k];
-        hSbrFrameInfo->borders[i] = border;
-      }
+    for (k = 0, i = nEnv - 1; k < nEnv - 1; k++, i--) {
+      border -= v_r[k];
+      hSbrFrameInfo->borders[i] = border;
+    }
 
-      /* make either envelope nr. nEnv + 1 - p short; or don't shorten if p == 0
-       */
-      p = hSbrGrid->p;
-      if (p == 0) {
-        hSbrFrameInfo->shortEnv = 0;
-      } else {
-        hSbrFrameInfo->shortEnv = nEnv + 1 - p;
-      }
+    /* make either envelope nr. nEnv + 1 - p short; or don't shorten if p == 0
+     */
+    p = hSbrGrid->p;
+    if (p == 0) {
+      hSbrFrameInfo->shortEnv = 0;
+    } else {
+      hSbrFrameInfo->shortEnv = nEnv + 1 - p;
+    }
 
-      for (k = 0, i = nEnv - 1; k < nEnv; k++, i--) {
-        hSbrFrameInfo->freqRes[i] = (FREQ_RES)v_f[k];
-      }
+    for (k = 0, i = nEnv - 1; k < nEnv; k++, i--) {
+      hSbrFrameInfo->freqRes[i] = (FREQ_RES)v_f[k];
+    }
 
-      /* if either there is no short envelope or the last envelope is short...
-       */
+    /* if either there is no short envelope or the last envelope is short...
+     */
+    if (p == 0 || p == 1) {
+      hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[nEnv - 1];
+    } else {
+      hSbrFrameInfo->bordersNoise[1] =
+          hSbrFrameInfo->borders[hSbrFrameInfo->shortEnv];
+    }
+
+    break;
+
+  case VARFIX:
+    /* in this case 'border' indicates the start of the 1st envelope */
+    hSbrFrameInfo->borders[0] = border;
+
+    for (k = 0; k < nEnv - 1; k++) {
+      border += v_r[k];
+      hSbrFrameInfo->borders[k + 1] = border;
+    }
+
+    hSbrFrameInfo->borders[nEnv] = bufferFrameStart + numberTimeSlots;
+
+    p = hSbrGrid->p;
+    if (p == 0 || p == 1) {
+      hSbrFrameInfo->shortEnv = 0;
+    } else {
+      hSbrFrameInfo->shortEnv = p - 1;
+    }
+
+    for (k = 0; k < nEnv; k++) {
+      hSbrFrameInfo->freqRes[k] = (FREQ_RES)v_f[k];
+    }
+
+    switch (p) {
+    case 0:
+      hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[1];
+      break;
+    case 1:
+      hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[nEnv - 1];
+      break;
+    default:
+      hSbrFrameInfo->bordersNoise[1] =
+          hSbrFrameInfo->borders[hSbrFrameInfo->shortEnv];
+      break;
+    }
+    break;
+
+  case VARVAR:
+    nEnv = hSbrGrid->bs_num_rel_0 + hSbrGrid->bs_num_rel_1 + 1;
+    FDK_ASSERT(nEnv <= MAX_ENVELOPES_VARVAR); /* just to be sure */
+    hSbrFrameInfo->nEnvelopes = nEnv;
+
+    hSbrFrameInfo->borders[0] = border = hSbrGrid->bs_abs_bord_0;
+
+    for (k = 0, i = 1; k < hSbrGrid->bs_num_rel_0; k++, i++) {
+      border += hSbrGrid->bs_rel_bord_0[k];
+      hSbrFrameInfo->borders[i] = border;
+    }
+
+    border = hSbrGrid->bs_abs_bord_1;
+    hSbrFrameInfo->borders[nEnv] = border;
+
+    for (k = 0, i = nEnv - 1; k < hSbrGrid->bs_num_rel_1; k++, i--) {
+      border -= hSbrGrid->bs_rel_bord_1[k];
+      hSbrFrameInfo->borders[i] = border;
+    }
+
+    p = hSbrGrid->p;
+    if (p == 0) {
+      hSbrFrameInfo->shortEnv = 0;
+    } else {
+      hSbrFrameInfo->shortEnv = nEnv + 1 - p;
+    }
+
+    for (k = 0; k < nEnv; k++) {
+      hSbrFrameInfo->freqRes[k] = (FREQ_RES)hSbrGrid->v_fLR[k];
+    }
+
+    if (nEnv == 1) {
+      hSbrFrameInfo->nNoiseEnvelopes = 1;
+      hSbrFrameInfo->bordersNoise[0] = hSbrGrid->bs_abs_bord_0;
+      hSbrFrameInfo->bordersNoise[1] = hSbrGrid->bs_abs_bord_1;
+    } else {
+      hSbrFrameInfo->nNoiseEnvelopes = 2;
+      hSbrFrameInfo->bordersNoise[0] = hSbrGrid->bs_abs_bord_0;
+
       if (p == 0 || p == 1) {
         hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[nEnv - 1];
       } else {
         hSbrFrameInfo->bordersNoise[1] =
             hSbrFrameInfo->borders[hSbrFrameInfo->shortEnv];
       }
+      hSbrFrameInfo->bordersNoise[2] = hSbrGrid->bs_abs_bord_1;
+    }
+    break;
 
-      break;
-
-    case VARFIX:
-      /* in this case 'border' indicates the start of the 1st envelope */
-      hSbrFrameInfo->borders[0] = border;
-
-      for (k = 0; k < nEnv - 1; k++) {
-        border += v_r[k];
-        hSbrFrameInfo->borders[k + 1] = border;
-      }
-
-      hSbrFrameInfo->borders[nEnv] = bufferFrameStart + numberTimeSlots;
-
-      p = hSbrGrid->p;
-      if (p == 0 || p == 1) {
-        hSbrFrameInfo->shortEnv = 0;
-      } else {
-        hSbrFrameInfo->shortEnv = p - 1;
-      }
-
-      for (k = 0; k < nEnv; k++) {
-        hSbrFrameInfo->freqRes[k] = (FREQ_RES)v_f[k];
-      }
-
-      switch (p) {
-        case 0:
-          hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[1];
-          break;
-        case 1:
-          hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[nEnv - 1];
-          break;
-        default:
-          hSbrFrameInfo->bordersNoise[1] =
-              hSbrFrameInfo->borders[hSbrFrameInfo->shortEnv];
-          break;
-      }
-      break;
-
-    case VARVAR:
-      nEnv = hSbrGrid->bs_num_rel_0 + hSbrGrid->bs_num_rel_1 + 1;
-      FDK_ASSERT(nEnv <= MAX_ENVELOPES_VARVAR); /* just to be sure */
-      hSbrFrameInfo->nEnvelopes = nEnv;
-
-      hSbrFrameInfo->borders[0] = border = hSbrGrid->bs_abs_bord_0;
-
-      for (k = 0, i = 1; k < hSbrGrid->bs_num_rel_0; k++, i++) {
-        border += hSbrGrid->bs_rel_bord_0[k];
-        hSbrFrameInfo->borders[i] = border;
-      }
-
-      border = hSbrGrid->bs_abs_bord_1;
-      hSbrFrameInfo->borders[nEnv] = border;
-
-      for (k = 0, i = nEnv - 1; k < hSbrGrid->bs_num_rel_1; k++, i--) {
-        border -= hSbrGrid->bs_rel_bord_1[k];
-        hSbrFrameInfo->borders[i] = border;
-      }
-
-      p = hSbrGrid->p;
-      if (p == 0) {
-        hSbrFrameInfo->shortEnv = 0;
-      } else {
-        hSbrFrameInfo->shortEnv = nEnv + 1 - p;
-      }
-
-      for (k = 0; k < nEnv; k++) {
-        hSbrFrameInfo->freqRes[k] = (FREQ_RES)hSbrGrid->v_fLR[k];
-      }
-
-      if (nEnv == 1) {
-        hSbrFrameInfo->nNoiseEnvelopes = 1;
-        hSbrFrameInfo->bordersNoise[0] = hSbrGrid->bs_abs_bord_0;
-        hSbrFrameInfo->bordersNoise[1] = hSbrGrid->bs_abs_bord_1;
-      } else {
-        hSbrFrameInfo->nNoiseEnvelopes = 2;
-        hSbrFrameInfo->bordersNoise[0] = hSbrGrid->bs_abs_bord_0;
-
-        if (p == 0 || p == 1) {
-          hSbrFrameInfo->bordersNoise[1] = hSbrFrameInfo->borders[nEnv - 1];
-        } else {
-          hSbrFrameInfo->bordersNoise[1] =
-              hSbrFrameInfo->borders[hSbrFrameInfo->shortEnv];
-        }
-        hSbrFrameInfo->bordersNoise[2] = hSbrGrid->bs_abs_bord_1;
-      }
-      break;
-
-    default:
-      /* do nothing */
-      break;
+  default:
+    /* do nothing */
+    break;
   }
 
   if (frameClass == VARFIX || frameClass == FIXVAR) {

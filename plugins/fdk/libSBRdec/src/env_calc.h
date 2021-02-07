@@ -107,14 +107,14 @@ amm-info@iis.fraunhofer.de
 #ifndef ENV_CALC_H
 #define ENV_CALC_H
 
-#include "sbrdecoder.h"
 #include "env_extr.h" /* for HANDLE_SBR_HEADER_DATA */
+#include "sbrdecoder.h"
 
 typedef struct {
   FIXP_DBL filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
-                                                smoothing) */
+                                              smoothing) */
   FIXP_DBL filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
-                                                (required for smoothing) */
+                                              (required for smoothing) */
   SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
   SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
 
@@ -179,4 +179,4 @@ FIXP_DBL maxSubbandSample(FIXP_DBL **analysBufferReal_m,
                           FIXP_DBL **analysBufferImag_m, int lowSubband,
                           int highSubband, int start_pos, int stop_pos);
 
-#endif  // ENV_CALC_H
+#endif // ENV_CALC_H

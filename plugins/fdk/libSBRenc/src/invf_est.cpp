@@ -371,10 +371,10 @@ static void calculateDetectorValues(
 
 */
 /**************************************************************************/
-static INT findRegion(
-    FIXP_DBL currVal,        /*!< The current value. */
-    const FIXP_DBL *borders, /*!< The border of the regions. */
-    const INT numBorders     /*!< The number of borders. */
+static INT
+findRegion(FIXP_DBL currVal,        /*!< The current value. */
+           const FIXP_DBL *borders, /*!< The border of the regions. */
+           const INT numBorders     /*!< The number of borders. */
 ) {
   INT i;
 

@@ -212,8 +212,8 @@ inline void cplxMultSubDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 }
 #endif
 
-  /* #############################################################################
-   */
+/* #############################################################################
+ */
 
 #if !defined(FUNCTION_cplxMult_32x16X2)
 #define FUNCTION_cplxMult_32x16X2
@@ -260,7 +260,7 @@ inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 }
 #endif
 
-  /* #############################################################################
-   */
+/* #############################################################################
+ */
 
 #endif /* CPLX_MUL_H */

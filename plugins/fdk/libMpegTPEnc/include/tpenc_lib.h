@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TPENC_LIB_H
 #define TPENC_LIB_H
 
-#include "tp_data.h"
 #include "FDK_bitstream.h"
+#include "tp_data.h"
 
 #define TRANSPORTENC_INBUF_SIZE 8192
 
@@ -113,26 +113,26 @@ typedef enum {
   TRANSPORTENC_NO_MEM,             /*!< Out of memory.             */
   TRANSPORTENC_UNKOWN_ERROR = 1,   /*!< Unknown error (embarrasing).   */
   TRANSPORTENC_INVALID_PARAMETER,  /*!< An invalid parameter was passed to a
-                                      function .          */
+                                    function .          */
   TRANSPORTENC_UNSUPPORTED_FORMAT, /*!< Unsupported transport format. */
   TRANSPORTENC_NOT_ENOUGH_BITS,    /*!< Out of bits. Provide more bits and try
-                                      again.            */
+                                    again.            */
 
   TRANSPORTENC_INVALID_CONFIG, /*!< Error in configuration.               */
   TRANSPORTENC_LATM_INVALID_NR_OF_SUBFRAMES, /*!< LATM: number of subframes out
-                                                of range.                  */
+                                              of range.                  */
   TRANSPORTENC_LOAS_NOT_AVAILABLE, /*!< LOAS format not supported.           */
   TRANSPORTENC_INVALID_LATM_ALIGNMENT, /*!< AudioMuxElement length not aligned
-                                          to 1 byte.            */
+                                        to 1 byte.            */
 
   TRANSPORTENC_INVALID_TRANSMISSION_FRAME_LENGTH, /*!< Invalid transmission
-                                                     frame length (< 0). */
+                                                   frame length (< 0). */
   TRANSPORTENC_INVALID_CELP_FRAME_LENGTH, /*!< Invalid CELP frame length found
-                                             (>= 62).                 */
+                                           (>= 62).                 */
   TRANSPORTENC_INVALID_FRAME_BITS, /*!< Frame bits is not 40 and not 80. */
   TRANSPORTENC_INVALID_AOT,        /*!< Unknown AOT found.        */
   TRANSPORTENC_INVALID_AU_LENGTH   /*!< Invalid Access Unit length (not
-                                      byte-aligned).           */
+                                    byte-aligned).           */
 
 } TRANSPORTENC_ERROR;
 

@@ -455,7 +455,8 @@ void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
     /* Check preconditions for division function: num<=denum             */
     /* For 1st iteration acorr[0] cannot be 0, it is checked before loop */
     /* Due to exor operation with "sign", num(=tmp) is greater/equal 0   */
-    if (acorr[0] < tmp) break;
+    if (acorr[0] < tmp)
+      break;
 
     /* tmp = div(num, denum, 16) */
     tmp = (FIXP_DBL)((LONG)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
@@ -469,7 +470,8 @@ void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
       acorr[j] += accu2;
     }
     /* Check preconditions for division function: denum (=acorr[0]) > 0 */
-    if (acorr[0] == (FIXP_DBL)0) break;
+    if (acorr[0] == (FIXP_DBL)0)
+      break;
 
     workBuffer++;
   }

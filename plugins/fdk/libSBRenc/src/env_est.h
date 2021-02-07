@@ -107,14 +107,14 @@ amm-info@iis.fraunhofer.de
 #ifndef ENV_EST_H
 #define ENV_EST_H
 
+#include "bit_sbr.h"
+#include "code_env.h"
+#include "fram_gen.h"
+#include "ps_main.h"
 #include "sbr_def.h"
 #include "sbr_encoder.h" /* SBR econfig structs */
-#include "ps_main.h"
-#include "bit_sbr.h"
-#include "fram_gen.h"
-#include "tran_det.h"
-#include "code_env.h"
 #include "ton_corr.h"
+#include "tran_det.h"
 
 typedef struct {
   FIXP_DBL *rBuffer[32];
@@ -182,11 +182,11 @@ typedef struct {
 typedef struct {
   const SBR_FRAME_INFO *frame_info;
   FIXP_DBL noiseFloor[MAX_NUM_NOISE_VALUES];
-  SCHAR sfb_nrg_coupling
-      [MAX_NUM_ENVELOPE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
+  SCHAR sfb_nrg_coupling[MAX_NUM_ENVELOPE_VALUES]; /* only used if stereomode =
+                                                      SWITCH_L_R_C */
   SCHAR sfb_nrg[MAX_NUM_ENVELOPE_VALUES];
-  SCHAR noise_level_coupling
-      [MAX_NUM_NOISE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
+  SCHAR noise_level_coupling[MAX_NUM_NOISE_VALUES]; /* only used if stereomode =
+                                                       SWITCH_L_R_C */
   SCHAR noise_level[MAX_NUM_NOISE_VALUES];
   UCHAR transient_info[3];
   UCHAR nEnvelopes;

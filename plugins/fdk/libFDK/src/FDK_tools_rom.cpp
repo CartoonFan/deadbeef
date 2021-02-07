@@ -4078,19 +4078,19 @@ const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
 
   /* Extract sort of "eigenvalue" (the 4 left most bits) of length. */
   switch ((length) >> (ld2_length - 2)) {
-    case 0x8: /* radix 2 */
-      raster = 0;
-      ld2_length--; /* revert + 1 because of ceil(log2(length)) from above. */
-      break;
-    case 0xf: /* 10 ms */
-      raster = 1;
-      break;
-    case 0xc: /* 3/4 of radix 2 */
-      raster = 2;
-      break;
-    default:
-      raster = 0;
-      break;
+  case 0x8: /* radix 2 */
+    raster = 0;
+    ld2_length--; /* revert + 1 because of ceil(log2(length)) from above. */
+    break;
+  case 0xf: /* 10 ms */
+    raster = 1;
+    break;
+  case 0xc: /* 3/4 of radix 2 */
+    raster = 2;
+    break;
+  default:
+    raster = 0;
+    break;
   }
 
   /* The table for sine windows (shape == 0) is 4 entries longer. */
@@ -4106,9 +4106,9 @@ const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
   return w;
 }
 
-  /*
-   * QMF filter and twiddle tables
-   */
+/*
+ * QMF filter and twiddle tables
+ */
 
 #ifdef QMF_COEFF_16BIT
 #define QFC(x) FX_DBL2FXCONST_SGL(x)
@@ -7134,79 +7134,79 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
                                               SCHAR epConfig, UCHAR nChannels,
                                               UCHAR layer, UINT elFlags) {
   switch (aot) {
-    case AOT_AAC_LC:
-    case AOT_SBR:
-    case AOT_PS:
-      FDK_ASSERT(epConfig == -1);
-      if (elFlags & AC_EL_GA_CCE) {
-        return &node_aac_cce;
-      } else {
-        if (nChannels == 1) {
-          return &node_aac_sce;
-        } else {
-          return &node_aac_cpe;
-        }
-      }
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LD:
+  case AOT_AAC_LC:
+  case AOT_SBR:
+  case AOT_PS:
+    FDK_ASSERT(epConfig == -1);
+    if (elFlags & AC_EL_GA_CCE) {
+      return &node_aac_cce;
+    } else {
       if (nChannels == 1) {
-        if (epConfig == 0) {
-          return &node_aac_sce_epc0;
-        } else {
-          return &node_aac_sce_epc1;
-        }
+        return &node_aac_sce;
       } else {
-        if (epConfig == 0)
-          return &node_aac_cpe_epc0;
-        else
-          return &node_aac_cpe_epc1;
+        return &node_aac_cpe;
       }
-    case AOT_USAC:
-      if (elFlags & AC_EL_USAC_LFE) {
-        FDK_ASSERT(nChannels == 1);
-        return &node_usac_lfe_epc0;
-      }
-      if (nChannels == 1) {
-        return &node_usac_sce_epc0;
+    }
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LD:
+    if (nChannels == 1) {
+      if (epConfig == 0) {
+        return &node_aac_sce_epc0;
       } else {
-        return &node_usac_cpe_epc0;
+        return &node_aac_sce_epc1;
       }
-    case AOT_ER_AAC_SCAL:
-      if (nChannels == 1) {
-        if (epConfig <= 0)
-          return &node_scal_sce_epc0;
-        else
-          return &node_scal_sce_epc1;
-      } else {
-        if (epConfig <= 0)
-          return &node_scal_cpe_epc0;
-        else
-          return &node_scal_cpe_epc1;
-      }
-    case AOT_ER_AAC_ELD:
-      if (nChannels == 1) {
-        if (epConfig <= 0)
-          return &node_eld_sce_epc0;
-        else
-          return &node_eld_sce_epc1;
-      } else {
-        if (epConfig <= 0)
-          return &node_eld_cpe_epc0;
-        else
-          return &node_eld_cpe_epc1;
-      }
-    case AOT_DRM_AAC:
-    case AOT_DRM_SBR:
-    case AOT_DRM_MPEG_PS:
-    case AOT_DRM_SURROUND:
-      FDK_ASSERT(epConfig == 1);
-      if (nChannels == 1) {
-        return &node_drm_sce;
-      } else {
-        return &node_drm_cpe;
-      }
-    default:
-      break;
+    } else {
+      if (epConfig == 0)
+        return &node_aac_cpe_epc0;
+      else
+        return &node_aac_cpe_epc1;
+    }
+  case AOT_USAC:
+    if (elFlags & AC_EL_USAC_LFE) {
+      FDK_ASSERT(nChannels == 1);
+      return &node_usac_lfe_epc0;
+    }
+    if (nChannels == 1) {
+      return &node_usac_sce_epc0;
+    } else {
+      return &node_usac_cpe_epc0;
+    }
+  case AOT_ER_AAC_SCAL:
+    if (nChannels == 1) {
+      if (epConfig <= 0)
+        return &node_scal_sce_epc0;
+      else
+        return &node_scal_sce_epc1;
+    } else {
+      if (epConfig <= 0)
+        return &node_scal_cpe_epc0;
+      else
+        return &node_scal_cpe_epc1;
+    }
+  case AOT_ER_AAC_ELD:
+    if (nChannels == 1) {
+      if (epConfig <= 0)
+        return &node_eld_sce_epc0;
+      else
+        return &node_eld_sce_epc1;
+    } else {
+      if (epConfig <= 0)
+        return &node_eld_cpe_epc0;
+      else
+        return &node_eld_cpe_epc1;
+    }
+  case AOT_DRM_AAC:
+  case AOT_DRM_SBR:
+  case AOT_DRM_MPEG_PS:
+  case AOT_DRM_SURROUND:
+    FDK_ASSERT(epConfig == 1);
+    if (nChannels == 1) {
+      return &node_drm_sce;
+    } else {
+      return &node_drm_cpe;
+    }
+  default:
+    break;
   }
   return NULL;
 }

@@ -134,7 +134,8 @@ void scaleValues(FIXP_SGL *vector, /*!< Vector */
   INT i;
 
   /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+  if (scalefactor == 0)
+    return;
 
   if (scalefactor > 0) {
     scalefactor = fixmin_I(scalefactor, (INT)(FRACT_BITS - 1));
@@ -179,7 +180,8 @@ void scaleValues(FIXP_DBL *vector, /*!< Vector */
   INT i;
 
   /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+  if (scalefactor == 0)
+    return;
 
   if (scalefactor > 0) {
     scalefactor = fixmin_I(scalefactor, (INT)DFRACT_BITS - 1);
@@ -226,7 +228,8 @@ void scaleValuesSaturate(FIXP_DBL *vector, /*!< Vector */
   INT i;
 
   /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+  if (scalefactor == 0)
+    return;
 
   scalefactor = fixmax_I(fixmin_I(scalefactor, (INT)DFRACT_BITS - 1),
                          (INT) - (DFRACT_BITS - 1));
@@ -320,7 +323,8 @@ void scaleValuesSaturate(FIXP_SGL *vector, /*!< Vector */
   INT i;
 
   /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+  if (scalefactor == 0)
+    return;
 
   scalefactor = fixmax_I(fixmin_I(scalefactor, (INT)DFRACT_BITS - 1),
                          (INT) - (DFRACT_BITS - 1));
@@ -391,7 +395,8 @@ void scaleValues(FIXP_DBL *dst,       /*!< dst Vector */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
+    if (dst != src)
+      FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
   } else {
     if (scalefactor > 0) {
       scalefactor = fixmin_I(scalefactor, (INT)DFRACT_BITS - 1);
@@ -497,7 +502,8 @@ void scaleValues(FIXP_SGL *dst,       /*!< dst Vector */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
+    if (dst != src)
+      FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
   } else {
     if (scalefactor > 0) {
       scalefactor = fixmin_I(scalefactor, (INT)DFRACT_BITS - 1);
@@ -579,16 +585,16 @@ void scaleValuesWithFactor(FIXP_DBL *vector, FIXP_DBL factor, INT len,
 }
 #endif /* FUNCTION_scaleValuesWithFactor_DBL */
 
-  /*******************************************
+/*******************************************
 
-  IMPORTANT NOTE for usage of getScalefactor()
+IMPORTANT NOTE for usage of getScalefactor()
 
-  If the input array contains negative values too, then these functions may
-  sometimes return the actual maximum value minus 1, due to the nature of the
-  applied algorithm. So be careful with possible fractional -1 values that may
-  lead to overflows when being fPow2()'ed.
+If the input array contains negative values too, then these functions may
+sometimes return the actual maximum value minus 1, due to the nature of the
+applied algorithm. So be careful with possible fractional -1 values that may
+lead to overflows when being fPow2()'ed.
 
-  ********************************************/
+********************************************/
 
 #ifndef FUNCTION_getScalefactorShort
 /*!

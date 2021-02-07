@@ -110,10 +110,10 @@ amm-info@iis.fraunhofer.de
  ******************************************************************************/
 
 /* Includes ******************************************************************/
-#include "common_fix.h"
 #include "FDK_matrixCalloc.h"
-#include "sacenc_lib.h"
+#include "common_fix.h"
 #include "sacenc_bitstream.h" /* for def. of MAX_NUM_PARAMS */
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_NUM_TRANS (MAX_NUM_PARAMS / 2)
@@ -137,9 +137,10 @@ typedef struct ONSET_DETECT *HANDLE_ONSET_DETECT;
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Open(HANDLE_ONSET_DETECT *phOnset,
                                              const UINT maxTimeSlots);
 
-FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Init(
-    HANDLE_ONSET_DETECT hOnset,
-    const ONSET_DETECT_CONFIG *const pOnsetDetectConfig, const UINT initFlags);
+FDK_SACENC_ERROR
+fdk_sacenc_onsetDetect_Init(HANDLE_ONSET_DETECT hOnset,
+                            const ONSET_DETECT_CONFIG *const pOnsetDetectConfig,
+                            const UINT initFlags);
 
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Close(HANDLE_ONSET_DETECT *phOnset);
 

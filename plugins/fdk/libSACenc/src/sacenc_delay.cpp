@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 
 /* Includes ******************************************************************/
 #include "sacenc_delay.h"
-#include "sacenc_const.h"
 #include "FDK_matrixCalloc.h"
+#include "sacenc_const.h"
 
 /* Defines *******************************************************************/
 
@@ -390,11 +390,11 @@ FDK_SACENC_ERROR fdk_sacenc_delay_SubCalulateBufferDelays(HANDLE_DELAY hDel) {
   return error;
 }
 
-static FDK_SACENC_ERROR assignParameterInRange(
-    const INT startRange, /* including startRange */
-    const INT stopRange,  /* including stopRange */
-    const INT value,      /* value to write*/
-    INT *const ptr        /* destination pointer*/
+static FDK_SACENC_ERROR
+assignParameterInRange(const INT startRange, /* including startRange */
+                       const INT stopRange,  /* including stopRange */
+                       const INT value,      /* value to write*/
+                       INT *const ptr        /* destination pointer*/
 ) {
   FDK_SACENC_ERROR error = SACENC_INVALID_CONFIG;
 
@@ -423,8 +423,9 @@ FDK_SACENC_ERROR fdk_sacenc_delay_SetSacTimeAlignmentDynamicOut(
                                  &hDelay->config.bSacTimeAlignmentDynamicOut));
 }
 
-FDK_SACENC_ERROR fdk_sacenc_delay_SetNSacTimeAlignment(
-    HANDLE_DELAY hDelay, const INT nSacTimeAlignmentIn) {
+FDK_SACENC_ERROR
+fdk_sacenc_delay_SetNSacTimeAlignment(HANDLE_DELAY hDelay,
+                                      const INT nSacTimeAlignmentIn) {
   return (assignParameterInRange(-32768, 32767, nSacTimeAlignmentIn,
                                  &hDelay->config.nSacTimeAlignment));
 }

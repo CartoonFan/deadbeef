@@ -251,8 +251,8 @@ static const BOX_SUBBAND_SETUP boxSubbandSetup[] = {
 /* Function / Class Declarations *********************************************/
 
 /* Function / Class Definition ***********************************************/
-static const BOX_SUBBAND_SETUP *getBoxSubbandSetup(
-    const BOX_SUBBAND_CONFIG subbandConfig) {
+static const BOX_SUBBAND_SETUP *
+getBoxSubbandSetup(const BOX_SUBBAND_CONFIG subbandConfig) {
   int i;
   const BOX_SUBBAND_SETUP *setup = NULL;
 
@@ -289,8 +289,8 @@ static INT getNumberParameterBands(const BOX_SUBBAND_CONFIG subbandConfig) {
   return ((setup == NULL) ? 0 : setup->nParameterBands);
 }
 
-static const UCHAR *getSubband2ParameterIndex(
-    const BOX_SUBBAND_CONFIG subbandConfig) {
+static const UCHAR *
+getSubband2ParameterIndex(const BOX_SUBBAND_CONFIG subbandConfig) {
   const BOX_SUBBAND_SETUP *setup = getBoxSubbandSetup(subbandConfig);
 
   return ((setup == NULL) ? NULL : (setup->pSubband2ParameterIndexLd));
@@ -322,8 +322,9 @@ const INT *fdk_sacenc_getSubbandImagSign() {
   return (pImagSign);
 }
 
-static INT getIccCorrelationCoherenceBorder(
-    const BOX_SUBBAND_CONFIG subbandConfig, const INT bUseCoherenceOnly) {
+static INT
+getIccCorrelationCoherenceBorder(const BOX_SUBBAND_CONFIG subbandConfig,
+                                 const INT bUseCoherenceOnly) {
   const BOX_SUBBAND_SETUP *setup = getBoxSubbandSetup(subbandConfig);
   return (
       (setup == NULL)
@@ -420,13 +421,11 @@ FDK_SACENC_ERROR fdk_sacenc_destroyTtoBox(HANDLE_TTO_BOX *hTtoBox) {
   return error;
 }
 
-static FDK_SACENC_ERROR calculateIccFDK(const INT nParamBand,
-                                        const INT correlationCoherenceBorder,
-                                        const FIXP_DBL *const pPwr1,
-                                        const FIXP_DBL *const pPwr2,
-                                        const FIXP_DBL *const pProdReal,
-                                        FIXP_DBL const *const pProdImag,
-                                        FIXP_DBL *const pIcc) {
+static FDK_SACENC_ERROR
+calculateIccFDK(const INT nParamBand, const INT correlationCoherenceBorder,
+                const FIXP_DBL *const pPwr1, const FIXP_DBL *const pPwr2,
+                const FIXP_DBL *const pProdReal,
+                FIXP_DBL const *const pProdImag, FIXP_DBL *const pIcc) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((pPwr1 == NULL) || (pPwr2 == NULL) || (pProdReal == NULL) ||
@@ -551,13 +550,14 @@ static void CalculateCldFDK(FIXP_DBL *const pCld, const FIXP_DBL *const pPwr1,
   }
 }
 
-FDK_SACENC_ERROR fdk_sacenc_applyTtoBox(
-    HANDLE_TTO_BOX hTtoBox, const INT nTimeSlots, const INT startTimeSlot,
-    const INT nHybridBands, const FIXP_DPK *const *const ppHybridData1__FDK,
-    const FIXP_DPK *const *const ppHybridData2__FDK, SCHAR *const pIccIdx,
-    UCHAR *const pbIccQuantCoarse, SCHAR *const pCldIdx,
-    UCHAR *const pbCldQuantCoarse, const INT bUseBBCues, INT *scaleCh1,
-    INT *scaleCh2) {
+FDK_SACENC_ERROR
+fdk_sacenc_applyTtoBox(HANDLE_TTO_BOX hTtoBox, const INT nTimeSlots,
+                       const INT startTimeSlot, const INT nHybridBands,
+                       const FIXP_DPK *const *const ppHybridData1__FDK,
+                       const FIXP_DPK *const *const ppHybridData2__FDK,
+                       SCHAR *const pIccIdx, UCHAR *const pbIccQuantCoarse,
+                       SCHAR *const pCldIdx, UCHAR *const pbCldQuantCoarse,
+                       const INT bUseBBCues, INT *scaleCh1, INT *scaleCh2) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   C_ALLOC_SCRATCH_START(powerHybridData1__FDK, FIXP_DBL, MAX_NUM_PARAM_BANDS)

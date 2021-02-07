@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef HUFF_DEC_H
 #define HUFF_DEC_H
 
-#include "sbrdecoder.h"
 #include "FDK_bitstream.h"
+#include "sbrdecoder.h"
 
 typedef const SCHAR (*Huffman)[2];
 

@@ -105,9 +105,9 @@ amm-info@iis.fraunhofer.de
 #define SACENC_FILTER_H
 
 /* Includes ******************************************************************/
+#include "FDK_matrixCalloc.h"
 #include "common_fix.h"
 #include "sacenc_lib.h"
-#include "FDK_matrixCalloc.h"
 
 /* Defines *******************************************************************/
 #define DC_FILTER_SF 1

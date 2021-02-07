@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 /* Includes ******************************************************************/
 #include "sacenc_nlc_enc.h"
 
-#include "genericStds.h"
 #include "fixpoint_math.h"
+#include "genericStds.h"
 
 #include "sacenc_const.h"
 #include "sacenc_huff_tab.h"
@@ -160,8 +160,10 @@ static void split_lsb(const SHORT *const in_data, SHORT offset,
 
   for (i = 0; i < num_val; i++) {
     SHORT val = in_data[i] + offset;
-    if (out_data_lsb != NULL) out_data_lsb[i] = val & 0x0001;
-    if (out_data_msb != NULL) out_data_msb[i] = val >> 1;
+    if (out_data_lsb != NULL)
+      out_data_lsb[i] = val & 0x0001;
+    if (out_data_msb != NULL)
+      out_data_msb[i] = val >> 1;
   }
 }
 
@@ -240,7 +242,8 @@ static INT sym_check(SHORT data[2], const INT lav, SHORT *const pSym_bits) {
 static INT ilog2(UINT i) {
   int l = 0;
 
-  if (i) i--;
+  if (i)
+    i--;
   while (i > 0) {
     i >>= 1;
     l++;
@@ -255,32 +258,32 @@ static SHORT calc_pcm_bits(const SHORT num_val, const SHORT num_levels) {
   int chunk_levels, i;
 
   switch (num_levels) {
-    case 3:
-      max_grp_len = 5;
-      break;
-    case 6:
-      max_grp_len = 5;
-      break;
-    case 7:
-      max_grp_len = 6;
-      break;
-    case 11:
-      max_grp_len = 2;
-      break;
-    case 13:
-      max_grp_len = 4;
-      break;
-    case 19:
-      max_grp_len = 4;
-      break;
-    case 25:
-      max_grp_len = 3;
-      break;
-    case 51:
-      max_grp_len = 4;
-      break;
-    default:
-      max_grp_len = 1;
+  case 3:
+    max_grp_len = 5;
+    break;
+  case 6:
+    max_grp_len = 5;
+    break;
+  case 7:
+    max_grp_len = 6;
+    break;
+  case 11:
+    max_grp_len = 2;
+    break;
+  case 13:
+    max_grp_len = 4;
+    break;
+  case 19:
+    max_grp_len = 4;
+    break;
+  case 25:
+    max_grp_len = 3;
+    break;
+  case 51:
+    max_grp_len = 4;
+    break;
+  default:
+    max_grp_len = 1;
   }
 
   num_complete_chunks = num_val / max_grp_len;
@@ -308,38 +311,38 @@ static void apply_pcm_coding(HANDLE_FDK_BITSTREAM strm,
   SHORT pcm_chunk_size[7] = {0};
 
   switch (num_levels) {
-    case 3:
-      max_grp_len = 5;
-      break;
-    case 5:
-      max_grp_len = 3;
-      break;
-    case 6:
-      max_grp_len = 5;
-      break;
-    case 7:
-      max_grp_len = 6;
-      break;
-    case 9:
-      max_grp_len = 5;
-      break;
-    case 11:
-      max_grp_len = 2;
-      break;
-    case 13:
-      max_grp_len = 4;
-      break;
-    case 19:
-      max_grp_len = 4;
-      break;
-    case 25:
-      max_grp_len = 3;
-      break;
-    case 51:
-      max_grp_len = 4;
-      break;
-    default:
-      max_grp_len = 1;
+  case 3:
+    max_grp_len = 5;
+    break;
+  case 5:
+    max_grp_len = 3;
+    break;
+  case 6:
+    max_grp_len = 5;
+    break;
+  case 7:
+    max_grp_len = 6;
+    break;
+  case 9:
+    max_grp_len = 5;
+    break;
+  case 11:
+    max_grp_len = 2;
+    break;
+  case 13:
+    max_grp_len = 4;
+    break;
+  case 19:
+    max_grp_len = 4;
+    break;
+  case 25:
+    max_grp_len = 3;
+    break;
+  case 51:
+    max_grp_len = 4;
+    break;
+  default:
+    max_grp_len = 1;
   }
 
   chunk_levels = 1;
@@ -378,22 +381,22 @@ static UINT huff_enc_1D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
   const HUFF_ENTRY *pHuffTab = NULL;
 
   switch (data_type) {
-    case t_CLD:
-      pHuffTab = fdk_sacenc_huffCLDTab.h1D[dim1];
-      break;
-    case t_ICC:
-      pHuffTab = fdk_sacenc_huffICCTab.h1D[dim1];
-      break;
+  case t_CLD:
+    pHuffTab = fdk_sacenc_huffCLDTab.h1D[dim1];
+    break;
+  case t_ICC:
+    pHuffTab = fdk_sacenc_huffICCTab.h1D[dim1];
+    break;
   }
 
   if (p0_flag) {
     switch (data_type) {
-      case t_CLD:
-        part0 = fdk_sacenc_huffPart0Tab.cld[in_data[0]];
-        break;
-      case t_ICC:
-        part0 = fdk_sacenc_huffPart0Tab.icc[in_data[0]];
-        break;
+    case t_CLD:
+      part0 = fdk_sacenc_huffPart0Tab.cld[in_data[0]];
+      break;
+    case t_ICC:
+      part0 = fdk_sacenc_huffPart0Tab.icc[in_data[0]];
+      break;
     }
     huffBits += FDKwriteBits(strm, HUFF_VALUE(part0), HUFF_LENGTH(part0));
     offset = 1;
@@ -431,81 +434,81 @@ static void getHuffEntry(const INT lav, const DATA_TYPE data_type, const INT i,
       &fdk_sacenc_huffICCTab.h2D[tab_idx_2D[0]][tab_idx_2D[1]];
 
   switch (lav) {
-    case 1: {
-      const LAV1_2D *pLav1 = NULL;
-      switch (data_type) {
-        case t_CLD:
-          pLav1 = NULL;
-          break;
-        case t_ICC:
-          pLav1 = &pICC2dTab->lav1;
-          break;
-      }
-      if (pLav1 != NULL) {
-        *pEntry = pLav1->entry[in_data[i][0]][in_data[i][1]];
-        *pEscape = pLav1->escape;
-      }
-    } break;
-    case 3: {
-      const LAV3_2D *pLav3 = NULL;
-      switch (data_type) {
-        case t_CLD:
-          pLav3 = &pCLD2dTab->lav3;
-          break;
-        case t_ICC:
-          pLav3 = &pICC2dTab->lav3;
-          break;
-      }
-      if (pLav3 != NULL) {
-        *pEntry = pLav3->entry[in_data[i][0]][in_data[i][1]];
-        *pEscape = pLav3->escape;
-      }
-    } break;
-    case 5: {
-      const LAV5_2D *pLav5 = NULL;
-      switch (data_type) {
-        case t_CLD:
-          pLav5 = &pCLD2dTab->lav5;
-          break;
-        case t_ICC:
-          pLav5 = &pICC2dTab->lav5;
-          break;
-      }
-      if (pLav5 != NULL) {
-        *pEntry = pLav5->entry[in_data[i][0]][in_data[i][1]];
-        *pEscape = pLav5->escape;
-      }
-    } break;
-    case 7: {
-      const LAV7_2D *pLav7 = NULL;
-      switch (data_type) {
-        case t_CLD:
-          pLav7 = &pCLD2dTab->lav7;
-          break;
-        case t_ICC:
-          pLav7 = &pICC2dTab->lav7;
-          break;
-      }
-      if (pLav7 != NULL) {
-        *pEntry = pLav7->entry[in_data[i][0]][in_data[i][1]];
-        *pEscape = pLav7->escape;
-      }
-    } break;
-    case 9: {
-      const LAV9_2D *pLav9 = NULL;
-      switch (data_type) {
-        case t_CLD:
-          pLav9 = &pCLD2dTab->lav9;
-          break;
-        case t_ICC:
-          pLav9 = NULL;
-          break;
-      }
-      if (pLav9 != NULL) {
-        *pEntry = pLav9->entry[in_data[i][0]][in_data[i][1]];
-        *pEscape = pLav9->escape;
-      }
-    } break;
+  case 1: {
+    const LAV1_2D *pLav1 = NULL;
+    switch (data_type) {
+    case t_CLD:
+      pLav1 = NULL;
+      break;
+    case t_ICC:
+      pLav1 = &pICC2dTab->lav1;
+      break;
+    }
+    if (pLav1 != NULL) {
+      *pEntry = pLav1->entry[in_data[i][0]][in_data[i][1]];
+      *pEscape = pLav1->escape;
+    }
+  } break;
+  case 3: {
+    const LAV3_2D *pLav3 = NULL;
+    switch (data_type) {
+    case t_CLD:
+      pLav3 = &pCLD2dTab->lav3;
+      break;
+    case t_ICC:
+      pLav3 = &pICC2dTab->lav3;
+      break;
+    }
+    if (pLav3 != NULL) {
+      *pEntry = pLav3->entry[in_data[i][0]][in_data[i][1]];
+      *pEscape = pLav3->escape;
+    }
+  } break;
+  case 5: {
+    const LAV5_2D *pLav5 = NULL;
+    switch (data_type) {
+    case t_CLD:
+      pLav5 = &pCLD2dTab->lav5;
+      break;
+    case t_ICC:
+      pLav5 = &pICC2dTab->lav5;
+      break;
+    }
+    if (pLav5 != NULL) {
+      *pEntry = pLav5->entry[in_data[i][0]][in_data[i][1]];
+      *pEscape = pLav5->escape;
+    }
+  } break;
+  case 7: {
+    const LAV7_2D *pLav7 = NULL;
+    switch (data_type) {
+    case t_CLD:
+      pLav7 = &pCLD2dTab->lav7;
+      break;
+    case t_ICC:
+      pLav7 = &pICC2dTab->lav7;
+      break;
+    }
+    if (pLav7 != NULL) {
+      *pEntry = pLav7->entry[in_data[i][0]][in_data[i][1]];
+      *pEscape = pLav7->escape;
+    }
+  } break;
+  case 9: {
+    const LAV9_2D *pLav9 = NULL;
+    switch (data_type) {
+    case t_CLD:
+      pLav9 = &pCLD2dTab->lav9;
+      break;
+    case t_ICC:
+      pLav9 = NULL;
+      break;
+    }
+    if (pLav9 != NULL) {
+      *pEntry = pLav9->entry[in_data[i][0]][in_data[i][1]];
+      *pEscape = pLav9->escape;
+    }
+  } break;
   }
 }
 
@@ -520,14 +523,14 @@ static UINT huff_enc_2D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
   const HUFF_ENTRY *pHuffEntry = NULL;
 
   switch (data_type) {
-    case t_CLD:
-      lav = 2 * lav_idx + 3; /* LAV */
-      pHuffEntry = fdk_sacenc_huffPart0Tab.cld;
-      break;
-    case t_ICC:
-      lav = 2 * lav_idx + 1; /* LAV */
-      pHuffEntry = fdk_sacenc_huffPart0Tab.icc;
-      break;
+  case t_CLD:
+    lav = 2 * lav_idx + 3; /* LAV */
+    pHuffEntry = fdk_sacenc_huffPart0Tab.cld;
+    break;
+  case t_ICC:
+    lav = 2 * lav_idx + 1; /* LAV */
+    pHuffEntry = fdk_sacenc_huffPart0Tab.icc;
+    break;
   }
 
   /* Partition 0 */
@@ -576,12 +579,12 @@ static SCHAR get_next_lav_step(const INT lav, const DATA_TYPE data_type) {
   SCHAR lav_step = 0;
 
   switch (data_type) {
-    case t_CLD:
-      lav_step = (lav > 9) ? -1 : lav_step_CLD[lav];
-      break;
-    case t_ICC:
-      lav_step = (lav > 7) ? -1 : lav_step_ICC[lav];
-      break;
+  case t_CLD:
+    lav_step = (lav > 9) ? -1 : lav_step_CLD[lav];
+    break;
+  case t_ICC:
+    lav_step = (lav > 7) ? -1 : lav_step_ICC[lav];
+    break;
   }
 
   return lav_step;
@@ -590,12 +593,12 @@ static SCHAR get_next_lav_step(const INT lav, const DATA_TYPE data_type) {
 static INT diff_type_offset(const DIFF_TYPE diff_type) {
   int offset = 0;
   switch (diff_type) {
-    case DIFF_FREQ:
-      offset = 0;
-      break;
-    case DIFF_TIME:
-      offset = 2;
-      break;
+  case DIFF_FREQ:
+    offset = 0;
+    break;
+  case DIFF_TIME:
+    offset = 2;
+    break;
   }
   return offset;
 }
@@ -691,7 +694,8 @@ static SHORT calc_huff_bits(SHORT *in_data_1, SHORT *in_data_2,
 
     df_rest_flag[0] = num_val_1_short % 2;
 
-    if (df_rest_flag[0]) num_val_1_short -= 1;
+    if (df_rest_flag[0])
+      num_val_1_short -= 1;
 
     for (i = 0; i < num_val_1_short - 1; i += 2) {
       pair_vec[i][0] = in_data_1_short[i];
@@ -708,7 +712,8 @@ static SHORT calc_huff_bits(SHORT *in_data_1, SHORT *in_data_2,
 
     lav_fp[0] = get_next_lav_step(lav_fp[0], data_type);
 
-    if (lav_fp[0] != -1) bit_count_2D_freq += lavHuffLen[lav_fp[0]];
+    if (lav_fp[0] != -1)
+      bit_count_2D_freq += lavHuffLen[lav_fp[0]];
   }
 
   if (in_data_2 != NULL) {
@@ -722,7 +727,8 @@ static SHORT calc_huff_bits(SHORT *in_data_1, SHORT *in_data_2,
 
     df_rest_flag[1] = num_val_2_short % 2;
 
-    if (df_rest_flag[1]) num_val_2_short -= 1;
+    if (df_rest_flag[1])
+      num_val_2_short -= 1;
 
     for (i = 0; i < num_val_2_short - 1; i += 2) {
       pair_vec[i + 1][0] = in_data_2_short[i];
@@ -739,7 +745,8 @@ static SHORT calc_huff_bits(SHORT *in_data_1, SHORT *in_data_2,
 
     lav_fp[1] = get_next_lav_step(lav_fp[1], data_type);
 
-    if (lav_fp[1] != -1) bit_count_2D_freq += lavHuffLen[lav_fp[1]];
+    if (lav_fp[1] != -1)
+      bit_count_2D_freq += lavHuffLen[lav_fp[1]];
   }
 
   if ((lav_fp[0] != -1) && (lav_fp[1] != -1)) {
@@ -813,131 +820,132 @@ static void apply_huff_coding(HANDLE_FDK_BITSTREAM strm, SHORT *const in_data_1,
   FDKwriteBits(strm, cdg_scheme >> PAIR_SHIFT, 1);
 
   switch (cdg_scheme >> PAIR_SHIFT) {
-    case HUFF_1D:
+  case HUFF_1D:
 
-      p0_flag[0] = (diff_type_1 == DIFF_FREQ);
-      p0_flag[1] = (diff_type_2 == DIFF_FREQ);
+    p0_flag[0] = (diff_type_1 == DIFF_FREQ);
+    p0_flag[1] = (diff_type_2 == DIFF_FREQ);
 
-      tab_idx_1D[0] = (diff_type_1 == DIFF_FREQ) ? 0 : 1;
-      tab_idx_1D[1] = (diff_type_2 == DIFF_FREQ) ? 0 : 1;
+    tab_idx_1D[0] = (diff_type_1 == DIFF_FREQ) ? 0 : 1;
+    tab_idx_1D[1] = (diff_type_2 == DIFF_FREQ) ? 0 : 1;
+
+    if (in_data_1 != NULL) {
+      huff_enc_1D(strm, data_type, tab_idx_1D[0], in_data_1_short,
+                  num_val_1_short, p0_flag[0]);
+    }
+    if (in_data_2 != NULL) {
+      huff_enc_1D(strm, data_type, tab_idx_1D[1], in_data_2_short,
+                  num_val_2_short, p0_flag[1]);
+    }
+    break; /* HUFF_1D */
+
+  case HUFF_2D:
+
+    switch (cdg_scheme & PAIR_MASK) {
+    case FREQ_PAIR:
 
       if (in_data_1 != NULL) {
-        huff_enc_1D(strm, data_type, tab_idx_1D[0], in_data_1_short,
-                    num_val_1_short, p0_flag[0]);
+        if (diff_type_1 == DIFF_FREQ) {
+          p0_data_1[0] = &in_data_1[0];
+          p0_data_1[1] = NULL;
+
+          num_val_1_short -= 1;
+          in_data_1_short += 1;
+        }
+
+        df_rest_flag[0] = num_val_1_short % 2;
+
+        if (df_rest_flag[0])
+          num_val_1_short -= 1;
+
+        for (i = 0; i < num_val_1_short - 1; i += 2) {
+          pair_vec[i][0] = in_data_1_short[i];
+          pair_vec[i][1] = in_data_1_short[i + 1];
+        }
+
+        tab_idx_2D[0][0] = (diff_type_1 == DIFF_TIME) ? 1 : 0;
+        tab_idx_2D[0][1] = 0;
+
+        tab_idx_1D[0] = (diff_type_1 == DIFF_FREQ) ? 0 : 1;
+      } /* if( in_data_1 != NULL ) */
+
+      if (in_data_2 != NULL) {
+        if (diff_type_2 == DIFF_FREQ) {
+          p0_data_2[0] = NULL;
+          p0_data_2[1] = &in_data_2[0];
+
+          num_val_2_short -= 1;
+          in_data_2_short += 1;
+        }
+
+        df_rest_flag[1] = num_val_2_short % 2;
+
+        if (df_rest_flag[1])
+          num_val_2_short -= 1;
+
+        for (i = 0; i < num_val_2_short - 1; i += 2) {
+          pair_vec[i + 1][0] = in_data_2_short[i];
+          pair_vec[i + 1][1] = in_data_2_short[i + 1];
+        }
+
+        tab_idx_2D[1][0] = (diff_type_2 == DIFF_TIME) ? 1 : 0;
+        tab_idx_2D[1][1] = 0;
+
+        tab_idx_1D[1] = (diff_type_2 == DIFF_FREQ) ? 0 : 1;
+      } /* if( in_data_2 != NULL ) */
+
+      if (in_data_1 != NULL) {
+        FDKwriteBits(strm, lavHuffVal[lav_idx[0]], lavHuffLen[lav_idx[0]]);
+        huff_enc_2D(strm, data_type, tab_idx_2D[0], lav_idx[0], pair_vec,
+                    num_val_1_short, 2, p0_data_1);
+        if (df_rest_flag[0]) {
+          huff_enc_1D(strm, data_type, tab_idx_1D[0],
+                      in_data_1_short + num_val_1_short, 1, 0);
+        }
       }
       if (in_data_2 != NULL) {
-        huff_enc_1D(strm, data_type, tab_idx_1D[1], in_data_2_short,
-                    num_val_2_short, p0_flag[1]);
+        FDKwriteBits(strm, lavHuffVal[lav_idx[1]], lavHuffLen[lav_idx[1]]);
+        huff_enc_2D(strm, data_type, tab_idx_2D[1], lav_idx[1], pair_vec + 1,
+                    num_val_2_short, 2, p0_data_2);
+        if (df_rest_flag[1]) {
+          huff_enc_1D(strm, data_type, tab_idx_1D[1],
+                      in_data_2_short + num_val_2_short, 1, 0);
+        }
       }
-      break; /* HUFF_1D */
+      break; /* FREQ_PAIR */
 
-    case HUFF_2D:
+    case TIME_PAIR:
 
-      switch (cdg_scheme & PAIR_MASK) {
-        case FREQ_PAIR:
+      if ((diff_type_1 == DIFF_FREQ) || (diff_type_2 == DIFF_FREQ)) {
+        p0_data_1[0] = &in_data_1[0];
+        p0_data_1[1] = &in_data_2[0];
 
-          if (in_data_1 != NULL) {
-            if (diff_type_1 == DIFF_FREQ) {
-              p0_data_1[0] = &in_data_1[0];
-              p0_data_1[1] = NULL;
+        in_data_1_short += 1;
+        in_data_2_short += 1;
 
-              num_val_1_short -= 1;
-              in_data_1_short += 1;
-            }
+        num_val_1_short -= 1;
+      }
 
-            df_rest_flag[0] = num_val_1_short % 2;
+      for (i = 0; i < num_val_1_short; i++) {
+        pair_vec[i][0] = in_data_1_short[i];
+        pair_vec[i][1] = in_data_2_short[i];
+      }
 
-            if (df_rest_flag[0]) num_val_1_short -= 1;
+      tab_idx_2D[0][0] =
+          ((diff_type_1 == DIFF_TIME) || (diff_type_2 == DIFF_TIME)) ? 1 : 0;
+      tab_idx_2D[0][1] = 1;
 
-            for (i = 0; i < num_val_1_short - 1; i += 2) {
-              pair_vec[i][0] = in_data_1_short[i];
-              pair_vec[i][1] = in_data_1_short[i + 1];
-            }
+      FDKwriteBits(strm, lavHuffVal[lav_idx[0]], lavHuffLen[lav_idx[0]]);
 
-            tab_idx_2D[0][0] = (diff_type_1 == DIFF_TIME) ? 1 : 0;
-            tab_idx_2D[0][1] = 0;
+      huff_enc_2D(strm, data_type, tab_idx_2D[0], lav_idx[0], pair_vec,
+                  num_val_1_short, 1, p0_data_1);
 
-            tab_idx_1D[0] = (diff_type_1 == DIFF_FREQ) ? 0 : 1;
-          } /* if( in_data_1 != NULL ) */
+      break; /* TIME_PAIR */
+    }        /* switch( cdg_scheme & PAIR_MASK ) */
 
-          if (in_data_2 != NULL) {
-            if (diff_type_2 == DIFF_FREQ) {
-              p0_data_2[0] = NULL;
-              p0_data_2[1] = &in_data_2[0];
+    break; /* HUFF_2D */
 
-              num_val_2_short -= 1;
-              in_data_2_short += 1;
-            }
-
-            df_rest_flag[1] = num_val_2_short % 2;
-
-            if (df_rest_flag[1]) num_val_2_short -= 1;
-
-            for (i = 0; i < num_val_2_short - 1; i += 2) {
-              pair_vec[i + 1][0] = in_data_2_short[i];
-              pair_vec[i + 1][1] = in_data_2_short[i + 1];
-            }
-
-            tab_idx_2D[1][0] = (diff_type_2 == DIFF_TIME) ? 1 : 0;
-            tab_idx_2D[1][1] = 0;
-
-            tab_idx_1D[1] = (diff_type_2 == DIFF_FREQ) ? 0 : 1;
-          } /* if( in_data_2 != NULL ) */
-
-          if (in_data_1 != NULL) {
-            FDKwriteBits(strm, lavHuffVal[lav_idx[0]], lavHuffLen[lav_idx[0]]);
-            huff_enc_2D(strm, data_type, tab_idx_2D[0], lav_idx[0], pair_vec,
-                        num_val_1_short, 2, p0_data_1);
-            if (df_rest_flag[0]) {
-              huff_enc_1D(strm, data_type, tab_idx_1D[0],
-                          in_data_1_short + num_val_1_short, 1, 0);
-            }
-          }
-          if (in_data_2 != NULL) {
-            FDKwriteBits(strm, lavHuffVal[lav_idx[1]], lavHuffLen[lav_idx[1]]);
-            huff_enc_2D(strm, data_type, tab_idx_2D[1], lav_idx[1],
-                        pair_vec + 1, num_val_2_short, 2, p0_data_2);
-            if (df_rest_flag[1]) {
-              huff_enc_1D(strm, data_type, tab_idx_1D[1],
-                          in_data_2_short + num_val_2_short, 1, 0);
-            }
-          }
-          break; /* FREQ_PAIR */
-
-        case TIME_PAIR:
-
-          if ((diff_type_1 == DIFF_FREQ) || (diff_type_2 == DIFF_FREQ)) {
-            p0_data_1[0] = &in_data_1[0];
-            p0_data_1[1] = &in_data_2[0];
-
-            in_data_1_short += 1;
-            in_data_2_short += 1;
-
-            num_val_1_short -= 1;
-          }
-
-          for (i = 0; i < num_val_1_short; i++) {
-            pair_vec[i][0] = in_data_1_short[i];
-            pair_vec[i][1] = in_data_2_short[i];
-          }
-
-          tab_idx_2D[0][0] =
-              ((diff_type_1 == DIFF_TIME) || (diff_type_2 == DIFF_TIME)) ? 1
-                                                                         : 0;
-          tab_idx_2D[0][1] = 1;
-
-          FDKwriteBits(strm, lavHuffVal[lav_idx[0]], lavHuffLen[lav_idx[0]]);
-
-          huff_enc_2D(strm, data_type, tab_idx_2D[0], lav_idx[0], pair_vec,
-                      num_val_1_short, 1, p0_data_1);
-
-          break; /* TIME_PAIR */
-      }          /* switch( cdg_scheme & PAIR_MASK ) */
-
-      break; /* HUFF_2D */
-
-    default:
-      break;
+  default:
+    break;
   } /* switch( cdg_scheme >> PAIR_SHIFT ) */
 }
 
@@ -990,28 +998,28 @@ INT fdk_sacenc_ecDataPairEnc(HANDLE_FDK_BITSTREAM strm,
   SHORT coding_scheme_dt_dt = 0;
 
   switch (data_type) {
-    case t_CLD:
-      if (coarse_flag) {
-        splitLsb_flag = 0;
-        quant_levels = 15;
-        quant_offset = 7;
-      } else {
-        splitLsb_flag = 0;
-        quant_levels = 31;
-        quant_offset = 15;
-      }
-      break;
-    case t_ICC:
-      if (coarse_flag) {
-        splitLsb_flag = 0;
-        quant_levels = 4;
-        quant_offset = 0;
-      } else {
-        splitLsb_flag = 0;
-        quant_levels = 8;
-        quant_offset = 0;
-      }
-      break;
+  case t_CLD:
+    if (coarse_flag) {
+      splitLsb_flag = 0;
+      quant_levels = 15;
+      quant_offset = 7;
+    } else {
+      splitLsb_flag = 0;
+      quant_levels = 31;
+      quant_offset = 15;
+    }
+    break;
+  case t_ICC:
+    if (coarse_flag) {
+      splitLsb_flag = 0;
+      quant_levels = 4;
+      quant_offset = 0;
+    } else {
+      splitLsb_flag = 0;
+      quant_levels = 8;
+      quant_offset = 0;
+    }
+    break;
   } /* switch( data_type ) */
 
   /* Split off LSB */
@@ -1279,28 +1287,28 @@ INT fdk_sacenc_ecDataSingleEnc(HANDLE_FDK_BITSTREAM strm,
   SHORT coding_scheme_dt = 0;
 
   switch (data_type) {
-    case t_CLD:
-      if (coarse_flag) {
-        splitLsb_flag = 0;
-        quant_levels = 15;
-        quant_offset = 7;
-      } else {
-        splitLsb_flag = 0;
-        quant_levels = 31;
-        quant_offset = 15;
-      }
-      break;
-    case t_ICC:
-      if (coarse_flag) {
-        splitLsb_flag = 0;
-        quant_levels = 4;
-        quant_offset = 0;
-      } else {
-        splitLsb_flag = 0;
-        quant_levels = 8;
-        quant_offset = 0;
-      }
-      break;
+  case t_CLD:
+    if (coarse_flag) {
+      splitLsb_flag = 0;
+      quant_levels = 15;
+      quant_offset = 7;
+    } else {
+      splitLsb_flag = 0;
+      quant_levels = 31;
+      quant_offset = 15;
+    }
+    break;
+  case t_ICC:
+    if (coarse_flag) {
+      splitLsb_flag = 0;
+      quant_levels = 4;
+      quant_offset = 0;
+    } else {
+      splitLsb_flag = 0;
+      quant_levels = 8;
+      quant_offset = 0;
+    }
+    break;
   } /* switch( data_type ) */
 
   /* Split off LSB */
@@ -1364,7 +1372,8 @@ INT fdk_sacenc_ecDataSingleEnc(HANDLE_FDK_BITSTREAM strm,
   min_bits_df = calc_huff_bits(data_diff_freq, NULL, data_type, DIFF_FREQ,
                                DIFF_FREQ, dataBands, lav_df, &coding_scheme_df);
 
-  if (allowDiffTimeBack_flag) min_bits_df += 1;
+  if (allowDiffTimeBack_flag)
+    min_bits_df += 1;
 
   min_bits_df += num_lsb_bits;
 

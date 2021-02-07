@@ -135,11 +135,10 @@ inline INT fixmuldiv2_DD(const INT a, const INT b) {
   INT result;
 #if defined(__ARM_ARCH_8__)
   INT64 result64;
-  __asm__(
-      "smull %x0, %w1, %w2;\n"
-      "asr %x0, %x0, #32;     "
-      : "=r"(result64)
-      : "r"(a), "r"(b));
+  __asm__("smull %x0, %w1, %w2;\n"
+          "asr %x0, %x0, #32;     "
+          : "=r"(result64)
+          : "r"(a), "r"(b));
   result = (INT)result64;
 #elif defined(__ARM_ARCH_6__) || defined(__TARGET_ARCH_7E_M)
   __asm__("smmul %0, %1, %2" : "=r"(result) : "r"(a), "r"(b));
@@ -177,11 +176,10 @@ inline INT fixmuldiv2_SD(const SHORT a, const INT b) {
 inline INT fixmul_DD(const INT a, const INT b) {
   INT64 result64;
 
-  __asm__(
-      "smull %x0, %w1, %w2;\n"
-      "asr %x0, %x0, #31;     "
-      : "=r"(result64)
-      : "r"(a), "r"(b));
+  __asm__("smull %x0, %w1, %w2;\n"
+          "asr %x0, %x0, #31;     "
+          : "=r"(result64)
+          : "r"(a), "r"(b));
   return (INT)result64;
 }
 #else

@@ -100,9 +100,9 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "channel_map.h"
 #include "bandwidth.h"
 #include "aacEnc_ram.h"
+#include "channel_map.h"
 
 typedef struct {
   INT chanBitRate;
@@ -168,50 +168,50 @@ static INT GetBandwidthEntry(const INT frameLength, const INT sampleRate,
   INT bwTabSize = 0;
 
   switch (frameLength) {
-    case 960:
-    case 1024:
-      pBwTab = bandWidthTable;
-      bwTabSize = sizeof(bandWidthTable) / sizeof(BANDWIDTH_TAB);
+  case 960:
+  case 1024:
+    pBwTab = bandWidthTable;
+    bwTabSize = sizeof(bandWidthTable) / sizeof(BANDWIDTH_TAB);
+    break;
+  case 120:
+  case 128:
+  case 240:
+  case 256:
+  case 480:
+  case 512:
+    switch (sampleRate) {
+    case 8000:
+    case 11025:
+    case 12000:
+    case 16000:
+    case 22050:
+      pBwTab = bandWidthTable_LD_22050;
+      bwTabSize = sizeof(bandWidthTable_LD_22050) / sizeof(BANDWIDTH_TAB);
       break;
-    case 120:
-    case 128:
-    case 240:
-    case 256:
-    case 480:
-    case 512:
-      switch (sampleRate) {
-        case 8000:
-        case 11025:
-        case 12000:
-        case 16000:
-        case 22050:
-          pBwTab = bandWidthTable_LD_22050;
-          bwTabSize = sizeof(bandWidthTable_LD_22050) / sizeof(BANDWIDTH_TAB);
-          break;
-        case 24000:
-          pBwTab = bandWidthTable_LD_24000;
-          bwTabSize = sizeof(bandWidthTable_LD_24000) / sizeof(BANDWIDTH_TAB);
-          break;
-        case 32000:
-          pBwTab = bandWidthTable_LD_32000;
-          bwTabSize = sizeof(bandWidthTable_LD_32000) / sizeof(BANDWIDTH_TAB);
-          break;
-        case 44100:
-          pBwTab = bandWidthTable_LD_44100;
-          bwTabSize = sizeof(bandWidthTable_LD_44100) / sizeof(BANDWIDTH_TAB);
-          break;
-        case 48000:
-        case 64000:
-        case 88200:
-        case 96000:
-          pBwTab = bandWidthTable_LD_48000;
-          bwTabSize = sizeof(bandWidthTable_LD_48000) / sizeof(BANDWIDTH_TAB);
-          break;
-      }
+    case 24000:
+      pBwTab = bandWidthTable_LD_24000;
+      bwTabSize = sizeof(bandWidthTable_LD_24000) / sizeof(BANDWIDTH_TAB);
       break;
-    default:
-      pBwTab = NULL;
-      bwTabSize = 0;
+    case 32000:
+      pBwTab = bandWidthTable_LD_32000;
+      bwTabSize = sizeof(bandWidthTable_LD_32000) / sizeof(BANDWIDTH_TAB);
+      break;
+    case 44100:
+      pBwTab = bandWidthTable_LD_44100;
+      bwTabSize = sizeof(bandWidthTable_LD_44100) / sizeof(BANDWIDTH_TAB);
+      break;
+    case 48000:
+    case 64000:
+    case 88200:
+    case 96000:
+      pBwTab = bandWidthTable_LD_48000;
+      bwTabSize = sizeof(bandWidthTable_LD_48000) / sizeof(BANDWIDTH_TAB);
+      break;
+    }
+    break;
+  default:
+    pBwTab = NULL;
+    bwTabSize = 0;
   }
 
   if (pBwTab != NULL) {
@@ -220,34 +220,34 @@ static INT GetBandwidthEntry(const INT frameLength, const INT sampleRate,
       if (chanBitRate >= pBwTab[i].chanBitRate &&
           chanBitRate < pBwTab[i + 1].chanBitRate) {
         switch (frameLength) {
-          case 960:
-          case 1024:
-            bandwidth = (entryNo == 0) ? pBwTab[i].bandWidthMono
+        case 960:
+        case 1024:
+          bandwidth = (entryNo == 0) ? pBwTab[i].bandWidthMono
+                                     : pBwTab[i].bandWidth2AndMoreChan;
+          break;
+        case 120:
+        case 128:
+        case 240:
+        case 256:
+        case 480:
+        case 512: {
+          INT q_res = 0;
+          INT startBw = (entryNo == 0) ? pBwTab[i].bandWidthMono
                                        : pBwTab[i].bandWidth2AndMoreChan;
-            break;
-          case 120:
-          case 128:
-          case 240:
-          case 256:
-          case 480:
-          case 512: {
-            INT q_res = 0;
-            INT startBw = (entryNo == 0) ? pBwTab[i].bandWidthMono
-                                         : pBwTab[i].bandWidth2AndMoreChan;
-            INT endBw = (entryNo == 0) ? pBwTab[i + 1].bandWidthMono
-                                       : pBwTab[i + 1].bandWidth2AndMoreChan;
-            INT startBr = pBwTab[i].chanBitRate;
-            INT endBr = pBwTab[i + 1].chanBitRate;
+          INT endBw = (entryNo == 0) ? pBwTab[i + 1].bandWidthMono
+                                     : pBwTab[i + 1].bandWidth2AndMoreChan;
+          INT startBr = pBwTab[i].chanBitRate;
+          INT endBr = pBwTab[i + 1].chanBitRate;
 
-            FIXP_DBL bwFac_fix =
-                fDivNorm(chanBitRate - startBr, endBr - startBr, &q_res);
-            bandwidth =
-                (INT)scaleValue(fMult(bwFac_fix, (FIXP_DBL)(endBw - startBw)),
-                                q_res) +
-                startBw;
-          } break;
-          default:
-            bandwidth = -1;
+          FIXP_DBL bwFac_fix =
+              fDivNorm(chanBitRate - startBr, endBr - startBr, &q_res);
+          bandwidth =
+              (INT)scaleValue(fMult(bwFac_fix, (FIXP_DBL)(endBw - startBw)),
+                              q_res) +
+              startBw;
+        } break;
+        default:
+          bandwidth = -1;
         }
         break;
       } /* within bitrate range */
@@ -266,92 +266,92 @@ AAC_ENCODER_ERROR FDKaacEnc_DetermineBandWidth(
   INT chanBitRate = bitrate / cm->nChannelsEff;
 
   switch (bitrateMode) {
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-      if (proposedBandWidth != 0) {
-        /* use given bw */
-        *bandWidth = proposedBandWidth;
-      } else {
-        /* take bw from table */
-        switch (encoderMode) {
-          case MODE_1:
-            *bandWidth = bandWidthTableVBR[bitrateMode].bandWidthMono;
-            break;
-          case MODE_2:
-          case MODE_1_2:
-          case MODE_1_2_1:
-          case MODE_1_2_2:
-          case MODE_1_2_2_1:
-          case MODE_6_1:
-          case MODE_1_2_2_2_1:
-          case MODE_7_1_REAR_SURROUND:
-          case MODE_7_1_FRONT_CENTER:
-          case MODE_7_1_BACK:
-          case MODE_7_1_TOP_FRONT:
-            *bandWidth = bandWidthTableVBR[bitrateMode].bandWidth2AndMoreChan;
-            break;
-          default:
-            return AAC_ENC_UNSUPPORTED_CHANNELCONFIG;
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+    if (proposedBandWidth != 0) {
+      /* use given bw */
+      *bandWidth = proposedBandWidth;
+    } else {
+      /* take bw from table */
+      switch (encoderMode) {
+      case MODE_1:
+        *bandWidth = bandWidthTableVBR[bitrateMode].bandWidthMono;
+        break;
+      case MODE_2:
+      case MODE_1_2:
+      case MODE_1_2_1:
+      case MODE_1_2_2:
+      case MODE_1_2_2_1:
+      case MODE_6_1:
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_REAR_SURROUND:
+      case MODE_7_1_FRONT_CENTER:
+      case MODE_7_1_BACK:
+      case MODE_7_1_TOP_FRONT:
+        *bandWidth = bandWidthTableVBR[bitrateMode].bandWidth2AndMoreChan;
+        break;
+      default:
+        return AAC_ENC_UNSUPPORTED_CHANNELCONFIG;
+      }
+    }
+    break;
+  case AACENC_BR_MODE_CBR:
+  case AACENC_BR_MODE_SFR:
+  case AACENC_BR_MODE_FF:
+
+    /* bandwidth limiting */
+    if (proposedBandWidth != 0) {
+      *bandWidth = fMin(proposedBandWidth, fMin(20000, sampleRate >> 1));
+    } else { /* search reasonable bandwidth */
+
+      int entryNo = 0;
+
+      switch (encoderMode) {
+      case MODE_1:   /* mono      */
+        entryNo = 0; /* use mono bandwidth settings */
+        break;
+
+      case MODE_2:       /* stereo    */
+      case MODE_1_2:     /* sce + cpe */
+      case MODE_1_2_1:   /* sce + cpe + sce */
+      case MODE_1_2_2:   /* sce + cpe + cpe */
+      case MODE_1_2_2_1: /* (5.1) sce + cpe + cpe + lfe */
+      case MODE_6_1:
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_REAR_SURROUND:
+      case MODE_7_1_FRONT_CENTER:
+      case MODE_7_1_BACK:
+      case MODE_7_1_TOP_FRONT:
+        entryNo = 1; /* use stereo bandwidth settings */
+        break;
+
+      default:
+        return AAC_ENC_UNSUPPORTED_CHANNELCONFIG;
+      }
+
+      *bandWidth =
+          GetBandwidthEntry(frameLength, sampleRate, chanBitRate, entryNo);
+
+      if (*bandWidth == -1) {
+        switch (frameLength) {
+        case 120:
+        case 128:
+        case 240:
+        case 256:
+          *bandWidth = 16000;
+          break;
+        default:
+          ErrorStatus = AAC_ENC_INVALID_CHANNEL_BITRATE;
         }
       }
-      break;
-    case AACENC_BR_MODE_CBR:
-    case AACENC_BR_MODE_SFR:
-    case AACENC_BR_MODE_FF:
-
-      /* bandwidth limiting */
-      if (proposedBandWidth != 0) {
-        *bandWidth = fMin(proposedBandWidth, fMin(20000, sampleRate >> 1));
-      } else { /* search reasonable bandwidth */
-
-        int entryNo = 0;
-
-        switch (encoderMode) {
-          case MODE_1:   /* mono      */
-            entryNo = 0; /* use mono bandwidth settings */
-            break;
-
-          case MODE_2:       /* stereo    */
-          case MODE_1_2:     /* sce + cpe */
-          case MODE_1_2_1:   /* sce + cpe + sce */
-          case MODE_1_2_2:   /* sce + cpe + cpe */
-          case MODE_1_2_2_1: /* (5.1) sce + cpe + cpe + lfe */
-          case MODE_6_1:
-          case MODE_1_2_2_2_1:
-          case MODE_7_1_REAR_SURROUND:
-          case MODE_7_1_FRONT_CENTER:
-          case MODE_7_1_BACK:
-          case MODE_7_1_TOP_FRONT:
-            entryNo = 1; /* use stereo bandwidth settings */
-            break;
-
-          default:
-            return AAC_ENC_UNSUPPORTED_CHANNELCONFIG;
-        }
-
-        *bandWidth =
-            GetBandwidthEntry(frameLength, sampleRate, chanBitRate, entryNo);
-
-        if (*bandWidth == -1) {
-          switch (frameLength) {
-            case 120:
-            case 128:
-            case 240:
-            case 256:
-              *bandWidth = 16000;
-              break;
-            default:
-              ErrorStatus = AAC_ENC_INVALID_CHANNEL_BITRATE;
-          }
-        }
-      }
-      break;
-    default:
-      *bandWidth = 0;
-      return AAC_ENC_UNSUPPORTED_BITRATE_MODE;
+    }
+    break;
+  default:
+    *bandWidth = 0;
+    return AAC_ENC_UNSUPPORTED_BITRATE_MODE;
   }
 
   *bandWidth = fMin(*bandWidth, sampleRate / 2);

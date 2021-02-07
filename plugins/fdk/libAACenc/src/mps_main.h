@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #define MPS_MAIN_H
 
 /* Includes ******************************************************************/
-#include "aacenc.h"
 #include "FDK_audio.h"
+#include "aacenc.h"
 #include "machine_type.h"
 
 /* Defines *******************************************************************/

@@ -107,14 +107,14 @@ amm-info@iis.fraunhofer.de
 #include "machine_type.h"
 
 /* Defines *******************************************************************/
-#define HUFF_PACK(a, b)                                    \
-  {                                                        \
-    ((((ULONG)a) & 0x00FFFFFF) << 8) | (((ULONG)b) & 0xFF) \
+#define HUFF_PACK(a, b)                                                        \
+  {                                                                            \
+    ((((ULONG)a) & 0x00FFFFFF) << 8) | (((ULONG)b) & 0xFF)                     \
   } /*!< Pack huffman value and length information. */
-#define HUFF_VALUE(a)                                                         \
-  (((a.packed >> 8) & 0x00FFFFFF)) /*!< Return value from packed table entry. \
+#define HUFF_VALUE(a)                                                          \
+  (((a.packed >> 8) & 0x00FFFFFF)) /*!< Return value from packed table entry.  \
                                     */
-#define HUFF_LENGTH(a) \
+#define HUFF_LENGTH(a)                                                         \
   ((a.packed & 0xFF)) /*!< Return length from packed table entry. */
 
 /* Data Types ****************************************************************/
@@ -130,8 +130,8 @@ amm-info@iis.fraunhofer.de
  */
 typedef struct {
   ULONG packed; /*! Packed huffman entry:
-                    - lower 8 bit are reservoed for length information
-                    - upper 24 bit contains huffman value */
+                  - lower 8 bit are reservoed for length information
+                  - upper 24 bit contains huffman value */
 } HUFF_ENTRY;
 
 typedef struct {

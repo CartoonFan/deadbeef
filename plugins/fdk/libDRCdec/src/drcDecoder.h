@@ -127,7 +127,7 @@ typedef enum { SDM_OFF, SDM_QMF64, SDM_QMF71, SDM_STFT256 } SUBBAND_DOMAIN_MODE;
 #define LOCATION_MP4_INSTREAM_UNIDRC 0x1
 #define LOCATION_MP4_DYN_RANGE_INFO 0x2
 #define LOCATION_MP4_COMPRESSION_VALUE 0x3
-#define LOCATION_SELECTED \
+#define LOCATION_SELECTED                                                      \
   LOCATION_MP4_INSTREAM_UNIDRC /* set to location selected by system */
 
 #define MAX_REQUESTS_DOWNMIX_ID 15

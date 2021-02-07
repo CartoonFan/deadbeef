@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_DRCDECLIB_H
 #define FDK_DRCDECLIB_H
 
-#include "FDK_bitstream.h"
 #include "FDK_audio.h"
+#include "FDK_bitstream.h"
 #include "common_fix.h"
 
 /* DRC decoder according to ISO/IEC 23003-4 (MPEG-D DRC) */
@@ -114,9 +114,9 @@ amm-info@iis.fraunhofer.de
 extern "C" {
 #endif
 
-typedef struct s_drc_decoder* HANDLE_DRC_DECODER;
-typedef struct s_uni_drc_interface* HANDLE_UNI_DRC_INTERFACE;
-typedef struct s_selection_process_output* HANDLE_SEL_PROC_OUTPUT;
+typedef struct s_drc_decoder *HANDLE_DRC_DECODER;
+typedef struct s_uni_drc_interface *HANDLE_UNI_DRC_INTERFACE;
+typedef struct s_selection_process_output *HANDLE_SEL_PROC_OUTPUT;
 
 typedef enum {
   DRC_DEC_SELECTION = 0x1, /* DRC decoder instance for DRC set selection only */
@@ -137,19 +137,19 @@ typedef enum {
   /* set only system (not user) parameters */
   DRC_DEC_DOWNMIX_ID,
   DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED, /**< number of output channels
-                                             notified to FDK_drcDecLib for
-                                             choosing an appropriate
-                                             downmixInstruction */
+                                           notified to FDK_drcDecLib for
+                                           choosing an appropriate
+                                           downmixInstruction */
   DRC_DEC_BASE_CHANNEL_COUNT,
   /* get only system parameters */
   DRC_DEC_IS_MULTIBAND_DRC_1,
   DRC_DEC_IS_MULTIBAND_DRC_2,
   DRC_DEC_IS_ACTIVE, /**< MPEG-D DRC payload is present and at least one of
-                        Dynamic Range Control (DRC) or Loudness Normalization
-                        (LN) is activated */
+                      Dynamic Range Control (DRC) or Loudness Normalization
+                      (LN) is activated */
   DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED /**< number of output channels if
-                                           appropriate downmixInstruction exists
-                                         */
+                                         appropriate downmixInstruction exists
+                                       */
 } DRC_DEC_USERPARAM;
 
 typedef enum {
@@ -187,7 +187,7 @@ typedef enum {
 } DRC_DEC_LOCATION;
 
 DRC_DEC_ERROR
-FDK_drcDec_Open(HANDLE_DRC_DECODER* phDrcDec,
+FDK_drcDec_Open(HANDLE_DRC_DECODER *phDrcDec,
                 const DRC_DEC_FUNCTIONAL_RANGE functionalRange);
 
 DRC_DEC_ERROR
@@ -199,7 +199,7 @@ FDK_drcDec_Init(HANDLE_DRC_DECODER hDrcDec, const int frameSize,
                 const int sampleRate, const int baseChannelCount);
 
 DRC_DEC_ERROR
-FDK_drcDec_Close(HANDLE_DRC_DECODER* phDrcDec);
+FDK_drcDec_Close(HANDLE_DRC_DECODER *phDrcDec);
 
 /* set single user request */
 DRC_DEC_ERROR
@@ -217,13 +217,13 @@ FDK_drcDec_SetInterfaceParameters(HANDLE_DRC_DECODER hDrcDec,
 DRC_DEC_ERROR
 FDK_drcDec_SetSelectionProcessMpeghParameters_simple(
     HANDLE_DRC_DECODER hDrcDec, const int groupPresetIdRequested,
-    const int numGroupIdsRequested, const int* groupIdsRequested);
+    const int numGroupIdsRequested, const int *groupIdsRequested);
 
 DRC_DEC_ERROR
 FDK_drcDec_SetDownmixInstructions(HANDLE_DRC_DECODER hDrcDec,
-                                  const int numDowmixId, const int* downmixId,
-                                  const int* targetLayout,
-                                  const int* targetChannelCount);
+                                  const int numDowmixId, const int *downmixId,
+                                  const int *targetLayout,
+                                  const int *targetChannelCount);
 
 void FDK_drcDec_SetSelectionProcessOutput(
     HANDLE_DRC_DECODER hDrcDec, HANDLE_SEL_PROC_OUTPUT hSelProcOutput);
@@ -233,11 +233,11 @@ FDK_drcDec_GetSelectionProcessOutput(HANDLE_DRC_DECODER hDrcDec);
 
 LONG /* FIXP_DBL, e = 7 */
 FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
-                            const int groupID, int* groupLoudnessAvailable);
+                            const int groupID, int *groupLoudnessAvailable);
 
 void FDK_drcDec_SetChannelGains(HANDLE_DRC_DECODER hDrcDec,
                                 const int numChannels, const int frameSize,
-                                FIXP_DBL* channelGainDb, FIXP_DBL* audioBuffer,
+                                FIXP_DBL *channelGainDb, FIXP_DBL *audioBuffer,
                                 const int audioBufferChannelOffset);
 
 DRC_DEC_ERROR
@@ -287,7 +287,7 @@ DRC_DEC_ERROR
 FDK_drcDec_ProcessTime(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
-                       const int numChannelsProcessed, FIXP_DBL* realBuffer,
+                       const int numChannelsProcessed, FIXP_DBL *realBuffer,
                        const int timeDataChannelOffset);
 
 DRC_DEC_ERROR
@@ -295,17 +295,17 @@ FDK_drcDec_ProcessFreq(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
                        const int numChannelsProcessed,
-                       const int processSingleTimeslot, FIXP_DBL** realBuffer,
-                       FIXP_DBL** imagBuffer);
+                       const int processSingleTimeslot, FIXP_DBL **realBuffer,
+                       FIXP_DBL **imagBuffer);
 
 DRC_DEC_ERROR
-FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int* reverseInChannelMap,
-                        int* reverseOutChannelMap, FIXP_DBL* realBuffer,
-                        int* pNChannels);
+FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int *reverseInChannelMap,
+                        int *reverseOutChannelMap, FIXP_DBL *realBuffer,
+                        int *pNChannels);
 
 /* Get library info for this module. */
 DRC_DEC_ERROR
-FDK_drcDec_GetLibInfo(LIB_INFO* info);
+FDK_drcDec_GetLibInfo(LIB_INFO *info);
 
 #ifdef __cplusplus
 }

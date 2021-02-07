@@ -100,11 +100,11 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "fixpoint_math.h"
 #include "drcDec_reader.h"
-#include "drcDec_tools.h"
 #include "drcDec_rom.h"
+#include "drcDec_tools.h"
 #include "drcDecoder.h"
+#include "fixpoint_math.h"
 
 /* MPEG-D DRC AMD 1 */
 
@@ -127,7 +127,7 @@ static int _getZ(const int nNodesMax) {
   return Z;
 }
 
-static int _getTimeDeltaMin(const GAIN_SET* pGset, const int deltaTminDefault) {
+static int _getTimeDeltaMin(const GAIN_SET *pGset, const int deltaTminDefault) {
   if (pGset->timeDeltaMinPresent) {
     return pGset->timeDeltaMin;
   } else {
@@ -136,16 +136,18 @@ static int _getTimeDeltaMin(const GAIN_SET* pGset, const int deltaTminDefault) {
 }
 
 /* compare and assign */
-static inline int _compAssign(UCHAR* dest, const UCHAR src) {
+static inline int _compAssign(UCHAR *dest, const UCHAR src) {
   int diff = 0;
-  if (*dest != src) diff = 1;
+  if (*dest != src)
+    diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int _compAssign(ULONG* dest, const ULONG src) {
+static inline int _compAssign(ULONG *dest, const ULONG src) {
   int diff = 0;
-  if (*dest != src) diff = 1;
+  if (*dest != src)
+    diff = 1;
   *dest = src;
   return diff;
 }
@@ -185,16 +187,19 @@ drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     uniDrcConfigPresent = FDKreadBits(hBs, 1);
     if (uniDrcConfigPresent) {
       err = drcDec_readUniDrcConfig(hBs, hUniDrcConfig);
-      if (err) return err;
+      if (err)
+        return err;
     }
     err = drcDec_readLoudnessInfoSet(hBs, hLoudnessInfoSet);
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   if (hUniDrcGain != NULL) {
     err = drcDec_readUniDrcGain(hBs, hUniDrcConfig, frameSize, deltaTminDefault,
                                 hUniDrcGain);
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   return err;
@@ -204,41 +209,43 @@ drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
 /* uniDrcGain */
 /**************/
 
-static FIXP_SGL _decodeGainInitial(
-    HANDLE_FDK_BITSTREAM hBs, const GAIN_CODING_PROFILE gainCodingProfile) {
+static FIXP_SGL
+_decodeGainInitial(HANDLE_FDK_BITSTREAM hBs,
+                   const GAIN_CODING_PROFILE gainCodingProfile) {
   int sign, magn;
   FIXP_SGL gainInitial = (FIXP_SGL)0;
   switch (gainCodingProfile) {
-    case GCP_REGULAR:
-      sign = FDKreadBits(hBs, 1);
-      magn = FDKreadBits(hBs, 8);
+  case GCP_REGULAR:
+    sign = FDKreadBits(hBs, 1);
+    magn = FDKreadBits(hBs, 8);
 
-      gainInitial =
-          (FIXP_SGL)(magn << (FRACT_BITS - 1 - 3 - 7)); /* magn * 0.125; */
-      if (sign) gainInitial = -gainInitial;
-      break;
-    case GCP_FADING:
-      sign = FDKreadBits(hBs, 1);
-      if (sign == 0)
-        gainInitial = (FIXP_SGL)0;
-      else {
-        magn = FDKreadBits(hBs, 10);
-        gainInitial = -(FIXP_SGL)(
-            (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
-      }
-      break;
-    case GCP_CLIPPING_DUCKING:
-      sign = FDKreadBits(hBs, 1);
-      if (sign == 0)
-        gainInitial = (FIXP_SGL)0;
-      else {
-        magn = FDKreadBits(hBs, 8);
-        gainInitial = -(FIXP_SGL)(
-            (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
-      }
-      break;
-    case GCP_CONSTANT:
-      break;
+    gainInitial =
+        (FIXP_SGL)(magn << (FRACT_BITS - 1 - 3 - 7)); /* magn * 0.125; */
+    if (sign)
+      gainInitial = -gainInitial;
+    break;
+  case GCP_FADING:
+    sign = FDKreadBits(hBs, 1);
+    if (sign == 0)
+      gainInitial = (FIXP_SGL)0;
+    else {
+      magn = FDKreadBits(hBs, 10);
+      gainInitial = -(FIXP_SGL)(
+          (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
+    }
+    break;
+  case GCP_CLIPPING_DUCKING:
+    sign = FDKreadBits(hBs, 1);
+    if (sign == 0)
+      gainInitial = (FIXP_SGL)0;
+    else {
+      magn = FDKreadBits(hBs, 8);
+      gainInitial = -(FIXP_SGL)(
+          (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
+    }
+    break;
+  case GCP_CONSTANT:
+    break;
   }
   return gainInitial;
 }
@@ -249,7 +256,8 @@ static int _decodeNNodes(HANDLE_FDK_BITSTREAM hBs) {
   /* decode number of nodes */
   while (endMarker != 1) {
     nNodes++;
-    if (nNodes >= 128) break;
+    if (nNodes >= 128)
+      break;
     endMarker = FDKreadBits(hBs, 1);
   }
   return nNodes;
@@ -257,7 +265,7 @@ static int _decodeNNodes(HANDLE_FDK_BITSTREAM hBs) {
 
 static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
                          const GAIN_CODING_PROFILE gainCodingProfile,
-                         const int nNodes, GAIN_NODE* pNodes) {
+                         const int nNodes, GAIN_NODE *pNodes) {
   int k, deltaGain;
   Huffman deltaGainCodebook;
 
@@ -271,7 +279,8 @@ static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
 
   for (k = 1; k < nNodes; k++) {
     deltaGain = _decodeHuffmanCW(deltaGainCodebook, hBs);
-    if (k >= 16) continue;
+    if (k >= 16)
+      continue;
     /* gain_dB_e = 7 */
     pNodes[k].gainDb =
         pNodes[k - 1].gainDb +
@@ -282,7 +291,7 @@ static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
 
 static void _decodeSlopes(HANDLE_FDK_BITSTREAM hBs,
                           const GAIN_INTERPOLATION_TYPE gainInterpolationType,
-                          const int nNodes, GAIN_NODE* pNodes) {
+                          const int nNodes, GAIN_NODE *pNodes) {
   int k = 0;
 
   if (gainInterpolationType == GIT_SPLINE) {
@@ -298,26 +307,26 @@ static int _decodeTimeDelta(HANDLE_FDK_BITSTREAM hBs, const int Z) {
 
   prefix = FDKreadBits(hBs, 2);
   switch (prefix) {
-    case 0x0:
-      return 1;
-    case 0x1:
-      mu = FDKreadBits(hBs, 2);
-      return mu + 2;
-    case 0x2:
-      mu = FDKreadBits(hBs, 3);
-      return mu + 6;
-    case 0x3:
-      mu = FDKreadBits(hBs, Z);
-      return mu + 14;
-    default:
-      return 0;
+  case 0x0:
+    return 1;
+  case 0x1:
+    mu = FDKreadBits(hBs, 2);
+    return mu + 2;
+  case 0x2:
+    mu = FDKreadBits(hBs, 3);
+    return mu + 6;
+  case 0x3:
+    mu = FDKreadBits(hBs, Z);
+    return mu + 14;
+  default:
+    return 0;
   }
 }
 
 static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int deltaTmin,
                          const int frameSize, const int fullFrame,
                          const int timeOffset, const int Z, const int nNodes,
-                         GAIN_NODE* pNodes) {
+                         GAIN_NODE *pNodes) {
   int timeDelta, k;
   int timeOffs = timeOffset;
   int frameEndFlag, nodeTimeTmp, nodeResFlag;
@@ -328,14 +337,15 @@ static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int deltaTmin,
     frameEndFlag = 1;
   }
 
-  if (frameEndFlag ==
-      1) { /* frameEndFlag == 1 signals that the last node is at the end of the
-              DRC frame */
+  if (frameEndFlag == 1) {
+    /* frameEndFlag == 1 signals that the last node is at the end of the
+            DRC frame */
     nodeResFlag = 0;
     for (k = 0; k < nNodes - 1; k++) {
       /* decode a delta time value */
       timeDelta = _decodeTimeDelta(hBs, Z);
-      if (k >= (16 - 1)) continue;
+      if (k >= (16 - 1))
+        continue;
       /* frameEndFlag == 1 needs special handling for last node with node
        * reservoir */
       nodeTimeTmp = timeOffs + timeDelta * deltaTmin;
@@ -358,16 +368,17 @@ static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int deltaTmin,
     for (k = 0; k < nNodes; k++) {
       /* decode a delta time value */
       timeDelta = _decodeTimeDelta(hBs, Z);
-      if (k >= 16) continue;
+      if (k >= 16)
+        continue;
       pNodes[k].time = timeOffs + timeDelta * deltaTmin;
       timeOffs = pNodes[k].time;
     }
   }
 }
 
-static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
+static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET *gainSet,
                        const int frameSize, const int timeDeltaMin,
-                       UCHAR* pNNodes, GAIN_NODE* pNodes) {
+                       UCHAR *pNNodes, GAIN_NODE *pNodes) {
   int timeOffset, drcGainCodingMode, nNodes;
   int Z = _getZ(frameSize / timeDeltaMin);
   if (gainSet->timeAlignment == 0) {
@@ -400,9 +411,9 @@ static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
   *pNNodes = (UCHAR)nNodes;
 }
 
-static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
+static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET *gainSet,
                                  const int frameSize, const int timeDeltaMin,
-                                 UCHAR* pNNodes, GAIN_NODE pNodes[16]) {
+                                 UCHAR *pNNodes, GAIN_NODE pNodes[16]) {
   SHORT timeBufPrevFrame[16], timeBufCurFrame[16];
   int nNodesNodeRes, nNodesCur, k, m;
 
@@ -418,7 +429,8 @@ static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
     nNodesCur = 0;
     /* count and buffer nodes from node reservoir */
     for (k = 0; k < *pNNodes; k++) {
-      if (k >= 16) continue;
+      if (k >= 16)
+        continue;
       if (pNodes[k].time >= frameSize) {
         /* write node reservoir times into buffer */
         timeBufPrevFrame[nNodesNodeRes] = pNodes[k].time;
@@ -443,14 +455,15 @@ static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
 }
 
 static DRC_ERROR _readUniDrcGainExtension(HANDLE_FDK_BITSTREAM hBs,
-                                          UNI_DRC_GAIN_EXTENSION* pExt) {
+                                          UNI_DRC_GAIN_EXTENSION *pExt) {
   DRC_ERROR err = DE_OK;
   int k, bitSizeLen, extSizeBits, bitSize;
 
   k = 0;
   pExt->uniDrcGainExtType[k] = FDKreadBits(hBs, 4);
   while (pExt->uniDrcGainExtType[k] != UNIDRCGAINEXT_TERM) {
-    if (k >= (8 - 1)) return DE_MEMORY_ERROR;
+    if (k >= (8 - 1))
+      return DE_MEMORY_ERROR;
     bitSizeLen = FDKreadBits(hBs, 3);
     extSizeBits = bitSizeLen + 4;
 
@@ -458,10 +471,10 @@ static DRC_ERROR _readUniDrcGainExtension(HANDLE_FDK_BITSTREAM hBs,
     pExt->extBitSize[k] = bitSize + 1;
 
     switch (pExt->uniDrcGainExtType[k]) {
-      /* add future extensions here */
-      default:
-        FDKpushFor(hBs, pExt->extBitSize[k]);
-        break;
+    /* add future extensions here */
+    default:
+      FDKpushFor(hBs, pExt->extBitSize[k]);
+      break;
     }
     k++;
     pExt->uniDrcGainExtType[k] = FDKreadBits(hBs, 4);
@@ -477,21 +490,24 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
                       HANDLE_UNI_DRC_GAIN hUniDrcGain) {
   DRC_ERROR err = DE_OK;
   int seq, gainSequenceCount;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef =
+  DRC_COEFFICIENTS_UNI_DRC *pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
-  if (pCoef == NULL) return DE_OK;
-  if (hUniDrcGain == NULL) return DE_OK; /* hUniDrcGain not initialized yet */
+  if (pCoef == NULL)
+    return DE_OK;
+  if (hUniDrcGain == NULL)
+    return DE_OK; /* hUniDrcGain not initialized yet */
 
   gainSequenceCount = fMin(pCoef->gainSequenceCount, (UCHAR)12);
 
   for (seq = 0; seq < gainSequenceCount; seq++) {
     UCHAR index = pCoef->gainSetIndexForGainSequence[seq];
-    GAIN_SET* gainSet;
+    GAIN_SET *gainSet;
     int timeDeltaMin;
     UCHAR tmpNNodes = 0;
     GAIN_NODE tmpNodes[16];
 
-    if ((index >= pCoef->gainSetCount) || (index >= 12)) return DE_NOT_OK;
+    if ((index >= pCoef->gainSetCount) || (index >= 12))
+      return DE_NOT_OK;
     gainSet = &(pCoef->gainSet[index]);
 
     timeDeltaMin = _getTimeDeltaMin(gainSet, deltaTminDefault);
@@ -507,7 +523,8 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
   hUniDrcGain->uniDrcGainExtPresent = FDKreadBits(hBs, 1);
   if (hUniDrcGain->uniDrcGainExtPresent == 1) {
     err = _readUniDrcGainExtension(hBs, &(hUniDrcGain->uniDrcGainExtension));
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   return err;
@@ -518,14 +535,16 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
 /****************/
 
 static void _decodeDuckingModification(HANDLE_FDK_BITSTREAM hBs,
-                                       DUCKING_MODIFICATION* pDMod, int isBox) {
+                                       DUCKING_MODIFICATION *pDMod, int isBox) {
   int bsDuckingScaling, sigma, mu;
 
-  if (isBox) FDKpushFor(hBs, 7); /* reserved */
+  if (isBox)
+    FDKpushFor(hBs, 7); /* reserved */
   pDMod->duckingScalingPresent = FDKreadBits(hBs, 1);
 
   if (pDMod->duckingScalingPresent) {
-    if (isBox) FDKpushFor(hBs, 4); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 4); /* reserved */
     bsDuckingScaling = FDKreadBits(hBs, 4);
     sigma = bsDuckingScaling >> 3;
     mu = bsDuckingScaling & 0x7;
@@ -543,7 +562,7 @@ static void _decodeDuckingModification(HANDLE_FDK_BITSTREAM hBs,
 }
 
 static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
-                                    int bandCount, GAIN_MODIFICATION* pGMod,
+                                    int bandCount, GAIN_MODIFICATION *pGMod,
                                     int isBox) {
   int sign, bsGainOffset, bsAttenuationScaling, bsAmplificationScaling;
 
@@ -567,16 +586,19 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
       if (!isBox)
         pGMod[b].targetCharacteristicLeftPresent = FDKreadBits(hBs, 1);
       if (pGMod[b].targetCharacteristicLeftPresent) {
-        if (isBox) FDKpushFor(hBs, 4); /* reserved */
+        if (isBox)
+          FDKpushFor(hBs, 4); /* reserved */
         pGMod[b].targetCharacteristicLeftIndex = FDKreadBits(hBs, 4);
       }
       if (!isBox)
         pGMod[b].targetCharacteristicRightPresent = FDKreadBits(hBs, 1);
       if (pGMod[b].targetCharacteristicRightPresent) {
-        if (isBox) FDKpushFor(hBs, 4); /* reserved */
+        if (isBox)
+          FDKpushFor(hBs, 4); /* reserved */
         pGMod[b].targetCharacteristicRightIndex = FDKreadBits(hBs, 4);
       }
-      if (!isBox) pGMod[b].gainScalingPresent = FDKreadBits(hBs, 1);
+      if (!isBox)
+        pGMod[b].gainScalingPresent = FDKreadBits(hBs, 1);
       if (pGMod[b].gainScalingPresent) {
         bsAttenuationScaling = FDKreadBits(hBs, 4);
         pGMod[b].attenuationScaling = (FIXP_SGL)(
@@ -587,9 +609,11 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
             bsAmplificationScaling
             << (FRACT_BITS - 1 - 3 - 2)); /* bsAmplificationScaling * 0.125; */
       }
-      if (!isBox) pGMod[b].gainOffsetPresent = FDKreadBits(hBs, 1);
+      if (!isBox)
+        pGMod[b].gainOffsetPresent = FDKreadBits(hBs, 1);
       if (pGMod[b].gainOffsetPresent) {
-        if (isBox) FDKpushFor(hBs, 2); /* reserved */
+        if (isBox)
+          FDKpushFor(hBs, 2); /* reserved */
         sign = FDKreadBits(hBs, 1);
         bsGainOffset = FDKreadBits(hBs, 5);
         pGMod[b].gainOffset = (FIXP_SGL)(
@@ -603,10 +627,12 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
     if (bandCount == 1) {
       shapeFilterPresent = FDKreadBits(hBs, 1);
       if (shapeFilterPresent) {
-        if (isBox) FDKpushFor(hBs, 3); /* reserved */
-        FDKpushFor(hBs, 4);            /* pGMod->shapeFilterIndex */
+        if (isBox)
+          FDKpushFor(hBs, 3); /* reserved */
+        FDKpushFor(hBs, 4);   /* pGMod->shapeFilterIndex */
       } else {
-        if (isBox) FDKpushFor(hBs, 7); /* reserved */
+        if (isBox)
+          FDKpushFor(hBs, 7); /* reserved */
       }
     }
   } else {
@@ -614,7 +640,8 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
     FIXP_SGL attenuationScaling = FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
              amplificationScaling = FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
              gainOffset = (FIXP_SGL)0;
-    if (isBox) FDKpushFor(hBs, 7); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 7); /* reserved */
     gainScalingPresent = FDKreadBits(hBs, 1);
     if (gainScalingPresent) {
       bsAttenuationScaling = FDKreadBits(hBs, 4);
@@ -626,10 +653,12 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
           bsAmplificationScaling
           << (FRACT_BITS - 1 - 3 - 2)); /* bsAmplificationScaling * 0.125; */
     }
-    if (isBox) FDKpushFor(hBs, 7); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 7); /* reserved */
     gainOffsetPresent = FDKreadBits(hBs, 1);
     if (gainOffsetPresent) {
-      if (isBox) FDKpushFor(hBs, 2); /* reserved */
+      if (isBox)
+        FDKpushFor(hBs, 2); /* reserved */
       sign = FDKreadBits(hBs, 1);
       bsGainOffset = FDKreadBits(hBs, 5);
       gainOffset =
@@ -652,9 +681,10 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int version,
 }
 
 static void _readDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs, const int version,
-                                   DRC_CHARACTERISTIC* pDChar, int isBox) {
+                                   DRC_CHARACTERISTIC *pDChar, int isBox) {
   if (version == 0) {
-    if (isBox) FDKpushFor(hBs, 1); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 1); /* reserved */
     pDChar->cicpIndex = FDKreadBits(hBs, 7);
     if (pDChar->cicpIndex > 0) {
       pDChar->present = 1;
@@ -664,11 +694,14 @@ static void _readDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs, const int version,
     }
   } else {
     pDChar->present = FDKreadBits(hBs, 1);
-    if (isBox) pDChar->isCICP = FDKreadBits(hBs, 1);
+    if (isBox)
+      pDChar->isCICP = FDKreadBits(hBs, 1);
     if (pDChar->present) {
-      if (!isBox) pDChar->isCICP = FDKreadBits(hBs, 1);
+      if (!isBox)
+        pDChar->isCICP = FDKreadBits(hBs, 1);
       if (pDChar->isCICP) {
-        if (isBox) FDKpushFor(hBs, 1); /* reserved */
+        if (isBox)
+          FDKpushFor(hBs, 1); /* reserved */
         pDChar->cicpIndex = FDKreadBits(hBs, 7);
       } else {
         pDChar->custom.left = FDKreadBits(hBs, 4);
@@ -678,21 +711,24 @@ static void _readDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs, const int version,
   }
 }
 
-static void _readBandBorder(HANDLE_FDK_BITSTREAM hBs, BAND_BORDER* pBBord,
+static void _readBandBorder(HANDLE_FDK_BITSTREAM hBs, BAND_BORDER *pBBord,
                             int drcBandType, int isBox) {
   if (drcBandType) {
-    if (isBox) FDKpushFor(hBs, 4); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 4); /* reserved */
     pBBord->crossoverFreqIndex = FDKreadBits(hBs, 4);
   } else {
-    if (isBox) FDKpushFor(hBs, 6); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 6); /* reserved */
     pBBord->startSubBandIndex = FDKreadBits(hBs, 10);
   }
 }
 
 static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int version,
-                              int* gainSequenceIndex, GAIN_SET* pGSet,
+                              int *gainSequenceIndex, GAIN_SET *pGSet,
                               int isBox) {
-  if (isBox) FDKpushFor(hBs, 2); /* reserved */
+  if (isBox)
+    FDKpushFor(hBs, 2); /* reserved */
   pGSet->gainCodingProfile = FDKreadBits(hBs, 2);
   pGSet->gainInterpolationType = FDKreadBits(hBs, 1);
   pGSet->fullFrame = FDKreadBits(hBs, 1);
@@ -701,16 +737,19 @@ static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int version,
 
   if (pGSet->timeDeltaMinPresent) {
     int bsTimeDeltaMin;
-    if (isBox) FDKpushFor(hBs, 5); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 5); /* reserved */
     bsTimeDeltaMin = FDKreadBits(hBs, 11);
     pGSet->timeDeltaMin = bsTimeDeltaMin + 1;
   }
 
   if (pGSet->gainCodingProfile != GCP_CONSTANT) {
     int i;
-    if (isBox) FDKpushFor(hBs, 3); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 3); /* reserved */
     pGSet->bandCount = FDKreadBits(hBs, 4);
-    if (pGSet->bandCount > 4) return DE_MEMORY_ERROR;
+    if (pGSet->bandCount > 4)
+      return DE_MEMORY_ERROR;
 
     if ((pGSet->bandCount > 1) || isBox) {
       pGSet->drcBandType = FDKreadBits(hBs, 1);
@@ -748,14 +787,16 @@ static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int version,
 
 static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
                                               const CHARACTERISTIC_SIDE side,
-                                              UCHAR* pCharacteristicFormat,
-                                              CUSTOM_DRC_CHAR* pCChar,
+                                              UCHAR *pCharacteristicFormat,
+                                              CUSTOM_DRC_CHAR *pCChar,
                                               int isBox) {
-  if (isBox) FDKpushFor(hBs, 7); /* reserved */
+  if (isBox)
+    FDKpushFor(hBs, 7); /* reserved */
   *pCharacteristicFormat = FDKreadBits(hBs, 1);
   if (*pCharacteristicFormat == CF_SIGMOID) {
     int bsGain, bsIoRatio, bsExp;
-    if (isBox) FDKpushFor(hBs, 1); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 1); /* reserved */
     bsGain = FDKreadBits(hBs, 6);
     if (side == CS_LEFT) {
       pCChar->sigmoid.gain = (FIXP_SGL)(bsGain << (FRACT_BITS - 1 - 6));
@@ -776,14 +817,17 @@ static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
     pCChar->sigmoid.flipSign = FDKreadBits(hBs, 1);
   } else { /* CF_NODES */
     int i, bsCharacteristicNodeCount, bsNodeLevelDelta, bsNodeGain;
-    if (isBox) FDKpushFor(hBs, 6); /* reserved */
+    if (isBox)
+      FDKpushFor(hBs, 6); /* reserved */
     bsCharacteristicNodeCount = FDKreadBits(hBs, 2);
     pCChar->nodes.characteristicNodeCount = bsCharacteristicNodeCount + 1;
-    if (pCChar->nodes.characteristicNodeCount > 4) return DE_MEMORY_ERROR;
+    if (pCChar->nodes.characteristicNodeCount > 4)
+      return DE_MEMORY_ERROR;
     pCChar->nodes.nodeLevel[0] = DRC_INPUT_LOUDNESS_TARGET_SGL;
     pCChar->nodes.nodeGain[0] = (FIXP_SGL)0;
     for (i = 0; i < pCChar->nodes.characteristicNodeCount; i++) {
-      if (isBox) FDKpushFor(hBs, 3); /* reserved */
+      if (isBox)
+        FDKpushFor(hBs, 3); /* reserved */
       bsNodeLevelDelta = FDKreadBits(hBs, 5);
       if (side == CS_LEFT) {
         pCChar->nodes.nodeLevel[i + 1] =
@@ -880,16 +924,16 @@ static void _skipEqSubbandGainSpline(HANDLE_FDK_BITSTREAM hBs) {
   FDKpushFor(hBs, 4 * (nEqNodes - 1));
   bits = FDKreadBits(hBs, 2);
   switch (bits) {
-    case 0:
-      FDKpushFor(hBs, 5);
-      break;
-    case 1:
-    case 2:
-      FDKpushFor(hBs, 4);
-      break;
-    case 3:
-      FDKpushFor(hBs, 3);
-      break;
+  case 0:
+    FDKpushFor(hBs, 5);
+    break;
+  case 1:
+  case 2:
+    FDKpushFor(hBs, 4);
+    break;
+  case 3:
+    FDKpushFor(hBs, 3);
+    break;
   }
   FDKpushFor(hBs, 5 * (nEqNodes - 1));
 }
@@ -946,29 +990,29 @@ static void _skipEqCoefficients(HANDLE_FDK_BITSTREAM hBs) {
     eqSubbandGainRepresentation = FDKreadBits(hBs, 1);
     eqSubbandGainFormat = (EQ_SUBBAND_GAIN_FORMAT)FDKreadBits(hBs, 4);
     switch (eqSubbandGainFormat) {
-      case GF_QMF32:
-        eqSubbandGainCount = 32;
-        break;
-      case GF_QMFHYBRID39:
-        eqSubbandGainCount = 39;
-        break;
-      case GF_QMF64:
-        eqSubbandGainCount = 64;
-        break;
-      case GF_QMFHYBRID71:
-        eqSubbandGainCount = 71;
-        break;
-      case GF_QMF128:
-        eqSubbandGainCount = 128;
-        break;
-      case GF_QMFHYBRID135:
-        eqSubbandGainCount = 135;
-        break;
-      case GF_UNIFORM:
-      default:
-        eqSubbandGainCount = FDKreadBits(hBs, 8);
-        eqSubbandGainCount++;
-        break;
+    case GF_QMF32:
+      eqSubbandGainCount = 32;
+      break;
+    case GF_QMFHYBRID39:
+      eqSubbandGainCount = 39;
+      break;
+    case GF_QMF64:
+      eqSubbandGainCount = 64;
+      break;
+    case GF_QMFHYBRID71:
+      eqSubbandGainCount = 71;
+      break;
+    case GF_QMF128:
+      eqSubbandGainCount = 128;
+      break;
+    case GF_QMFHYBRID135:
+      eqSubbandGainCount = 135;
+      break;
+    case GF_UNIFORM:
+    default:
+      eqSubbandGainCount = FDKreadBits(hBs, 8);
+      eqSubbandGainCount++;
+      break;
     }
     for (k = 0; k < uniqueEqSubbandGainsCount; k++) {
       if (eqSubbandGainRepresentation == 1) {
@@ -1046,9 +1090,10 @@ static DRC_ERROR _skipEqInstructions(HANDLE_FDK_BITSTREAM hBs,
   if ((downmixIdPresent == 1) && (eqApplyToDownmix == 1) && (downmixId != 0) &&
       (downmixId != DOWNMIX_ID_ANY_DOWNMIX) &&
       (additionalDownmixIdCount == 0)) {
-    DOWNMIX_INSTRUCTIONS* pDown =
+    DOWNMIX_INSTRUCTIONS *pDown =
         selectDownmixInstructions(hUniDrcConfig, downmixId);
-    if (pDown == NULL) return DE_NOT_OK;
+    if (pDown == NULL)
+      return DE_NOT_OK;
 
     channelCount =
         pDown->targetChannelCount; /* targetChannelCountFromDownmixId*/
@@ -1061,7 +1106,8 @@ static DRC_ERROR _skipEqInstructions(HANDLE_FDK_BITSTREAM hBs,
   for (c = 0; c < channelCount; c++) {
     UCHAR eqChannelGroupForChannel[8];
     int newGroup = 1;
-    if (c >= 8) return DE_MEMORY_ERROR;
+    if (c >= 8)
+      return DE_MEMORY_ERROR;
     eqChannelGroupForChannel[c] = FDKreadBits(hBs, 7);
     for (k = 0; k < c; k++) {
       if (eqChannelGroupForChannel[c] == eqChannelGroupForChannel[k]) {
@@ -1094,7 +1140,7 @@ static void _skipDrcCoefficientsBasic(HANDLE_FDK_BITSTREAM hBs) {
 
 static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
                                             const int version,
-                                            DRC_COEFFICIENTS_UNI_DRC* pCoef) {
+                                            DRC_COEFFICIENTS_UNI_DRC *pCoef) {
   DRC_ERROR err = DE_OK;
   int i, bsDrcFrameSize;
   int gainSequenceIndex = -1;
@@ -1116,10 +1162,12 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
       GAIN_SET tmpGset;
       FDKmemclear(&tmpGset, sizeof(GAIN_SET));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
-      if (err) return err;
+      if (err)
+        return err;
       gainSequenceCount += tmpGset.bandCount;
 
-      if (i >= 12) continue;
+      if (i >= 12)
+        continue;
       pCoef->gainSet[i] = tmpGset;
     }
     pCoef->gainSequenceCount = gainSequenceCount;
@@ -1130,23 +1178,27 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     drcCharacteristicLeftPresent = FDKreadBits(hBs, 1);
     if (drcCharacteristicLeftPresent) {
       pCoef->characteristicLeftCount = FDKreadBits(hBs, 4);
-      if ((pCoef->characteristicLeftCount + 1) > 8) return DE_MEMORY_ERROR;
+      if ((pCoef->characteristicLeftCount + 1) > 8)
+        return DE_MEMORY_ERROR;
       for (i = 0; i < pCoef->characteristicLeftCount; i++) {
         err = _readCustomDrcCharacteristic(
             hBs, CS_LEFT, &(pCoef->characteristicLeftFormat[i + 1]),
             &(pCoef->customCharacteristicLeft[i + 1]), 0);
-        if (err) return err;
+        if (err)
+          return err;
       }
     }
     drcCharacteristicRightPresent = FDKreadBits(hBs, 1);
     if (drcCharacteristicRightPresent) {
       pCoef->characteristicRightCount = FDKreadBits(hBs, 4);
-      if ((pCoef->characteristicRightCount + 1) > 8) return DE_MEMORY_ERROR;
+      if ((pCoef->characteristicRightCount + 1) > 8)
+        return DE_MEMORY_ERROR;
       for (i = 0; i < pCoef->characteristicRightCount; i++) {
         err = _readCustomDrcCharacteristic(
             hBs, CS_RIGHT, &(pCoef->characteristicRightFormat[i + 1]),
             &(pCoef->customCharacteristicRight[i + 1]), 0);
-        if (err) return err;
+        if (err)
+          return err;
       }
     }
     shapeFiltersPresent = FDKreadBits(hBs, 1);
@@ -1177,9 +1229,11 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
       GAIN_SET tmpGset;
       FDKmemclear(&tmpGset, sizeof(GAIN_SET));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
-      if (err) return err;
+      if (err)
+        return err;
 
-      if (i >= 12) continue;
+      if (i >= 12)
+        continue;
       pCoef->gainSet[i] = tmpGset;
     }
   }
@@ -1189,7 +1243,8 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
   for (i = 0; i < pCoef->gainSetCount; i++) {
     int b;
     for (b = 0; b < pCoef->gainSet[i].bandCount; b++) {
-      if (pCoef->gainSet[i].gainSequenceIndex[b] >= 12) continue;
+      if (pCoef->gainSet[i].gainSequenceIndex[b] >= 12)
+        continue;
       pCoef->gainSetIndexForGainSequence[pCoef->gainSet[i]
                                              .gainSequenceIndex[b]] = i;
     }
@@ -1234,15 +1289,15 @@ static void _skipDrcInstructionsBasic(HANDLE_FDK_BITSTREAM hBs) {
 static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
                                             const int version,
                                             HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                                            DRC_INSTRUCTIONS_UNI_DRC* pInst) {
+                                            DRC_INSTRUCTIONS_UNI_DRC *pInst) {
   DRC_ERROR err = DE_OK;
   int i, g, c;
   int downmixIdPresent, additionalDownmixIdPresent, additionalDownmixIdCount;
   int bsLimiterPeakTarget, channelCount;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_COEFFICIENTS_UNI_DRC *pCoef = NULL;
   int repeatParameters, bsRepeatParametersCount;
   int repeatSequenceIndex, bsRepeatSequenceCount;
-  SCHAR* gainSetIndex = pInst->gainSetIndex;
+  SCHAR *gainSetIndex = pInst->gainSetIndex;
   SCHAR channelGroupForChannel[8];
   DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
 
@@ -1273,7 +1328,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     additionalDownmixIdPresent = FDKreadBits(hBs, 1);
     if (additionalDownmixIdPresent) {
       additionalDownmixIdCount = FDKreadBits(hBs, 3);
-      if ((1 + additionalDownmixIdCount) > 8) return DE_MEMORY_ERROR;
+      if ((1 + additionalDownmixIdCount) > 8)
+        return DE_MEMORY_ERROR;
       for (i = 0; i < additionalDownmixIdCount; i++) {
         pInst->downmixId[i + 1] = FDKreadBits(hBs, 7);
       }
@@ -1339,13 +1395,14 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
       hUniDrcConfig->channelLayout.baseChannelCount;
 
   if (pInst->drcSetEffect & (EB_DUCK_OTHER | EB_DUCK_SELF)) {
-    DUCKING_MODIFICATION* pDModForChannel =
+    DUCKING_MODIFICATION *pDModForChannel =
         pInst->duckingModificationForChannel;
     c = 0;
     while (c < channelCount) {
       int bsGainSetIndex;
       bsGainSetIndex = FDKreadBits(hBs, 6);
-      if (c >= 8) return DE_MEMORY_ERROR;
+      if (c >= 8)
+        return DE_MEMORY_ERROR;
       gainSetIndex[c] = bsGainSetIndex - 1;
       _decodeDuckingModification(hBs, &(pDModForChannel[c]), 0);
 
@@ -1355,7 +1412,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
         bsRepeatParametersCount = FDKreadBits(hBs, 5);
         bsRepeatParametersCount += 1;
         for (i = 0; i < bsRepeatParametersCount; i++) {
-          if (c >= 8) return DE_MEMORY_ERROR;
+          if (c >= 8)
+            return DE_MEMORY_ERROR;
           gainSetIndex[c] = gainSetIndex[c - 1];
           pDModForChannel[c] = pDModForChannel[c - 1];
           c++;
@@ -1371,7 +1429,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
         pDModForChannel, &pInst->nDrcChannelGroups,
         pInst->gainSetIndexForChannelGroup, channelGroupForChannel,
         duckingModificationForChannelGroup);
-    if (err) return (err);
+    if (err)
+      return (err);
   } else {
     int deriveChannelCount = 0;
     if (((version == 0) || (pInst->drcApplyToDownmix != 0)) &&
@@ -1379,9 +1438,10 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
         (pInst->downmixId[0] != DOWNMIX_ID_ANY_DOWNMIX) &&
         (pInst->downmixIdCount == 1)) {
       if (hUniDrcConfig->downmixInstructionsCount != 0) {
-        DOWNMIX_INSTRUCTIONS* pDown =
+        DOWNMIX_INSTRUCTIONS *pDown =
             selectDownmixInstructions(hUniDrcConfig, pInst->downmixId[0]);
-        if (pDown == NULL) return DE_NOT_OK;
+        if (pDown == NULL)
+          return DE_NOT_OK;
         pInst->drcChannelCount = channelCount =
             pDown->targetChannelCount; /* targetChannelCountFromDownmixId*/
       } else {
@@ -1401,7 +1461,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     while (c < channelCount) {
       int bsGainSetIndex;
       bsGainSetIndex = FDKreadBits(hBs, 6);
-      if (c >= 8) return DE_MEMORY_ERROR;
+      if (c >= 8)
+        return DE_MEMORY_ERROR;
       gainSetIndex[c] = bsGainSetIndex - 1;
       c++;
       repeatSequenceIndex = FDKreadBits(hBs, 1);
@@ -1413,7 +1474,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
           channelCount = 1 + bsRepeatSequenceCount;
         }
         for (i = 0; i < bsRepeatSequenceCount; i++) {
-          if (c >= 8) return DE_MEMORY_ERROR;
+          if (c >= 8)
+            return DE_MEMORY_ERROR;
           gainSetIndex[c] = bsGainSetIndex - 1;
           c++;
         }
@@ -1439,7 +1501,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
                                  gainSetIndex, NULL, &pInst->nDrcChannelGroups,
                                  pInst->gainSetIndexForChannelGroup,
                                  channelGroupForChannel, NULL);
-    if (err) return (err);
+    if (err)
+      return (err);
 
     for (g = 0; g < pInst->nDrcChannelGroups; g++) {
       int set, bandCount;
@@ -1461,12 +1524,13 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
 }
 
 static DRC_ERROR _readChannelLayout(HANDLE_FDK_BITSTREAM hBs,
-                                    CHANNEL_LAYOUT* pChan) {
+                                    CHANNEL_LAYOUT *pChan) {
   DRC_ERROR err = DE_OK;
 
   pChan->baseChannelCount = FDKreadBits(hBs, 7);
 
-  if (pChan->baseChannelCount > 8) return DE_NOT_OK;
+  if (pChan->baseChannelCount > 8)
+    return DE_NOT_OK;
 
   pChan->layoutSignalingPresent = FDKreadBits(hBs, 1);
 
@@ -1489,8 +1553,8 @@ static DRC_ERROR _readChannelLayout(HANDLE_FDK_BITSTREAM hBs,
 
 static DRC_ERROR _readDownmixInstructions(HANDLE_FDK_BITSTREAM hBs,
                                           const int version,
-                                          CHANNEL_LAYOUT* pChan,
-                                          DOWNMIX_INSTRUCTIONS* pDown) {
+                                          CHANNEL_LAYOUT *pChan,
+                                          DOWNMIX_INSTRUCTIONS *pDown) {
   DRC_ERROR err = DE_OK;
 
   pDown->downmixId = FDKreadBits(hBs, 7);
@@ -1501,7 +1565,8 @@ static DRC_ERROR _readDownmixInstructions(HANDLE_FDK_BITSTREAM hBs,
   if (pDown->downmixCoefficientsPresent) {
     int nDownmixCoeffs = pDown->targetChannelCount * pChan->baseChannelCount;
     int i;
-    if (nDownmixCoeffs > 8 * 8) return DE_NOT_OK;
+    if (nDownmixCoeffs > 8 * 8)
+      return DE_NOT_OK;
     if (version == 0) {
       pDown->bsDownmixOffset = 0;
       for (i = 0; i < nDownmixCoeffs; i++) {
@@ -1540,8 +1605,10 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
       err = _readDownmixInstructions(hBs, 1, &hUniDrcConfig->channelLayout,
                                      &tmpDown);
-      if (err) return err;
-      if ((offset + i) >= 6) continue;
+      if (err)
+        return err;
+      if ((offset + i) >= 6)
+        continue;
       if (!diff)
         diff |= (FDKmemcmp(&tmpDown,
                            &(hUniDrcConfig->downmixInstructions[offset + i]),
@@ -1564,8 +1631,10 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       DRC_COEFFICIENTS_UNI_DRC tmpCoef;
       FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
       err = _readDrcCoefficientsUniDrc(hBs, 1, &tmpCoef);
-      if (err) return err;
-      if ((offset + i) >= 2) continue;
+      if (err)
+        return err;
+      if ((offset + i) >= 2)
+        continue;
       if (!diff)
         diff |= (FDKmemcmp(&tmpCoef,
                            &(hUniDrcConfig->drcCoefficientsUniDrc[offset + i]),
@@ -1583,8 +1652,10 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       DRC_INSTRUCTIONS_UNI_DRC tmpInst;
       FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
       err = _readDrcInstructionsUniDrc(hBs, 1, hUniDrcConfig, &tmpInst);
-      if (err) return err;
-      if ((offset + i) >= 12) continue;
+      if (err)
+        return err;
+      if ((offset + i) >= 12)
+        continue;
       if (!diff)
         diff |= (FDKmemcmp(&tmpInst,
                            &(hUniDrcConfig->drcInstructionsUniDrc[offset + i]),
@@ -1618,17 +1689,19 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
   return err;
 }
 
-static DRC_ERROR _readUniDrcConfigExtension(
-    HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig) {
+static DRC_ERROR
+_readUniDrcConfigExtension(HANDLE_FDK_BITSTREAM hBs,
+                           HANDLE_UNI_DRC_CONFIG hUniDrcConfig) {
   DRC_ERROR err = DE_OK;
   int k, bitSizeLen, extSizeBits, bitSize;
   INT nBitsRemaining;
-  UNI_DRC_CONFIG_EXTENSION* pExt = &(hUniDrcConfig->uniDrcConfigExt);
+  UNI_DRC_CONFIG_EXTENSION *pExt = &(hUniDrcConfig->uniDrcConfigExt);
 
   k = 0;
   pExt->uniDrcConfigExtType[k] = FDKreadBits(hBs, 4);
   while (pExt->uniDrcConfigExtType[k] != UNIDRCCONFEXT_TERM) {
-    if (k >= (8 - 1)) return DE_MEMORY_ERROR;
+    if (k >= (8 - 1))
+      return DE_MEMORY_ERROR;
     bitSizeLen = FDKreadBits(hBs, 4);
     extSizeBits = bitSizeLen + 4;
 
@@ -1637,18 +1710,19 @@ static DRC_ERROR _readUniDrcConfigExtension(
     nBitsRemaining = (INT)FDKgetValidBits(hBs);
 
     switch (pExt->uniDrcConfigExtType[k]) {
-      case UNIDRCCONFEXT_V1:
-        err = _readDrcExtensionV1(hBs, hUniDrcConfig);
-        if (err) return err;
-        if (nBitsRemaining !=
-            ((INT)pExt->extBitSize[k] + (INT)FDKgetValidBits(hBs)))
-          return DE_NOT_OK;
-        break;
-      case UNIDRCCONFEXT_PARAM_DRC:
-      /* add future extensions here */
-      default:
-        FDKpushFor(hBs, pExt->extBitSize[k]);
-        break;
+    case UNIDRCCONFEXT_V1:
+      err = _readDrcExtensionV1(hBs, hUniDrcConfig);
+      if (err)
+        return err;
+      if (nBitsRemaining !=
+          ((INT)pExt->extBitSize[k] + (INT)FDKgetValidBits(hBs)))
+        return DE_NOT_OK;
+      break;
+    case UNIDRCCONFEXT_PARAM_DRC:
+    /* add future extensions here */
+    default:
+      FDKpushFor(hBs, pExt->extBitSize[k]);
+      break;
     }
     k++;
     pExt->uniDrcConfigExtType[k] = FDKreadBits(hBs, 4);
@@ -1666,7 +1740,8 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
       drcInstructionsBasicCount;
   CHANNEL_LAYOUT tmpChan;
   FDKmemclear(&tmpChan, sizeof(CHANNEL_LAYOUT));
-  if (hUniDrcConfig == NULL) return DE_NOT_OK;
+  if (hUniDrcConfig == NULL)
+    return DE_NOT_OK;
 
   diff |= _compAssign(&hUniDrcConfig->sampleRatePresent, FDKreadBits(hBs, 1));
 
@@ -1693,7 +1768,8 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
                       FDKreadBits(hBs, 6));
 
   err = _readChannelLayout(hBs, &tmpChan);
-  if (err) return err;
+  if (err)
+    return err;
 
   if (!diff)
     diff |= (FDKmemcmp(&tmpChan, &hUniDrcConfig->channelLayout,
@@ -1707,8 +1783,10 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
     err = _readDownmixInstructions(hBs, 0, &hUniDrcConfig->channelLayout,
                                    &tmpDown);
-    if (err) return err;
-    if (i >= 6) continue;
+    if (err)
+      return err;
+    if (i >= 6)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpDown, &(hUniDrcConfig->downmixInstructions[i]),
                          sizeof(DOWNMIX_INSTRUCTIONS)) != 0);
@@ -1728,8 +1806,10 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     DRC_COEFFICIENTS_UNI_DRC tmpCoef;
     FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
     err = _readDrcCoefficientsUniDrc(hBs, 0, &tmpCoef);
-    if (err) return err;
-    if (i >= 2) continue;
+    if (err)
+      return err;
+    if (i >= 2)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpCoef, &(hUniDrcConfig->drcCoefficientsUniDrc[i]),
                          sizeof(DRC_COEFFICIENTS_UNI_DRC)) != 0);
@@ -1742,8 +1822,10 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     DRC_INSTRUCTIONS_UNI_DRC tmpInst;
     FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
     err = _readDrcInstructionsUniDrc(hBs, 0, hUniDrcConfig, &tmpInst);
-    if (err) return err;
-    if (i >= 12) continue;
+    if (err)
+      return err;
+    if (i >= 12)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpInst, &(hUniDrcConfig->drcInstructionsUniDrc[i]),
                          sizeof(DRC_INSTRUCTIONS_UNI_DRC)) != 0);
@@ -1756,7 +1838,8 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
 
   if (hUniDrcConfig->uniDrcConfigExtPresent == 1) {
     err = _readUniDrcConfigExtension(hBs, hUniDrcConfig);
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   return err;
@@ -1768,67 +1851,68 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
 
 static DRC_ERROR _decodeMethodValue(HANDLE_FDK_BITSTREAM hBs,
                                     const UCHAR methodDefinition,
-                                    FIXP_DBL* methodValue, INT isBox) {
+                                    FIXP_DBL *methodValue, INT isBox) {
   int tmp;
   FIXP_DBL val;
   switch (methodDefinition) {
-    case MD_UNKNOWN_OTHER:
-    case MD_PROGRAM_LOUDNESS:
-    case MD_ANCHOR_LOUDNESS:
-    case MD_MAX_OF_LOUDNESS_RANGE:
-    case MD_MOMENTARY_LOUDNESS_MAX:
-    case MD_SHORT_TERM_LOUDNESS_MAX:
-      tmp = FDKreadBits(hBs, 8);
-      val = FL2FXCONST_DBL(-57.75f / (float)(1 << 7)) +
-            (FIXP_DBL)(
-                tmp << (DFRACT_BITS - 1 - 2 - 7)); /* -57.75 + tmp * 0.25; */
-      break;
-    case MD_LOUDNESS_RANGE:
-      tmp = FDKreadBits(hBs, 8);
-      if (tmp == 0)
-        val = (FIXP_DBL)0;
-      else if (tmp <= 128)
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 2 - 7)); /* tmp * 0.25; */
-      else if (tmp <= 204) {
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 1 - 7)) -
-              FL2FXCONST_DBL(32.0f / (float)(1 << 7)); /* 0.5 * tmp - 32.0f; */
-      } else {
-        /* downscale by 1 more bit to prevent overflow at intermediate result */
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 8)) -
-              FL2FXCONST_DBL(134.0f / (float)(1 << 8)); /* tmp - 134.0; */
-        val <<= 1;
-      }
-      break;
-    case MD_MIXING_LEVEL:
-      tmp = FDKreadBits(hBs, isBox ? 8 : 5);
-      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)) +
-            FL2FXCONST_DBL(80.0f / (float)(1 << 7)); /* tmp + 80.0; */
-      break;
-    case MD_ROOM_TYPE:
-      tmp = FDKreadBits(hBs, isBox ? 8 : 2);
-      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)); /* tmp; */
-      break;
-    case MD_SHORT_TERM_LOUDNESS:
-      tmp = FDKreadBits(hBs, 8);
-      val = FL2FXCONST_DBL(-116.0f / (float)(1 << 7)) +
-            (FIXP_DBL)(
-                tmp << (DFRACT_BITS - 1 - 1 - 7)); /* -116.0 + tmp * 0.5; */
-      break;
-    default:
-      return DE_NOT_OK; /* invalid methodDefinition value */
+  case MD_UNKNOWN_OTHER:
+  case MD_PROGRAM_LOUDNESS:
+  case MD_ANCHOR_LOUDNESS:
+  case MD_MAX_OF_LOUDNESS_RANGE:
+  case MD_MOMENTARY_LOUDNESS_MAX:
+  case MD_SHORT_TERM_LOUDNESS_MAX:
+    tmp = FDKreadBits(hBs, 8);
+    val =
+        FL2FXCONST_DBL(-57.75f / (float)(1 << 7)) +
+        (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 2 - 7)); /* -57.75 + tmp * 0.25; */
+    break;
+  case MD_LOUDNESS_RANGE:
+    tmp = FDKreadBits(hBs, 8);
+    if (tmp == 0)
+      val = (FIXP_DBL)0;
+    else if (tmp <= 128)
+      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 2 - 7)); /* tmp * 0.25; */
+    else if (tmp <= 204) {
+      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 1 - 7)) -
+            FL2FXCONST_DBL(32.0f / (float)(1 << 7)); /* 0.5 * tmp - 32.0f; */
+    } else {
+      /* downscale by 1 more bit to prevent overflow at intermediate result */
+      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 8)) -
+            FL2FXCONST_DBL(134.0f / (float)(1 << 8)); /* tmp - 134.0; */
+      val <<= 1;
+    }
+    break;
+  case MD_MIXING_LEVEL:
+    tmp = FDKreadBits(hBs, isBox ? 8 : 5);
+    val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)) +
+          FL2FXCONST_DBL(80.0f / (float)(1 << 7)); /* tmp + 80.0; */
+    break;
+  case MD_ROOM_TYPE:
+    tmp = FDKreadBits(hBs, isBox ? 8 : 2);
+    val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)); /* tmp; */
+    break;
+  case MD_SHORT_TERM_LOUDNESS:
+    tmp = FDKreadBits(hBs, 8);
+    val =
+        FL2FXCONST_DBL(-116.0f / (float)(1 << 7)) +
+        (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 1 - 7)); /* -116.0 + tmp * 0.5; */
+    break;
+  default:
+    return DE_NOT_OK; /* invalid methodDefinition value */
   }
   *methodValue = val;
   return DE_OK;
 }
 
 static DRC_ERROR _readLoudnessMeasurement(HANDLE_FDK_BITSTREAM hBs,
-                                          LOUDNESS_MEASUREMENT* pMeas) {
+                                          LOUDNESS_MEASUREMENT *pMeas) {
   DRC_ERROR err = DE_OK;
 
   pMeas->methodDefinition = FDKreadBits(hBs, 4);
   err =
       _decodeMethodValue(hBs, pMeas->methodDefinition, &pMeas->methodValue, 0);
-  if (err) return err;
+  if (err)
+    return err;
   pMeas->measurementSystem = FDKreadBits(hBs, 4);
   pMeas->reliability = FDKreadBits(hBs, 2);
 
@@ -1836,7 +1920,7 @@ static DRC_ERROR _readLoudnessMeasurement(HANDLE_FDK_BITSTREAM hBs,
 }
 
 static DRC_ERROR _readLoudnessInfo(HANDLE_FDK_BITSTREAM hBs, const int version,
-                                   LOUDNESS_INFO* loudnessInfo) {
+                                   LOUDNESS_INFO *loudnessInfo) {
   DRC_ERROR err = DE_OK;
   int bsSamplePeakLevel, bsTruePeakLevel, i;
   int measurementCount;
@@ -1883,16 +1967,19 @@ static DRC_ERROR _readLoudnessInfo(HANDLE_FDK_BITSTREAM hBs, const int version,
     LOUDNESS_MEASUREMENT tmpMeas;
     FDKmemclear(&tmpMeas, sizeof(LOUDNESS_MEASUREMENT));
     err = _readLoudnessMeasurement(hBs, &tmpMeas);
-    if (err) return err;
-    if (i >= 8) continue;
+    if (err)
+      return err;
+    if (i >= 8)
+      continue;
     loudnessInfo->loudnessMeasurement[i] = tmpMeas;
   }
 
   return err;
 }
 
-static DRC_ERROR _readLoudnessInfoSetExtEq(
-    HANDLE_FDK_BITSTREAM hBs, HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet) {
+static DRC_ERROR
+_readLoudnessInfoSetExtEq(HANDLE_FDK_BITSTREAM hBs,
+                          HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet) {
   DRC_ERROR err = DE_OK;
   int i, offset;
   int diff = hLoudnessInfoSet->diff;
@@ -1909,8 +1996,10 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 1, &tmpLoud);
-    if (err) return err;
-    if ((offset + i) >= 12) continue;
+    if (err)
+      return err;
+    if ((offset + i) >= 12)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpLoud,
                          &(hLoudnessInfoSet->loudnessInfoAlbum[offset + i]),
@@ -1925,8 +2014,10 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 1, &tmpLoud);
-    if (err) return err;
-    if ((offset + i) >= 12) continue;
+    if (err)
+      return err;
+    if ((offset + i) >= 12)
+      continue;
     if (!diff)
       diff |=
           (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[offset + i]),
@@ -1937,17 +2028,19 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
   return err;
 }
 
-static DRC_ERROR _readLoudnessInfoSetExtension(
-    HANDLE_FDK_BITSTREAM hBs, HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet) {
+static DRC_ERROR
+_readLoudnessInfoSetExtension(HANDLE_FDK_BITSTREAM hBs,
+                              HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet) {
   DRC_ERROR err = DE_OK;
   int k, bitSizeLen, extSizeBits, bitSize;
   INT nBitsRemaining;
-  LOUDNESS_INFO_SET_EXTENSION* pExt = &(hLoudnessInfoSet->loudnessInfoSetExt);
+  LOUDNESS_INFO_SET_EXTENSION *pExt = &(hLoudnessInfoSet->loudnessInfoSetExt);
 
   k = 0;
   pExt->loudnessInfoSetExtType[k] = FDKreadBits(hBs, 4);
   while (pExt->loudnessInfoSetExtType[k] != UNIDRCLOUDEXT_TERM) {
-    if (k >= (8 - 1)) return DE_MEMORY_ERROR;
+    if (k >= (8 - 1))
+      return DE_MEMORY_ERROR;
     bitSizeLen = FDKreadBits(hBs, 4);
     extSizeBits = bitSizeLen + 4;
 
@@ -1956,17 +2049,18 @@ static DRC_ERROR _readLoudnessInfoSetExtension(
     nBitsRemaining = (INT)FDKgetValidBits(hBs);
 
     switch (pExt->loudnessInfoSetExtType[k]) {
-      case UNIDRCLOUDEXT_EQ:
-        err = _readLoudnessInfoSetExtEq(hBs, hLoudnessInfoSet);
-        if (err) return err;
-        if (nBitsRemaining !=
-            ((INT)pExt->extBitSize[k] + (INT)FDKgetValidBits(hBs)))
-          return DE_NOT_OK;
-        break;
-      /* add future extensions here */
-      default:
-        FDKpushFor(hBs, pExt->extBitSize[k]);
-        break;
+    case UNIDRCLOUDEXT_EQ:
+      err = _readLoudnessInfoSetExtEq(hBs, hLoudnessInfoSet);
+      if (err)
+        return err;
+      if (nBitsRemaining !=
+          ((INT)pExt->extBitSize[k] + (INT)FDKgetValidBits(hBs)))
+        return DE_NOT_OK;
+      break;
+    /* add future extensions here */
+    default:
+      FDKpushFor(hBs, pExt->extBitSize[k]);
+      break;
     }
     k++;
     pExt->loudnessInfoSetExtType[k] = FDKreadBits(hBs, 4);
@@ -1981,7 +2075,8 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
                            HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet) {
   DRC_ERROR err = DE_OK;
   int i, diff = 0;
-  if (hLoudnessInfoSet == NULL) return DE_NOT_OK;
+  if (hLoudnessInfoSet == NULL)
+    return DE_NOT_OK;
 
   diff |= _compAssign(&hLoudnessInfoSet->loudnessInfoAlbumCountV0,
                       FDKreadBits(hBs, 6));
@@ -1994,8 +2089,10 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 0, &tmpLoud);
-    if (err) return err;
-    if (i >= 12) continue;
+    if (err)
+      return err;
+    if (i >= 12)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfoAlbum[i]),
                          sizeof(LOUDNESS_INFO)) != 0);
@@ -2008,8 +2105,10 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 0, &tmpLoud);
-    if (err) return err;
-    if (i >= 12) continue;
+    if (err)
+      return err;
+    if (i >= 12)
+      continue;
     if (!diff)
       diff |= (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[i]),
                          sizeof(LOUDNESS_INFO)) != 0);
@@ -2022,7 +2121,8 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
 
   if (hLoudnessInfoSet->loudnessInfoSetExtPresent) {
     err = _readLoudnessInfoSetExtension(hBs, hLoudnessInfoSet);
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   return err;

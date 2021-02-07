@@ -119,7 +119,7 @@ amm-info@iis.fraunhofer.de
  */
 
 /* --- fixp_atan() ----    */
-#define Q_ATANINP (25)  // Input in q25, Output in q30
+#define Q_ATANINP (25) // Input in q25, Output in q30
 #define Q_ATANOUT (30)
 #define ATI_SF ((DFRACT_BITS - 1) - Q_ATANINP) /* 6  */
 #define ATI_SCALE ((float)(1 << ATI_SF))

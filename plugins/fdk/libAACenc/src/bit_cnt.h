@@ -103,9 +103,9 @@ amm-info@iis.fraunhofer.de
 #ifndef BIT_CNT_H
 #define BIT_CNT_H
 
-#include "common_fix.h"
 #include "FDK_bitstream.h"
 #include "aacEnc_rom.h"
+#include "common_fix.h"
 
 #define INVALID_BITCOUNT (FDK_INT_MAX / 4)
 

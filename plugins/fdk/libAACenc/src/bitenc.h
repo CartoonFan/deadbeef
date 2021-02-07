@@ -103,12 +103,12 @@ amm-info@iis.fraunhofer.de
 #ifndef BITENC_H
 #define BITENC_H
 
-#include "qc_data.h"
+#include "FDK_audio.h"
+#include "aacenc.h"
 #include "aacenc_tns.h"
 #include "channel_map.h"
 #include "interface.h" /* obsolete, when PSY_OUT is thrown out of the WritBS-call! */
-#include "FDK_audio.h"
-#include "aacenc.h"
+#include "qc_data.h"
 
 #include "tpenc_lib.h"
 
@@ -120,7 +120,7 @@ typedef enum {
   FIRST_LAY = 1                /* default layer number for AAC nonscalable */
 } _MAX_CONST;
 
-#define BUFFER_MX_HUFFCB_SIZE \
+#define BUFFER_MX_HUFFCB_SIZE                                                  \
   (32 * sizeof(INT)) /* our FDK_bitbuffer needs size of power 2 */
 
 #define EL_ID_BITS (3)

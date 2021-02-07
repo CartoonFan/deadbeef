@@ -111,9 +111,9 @@ amm-info@iis.fraunhofer.de
 #include "block.h"
 
 #include "aac_rom.h"
+#include "aacdec_hcr.h"
 #include "rvlcbit.h"
 #include "rvlcconceal.h"
-#include "aacdec_hcr.h"
 
 /*---------------------------------------------------------------------------------------------
      function:     rvlcInit
@@ -170,12 +170,11 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
   FDKsyncCache(bs);
   pRvlc->bsAnchor = (INT)FDKgetValidBits(bs);
 
-  pRvlc->bitstreamIndexRvlFwd =
-      0; /* first bit within RVL coded block as start address for  forward
-            decoding */
+  pRvlc->bitstreamIndexRvlFwd = 0; /* first bit within RVL coded block as start
+                                    address for  forward decoding */
   pRvlc->bitstreamIndexRvlBwd =
       pRvlc->length_of_rvlc_sf - 1; /* last bit within RVL coded block as start
-                                       address for backward decoding */
+                                     address for backward decoding */
 
   /* skip RVLC-bitstream-part -- pointing now to escapes (if present) or to TNS
    * data (if present) */
@@ -211,8 +210,9 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcCheckIntensityCb(
-    CErRvlcInfo *pRvlc, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
+static void
+rvlcCheckIntensityCb(CErRvlcInfo *pRvlc,
+                     CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   int group, band, bnds;
 
   pRvlc->intensity_used = 0;
@@ -265,12 +265,12 @@ static SCHAR rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
                                  pRvlc->bsAnchor, pBitstreamIndexEsc, FWD);
 
     CarryBitToBranchValue(carryBit, /* huffman decoding, do a single step in
-                                       huffman decoding tree */
+                                   huffman decoding tree */
                           treeNode, &branchValue, &branchNode);
 
-    if ((branchNode & TEST_BIT_10) ==
-        TEST_BIT_10) { /* test bit 10 ; if set --> a RVLC-escape-word is
-                          completely decoded */
+    if ((branchNode & TEST_BIT_10) == TEST_BIT_10) {
+      /* test bit 10 ; if set --> a RVLC-escape-word is
+                        completely decoded */
       value = (SCHAR)branchNode & CLR_BIT_10;
       pRvlc->length_of_rvlc_escapes -= (MAX_LEN_RVLC_ESCAPE_WORD - i);
 
@@ -377,13 +377,13 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
                                  pRvlc->bsAnchor, pBitstrIndxRvl, direction);
 
     CarryBitToBranchValue(carryBit, /* huffman decoding, do a single step in
-                                       huffman decoding tree */
+                                   huffman decoding tree */
                           treeNode, &branchValue, &branchNode);
 
-    if ((branchNode & TEST_BIT_10) ==
-        TEST_BIT_10) { /* test bit 10 ; if set --> a
-                          RVLC-codeword is completely decoded
-                        */
+    if ((branchNode & TEST_BIT_10) == TEST_BIT_10) {
+      /* test bit 10 ; if set --> a
+                        RVLC-codeword is completely decoded
+                      */
       value = (SCHAR)(branchNode & CLR_BIT_10);
       *pRvlc->pRvlBitCnt_RVL -= (MAX_LEN_RVLC_CODE_WORD - i);
 
@@ -395,7 +395,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
           pRvlc->errorLogRvlc |= RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_BWD;
         }
         value = -1; /* signalize an error in return value, because too many bits
-                       was decoded */
+               was decoded */
       }
 
       /* check max value of dpcm value */
@@ -406,7 +406,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
           pRvlc->errorLogRvlc |= RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD;
         }
         value = -1; /* signalize an error in return value, because a forbidden
-                       cw was detected*/
+               cw was detected*/
       }
 
       return value; /* return a dpcm value with offset +7 or an error status */
@@ -471,79 +471,48 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
       bnds = 16 * group + band;
 
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          pScfFwd[bnds] = 0;
-          break;
+      case ZERO_HCB:
+        pScfFwd[bnds] = 0;
+        break;
 
-        case INTENSITY_HCB2:
-        case INTENSITY_HCB:
-          /* store dpcm_is_position */
-          dpcm = decodeRVLCodeword(bs, pRvlc);
-          if (dpcm < 0) {
+      case INTENSITY_HCB2:
+      case INTENSITY_HCB:
+        /* store dpcm_is_position */
+        dpcm = decodeRVLCodeword(bs, pRvlc);
+        if (dpcm < 0) {
+          pRvlc->conceal_max = bnds;
+          return;
+        }
+        dpcm -= TABLE_OFFSET;
+        if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
+          if (pRvlc->length_of_rvlc_escapes) {
             pRvlc->conceal_max = bnds;
             return;
-          }
-          dpcm -= TABLE_OFFSET;
-          if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
-            if (pRvlc->length_of_rvlc_escapes) {
-              pRvlc->conceal_max = bnds;
-              return;
-            } else {
-              if (dpcm == MIN_RVL) {
-                dpcm -= *pScfEsc++;
-              } else {
-                dpcm += *pScfEsc++;
-              }
-              (*pEscFwdCnt)++;
-              if (pRvlc->conceal_max_esc == CONCEAL_MAX_INIT) {
-                pRvlc->conceal_max_esc = bnds;
-              }
-            }
-          }
-          position += dpcm;
-          pScfFwd[bnds] = position;
-          pRvlc->lastIs = position;
-          break;
-
-        case NOISE_HCB:
-          if (pRvlc->noise_used == 0) {
-            pRvlc->noise_used = 1;
-            pRvlc->first_noise_band = bnds;
-            noisenrg += pRvlc->dpcm_noise_nrg;
-            pScfFwd[bnds] = 100 + noisenrg;
-            pRvlc->lastNrg = noisenrg;
           } else {
-            dpcm = decodeRVLCodeword(bs, pRvlc);
-            if (dpcm < 0) {
-              pRvlc->conceal_max = bnds;
-              return;
+            if (dpcm == MIN_RVL) {
+              dpcm -= *pScfEsc++;
+            } else {
+              dpcm += *pScfEsc++;
             }
-            dpcm -= TABLE_OFFSET;
-            if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
-              if (pRvlc->length_of_rvlc_escapes) {
-                pRvlc->conceal_max = bnds;
-                return;
-              } else {
-                if (dpcm == MIN_RVL) {
-                  dpcm -= *pScfEsc++;
-                } else {
-                  dpcm += *pScfEsc++;
-                }
-                (*pEscFwdCnt)++;
-                if (pRvlc->conceal_max_esc == CONCEAL_MAX_INIT) {
-                  pRvlc->conceal_max_esc = bnds;
-                }
-              }
+            (*pEscFwdCnt)++;
+            if (pRvlc->conceal_max_esc == CONCEAL_MAX_INIT) {
+              pRvlc->conceal_max_esc = bnds;
             }
-            noisenrg += dpcm;
-            pScfFwd[bnds] = 100 + noisenrg;
-            pRvlc->lastNrg = noisenrg;
           }
-          pAacDecoderChannelInfo->data.aac.PnsData.pnsUsed[bnds] = 1;
-          break;
+        }
+        position += dpcm;
+        pScfFwd[bnds] = position;
+        pRvlc->lastIs = position;
+        break;
 
-        default:
-          pRvlc->sf_used = 1;
+      case NOISE_HCB:
+        if (pRvlc->noise_used == 0) {
+          pRvlc->noise_used = 1;
+          pRvlc->first_noise_band = bnds;
+          noisenrg += pRvlc->dpcm_noise_nrg;
+          pScfFwd[bnds] = 100 + noisenrg;
+          pRvlc->lastNrg = noisenrg;
+        } else {
           dpcm = decodeRVLCodeword(bs, pRvlc);
           if (dpcm < 0) {
             pRvlc->conceal_max = bnds;
@@ -566,10 +535,41 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
               }
             }
           }
-          factor += dpcm;
-          pScfFwd[bnds] = factor;
-          pRvlc->lastScf = factor;
-          break;
+          noisenrg += dpcm;
+          pScfFwd[bnds] = 100 + noisenrg;
+          pRvlc->lastNrg = noisenrg;
+        }
+        pAacDecoderChannelInfo->data.aac.PnsData.pnsUsed[bnds] = 1;
+        break;
+
+      default:
+        pRvlc->sf_used = 1;
+        dpcm = decodeRVLCodeword(bs, pRvlc);
+        if (dpcm < 0) {
+          pRvlc->conceal_max = bnds;
+          return;
+        }
+        dpcm -= TABLE_OFFSET;
+        if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
+          if (pRvlc->length_of_rvlc_escapes) {
+            pRvlc->conceal_max = bnds;
+            return;
+          } else {
+            if (dpcm == MIN_RVL) {
+              dpcm -= *pScfEsc++;
+            } else {
+              dpcm += *pScfEsc++;
+            }
+            (*pEscFwdCnt)++;
+            if (pRvlc->conceal_max_esc == CONCEAL_MAX_INIT) {
+              pRvlc->conceal_max_esc = bnds;
+            }
+          }
+        }
+        factor += dpcm;
+        pScfFwd[bnds] = factor;
+        pRvlc->lastScf = factor;
+        break;
       }
     }
   }
@@ -679,91 +679,60 @@ static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
         offset = 1;
 
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          pScfBwd[bnds] = 0;
-          break;
+      case ZERO_HCB:
+        pScfBwd[bnds] = 0;
+        break;
 
-        case INTENSITY_HCB2:
-        case INTENSITY_HCB:
-          /* store dpcm_is_position */
-          dpcm = decodeRVLCodeword(bs, pRvlc);
-          if (dpcm < 0) {
+      case INTENSITY_HCB2:
+      case INTENSITY_HCB:
+        /* store dpcm_is_position */
+        dpcm = decodeRVLCodeword(bs, pRvlc);
+        if (dpcm < 0) {
+          pScfBwd[bnds] = position;
+          pRvlc->conceal_min = fMax(0, bnds - offset);
+          return;
+        }
+        dpcm -= TABLE_OFFSET;
+        if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
+          if (pRvlc->length_of_rvlc_escapes) {
             pScfBwd[bnds] = position;
             pRvlc->conceal_min = fMax(0, bnds - offset);
             return;
-          }
-          dpcm -= TABLE_OFFSET;
-          if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
-            if (pRvlc->length_of_rvlc_escapes) {
-              pScfBwd[bnds] = position;
-              pRvlc->conceal_min = fMax(0, bnds - offset);
-              return;
-            } else {
-              if (dpcm == MIN_RVL) {
-                dpcm -= *pScfEsc--;
-              } else {
-                dpcm += *pScfEsc--;
-              }
-              (*pEscBwdCnt)++;
-              if (pRvlc->conceal_min_esc == CONCEAL_MIN_INIT) {
-                pRvlc->conceal_min_esc = fMax(0, bnds - offset);
-              }
-            }
-          }
-          pScfBwd[bnds] = position;
-          position -= dpcm;
-          pRvlc->firstIs = position;
-          break;
-
-        case NOISE_HCB:
-          if (bnds == pRvlc->first_noise_band) {
-            pScfBwd[bnds] =
-                pRvlc->dpcm_noise_nrg +
-                pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain -
-                SF_OFFSET - 90 - 256;
-            pRvlc->firstNrg = pScfBwd[bnds];
           } else {
-            dpcm = decodeRVLCodeword(bs, pRvlc);
-            if (dpcm < 0) {
-              pScfBwd[bnds] = noisenrg;
-              pRvlc->conceal_min = fMax(0, bnds - offset);
-              return;
+            if (dpcm == MIN_RVL) {
+              dpcm -= *pScfEsc--;
+            } else {
+              dpcm += *pScfEsc--;
             }
-            dpcm -= TABLE_OFFSET;
-            if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
-              if (pRvlc->length_of_rvlc_escapes) {
-                pScfBwd[bnds] = noisenrg;
-                pRvlc->conceal_min = fMax(0, bnds - offset);
-                return;
-              } else {
-                if (dpcm == MIN_RVL) {
-                  dpcm -= *pScfEsc--;
-                } else {
-                  dpcm += *pScfEsc--;
-                }
-                (*pEscBwdCnt)++;
-                if (pRvlc->conceal_min_esc == CONCEAL_MIN_INIT) {
-                  pRvlc->conceal_min_esc = fMax(0, bnds - offset);
-                }
-              }
+            (*pEscBwdCnt)++;
+            if (pRvlc->conceal_min_esc == CONCEAL_MIN_INIT) {
+              pRvlc->conceal_min_esc = fMax(0, bnds - offset);
             }
-            pScfBwd[bnds] = noisenrg;
-            noisenrg -= dpcm;
-            pRvlc->firstNrg = noisenrg;
           }
-          break;
+        }
+        pScfBwd[bnds] = position;
+        position -= dpcm;
+        pRvlc->firstIs = position;
+        break;
 
-        default:
+      case NOISE_HCB:
+        if (bnds == pRvlc->first_noise_band) {
+          pScfBwd[bnds] =
+              pRvlc->dpcm_noise_nrg +
+              pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain -
+              SF_OFFSET - 90 - 256;
+          pRvlc->firstNrg = pScfBwd[bnds];
+        } else {
           dpcm = decodeRVLCodeword(bs, pRvlc);
           if (dpcm < 0) {
-            pScfBwd[bnds] = factor;
+            pScfBwd[bnds] = noisenrg;
             pRvlc->conceal_min = fMax(0, bnds - offset);
             return;
           }
           dpcm -= TABLE_OFFSET;
           if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
             if (pRvlc->length_of_rvlc_escapes) {
-              pScfBwd[bnds] = factor;
+              pScfBwd[bnds] = noisenrg;
               pRvlc->conceal_min = fMax(0, bnds - offset);
               return;
             } else {
@@ -778,10 +747,41 @@ static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
               }
             }
           }
+          pScfBwd[bnds] = noisenrg;
+          noisenrg -= dpcm;
+          pRvlc->firstNrg = noisenrg;
+        }
+        break;
+
+      default:
+        dpcm = decodeRVLCodeword(bs, pRvlc);
+        if (dpcm < 0) {
           pScfBwd[bnds] = factor;
-          factor -= dpcm;
-          pRvlc->firstScf = factor;
-          break;
+          pRvlc->conceal_min = fMax(0, bnds - offset);
+          return;
+        }
+        dpcm -= TABLE_OFFSET;
+        if ((dpcm == MIN_RVL) || (dpcm == MAX_RVL)) {
+          if (pRvlc->length_of_rvlc_escapes) {
+            pScfBwd[bnds] = factor;
+            pRvlc->conceal_min = fMax(0, bnds - offset);
+            return;
+          } else {
+            if (dpcm == MIN_RVL) {
+              dpcm -= *pScfEsc--;
+            } else {
+              dpcm += *pScfEsc--;
+            }
+            (*pEscBwdCnt)++;
+            if (pRvlc->conceal_min_esc == CONCEAL_MIN_INIT) {
+              pRvlc->conceal_min_esc = fMax(0, bnds - offset);
+            }
+          }
+        }
+        pScfBwd[bnds] = factor;
+        factor -= dpcm;
+        pRvlc->firstScf = factor;
+        break;
       }
     }
   }
@@ -833,14 +833,17 @@ static void rvlcFinalErrorDetection(
     ErrorStatusForbiddenCwBwd = 1;
 
   /* bit counter forward unequal zero */
-  if (pRvlc->length_of_rvlc_sf_fwd) ErrorStatusLengthFwd = 1;
+  if (pRvlc->length_of_rvlc_sf_fwd)
+    ErrorStatusLengthFwd = 1;
 
   /* bit counter backward unequal zero */
-  if (pRvlc->length_of_rvlc_sf_bwd) ErrorStatusLengthBwd = 1;
+  if (pRvlc->length_of_rvlc_sf_bwd)
+    ErrorStatusLengthBwd = 1;
 
   /* bit counter escape sequences unequal zero */
   if (pRvlc->sf_escapes_present)
-    if (pRvlc->length_of_rvlc_escapes) ErrorStatusLengthEscapes = 1;
+    if (pRvlc->length_of_rvlc_escapes)
+      ErrorStatusLengthEscapes = 1;
 
   if (pRvlc->sf_used) {
     /* first decoded scf does not match to global gain in backward direction */
@@ -872,7 +875,8 @@ static void rvlcFinalErrorDetection(
 
   if (pRvlc->intensity_used) {
     /* first decoded is position does not match in backward direction */
-    if (pRvlc->firstIs != (-SF_OFFSET)) ErrorStatusFirstIs = 1;
+    if (pRvlc->firstIs != (-SF_OFFSET))
+      ErrorStatusFirstIs = 1;
 
     /* last decoded is position does not match in forward direction */
     if (pRvlc->lastIs != (pRvlc->dpcm_is_last_position - SF_OFFSET))
@@ -909,8 +913,8 @@ static void rvlcFinalErrorDetection(
     if ((pRvlc->conceal_max == CONCEAL_MAX_INIT) ||
         (pRvlc->conceal_min == CONCEAL_MIN_INIT)) {
       pRvlc->conceal_max = 0;
-      pRvlc->conceal_min = fMax(
-          0, (pRvlc->numWindowGroups - 1) * 16 + pRvlc->maxSfbTransmitted - 1);
+      pRvlc->conceal_min = fMax(0, (pRvlc->numWindowGroups - 1) * 16 +
+                                       pRvlc->maxSfbTransmitted - 1);
     } else {
       pRvlc->conceal_max = fMin(pRvlc->conceal_max, pRvlc->conceal_max_esc);
       pRvlc->conceal_min = fMax(pRvlc->conceal_min, pRvlc->conceal_min_esc);

@@ -102,15 +102,15 @@ amm-info@iis.fraunhofer.de
 
 #include "block.h"
 
-#include "aac_rom.h"
 #include "FDK_bitstream.h"
-#include "scale.h"
 #include "FDK_tools_rom.h"
+#include "aac_rom.h"
+#include "scale.h"
 
-#include "usacdec_fac.h"
-#include "usacdec_lpd.h"
-#include "usacdec_lpc.h"
 #include "FDK_trigFcts.h"
+#include "usacdec_fac.h"
+#include "usacdec_lpc.h"
+#include "usacdec_lpd.h"
 
 #include "ac_arith_coder.h"
 
@@ -138,26 +138,30 @@ amm-info@iis.fraunhofer.de
 LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
                       const LONG q)            /*!< quantized coefficient */
 {
-  if (fAbs(q) != 16) return (q);
+  if (fAbs(q) != 16)
+    return (q);
 
   LONG i, off;
   for (i = 4; i < 13; i++) {
-    if (FDKreadBit(bs) == 0) break;
+    if (FDKreadBit(bs) == 0)
+      break;
   }
 
-  if (i == 13) return (MAX_QUANTIZED_VALUE + 1);
+  if (i == 13)
+    return (MAX_QUANTIZED_VALUE + 1);
 
   off = FDKreadBits(bs, i);
   i = off + (1 << i);
 
-  if (q < 0) i = -i;
+  if (q < 0)
+    i = -i;
 
   return i;
 }
 
-AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
-    UINT flags) {
+AAC_DECODER_ERROR
+CBlock_ReadScaleFactorData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                           HANDLE_FDK_BITSTREAM bs, UINT flags) {
   int temp;
   int band;
   int group;
@@ -176,35 +180,35 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
        group++) {
     for (band = 0; band < ScaleFactorBandsTransmitted; band++) {
       switch (pCodeBook[band]) {
-        case ZERO_HCB: /* zero book */
-          pScaleFactor[band] = 0;
-          break;
+      case ZERO_HCB: /* zero book */
+        pScaleFactor[band] = 0;
+        break;
 
-        default: /* decode scale factor */
-          if (!((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) && band == 0 &&
-                group == 0)) {
-            temp = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
-            factor += temp - 60; /* MIDFAC 1.5 dB */
-          }
-          pScaleFactor[band] = factor - 100;
-          break;
-
-        case INTENSITY_HCB: /* intensity steering */
-        case INTENSITY_HCB2:
+      default: /* decode scale factor */
+        if (!((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) && band == 0 &&
+              group == 0)) {
           temp = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
-          position += temp - 60;
-          pScaleFactor[band] = position - 100;
-          break;
+          factor += temp - 60; /* MIDFAC 1.5 dB */
+        }
+        pScaleFactor[band] = factor - 100;
+        break;
 
-        case NOISE_HCB: /* PNS */
-          if (flags & (AC_MPEGD_RES | AC_USAC | AC_RSVD50 | AC_RSV603DA)) {
-            return AAC_DEC_PARSE_ERROR;
-          }
-          CPns_Read(&pAacDecoderChannelInfo->data.aac.PnsData, bs, hcb,
-                    pAacDecoderChannelInfo->pDynData->aScaleFactor,
-                    pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain,
-                    band, group);
-          break;
+      case INTENSITY_HCB: /* intensity steering */
+      case INTENSITY_HCB2:
+        temp = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
+        position += temp - 60;
+        pScaleFactor[band] = position - 100;
+        break;
+
+      case NOISE_HCB: /* PNS */
+        if (flags & (AC_MPEGD_RES | AC_USAC | AC_RSVD50 | AC_RSV603DA)) {
+          return AAC_DEC_PARSE_ERROR;
+        }
+        CPns_Read(&pAacDecoderChannelInfo->data.aac.PnsData, bs, hcb,
+                  pAacDecoderChannelInfo->pDynData->aScaleFactor,
+                  pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain,
+                  band, group);
+        break;
       }
     }
     pCodeBook += 16;
@@ -609,10 +613,10 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
       FDKmemclear(pSpectralCoefficient, diff_clear * sizeof(FIXP_DBL));
 
     } /* for (groupwin=0; groupwin <
-         GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
-         groupwin++, window++) */
+     GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
+     groupwin++, window++) */
   }   /* for (window=0, group=0; group <
-         GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
+       GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
 
   return AAC_DEC_OK;
 }
@@ -683,7 +687,8 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
                 int idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
                 for (i = 0; i < step; i++, idx >>= bits) {
                   FIXP_DBL tmp = (FIXP_DBL)((idx & mask) - offset);
-                  if (tmp != FIXP_DBL(0)) tmp = (FDKreadBit(bs)) ? -tmp : tmp;
+                  if (tmp != FIXP_DBL(0))
+                    tmp = (FDKreadBit(bs)) ? -tmp : tmp;
                   mdctSpectrum[index + i] = tmp;
                 }
 
@@ -1033,33 +1038,33 @@ void CBlock_FrequencyToTime(
   nSpec = 1;
 
   switch (pAacDecoderChannelInfo->icsInfo.WindowSequence) {
-    default:
-    case BLOCK_LONG:
-      fl = frameLen;
-      fr = frameLen -
-           getWindow2Nr(frameLen,
-                        GetWindowShape(&pAacDecoderChannelInfo->icsInfo));
-      /* New startup needs differentiation between sine shape and low overlap
-         shape. This is a special case for the LD-AAC transformation windows,
-         because the slope length can be different while using the same window
-         sequence. */
-      if (pAacDecoderStaticChannelInfo->IMdct.prev_tl == 0) {
-        fl = fr;
-      }
-      break;
-    case BLOCK_STOP:
-      fl = frameLen >> 3;
-      fr = frameLen;
-      break;
-    case BLOCK_START: /* or StopStartSequence */
-      fl = frameLen;
-      fr = frameLen >> 3;
-      break;
-    case BLOCK_SHORT:
-      fl = fr = frameLen >> 3;
-      tl >>= 3;
-      nSpec = 8;
-      break;
+  default:
+  case BLOCK_LONG:
+    fl = frameLen;
+    fr = frameLen -
+         getWindow2Nr(frameLen,
+                      GetWindowShape(&pAacDecoderChannelInfo->icsInfo));
+    /* New startup needs differentiation between sine shape and low overlap
+       shape. This is a special case for the LD-AAC transformation windows,
+       because the slope length can be different while using the same window
+       sequence. */
+    if (pAacDecoderStaticChannelInfo->IMdct.prev_tl == 0) {
+      fl = fr;
+    }
+    break;
+  case BLOCK_STOP:
+    fl = frameLen >> 3;
+    fr = frameLen;
+    break;
+  case BLOCK_START: /* or StopStartSequence */
+    fl = frameLen;
+    fr = frameLen >> 3;
+    break;
+  case BLOCK_SHORT:
+    fl = fr = frameLen >> 3;
+    tl >>= 3;
+    nSpec = 8;
+    break;
   }
 
   {
@@ -1098,8 +1103,7 @@ void CBlock_FrequencyToTime(
 
       FDKmemclear(
           pitch,
-          sizeof(
-              pitch));  // added to prevent ferret errors in bass_pf_1sf_delay
+          sizeof(pitch)); // added to prevent ferret errors in bass_pf_1sf_delay
       FDKmemclear(pit_gain, sizeof(pit_gain));
 
       /* FAC case */
@@ -1190,9 +1194,9 @@ void CBlock_FrequencyToTime(
 
         /* Copy old data to the beginning of the buffer */
         {
-          FDKmemcpy(
-              pWorkBuffer1, pAacDecoderStaticChannelInfo->old_synth,
-              ((PIT_MAX_MAX - (1 * L_SUBFR)) * fac_FB) * sizeof(FIXP_DBL));
+          FDKmemcpy(pWorkBuffer1, pAacDecoderStaticChannelInfo->old_synth,
+                    ((PIT_MAX_MAX - (1 * L_SUBFR)) * fac_FB) *
+                        sizeof(FIXP_DBL));
         }
 
         FIXP_DBL *p2_synth = pWorkBuffer1 + (PIT_MAX_MAX * fac_FB);

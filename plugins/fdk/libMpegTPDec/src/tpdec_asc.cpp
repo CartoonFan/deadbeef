@@ -100,8 +100,8 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "tpdec_lib.h"
 #include "tp_data.h"
+#include "tpdec_lib.h"
 
 #include "FDK_crc.h"
 
@@ -363,15 +363,15 @@ int CProgramConfig_Compare(const CProgramConfig *const pPce1,
                            const CProgramConfig *const pPce2) {
   int result = 0; /* Innocent until proven false. */
 
-  if (FDKmemcmp(pPce1, pPce2, sizeof(CProgramConfig)) !=
-      0) { /* Configurations are not completely equal.
-              So look into details and analyse the channel configurations: */
+  if (FDKmemcmp(pPce1, pPce2, sizeof(CProgramConfig)) != 0) {
+    /* Configurations are not completely equal.
+            So look into details and analyse the channel configurations: */
     result = -1;
 
-    if (pPce1->NumChannels ==
-        pPce2->NumChannels) { /* Now the logic changes. We first assume to have
-                                 the same channel configuration and then prove
-                                 if this assumption is true. */
+    if (pPce1->NumChannels == pPce2->NumChannels) {
+      /* Now the logic changes. We first assume to have
+                               the same channel configuration and then prove
+                               if this assumption is true. */
       result = 1;
 
       /* Front channels */
@@ -448,84 +448,84 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const UINT channelConfig) {
       1; /* Set AAC LC because it is the only supported object type. */
 
   switch (channelConfig) {
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    case 32: /* 7.1 side channel configuration as defined in FDK_audio.h */
-      pPce->NumFrontChannelElements = 2;
-      pPce->FrontElementIsCpe[0] = 0;
-      pPce->FrontElementIsCpe[1] = 1;
-      pPce->NumSideChannelElements = 1;
-      pPce->SideElementIsCpe[0] = 1;
-      pPce->NumBackChannelElements = 1;
-      pPce->BackElementIsCpe[0] = 1;
-      pPce->NumLfeChannelElements = 1;
-      pPce->NumChannels = 8;
-      pPce->NumEffectiveChannels = 7;
-      pPce->isValid = 1;
-      break;
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    case 12: /* 3/0/4.1ch surround back */
-      pPce->BackElementIsCpe[1] = 1;
-      pPce->NumChannels += 1;
-      pPce->NumEffectiveChannels += 1;
-      FDK_FALLTHROUGH;
-    case 11: /* 3/0/3.1ch */
-      pPce->NumFrontChannelElements += 2;
-      pPce->FrontElementIsCpe[0] = 0;
-      pPce->FrontElementIsCpe[1] = 1;
-      pPce->NumBackChannelElements += 2;
-      pPce->BackElementIsCpe[0] = 1;
-      pPce->BackElementIsCpe[1] += 0;
-      pPce->NumLfeChannelElements += 1;
-      pPce->NumChannels += 7;
-      pPce->NumEffectiveChannels += 6;
-      pPce->isValid = 1;
-      break;
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    case 14:                               /* 2/0/0-3/0/2-0.1ch front height */
-      pPce->FrontElementHeightInfo[2] = 1; /* Top speaker */
-      FDK_FALLTHROUGH;
-    case 7: /* 5/0/2.1ch front */
-      pPce->NumFrontChannelElements += 1;
-      pPce->FrontElementIsCpe[2] = 1;
-      pPce->NumChannels += 2;
-      pPce->NumEffectiveChannels += 2;
-      FDK_FALLTHROUGH;
-    case 6: /* 3/0/2.1ch */
-      pPce->NumLfeChannelElements += 1;
-      pPce->NumChannels += 1;
-      FDK_FALLTHROUGH;
-    case 5: /* 3/0/2.0ch */
-    case 4: /* 3/0/1.0ch */
-      pPce->NumBackChannelElements += 1;
-      pPce->BackElementIsCpe[0] = (channelConfig > 4) ? 1 : 0;
-      pPce->NumChannels += (channelConfig > 4) ? 2 : 1;
-      pPce->NumEffectiveChannels += (channelConfig > 4) ? 2 : 1;
-      FDK_FALLTHROUGH;
-    case 3: /* 3/0/0.0ch */
-      pPce->NumFrontChannelElements += 1;
-      pPce->FrontElementIsCpe[1] = 1;
-      pPce->NumChannels += 2;
-      pPce->NumEffectiveChannels += 2;
-      FDK_FALLTHROUGH;
-    case 1: /* 1/0/0.0ch */
-      pPce->NumFrontChannelElements += 1;
-      pPce->FrontElementIsCpe[0] = 0;
-      pPce->NumChannels += 1;
-      pPce->NumEffectiveChannels += 1;
-      pPce->isValid = 1;
-      break;
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    case 2: /* 2/0/0.ch */
-      pPce->NumFrontChannelElements = 1;
-      pPce->FrontElementIsCpe[0] = 1;
-      pPce->NumChannels += 2;
-      pPce->NumEffectiveChannels += 2;
-      pPce->isValid = 1;
-      break;
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    default:
-      pPce->isValid = 0; /* To be explicit! */
-      break;
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  case 32: /* 7.1 side channel configuration as defined in FDK_audio.h */
+    pPce->NumFrontChannelElements = 2;
+    pPce->FrontElementIsCpe[0] = 0;
+    pPce->FrontElementIsCpe[1] = 1;
+    pPce->NumSideChannelElements = 1;
+    pPce->SideElementIsCpe[0] = 1;
+    pPce->NumBackChannelElements = 1;
+    pPce->BackElementIsCpe[0] = 1;
+    pPce->NumLfeChannelElements = 1;
+    pPce->NumChannels = 8;
+    pPce->NumEffectiveChannels = 7;
+    pPce->isValid = 1;
+    break;
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  case 12: /* 3/0/4.1ch surround back */
+    pPce->BackElementIsCpe[1] = 1;
+    pPce->NumChannels += 1;
+    pPce->NumEffectiveChannels += 1;
+    FDK_FALLTHROUGH;
+  case 11: /* 3/0/3.1ch */
+    pPce->NumFrontChannelElements += 2;
+    pPce->FrontElementIsCpe[0] = 0;
+    pPce->FrontElementIsCpe[1] = 1;
+    pPce->NumBackChannelElements += 2;
+    pPce->BackElementIsCpe[0] = 1;
+    pPce->BackElementIsCpe[1] += 0;
+    pPce->NumLfeChannelElements += 1;
+    pPce->NumChannels += 7;
+    pPce->NumEffectiveChannels += 6;
+    pPce->isValid = 1;
+    break;
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  case 14:                               /* 2/0/0-3/0/2-0.1ch front height */
+    pPce->FrontElementHeightInfo[2] = 1; /* Top speaker */
+    FDK_FALLTHROUGH;
+  case 7: /* 5/0/2.1ch front */
+    pPce->NumFrontChannelElements += 1;
+    pPce->FrontElementIsCpe[2] = 1;
+    pPce->NumChannels += 2;
+    pPce->NumEffectiveChannels += 2;
+    FDK_FALLTHROUGH;
+  case 6: /* 3/0/2.1ch */
+    pPce->NumLfeChannelElements += 1;
+    pPce->NumChannels += 1;
+    FDK_FALLTHROUGH;
+  case 5: /* 3/0/2.0ch */
+  case 4: /* 3/0/1.0ch */
+    pPce->NumBackChannelElements += 1;
+    pPce->BackElementIsCpe[0] = (channelConfig > 4) ? 1 : 0;
+    pPce->NumChannels += (channelConfig > 4) ? 2 : 1;
+    pPce->NumEffectiveChannels += (channelConfig > 4) ? 2 : 1;
+    FDK_FALLTHROUGH;
+  case 3: /* 3/0/0.0ch */
+    pPce->NumFrontChannelElements += 1;
+    pPce->FrontElementIsCpe[1] = 1;
+    pPce->NumChannels += 2;
+    pPce->NumEffectiveChannels += 2;
+    FDK_FALLTHROUGH;
+  case 1: /* 1/0/0.0ch */
+    pPce->NumFrontChannelElements += 1;
+    pPce->FrontElementIsCpe[0] = 0;
+    pPce->NumChannels += 1;
+    pPce->NumEffectiveChannels += 1;
+    pPce->isValid = 1;
+    break;
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  case 2: /* 2/0/0.ch */
+    pPce->NumFrontChannelElements = 1;
+    pPce->FrontElementIsCpe[0] = 1;
+    pPce->NumChannels += 2;
+    pPce->NumEffectiveChannels += 2;
+    pPce->isValid = 1;
+    break;
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  default:
+    pPce->isValid = 0; /* To be explicit! */
+    break;
   }
 
   if (pPce->isValid) {
@@ -567,78 +567,78 @@ static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE *chType,
     *chIndex = index;
   } else {
     switch (channelConfig) {
-      case 4: /* SCE, CPE, SCE */
-      case 5: /* SCE, CPE, CPE */
-      case 6: /* SCE, CPE, CPE, LFE */
-        switch (index) {
-          case 3:
-          case 4:
-            *chType = ACT_BACK;
-            *chIndex = index - 3;
-            break;
-          case 5:
-            *chType = ACT_LFE;
-            *chIndex = 0;
-            break;
-        }
+    case 4: /* SCE, CPE, SCE */
+    case 5: /* SCE, CPE, CPE */
+    case 6: /* SCE, CPE, CPE, LFE */
+      switch (index) {
+      case 3:
+      case 4:
+        *chType = ACT_BACK;
+        *chIndex = index - 3;
         break;
-      case 7: /* SCE,CPE,CPE,CPE,LFE */
-        switch (index) {
-          case 3:
-          case 4:
-            *chType = ACT_FRONT;
-            *chIndex = index;
-            break;
-          case 5:
-          case 6:
-            *chType = ACT_BACK;
-            *chIndex = index - 5;
-            break;
-          case 7:
-            *chType = ACT_LFE;
-            *chIndex = 0;
-            break;
-        }
+      case 5:
+        *chType = ACT_LFE;
+        *chIndex = 0;
         break;
-      case 11: /* SCE,CPE,CPE,SCE,LFE */
-        if (index < 6) {
-          *chType = ACT_BACK;
-          *chIndex = index - 3;
-        } else {
-          *chType = ACT_LFE;
-          *chIndex = 0;
-        }
+      }
+      break;
+    case 7: /* SCE,CPE,CPE,CPE,LFE */
+      switch (index) {
+      case 3:
+      case 4:
+        *chType = ACT_FRONT;
+        *chIndex = index;
         break;
-      case 12: /* SCE,CPE,CPE,CPE,LFE */
-        if (index < 7) {
-          *chType = ACT_BACK;
-          *chIndex = index - 3;
-        } else {
-          *chType = ACT_LFE;
-          *chIndex = 0;
-        }
+      case 5:
+      case 6:
+        *chType = ACT_BACK;
+        *chIndex = index - 5;
         break;
-      case 14: /* SCE,CPE,CPE,LFE,CPE */
-        switch (index) {
-          case 3:
-          case 4:
-            *chType = ACT_BACK;
-            *chIndex = index - 3;
-            break;
-          case 5:
-            *chType = ACT_LFE;
-            *chIndex = 0;
-            break;
-          case 6:
-          case 7:
-            *chType = ACT_FRONT_TOP;
-            *chIndex = index - 6; /* handle the top layer independently */
-            break;
-        }
+      case 7:
+        *chType = ACT_LFE;
+        *chIndex = 0;
         break;
-      default:
-        *chType = ACT_NONE;
+      }
+      break;
+    case 11: /* SCE,CPE,CPE,SCE,LFE */
+      if (index < 6) {
+        *chType = ACT_BACK;
+        *chIndex = index - 3;
+      } else {
+        *chType = ACT_LFE;
+        *chIndex = 0;
+      }
+      break;
+    case 12: /* SCE,CPE,CPE,CPE,LFE */
+      if (index < 7) {
+        *chType = ACT_BACK;
+        *chIndex = index - 3;
+      } else {
+        *chType = ACT_LFE;
+        *chIndex = 0;
+      }
+      break;
+    case 14: /* SCE,CPE,CPE,LFE,CPE */
+      switch (index) {
+      case 3:
+      case 4:
+        *chType = ACT_BACK;
+        *chIndex = index - 3;
         break;
+      case 5:
+        *chType = ACT_LFE;
+        *chIndex = 0;
+        break;
+      case 6:
+      case 7:
+        *chType = ACT_FRONT_TOP;
+        *chIndex = index - 6; /* handle the top layer independently */
+        break;
+      }
+      break;
+    default:
+      *chType = ACT_NONE;
+      break;
     }
   }
 }
@@ -657,16 +657,15 @@ int CProgramConfig_LookupElement(CProgramConfig *pPce, UINT channelConfig,
       if (elList[pPce->elCounter] != elType &&
           !IS_USAC_CHANNEL_ELEMENT(elType)) {
         /* Not in the list */
-        if ((channelConfig == 2) &&
-            (elType == ID_SCE)) { /* This scenario occurs with HE-AAC v2 streams
-                                     of buggy encoders. In other decoder
-                                     implementations decoding of this kind of
-                                     streams is desired. */
+        if ((channelConfig == 2) && (elType == ID_SCE)) {
+          /* This scenario occurs with HE-AAC v2 streams
+                                   of buggy encoders. In other decoder
+                                   implementations decoding of this kind of
+                                   streams is desired. */
           channelConfig = 1;
-        } else if ((elList[pPce->elCounter] == ID_LFE) &&
-                   (elType ==
-                    ID_SCE)) { /* Decode bitstreams which wrongly use ID_SCE
-                                  instead of ID_LFE element type. */
+        } else if ((elList[pPce->elCounter] == ID_LFE) && (elType == ID_SCE)) {
+          /* Decode bitstreams which wrongly use ID_SCE
+                        instead of ID_LFE element type. */
           ;
         } else {
           return 0;
@@ -717,240 +716,240 @@ int CProgramConfig_LookupElement(CProgramConfig *pPce, UINT channelConfig,
        */
 
       switch (elType) {
-        case ID_CPE:
-          isCpe = 1;
-          FDK_FALLTHROUGH;
-        case ID_SCE:
-          /* search in front channels */
-          for (i = 0; i < pPce->NumFrontChannelElements; i++) {
-            int heightLayer = pPce->FrontElementHeightInfo[i];
-            if (isCpe == pPce->FrontElementIsCpe[i] &&
-                pPce->FrontElementTagSelect[i] == tag) {
-              int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-              AUDIO_CHANNEL_TYPE aChType =
-                  (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_FRONT);
-              for (h = heightLayer - 1; h >= 0; h -= 1) {
-                int el;
-                /* Count front channels/elements */
-                for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
-                  if (pPce->FrontElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count side channels/elements */
-                for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
-                  if (pPce->SideElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count back channels/elements */
-                for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
-                  if (pPce->BackElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                if (h == 0) { /* normal height */
-                  elIdx += pPce->NumLfeChannelElements;
-                  chIdx += pPce->NumLfeChannelElements;
+      case ID_CPE:
+        isCpe = 1;
+        FDK_FALLTHROUGH;
+      case ID_SCE:
+        /* search in front channels */
+        for (i = 0; i < pPce->NumFrontChannelElements; i++) {
+          int heightLayer = pPce->FrontElementHeightInfo[i];
+          if (isCpe == pPce->FrontElementIsCpe[i] &&
+              pPce->FrontElementTagSelect[i] == tag) {
+            int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
+            AUDIO_CHANNEL_TYPE aChType =
+                (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_FRONT);
+            for (h = heightLayer - 1; h >= 0; h -= 1) {
+              int el;
+              /* Count front channels/elements */
+              for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
+                if (pPce->FrontElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
                 }
               }
-              chMapping[chIdx] = channelIdx;
-              chType[chIdx] = aChType;
-              chIndex[chIdx] = fc[heightLayer];
-              if (isCpe) {
-                chMapping[chIdx + 1] = channelIdx + 1;
-                chType[chIdx + 1] = aChType;
-                chIndex[chIdx + 1] = fc[heightLayer] + 1;
+              /* Count side channels/elements */
+              for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
+                if (pPce->SideElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
+                }
               }
-              *elMapping = elIdx;
-              return 1;
+              /* Count back channels/elements */
+              for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
+                if (pPce->BackElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
+                }
+              }
+              if (h == 0) { /* normal height */
+                elIdx += pPce->NumLfeChannelElements;
+                chIdx += pPce->NumLfeChannelElements;
+              }
             }
-            ec[heightLayer] += 1;
-            if (pPce->FrontElementIsCpe[i]) {
-              cc[heightLayer] += 2;
-              fc[heightLayer] += 2;
-            } else {
-              cc[heightLayer] += 1;
-              fc[heightLayer] += 1;
+            chMapping[chIdx] = channelIdx;
+            chType[chIdx] = aChType;
+            chIndex[chIdx] = fc[heightLayer];
+            if (isCpe) {
+              chMapping[chIdx + 1] = channelIdx + 1;
+              chType[chIdx + 1] = aChType;
+              chIndex[chIdx + 1] = fc[heightLayer] + 1;
             }
+            *elMapping = elIdx;
+            return 1;
           }
-          /* search in side channels */
-          for (i = 0; i < pPce->NumSideChannelElements; i++) {
-            int heightLayer = pPce->SideElementHeightInfo[i];
-            if (isCpe == pPce->SideElementIsCpe[i] &&
-                pPce->SideElementTagSelect[i] == tag) {
-              int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-              AUDIO_CHANNEL_TYPE aChType =
-                  (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_SIDE);
-              for (h = heightLayer - 1; h >= 0; h -= 1) {
-                int el;
-                /* Count front channels/elements */
-                for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
-                  if (pPce->FrontElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count side channels/elements */
-                for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
-                  if (pPce->SideElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count back channels/elements */
-                for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
-                  if (pPce->BackElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                if (h ==
-                    0) { /* LFE channels belong to the normal height layer */
-                  elIdx += pPce->NumLfeChannelElements;
-                  chIdx += pPce->NumLfeChannelElements;
-                }
-              }
-              chMapping[chIdx] = channelIdx;
-              chType[chIdx] = aChType;
-              chIndex[chIdx] = sc[heightLayer];
-              if (isCpe) {
-                chMapping[chIdx + 1] = channelIdx + 1;
-                chType[chIdx + 1] = aChType;
-                chIndex[chIdx + 1] = sc[heightLayer] + 1;
-              }
-              *elMapping = elIdx;
-              return 1;
-            }
-            ec[heightLayer] += 1;
-            if (pPce->SideElementIsCpe[i]) {
-              cc[heightLayer] += 2;
-              sc[heightLayer] += 2;
-            } else {
-              cc[heightLayer] += 1;
-              sc[heightLayer] += 1;
-            }
+          ec[heightLayer] += 1;
+          if (pPce->FrontElementIsCpe[i]) {
+            cc[heightLayer] += 2;
+            fc[heightLayer] += 2;
+          } else {
+            cc[heightLayer] += 1;
+            fc[heightLayer] += 1;
           }
-          /* search in back channels */
-          for (i = 0; i < pPce->NumBackChannelElements; i++) {
-            int heightLayer = pPce->BackElementHeightInfo[i];
-            if (isCpe == pPce->BackElementIsCpe[i] &&
-                pPce->BackElementTagSelect[i] == tag) {
-              int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-              AUDIO_CHANNEL_TYPE aChType =
-                  (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_BACK);
-              for (h = heightLayer - 1; h >= 0; h -= 1) {
-                int el;
-                /* Count front channels/elements */
-                for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
-                  if (pPce->FrontElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count side channels/elements */
-                for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
-                  if (pPce->SideElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                /* Count back channels/elements */
-                for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
-                  if (pPce->BackElementHeightInfo[el] == h) {
-                    elIdx += 1;
-                    chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
-                  }
-                }
-                if (h == 0) { /* normal height */
-                  elIdx += pPce->NumLfeChannelElements;
-                  chIdx += pPce->NumLfeChannelElements;
+        }
+        /* search in side channels */
+        for (i = 0; i < pPce->NumSideChannelElements; i++) {
+          int heightLayer = pPce->SideElementHeightInfo[i];
+          if (isCpe == pPce->SideElementIsCpe[i] &&
+              pPce->SideElementTagSelect[i] == tag) {
+            int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
+            AUDIO_CHANNEL_TYPE aChType =
+                (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_SIDE);
+            for (h = heightLayer - 1; h >= 0; h -= 1) {
+              int el;
+              /* Count front channels/elements */
+              for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
+                if (pPce->FrontElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
                 }
               }
-              chMapping[chIdx] = channelIdx;
-              chType[chIdx] = aChType;
-              chIndex[chIdx] = bc[heightLayer];
-              if (isCpe) {
-                chMapping[chIdx + 1] = channelIdx + 1;
-                chType[chIdx + 1] = aChType;
-                chIndex[chIdx + 1] = bc[heightLayer] + 1;
+              /* Count side channels/elements */
+              for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
+                if (pPce->SideElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
+                }
               }
-              *elMapping = elIdx;
-              return 1;
+              /* Count back channels/elements */
+              for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
+                if (pPce->BackElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
+                }
+              }
+              if (h == 0) { /* LFE channels belong to the normal height layer */
+                elIdx += pPce->NumLfeChannelElements;
+                chIdx += pPce->NumLfeChannelElements;
+              }
             }
-            ec[heightLayer] += 1;
-            if (pPce->BackElementIsCpe[i]) {
-              cc[heightLayer] += 2;
-              bc[heightLayer] += 2;
-            } else {
-              cc[heightLayer] += 1;
-              bc[heightLayer] += 1;
+            chMapping[chIdx] = channelIdx;
+            chType[chIdx] = aChType;
+            chIndex[chIdx] = sc[heightLayer];
+            if (isCpe) {
+              chMapping[chIdx + 1] = channelIdx + 1;
+              chType[chIdx + 1] = aChType;
+              chIndex[chIdx + 1] = sc[heightLayer] + 1;
             }
+            *elMapping = elIdx;
+            return 1;
           }
-          break;
+          ec[heightLayer] += 1;
+          if (pPce->SideElementIsCpe[i]) {
+            cc[heightLayer] += 2;
+            sc[heightLayer] += 2;
+          } else {
+            cc[heightLayer] += 1;
+            sc[heightLayer] += 1;
+          }
+        }
+        /* search in back channels */
+        for (i = 0; i < pPce->NumBackChannelElements; i++) {
+          int heightLayer = pPce->BackElementHeightInfo[i];
+          if (isCpe == pPce->BackElementIsCpe[i] &&
+              pPce->BackElementTagSelect[i] == tag) {
+            int h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
+            AUDIO_CHANNEL_TYPE aChType =
+                (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_BACK);
+            for (h = heightLayer - 1; h >= 0; h -= 1) {
+              int el;
+              /* Count front channels/elements */
+              for (el = 0; el < pPce->NumFrontChannelElements; el += 1) {
+                if (pPce->FrontElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->FrontElementIsCpe[el]) ? 2 : 1;
+                }
+              }
+              /* Count side channels/elements */
+              for (el = 0; el < pPce->NumSideChannelElements; el += 1) {
+                if (pPce->SideElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->SideElementIsCpe[el]) ? 2 : 1;
+                }
+              }
+              /* Count back channels/elements */
+              for (el = 0; el < pPce->NumBackChannelElements; el += 1) {
+                if (pPce->BackElementHeightInfo[el] == h) {
+                  elIdx += 1;
+                  chIdx += (pPce->BackElementIsCpe[el]) ? 2 : 1;
+                }
+              }
+              if (h == 0) { /* normal height */
+                elIdx += pPce->NumLfeChannelElements;
+                chIdx += pPce->NumLfeChannelElements;
+              }
+            }
+            chMapping[chIdx] = channelIdx;
+            chType[chIdx] = aChType;
+            chIndex[chIdx] = bc[heightLayer];
+            if (isCpe) {
+              chMapping[chIdx + 1] = channelIdx + 1;
+              chType[chIdx + 1] = aChType;
+              chIndex[chIdx + 1] = bc[heightLayer] + 1;
+            }
+            *elMapping = elIdx;
+            return 1;
+          }
+          ec[heightLayer] += 1;
+          if (pPce->BackElementIsCpe[i]) {
+            cc[heightLayer] += 2;
+            bc[heightLayer] += 2;
+          } else {
+            cc[heightLayer] += 1;
+            bc[heightLayer] += 1;
+          }
+        }
+        break;
 
-        case ID_LFE: { /* Unfortunately we have to go through all normal height
+      case ID_LFE: {
+        /* Unfortunately we have to go through all normal height
                           layer elements to get the position of the LFE
                           channels. Start with counting the front
                           channels/elements at normal height */
-          for (i = 0; i < pPce->NumFrontChannelElements; i += 1) {
-            int heightLayer = pPce->FrontElementHeightInfo[i];
-            ec[heightLayer] += 1;
-            cc[heightLayer] += (pPce->FrontElementIsCpe[i]) ? 2 : 1;
-          }
-          /* Count side channels/elements at normal height */
-          for (i = 0; i < pPce->NumSideChannelElements; i += 1) {
-            int heightLayer = pPce->SideElementHeightInfo[i];
-            ec[heightLayer] += 1;
-            cc[heightLayer] += (pPce->SideElementIsCpe[i]) ? 2 : 1;
-          }
-          /* Count back channels/elements at normal height */
-          for (i = 0; i < pPce->NumBackChannelElements; i += 1) {
-            int heightLayer = pPce->BackElementHeightInfo[i];
-            ec[heightLayer] += 1;
-            cc[heightLayer] += (pPce->BackElementIsCpe[i]) ? 2 : 1;
-          }
+        for (i = 0; i < pPce->NumFrontChannelElements; i += 1) {
+          int heightLayer = pPce->FrontElementHeightInfo[i];
+          ec[heightLayer] += 1;
+          cc[heightLayer] += (pPce->FrontElementIsCpe[i]) ? 2 : 1;
+        }
+        /* Count side channels/elements at normal height */
+        for (i = 0; i < pPce->NumSideChannelElements; i += 1) {
+          int heightLayer = pPce->SideElementHeightInfo[i];
+          ec[heightLayer] += 1;
+          cc[heightLayer] += (pPce->SideElementIsCpe[i]) ? 2 : 1;
+        }
+        /* Count back channels/elements at normal height */
+        for (i = 0; i < pPce->NumBackChannelElements; i += 1) {
+          int heightLayer = pPce->BackElementHeightInfo[i];
+          ec[heightLayer] += 1;
+          cc[heightLayer] += (pPce->BackElementIsCpe[i]) ? 2 : 1;
+        }
 
-          /* search in lfe channels */
-          for (i = 0; i < pPce->NumLfeChannelElements; i++) {
-            int elIdx =
-                ec[0]; /* LFE channels belong to the normal height layer */
-            int chIdx = cc[0];
-            if (pPce->LfeElementTagSelect[i] == tag) {
-              chMapping[chIdx] = channelIdx;
-              *elMapping = elIdx;
-              chType[chIdx] = ACT_LFE;
-              chIndex[chIdx] = lc;
-              return 1;
-            }
-            ec[0] += 1;
-            cc[0] += 1;
-            lc += 1;
+        /* search in lfe channels */
+        for (i = 0; i < pPce->NumLfeChannelElements; i++) {
+          int elIdx =
+              ec[0]; /* LFE channels belong to the normal height layer */
+          int chIdx = cc[0];
+          if (pPce->LfeElementTagSelect[i] == tag) {
+            chMapping[chIdx] = channelIdx;
+            *elMapping = elIdx;
+            chType[chIdx] = ACT_LFE;
+            chIndex[chIdx] = lc;
+            return 1;
           }
-        } break;
+          ec[0] += 1;
+          cc[0] += 1;
+          lc += 1;
+        }
+      } break;
 
-        /* Non audio elements */
-        case ID_CCE:
-          /* search in cce channels */
-          for (i = 0; i < pPce->NumValidCcElements; i++) {
-            if (pPce->ValidCcElementTagSelect[i] == tag) {
-              return 1;
-            }
+      /* Non audio elements */
+      case ID_CCE:
+        /* search in cce channels */
+        for (i = 0; i < pPce->NumValidCcElements; i++) {
+          if (pPce->ValidCcElementTagSelect[i] == tag) {
+            return 1;
           }
-          break;
-        case ID_DSE:
-          /* search associated data elements */
-          for (i = 0; i < pPce->NumAssocDataElements; i++) {
-            if (pPce->AssocDataElementTagSelect[i] == tag) {
-              return 1;
-            }
+        }
+        break;
+      case ID_DSE:
+        /* search associated data elements */
+        for (i = 0; i < pPce->NumAssocDataElements; i++) {
+          if (pPce->AssocDataElementTagSelect[i] == tag) {
+            return 1;
           }
-          break;
-        default:
-          return 0;
+        }
+        break;
+      default:
+        return 0;
       }
       return 0; /* not found in any list */
     }
@@ -1132,59 +1131,60 @@ int CProgramConfig_GetElementTable(const CProgramConfig *pPce,
 
   /* Find an corresponding channel configuration if possible */
   switch (pPce->NumChannels) {
-    case 1:
-    case 2:
-      /* One and two channels have no alternatives. */
-      *pChMapIdx = pPce->NumChannels;
-      break;
-    case 3:
-    case 4:
-    case 5:
-    case 6: { /* Test if the number of channels can be used as channel config:
-               */
-      C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
-      /* Create a PCE for the config to test ... */
-      CProgramConfig_GetDefault(tmpPce, pPce->NumChannels);
-      /* ... and compare it with the given one. */
-      *pChMapIdx = (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE))
-                       ? pPce->NumChannels
-                       : 0;
-      /* If compare result is 0 or 1 we can be sure that it is channel
-       * config 11. */
-      C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
-    } break;
-    case 7: {
-      C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
-      /* Create a PCE for the config to test ... */
-      CProgramConfig_GetDefault(tmpPce, 11);
-      /* ... and compare it with the given one. */
-      *pChMapIdx = (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE)) ? 11 : 0;
-      /* If compare result is 0 or 1 we can be sure that it is channel
-       * config 11. */
-      C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
-    } break;
-    case 8: { /* Try the four possible 7.1ch configurations. One after the
+  case 1:
+  case 2:
+    /* One and two channels have no alternatives. */
+    *pChMapIdx = pPce->NumChannels;
+    break;
+  case 3:
+  case 4:
+  case 5:
+  case 6: {
+    /* Test if the number of channels can be used as channel config:
+     */
+    C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
+    /* Create a PCE for the config to test ... */
+    CProgramConfig_GetDefault(tmpPce, pPce->NumChannels);
+    /* ... and compare it with the given one. */
+    *pChMapIdx =
+        (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE)) ? pPce->NumChannels : 0;
+    /* If compare result is 0 or 1 we can be sure that it is channel
+     * config 11. */
+    C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
+  } break;
+  case 7: {
+    C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
+    /* Create a PCE for the config to test ... */
+    CProgramConfig_GetDefault(tmpPce, 11);
+    /* ... and compare it with the given one. */
+    *pChMapIdx = (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE)) ? 11 : 0;
+    /* If compare result is 0 or 1 we can be sure that it is channel
+     * config 11. */
+    C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
+  } break;
+  case 8: {
+    /* Try the four possible 7.1ch configurations. One after the
                  other. */
-      UCHAR testCfg[4] = {32, 14, 12, 7};
-      C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
-      for (i = 0; i < 4; i += 1) {
-        /* Create a PCE for the config to test ... */
-        CProgramConfig_GetDefault(tmpPce, testCfg[i]);
-        /* ... and compare it with the given one. */
-        if (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE)) {
-          /* If the compare result is 0 or 1 than the two channel configurations
-           * match. */
-          /* Explicit mapping of 7.1 side channel configuration to 7.1 rear
-           * channel mapping. */
-          *pChMapIdx = (testCfg[i] == 32) ? 12 : testCfg[i];
-        }
+    UCHAR testCfg[4] = {32, 14, 12, 7};
+    C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
+    for (i = 0; i < 4; i += 1) {
+      /* Create a PCE for the config to test ... */
+      CProgramConfig_GetDefault(tmpPce, testCfg[i]);
+      /* ... and compare it with the given one. */
+      if (!(CProgramConfig_Compare(pPce, tmpPce) & 0xE)) {
+        /* If the compare result is 0 or 1 than the two channel configurations
+         * match. */
+        /* Explicit mapping of 7.1 side channel configuration to 7.1 rear
+         * channel mapping. */
+        *pChMapIdx = (testCfg[i] == 32) ? 12 : testCfg[i];
       }
-      C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
-    } break;
-    default:
-      /* The PCE does not match any predefined channel configuration. */
-      *pChMapIdx = 0;
-      break;
+    }
+    C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
+  } break;
+  default:
+    /* The PCE does not match any predefined channel configuration. */
+    *pChMapIdx = 0;
+    break;
   }
 
   return el;
@@ -1231,7 +1231,8 @@ static TRANSPORTDEC_ERROR GaSpecificConfig_Parse(CSGaSpecificConfig *self,
 
   self->m_dependsOnCoreCoder = FDKreadBits(bs, 1);
 
-  if (self->m_dependsOnCoreCoder) self->m_coreCoderDelay = FDKreadBits(bs, 14);
+  if (self->m_dependsOnCoreCoder)
+    self->m_coreCoderDelay = FDKreadBits(bs, 14);
 
   self->m_extensionFlag = FDKreadBits(bs, 1);
 
@@ -1359,27 +1360,27 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
          information. Postpone LD-SBR initialization and read ELD extension
          information first. */
       switch (asc->m_channelConfiguration) {
-        case 1:
-        case 2:
-          numSbrHeader = 1;
-          break;
-        case 3:
-          numSbrHeader = 2;
-          break;
-        case 4:
-        case 5:
-        case 6:
-          numSbrHeader = 3;
-          break;
-        case 7:
-        case 11:
-        case 12:
-        case 14:
-          numSbrHeader = 4;
-          break;
-        default:
-          numSbrHeader = 0;
-          break;
+      case 1:
+      case 2:
+        numSbrHeader = 1;
+        break;
+      case 3:
+        numSbrHeader = 2;
+        break;
+      case 4:
+      case 5:
+      case 6:
+        numSbrHeader = 3;
+        break;
+      case 7:
+      case 11:
+      case 12:
+      case 14:
+        numSbrHeader = 4;
+        break;
+      default:
+        numSbrHeader = 0;
+        break;
       }
       for (sbrIndex = 0; sbrIndex < numSbrHeader; sbrIndex++) {
         ldSbrLen += skipSbrHeader(hBs, 0);
@@ -1409,49 +1410,49 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
     }
 
     switch (eldExtType) {
-      case ELDEXT_LDSAC:
-        esc->m_useLdQmfTimeAlign = 1;
-        if (cb->cbSsc != NULL) {
-          ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
-              cb->cbSscData, hBs, asc->m_aot,
-              asc->m_samplingFrequency << esc->m_sbrSamplingRate,
-              asc->m_samplesPerFrame << esc->m_sbrSamplingRate,
-              1,  /* stereoConfigIndex */
-              -1, /* nTimeSlots: read from bitstream */
-              eldExtLen, asc->configMode, &asc->SacConfigChanged);
-          if (ErrorStatus != TRANSPORTDEC_OK) {
-            return TRANSPORTDEC_PARSE_ERROR;
-          }
-          if (esc->m_downscaledSamplingFrequency != asc->m_samplingFrequency) {
-            return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* ELDv2 w/ ELD downscaled
-                                                       mode not allowed */
-          }
-          break;
-        }
-
-        FDK_FALLTHROUGH;
-      default:
-        for (cnt = 0; cnt < eldExtLen; cnt++) {
-          FDKreadBits(hBs, 8);
-        }
-        break;
-
-      case ELDEXT_DOWNSCALEINFO:
-        UCHAR tmpDownscaleFreqIdx;
-        esc->m_downscaledSamplingFrequency =
-            getSampleRate(hBs, &tmpDownscaleFreqIdx, 4);
-        if (esc->m_downscaledSamplingFrequency == 0) {
+    case ELDEXT_LDSAC:
+      esc->m_useLdQmfTimeAlign = 1;
+      if (cb->cbSsc != NULL) {
+        ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
+            cb->cbSscData, hBs, asc->m_aot,
+            asc->m_samplingFrequency << esc->m_sbrSamplingRate,
+            asc->m_samplesPerFrame << esc->m_sbrSamplingRate,
+            1,  /* stereoConfigIndex */
+            -1, /* nTimeSlots: read from bitstream */
+            eldExtLen, asc->configMode, &asc->SacConfigChanged);
+        if (ErrorStatus != TRANSPORTDEC_OK) {
           return TRANSPORTDEC_PARSE_ERROR;
         }
-        downscale_fill_nibble = FDKreadBits(hBs, 4);
-        if (downscale_fill_nibble != 0x0) {
-          return TRANSPORTDEC_PARSE_ERROR;
-        }
-        if (esc->m_useLdQmfTimeAlign == 1) {
+        if (esc->m_downscaledSamplingFrequency != asc->m_samplingFrequency) {
           return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* ELDv2 w/ ELD downscaled
-                                                     mode not allowed */
+                                             mode not allowed */
         }
         break;
+      }
+
+      FDK_FALLTHROUGH;
+    default:
+      for (cnt = 0; cnt < eldExtLen; cnt++) {
+        FDKreadBits(hBs, 8);
+      }
+      break;
+
+    case ELDEXT_DOWNSCALEINFO:
+      UCHAR tmpDownscaleFreqIdx;
+      esc->m_downscaledSamplingFrequency =
+          getSampleRate(hBs, &tmpDownscaleFreqIdx, 4);
+      if (esc->m_downscaledSamplingFrequency == 0) {
+        return TRANSPORTDEC_PARSE_ERROR;
+      }
+      downscale_fill_nibble = FDKreadBits(hBs, 4);
+      if (downscale_fill_nibble != 0x0) {
+        return TRANSPORTDEC_PARSE_ERROR;
+      }
+      if (esc->m_useLdQmfTimeAlign == 1) {
+        return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* ELDv2 w/ ELD downscaled
+                                             mode not allowed */
+      }
+      break;
     }
   }
 
@@ -1468,14 +1469,14 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
       dsFactor = asc->m_samplingFrequency / esc->m_downscaledSamplingFrequency;
       if (dsFactor != 1 && (dsFactor)&1) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* SBR needs an even downscale
-                                                   factor */
+                                           factor */
       }
       if (dsFactor != 1 && dsFactor != 2 && dsFactor != 4) {
         dsFactor = 1; /* don't apply dsf for not yet supported even dsfs */
       }
       if ((INT)asc->m_samplesPerFrame % dsFactor != 0) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* frameSize/dsf must be an
-                                                   integer number */
+                                           integer number */
       }
     }
     eldExtLenSum = eldExtLenSum - FDKgetValidBits(hBs);
@@ -1537,13 +1538,11 @@ static const UCHAR sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
   UsacExtElementConfig() q.v. ISO/IEC FDIS 23003-3:2011(E) Table 14
   rsv603daExtElementConfig() q.v. ISO/IEC DIS 23008-3 Table 13
 */
-static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement,
-                                           HANDLE_FDK_BITSTREAM hBs,
-                                           const CSTpCallBacks *cb,
-                                           const UCHAR numSignalsInGroup,
-                                           const UINT coreFrameLength,
-                                           const int subStreamIndex,
-                                           const AUDIO_OBJECT_TYPE aot) {
+static TRANSPORTDEC_ERROR
+extElementConfig(CSUsacExtElementConfig *extElement, HANDLE_FDK_BITSTREAM hBs,
+                 const CSTpCallBacks *cb, const UCHAR numSignalsInGroup,
+                 const UINT coreFrameLength, const int subStreamIndex,
+                 const AUDIO_OBJECT_TYPE aot) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
 
   USAC_EXT_ELEMENT_TYPE usacExtElementType =
@@ -1552,15 +1551,15 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement,
   /* recurve extension elements which are invalid for USAC */
   if (aot == AOT_USAC) {
     switch (usacExtElementType) {
-      case ID_EXT_ELE_FILL:
-      case ID_EXT_ELE_MPEGS:
-      case ID_EXT_ELE_SAOC:
-      case ID_EXT_ELE_AUDIOPREROLL:
-      case ID_EXT_ELE_UNI_DRC:
-        break;
-      default:
-        usacExtElementType = ID_EXT_ELE_UNKNOWN;
-        break;
+    case ID_EXT_ELE_FILL:
+    case ID_EXT_ELE_MPEGS:
+    case ID_EXT_ELE_SAOC:
+    case ID_EXT_ELE_AUDIOPREROLL:
+    case ID_EXT_ELE_UNI_DRC:
+      break;
+    default:
+      usacExtElementType = ID_EXT_ELE_UNKNOWN;
+      break;
     }
   }
 
@@ -1579,26 +1578,26 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement,
   bsAnchor = (INT)FDKgetValidBits(hBs);
 
   switch (usacExtElementType) {
-    case ID_EXT_ELE_UNKNOWN:
-    case ID_EXT_ELE_FILL:
-      break;
-    case ID_EXT_ELE_AUDIOPREROLL:
-      /* No configuration element */
-      extElement->usacExtElementHasAudioPreRoll = 1;
-      break;
-    case ID_EXT_ELE_UNI_DRC: {
-      if (cb->cbUniDrc != NULL) {
-        ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(
-            cb->cbUniDrcData, hBs, usacExtElementConfigLength,
-            0, /* uniDrcConfig */
-            subStreamIndex, 0, aot);
-        if (ErrorStatus != TRANSPORTDEC_OK) {
-          return ErrorStatus;
-        }
+  case ID_EXT_ELE_UNKNOWN:
+  case ID_EXT_ELE_FILL:
+    break;
+  case ID_EXT_ELE_AUDIOPREROLL:
+    /* No configuration element */
+    extElement->usacExtElementHasAudioPreRoll = 1;
+    break;
+  case ID_EXT_ELE_UNI_DRC: {
+    if (cb->cbUniDrc != NULL) {
+      ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(cb->cbUniDrcData, hBs,
+                                                     usacExtElementConfigLength,
+                                                     0, /* uniDrcConfig */
+                                                     subStreamIndex, 0, aot);
+      if (ErrorStatus != TRANSPORTDEC_OK) {
+        return ErrorStatus;
       }
-    } break;
-    default:
-      break;
+    }
+  } break;
+  default:
+    break;
   }
 
   /* Adjust bit stream position. This is required because of byte alignment and
@@ -1647,26 +1646,25 @@ static TRANSPORTDEC_ERROR configExtension(CSUsacConfig *usc,
     }
 
     switch (usacConfigExtType) {
-      case ID_CONFIG_EXT_FILL:
-        for (int i = 0; i < usacConfigExtLength; i++) {
-          if (FDKreadBits(hBs, 8) != 0xa5) {
-            return TRANSPORTDEC_PARSE_ERROR;
-          }
+    case ID_CONFIG_EXT_FILL:
+      for (int i = 0; i < usacConfigExtLength; i++) {
+        if (FDKreadBits(hBs, 8) != 0xa5) {
+          return TRANSPORTDEC_PARSE_ERROR;
         }
-        break;
-      case ID_CONFIG_EXT_LOUDNESS_INFO: {
-        if (cb->cbUniDrc != NULL) {
-          ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(
-              cb->cbUniDrcData, hBs, usacConfigExtLength,
-              1, /* loudnessInfoSet */
-              0, loudnessInfoSetConfigExtensionPosition, AOT_USAC);
-          if (ErrorStatus != TRANSPORTDEC_OK) {
-            return ErrorStatus;
-          }
+      }
+      break;
+    case ID_CONFIG_EXT_LOUDNESS_INFO: {
+      if (cb->cbUniDrc != NULL) {
+        ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(
+            cb->cbUniDrcData, hBs, usacConfigExtLength, 1, /* loudnessInfoSet */
+            0, loudnessInfoSetConfigExtensionPosition, AOT_USAC);
+        if (ErrorStatus != TRANSPORTDEC_OK) {
+          return ErrorStatus;
         }
-      } break;
-      default:
-        break;
+      }
+    } break;
+    default:
+      break;
     }
 
     /* Skip remaining bits. If too many bits were parsed, assume error. */
@@ -1685,9 +1683,10 @@ static TRANSPORTDEC_ERROR configExtension(CSUsacConfig *usc,
    rsv603daDecoderConfig() ISO/IEC DIS 23008-3   Table 8
    UsacDecoderConfig()     ISO/IEC FDIS 23003-3  Table 6
   */
-static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
-    CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
-    const CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR
+UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *asc,
+                             HANDLE_FDK_BITSTREAM hBs,
+                             const CSTpCallBacks *cb) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
   CSUsacConfig *usc = &asc->m_sc.m_usacConfig;
   int i, numberOfElements;
@@ -1712,26 +1711,25 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
   }
 
   for (i = 0; i < numberOfElements; i++) {
-    MP4_ELEMENT_ID usacElementType = (MP4_ELEMENT_ID)(
-        FDKreadBits(hBs, 2) | USAC_ID_BIT); /* set USAC_ID_BIT to map
-                                               usacElementType to
-                                               MP4_ELEMENT_ID enum */
+    MP4_ELEMENT_ID usacElementType =
+        (MP4_ELEMENT_ID)(FDKreadBits(hBs, 2) | USAC_ID_BIT); /* set USAC_ID_BIT
+                           to map usacElementType to MP4_ELEMENT_ID enum */
     usc->element[i].usacElementType = usacElementType;
 
     /* sanity check: update element counter */
     if (asc->m_aot == AOT_USAC) {
       switch (usacElementType) {
-        case ID_USAC_SCE:
-          sc_chan_config.nSCE--;
-          break;
-        case ID_USAC_CPE:
-          sc_chan_config.nCPE--;
-          break;
-        case ID_USAC_LFE:
-          sc_chan_config.nLFE--;
-          break;
-        default:
-          break;
+      case ID_USAC_SCE:
+        sc_chan_config.nSCE--;
+        break;
+      case ID_USAC_CPE:
+        sc_chan_config.nCPE--;
+        break;
+      case ID_USAC_LFE:
+        sc_chan_config.nLFE--;
+        break;
+      default:
+        break;
       }
       if (usc->m_channelConfigurationIndex) {
         /* sanity check: no element counter may be smaller zero */
@@ -1743,139 +1741,142 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
     }
 
     switch (usacElementType) {
-      case ID_USAC_SCE:
-        /* UsacCoreConfig() ISO/IEC FDIS 23003-3  Table 10 */
-        if (FDKreadBit(hBs)) { /* tw_mdct */
-          return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+    case ID_USAC_SCE:
+      /* UsacCoreConfig() ISO/IEC FDIS 23003-3  Table 10 */
+      if (FDKreadBit(hBs)) { /* tw_mdct */
+        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+      }
+      usc->element[i].m_noiseFilling = FDKreadBits(hBs, 1);
+      /* end of UsacCoreConfig() */
+      if (usc->m_sbrRatioIndex > 0) {
+        if (cb->cbSbr == NULL) {
+          return TRANSPORTDEC_UNKOWN_ERROR;
         }
-        usc->element[i].m_noiseFilling = FDKreadBits(hBs, 1);
-        /* end of UsacCoreConfig() */
-        if (usc->m_sbrRatioIndex > 0) {
-          if (cb->cbSbr == NULL) {
-            return TRANSPORTDEC_UNKOWN_ERROR;
-          }
-          /* SbrConfig() ISO/IEC FDIS 23003-3  Table 11 */
-          usc->element[i].m_harmonicSBR = FDKreadBit(hBs);
-          usc->element[i].m_interTes = FDKreadBit(hBs);
-          usc->element[i].m_pvc = FDKreadBit(hBs);
+        /* SbrConfig() ISO/IEC FDIS 23003-3  Table 11 */
+        usc->element[i].m_harmonicSBR = FDKreadBit(hBs);
+        usc->element[i].m_interTes = FDKreadBit(hBs);
+        usc->element[i].m_pvc = FDKreadBit(hBs);
+        if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
+                      asc->m_extensionSamplingFrequency, asc->m_samplesPerFrame,
+                      asc->m_aot, ID_SCE, channelElementIdx,
+                      usc->element[i].m_harmonicSBR,
+                      usc->element[i].m_stereoConfigIndex, asc->configMode,
+                      &asc->SbrConfigChanged, 1)) {
+          return TRANSPORTDEC_PARSE_ERROR;
+        }
+        /* end of SbrConfig() */
+      }
+      usc->m_nUsacChannels += 1;
+      channelElementIdx++;
+      break;
+
+    case ID_USAC_CPE:
+      /* UsacCoreConfig() ISO/IEC FDIS 23003-3  Table 10 */
+      if (FDKreadBit(hBs)) { /* tw_mdct */
+        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+      }
+      usc->element[i].m_noiseFilling = FDKreadBits(hBs, 1);
+      /* end of UsacCoreConfig() */
+      if (usc->m_sbrRatioIndex > 0) {
+        if (cb->cbSbr == NULL)
+          return TRANSPORTDEC_UNKOWN_ERROR;
+        /* SbrConfig() ISO/IEC FDIS 23003-3 */
+        usc->element[i].m_harmonicSBR = FDKreadBit(hBs);
+        usc->element[i].m_interTes = FDKreadBit(hBs);
+        usc->element[i].m_pvc = FDKreadBit(hBs);
+        {
+          INT bitsToSkip = skipSbrHeader(hBs, 1);
+          /* read stereoConfigIndex */
+          usc->element[i].m_stereoConfigIndex = FDKreadBits(hBs, 2);
+          /* rewind */
+          FDKpushBack(hBs, bitsToSkip + 2);
+        }
+        {
+          MP4_ELEMENT_ID el_type = (usc->element[i].m_stereoConfigIndex == 1 ||
+                                    usc->element[i].m_stereoConfigIndex == 2)
+                                       ? ID_SCE
+                                       : ID_CPE;
           if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
                         asc->m_extensionSamplingFrequency,
-                        asc->m_samplesPerFrame, asc->m_aot, ID_SCE,
+                        asc->m_samplesPerFrame, asc->m_aot, el_type,
                         channelElementIdx, usc->element[i].m_harmonicSBR,
                         usc->element[i].m_stereoConfigIndex, asc->configMode,
                         &asc->SbrConfigChanged, 1)) {
             return TRANSPORTDEC_PARSE_ERROR;
           }
-          /* end of SbrConfig() */
         }
-        usc->m_nUsacChannels += 1;
-        channelElementIdx++;
-        break;
+        /* end of SbrConfig() */
 
-      case ID_USAC_CPE:
-        /* UsacCoreConfig() ISO/IEC FDIS 23003-3  Table 10 */
-        if (FDKreadBit(hBs)) { /* tw_mdct */
-          return TRANSPORTDEC_UNSUPPORTED_FORMAT;
-        }
-        usc->element[i].m_noiseFilling = FDKreadBits(hBs, 1);
-        /* end of UsacCoreConfig() */
-        if (usc->m_sbrRatioIndex > 0) {
-          if (cb->cbSbr == NULL) return TRANSPORTDEC_UNKOWN_ERROR;
-          /* SbrConfig() ISO/IEC FDIS 23003-3 */
-          usc->element[i].m_harmonicSBR = FDKreadBit(hBs);
-          usc->element[i].m_interTes = FDKreadBit(hBs);
-          usc->element[i].m_pvc = FDKreadBit(hBs);
-          {
-            INT bitsToSkip = skipSbrHeader(hBs, 1);
-            /* read stereoConfigIndex */
-            usc->element[i].m_stereoConfigIndex = FDKreadBits(hBs, 2);
-            /* rewind */
-            FDKpushBack(hBs, bitsToSkip + 2);
-          }
-          {
-            MP4_ELEMENT_ID el_type =
-                (usc->element[i].m_stereoConfigIndex == 1 ||
-                 usc->element[i].m_stereoConfigIndex == 2)
-                    ? ID_SCE
-                    : ID_CPE;
-            if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
-                          asc->m_extensionSamplingFrequency,
-                          asc->m_samplesPerFrame, asc->m_aot, el_type,
-                          channelElementIdx, usc->element[i].m_harmonicSBR,
-                          usc->element[i].m_stereoConfigIndex, asc->configMode,
-                          &asc->SbrConfigChanged, 1)) {
+        usc->element[i].m_stereoConfigIndex =
+            FDKreadBits(hBs, 2); /* Needed in RM5 syntax */
+
+        if (usc->element[i].m_stereoConfigIndex > 0) {
+          if (cb->cbSsc != NULL) {
+            int samplesPerFrame = asc->m_samplesPerFrame;
+
+            if (usc->m_sbrRatioIndex == 1)
+              samplesPerFrame <<= 2;
+            if (usc->m_sbrRatioIndex == 2)
+              samplesPerFrame = (samplesPerFrame * 8) / 3;
+            if (usc->m_sbrRatioIndex == 3)
+              samplesPerFrame <<= 1;
+
+            /* Mps212Config() ISO/IEC FDIS 23003-3 */
+            if (cb->cbSsc(cb->cbSscData, hBs, asc->m_aot,
+                          asc->m_extensionSamplingFrequency, samplesPerFrame,
+                          usc->element[i].m_stereoConfigIndex,
+                          usc->m_coreSbrFrameLengthIndex,
+                          0, /* don't know the length */
+                          asc->configMode, &asc->SacConfigChanged)) {
               return TRANSPORTDEC_PARSE_ERROR;
             }
-          }
-          /* end of SbrConfig() */
-
-          usc->element[i].m_stereoConfigIndex =
-              FDKreadBits(hBs, 2); /* Needed in RM5 syntax */
-
-          if (usc->element[i].m_stereoConfigIndex > 0) {
-            if (cb->cbSsc != NULL) {
-              int samplesPerFrame = asc->m_samplesPerFrame;
-
-              if (usc->m_sbrRatioIndex == 1) samplesPerFrame <<= 2;
-              if (usc->m_sbrRatioIndex == 2)
-                samplesPerFrame = (samplesPerFrame * 8) / 3;
-              if (usc->m_sbrRatioIndex == 3) samplesPerFrame <<= 1;
-
-              /* Mps212Config() ISO/IEC FDIS 23003-3 */
-              if (cb->cbSsc(cb->cbSscData, hBs, asc->m_aot,
-                            asc->m_extensionSamplingFrequency, samplesPerFrame,
-                            usc->element[i].m_stereoConfigIndex,
-                            usc->m_coreSbrFrameLengthIndex,
-                            0, /* don't know the length */
-                            asc->configMode, &asc->SacConfigChanged)) {
-                return TRANSPORTDEC_PARSE_ERROR;
-              }
-              /* end of Mps212Config() */
-            } else {
-              return TRANSPORTDEC_UNKOWN_ERROR;
-            }
-          }
-        } else {
-          usc->element[i].m_stereoConfigIndex = 0;
-        }
-        usc->m_nUsacChannels += 2;
-
-        channelElementIdx++;
-        break;
-
-      case ID_USAC_LFE:
-        usc->element[i].m_noiseFilling = 0;
-        usc->m_nUsacChannels += 1;
-        if (usc->m_sbrRatioIndex > 0) {
-          /* Use SBR for upsampling */
-          if (cb->cbSbr == NULL) return ErrorStatus = TRANSPORTDEC_UNKOWN_ERROR;
-          usc->element[i].m_harmonicSBR = (UCHAR)0;
-          usc->element[i].m_interTes = (UCHAR)0;
-          usc->element[i].m_pvc = (UCHAR)0;
-          if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
-                        asc->m_extensionSamplingFrequency,
-                        asc->m_samplesPerFrame, asc->m_aot, ID_LFE,
-                        channelElementIdx, usc->element[i].m_harmonicSBR,
-                        usc->element[i].m_stereoConfigIndex, asc->configMode,
-                        &asc->SbrConfigChanged, 1)) {
-            return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+            /* end of Mps212Config() */
+          } else {
+            return TRANSPORTDEC_UNKOWN_ERROR;
           }
         }
-        channelElementIdx++;
-        break;
+      } else {
+        usc->element[i].m_stereoConfigIndex = 0;
+      }
+      usc->m_nUsacChannels += 2;
 
-      case ID_USAC_EXT:
-        ErrorStatus = extElementConfig(&usc->element[i].extElement, hBs, cb, 0,
-                                       asc->m_samplesPerFrame, 0, asc->m_aot);
+      channelElementIdx++;
+      break;
 
-        if (ErrorStatus) {
-          return ErrorStatus;
+    case ID_USAC_LFE:
+      usc->element[i].m_noiseFilling = 0;
+      usc->m_nUsacChannels += 1;
+      if (usc->m_sbrRatioIndex > 0) {
+        /* Use SBR for upsampling */
+        if (cb->cbSbr == NULL)
+          return ErrorStatus = TRANSPORTDEC_UNKOWN_ERROR;
+        usc->element[i].m_harmonicSBR = (UCHAR)0;
+        usc->element[i].m_interTes = (UCHAR)0;
+        usc->element[i].m_pvc = (UCHAR)0;
+        if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
+                      asc->m_extensionSamplingFrequency, asc->m_samplesPerFrame,
+                      asc->m_aot, ID_LFE, channelElementIdx,
+                      usc->element[i].m_harmonicSBR,
+                      usc->element[i].m_stereoConfigIndex, asc->configMode,
+                      &asc->SbrConfigChanged, 1)) {
+          return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
         }
-        break;
+      }
+      channelElementIdx++;
+      break;
 
-      default:
-        /* non USAC-element encountered */
-        return TRANSPORTDEC_PARSE_ERROR;
+    case ID_USAC_EXT:
+      ErrorStatus = extElementConfig(&usc->element[i].extElement, hBs, cb, 0,
+                                     asc->m_samplesPerFrame, 0, asc->m_aot);
+
+      if (ErrorStatus) {
+        return ErrorStatus;
+      }
+      break;
+
+    default:
+      /* non USAC-element encountered */
+      return TRANSPORTDEC_PARSE_ERROR;
     }
   }
 
@@ -1899,8 +1900,9 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
 }
 
 /* Mapping of coreSbrFrameLengthIndex defined by Table 70 in ISO/IEC 23003-3 */
-static TRANSPORTDEC_ERROR UsacConfig_SetCoreSbrFrameLengthIndex(
-    CSAudioSpecificConfig *asc, int coreSbrFrameLengthIndex) {
+static TRANSPORTDEC_ERROR
+UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificConfig *asc,
+                                      int coreSbrFrameLengthIndex) {
   int sbrRatioIndex_val;
 
   if (coreSbrFrameLengthIndex > 4) {
@@ -1916,20 +1918,20 @@ static TRANSPORTDEC_ERROR UsacConfig_SetCoreSbrFrameLengthIndex(
     asc->m_extensionSamplingFrequency = asc->m_samplingFrequency;
     asc->m_extensionSamplingFrequencyIndex = asc->m_samplingFrequencyIndex;
     switch (sbrRatioIndex_val) {
-      case 1: /* sbrRatio = 4:1 */
-        asc->m_samplingFrequency >>= 2;
-        asc->m_samplesPerFrame >>= 2;
-        break;
-      case 2: /* sbrRatio = 8:3 */
-        asc->m_samplingFrequency = (asc->m_samplingFrequency * 3) / 8;
-        asc->m_samplesPerFrame = (asc->m_samplesPerFrame * 3) / 8;
-        break;
-      case 3: /* sbrRatio = 2:1 */
-        asc->m_samplingFrequency >>= 1;
-        asc->m_samplesPerFrame >>= 1;
-        break;
-      default:
-        return TRANSPORTDEC_PARSE_ERROR;
+    case 1: /* sbrRatio = 4:1 */
+      asc->m_samplingFrequency >>= 2;
+      asc->m_samplesPerFrame >>= 2;
+      break;
+    case 2: /* sbrRatio = 8:3 */
+      asc->m_samplingFrequency = (asc->m_samplingFrequency * 3) / 8;
+      asc->m_samplesPerFrame = (asc->m_samplesPerFrame * 3) / 8;
+      break;
+    case 3: /* sbrRatio = 2:1 */
+      asc->m_samplingFrequency >>= 1;
+      asc->m_samplesPerFrame >>= 1;
+      break;
+    default:
+      return TRANSPORTDEC_PARSE_ERROR;
     }
     asc->m_samplingFrequencyIndex =
         getSamplingRateIndex(asc->m_samplingFrequency, 4);
@@ -1959,12 +1961,12 @@ static TRANSPORTDEC_ERROR UsacConfig_Parse(CSAudioSpecificConfig *asc,
   channelConfigurationIndex = FDKreadBits(hBs, 5);
   if (channelConfigurationIndex > 2) {
     return TRANSPORTDEC_PARSE_ERROR; /* only channelConfigurationIndex = [1,2]
-                                        are supported */
+                                    are supported */
   }
 
   if (channelConfigurationIndex == 0) {
     return TRANSPORTDEC_PARSE_ERROR; /* only channelConfigurationIndex = [1,2]
-                                        are supported */
+                                    are supported */
   }
   asc->m_channelConfiguration = channelConfigurationIndex;
 
@@ -1998,8 +2000,9 @@ static TRANSPORTDEC_ERROR UsacConfig_Parse(CSAudioSpecificConfig *asc,
   return err;
 }
 
-static TRANSPORTDEC_ERROR AudioSpecificConfig_ExtensionParse(
-    CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs, CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR
+AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig *self,
+                                   HANDLE_FDK_BITSTREAM bs, CSTpCallBacks *cb) {
   TP_ASC_EXTENSION_ID lastAscExt, ascExtId = ASCEXT_UNKOWN;
   INT bitsAvailable = (INT)FDKgetValidBits(bs);
 
@@ -2009,86 +2012,87 @@ static TRANSPORTDEC_ERROR AudioSpecificConfig_ExtensionParse(
     bitsAvailable -= 11;
 
     switch (ascExtId) {
-      case ASCEXT_SBR: /* 0x2b7 */
-        if ((self->m_extensionAudioObjectType != AOT_SBR) &&
-            (bitsAvailable >= 5)) {
-          self->m_extensionAudioObjectType = getAOT(bs);
+    case ASCEXT_SBR: /* 0x2b7 */
+      if ((self->m_extensionAudioObjectType != AOT_SBR) &&
+          (bitsAvailable >= 5)) {
+        self->m_extensionAudioObjectType = getAOT(bs);
 
-          if ((self->m_extensionAudioObjectType == AOT_SBR) ||
-              (self->m_extensionAudioObjectType ==
-               AOT_ER_BSAC)) { /* Get SBR extension configuration */
-            self->m_sbrPresentFlag = FDKreadBits(bs, 1);
-            if (self->m_aot == AOT_USAC && self->m_sbrPresentFlag > 0 &&
-                self->m_sc.m_usacConfig.m_sbrRatioIndex == 0) {
+        if ((self->m_extensionAudioObjectType == AOT_SBR) ||
+            (self->m_extensionAudioObjectType ==
+             AOT_ER_BSAC)) { /* Get SBR extension configuration */
+          self->m_sbrPresentFlag = FDKreadBits(bs, 1);
+          if (self->m_aot == AOT_USAC && self->m_sbrPresentFlag > 0 &&
+              self->m_sc.m_usacConfig.m_sbrRatioIndex == 0) {
+            return TRANSPORTDEC_PARSE_ERROR;
+          }
+
+          if (self->m_sbrPresentFlag == 1) {
+            self->m_extensionSamplingFrequency =
+                getSampleRate(bs, &self->m_extensionSamplingFrequencyIndex, 4);
+
+            if ((INT)self->m_extensionSamplingFrequency <= 0) {
               return TRANSPORTDEC_PARSE_ERROR;
             }
-
-            if (self->m_sbrPresentFlag == 1) {
-              self->m_extensionSamplingFrequency = getSampleRate(
-                  bs, &self->m_extensionSamplingFrequencyIndex, 4);
-
-              if ((INT)self->m_extensionSamplingFrequency <= 0) {
-                return TRANSPORTDEC_PARSE_ERROR;
-              }
-            }
-            if (self->m_extensionAudioObjectType == AOT_ER_BSAC) {
-              self->m_extensionChannelConfiguration = FDKreadBits(bs, 4);
-            }
           }
-          /* Update counter because of variable length fields (AOT and sampling
-           * rate) */
-          bitsAvailable = (INT)FDKgetValidBits(bs);
-        }
-        break;
-      case ASCEXT_PS: /* 0x548 */
-        if ((lastAscExt == ASCEXT_SBR) &&
-            (self->m_extensionAudioObjectType == AOT_SBR) &&
-            (bitsAvailable > 0)) { /* Get PS extension configuration */
-          self->m_psPresentFlag = FDKreadBits(bs, 1);
-          bitsAvailable -= 1;
-        }
-        break;
-      case ASCEXT_MPS: /* 0x76a */
-        if (self->m_extensionAudioObjectType == AOT_MPEGS) break;
-        FDK_FALLTHROUGH;
-      case ASCEXT_LDMPS: /* 0x7cc */
-        if ((ascExtId == ASCEXT_LDMPS) &&
-            (self->m_extensionAudioObjectType == AOT_LD_MPEGS))
-          break;
-        if (bitsAvailable >= 1) {
-          bitsAvailable -= 1;
-          if (FDKreadBits(bs, 1)) { /* self->m_mpsPresentFlag */
-            int sscLen = FDKreadBits(bs, 8);
-            bitsAvailable -= 8;
-            if (sscLen == 0xFF) {
-              sscLen += FDKreadBits(bs, 16);
-              bitsAvailable -= 16;
-            }
-            FDKpushFor(bs, sscLen); /* Skip SSC to be able to read the next
-                                       extension if there is one. */
-
-            bitsAvailable -= sscLen * 8;
+          if (self->m_extensionAudioObjectType == AOT_ER_BSAC) {
+            self->m_extensionChannelConfiguration = FDKreadBits(bs, 4);
           }
         }
+        /* Update counter because of variable length fields (AOT and sampling
+         * rate) */
+        bitsAvailable = (INT)FDKgetValidBits(bs);
+      }
+      break;
+    case ASCEXT_PS: /* 0x548 */
+      if ((lastAscExt == ASCEXT_SBR) &&
+          (self->m_extensionAudioObjectType == AOT_SBR) &&
+          (bitsAvailable > 0)) { /* Get PS extension configuration */
+        self->m_psPresentFlag = FDKreadBits(bs, 1);
+        bitsAvailable -= 1;
+      }
+      break;
+    case ASCEXT_MPS: /* 0x76a */
+      if (self->m_extensionAudioObjectType == AOT_MPEGS)
         break;
-      case ASCEXT_SAOC:
-        if ((ascExtId == ASCEXT_SAOC) &&
-            (self->m_extensionAudioObjectType == AOT_SAOC))
-          break;
-        if (FDKreadBits(bs, 1)) { /* saocPresent */
-          int saocscLen = FDKreadBits(bs, 8);
+      FDK_FALLTHROUGH;
+    case ASCEXT_LDMPS: /* 0x7cc */
+      if ((ascExtId == ASCEXT_LDMPS) &&
+          (self->m_extensionAudioObjectType == AOT_LD_MPEGS))
+        break;
+      if (bitsAvailable >= 1) {
+        bitsAvailable -= 1;
+        if (FDKreadBits(bs, 1)) { /* self->m_mpsPresentFlag */
+          int sscLen = FDKreadBits(bs, 8);
           bitsAvailable -= 8;
-          if (saocscLen == 0xFF) {
-            saocscLen += FDKreadBits(bs, 16);
+          if (sscLen == 0xFF) {
+            sscLen += FDKreadBits(bs, 16);
             bitsAvailable -= 16;
           }
-          FDKpushFor(bs, saocscLen);
-          bitsAvailable -= saocscLen * 8;
+          FDKpushFor(bs, sscLen); /* Skip SSC to be able to read the next
+                             extension if there is one. */
+
+          bitsAvailable -= sscLen * 8;
         }
+      }
+      break;
+    case ASCEXT_SAOC:
+      if ((ascExtId == ASCEXT_SAOC) &&
+          (self->m_extensionAudioObjectType == AOT_SAOC))
         break;
-      default:
-        /* Just ignore anything. */
-        return TRANSPORTDEC_OK;
+      if (FDKreadBits(bs, 1)) { /* saocPresent */
+        int saocscLen = FDKreadBits(bs, 8);
+        bitsAvailable -= 8;
+        if (saocscLen == 0xFF) {
+          saocscLen += FDKreadBits(bs, 16);
+          bitsAvailable -= 16;
+        }
+        FDKpushFor(bs, saocscLen);
+        bitsAvailable -= saocscLen * 8;
+      }
+      break;
+    default:
+      /* Just ignore anything. */
+      return TRANSPORTDEC_OK;
     }
   }
 
@@ -2110,10 +2114,11 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
   CProgramConfig_Init(&asc->m_progrConfigElement);
 }
 
-TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
-    CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
-    int fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
-    UCHAR configChanged, AUDIO_OBJECT_TYPE m_aot) {
+TRANSPORTDEC_ERROR
+AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
+                          int fExplicitBackwardCompatible, CSTpCallBacks *cb,
+                          UCHAR configMode, UCHAR configChanged,
+                          AUDIO_OBJECT_TYPE m_aot) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
   UINT ascStartAnchor = FDKgetValidBits(bs);
   int frameLengthFlag = -1;
@@ -2156,12 +2161,12 @@ TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
       self->m_aot = getAOT(bs);
 
       switch (self->m_aot) {
-        case AOT_AAC_LC:
-          break;
-        case AOT_ER_BSAC:
-          break;
-        default:
-          return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+      case AOT_AAC_LC:
+        break;
+      case AOT_ER_BSAC:
+        break;
+      default:
+        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
       }
 
       if (self->m_aot == AOT_ER_BSAC) {
@@ -2174,92 +2179,92 @@ TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
 
   /* Parse whatever specific configs */
   switch (self->m_aot) {
-    case AOT_AAC_LC:
-    case AOT_AAC_SCAL:
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LD:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_BSAC:
-      if ((ErrorStatus = GaSpecificConfig_Parse(&self->m_sc.m_gaSpecificConfig,
-                                                self, bs, ascStartAnchor)) !=
-          TRANSPORTDEC_OK) {
-        return (ErrorStatus);
-      }
-      frameLengthFlag = self->m_sc.m_gaSpecificConfig.m_frameLengthFlag;
-      break;
-    case AOT_MPEGS:
-      if (cb->cbSsc != NULL) {
-        if (cb->cbSsc(cb->cbSscData, bs, self->m_aot, self->m_samplingFrequency,
-                      self->m_samplesPerFrame, 1,
-                      -1, /* nTimeSlots: read from bitstream */
-                      0,  /* don't know the length */
-                      self->configMode, &self->SacConfigChanged)) {
-          return TRANSPORTDEC_UNSUPPORTED_FORMAT;
-        }
-      } else {
+  case AOT_AAC_LC:
+  case AOT_AAC_SCAL:
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LD:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_BSAC:
+    if ((ErrorStatus = GaSpecificConfig_Parse(&self->m_sc.m_gaSpecificConfig,
+                                              self, bs, ascStartAnchor)) !=
+        TRANSPORTDEC_OK) {
+      return (ErrorStatus);
+    }
+    frameLengthFlag = self->m_sc.m_gaSpecificConfig.m_frameLengthFlag;
+    break;
+  case AOT_MPEGS:
+    if (cb->cbSsc != NULL) {
+      if (cb->cbSsc(cb->cbSscData, bs, self->m_aot, self->m_samplingFrequency,
+                    self->m_samplesPerFrame, 1,
+                    -1, /* nTimeSlots: read from bitstream */
+                    0,  /* don't know the length */
+                    self->configMode, &self->SacConfigChanged)) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT;
       }
-      break;
-    case AOT_ER_AAC_ELD:
-      if ((ErrorStatus = EldSpecificConfig_Parse(self, bs, cb)) !=
-          TRANSPORTDEC_OK) {
-        return (ErrorStatus);
-      }
-      frameLengthFlag = self->m_sc.m_eldSpecificConfig.m_frameLengthFlag;
-      self->m_sbrPresentFlag = self->m_sc.m_eldSpecificConfig.m_sbrPresentFlag;
-      self->m_extensionSamplingFrequency =
-          (self->m_sc.m_eldSpecificConfig.m_sbrSamplingRate + 1) *
-          self->m_samplingFrequency;
-      break;
-    case AOT_USAC:
-      if ((ErrorStatus = UsacConfig_Parse(self, bs, cb)) != TRANSPORTDEC_OK) {
-        return (ErrorStatus);
-      }
-      break;
-
-    default:
+    } else {
       return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+    }
+    break;
+  case AOT_ER_AAC_ELD:
+    if ((ErrorStatus = EldSpecificConfig_Parse(self, bs, cb)) !=
+        TRANSPORTDEC_OK) {
+      return (ErrorStatus);
+    }
+    frameLengthFlag = self->m_sc.m_eldSpecificConfig.m_frameLengthFlag;
+    self->m_sbrPresentFlag = self->m_sc.m_eldSpecificConfig.m_sbrPresentFlag;
+    self->m_extensionSamplingFrequency =
+        (self->m_sc.m_eldSpecificConfig.m_sbrSamplingRate + 1) *
+        self->m_samplingFrequency;
+    break;
+  case AOT_USAC:
+    if ((ErrorStatus = UsacConfig_Parse(self, bs, cb)) != TRANSPORTDEC_OK) {
+      return (ErrorStatus);
+    }
+    break;
+
+  default:
+    return TRANSPORTDEC_UNSUPPORTED_FORMAT;
   }
 
   /* Frame length */
   switch (self->m_aot) {
-    case AOT_AAC_LC:
-    case AOT_AAC_SCAL:
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_BSAC:
-      /*case AOT_USAC:*/
-      if (!frameLengthFlag)
-        self->m_samplesPerFrame = 1024;
-      else
-        self->m_samplesPerFrame = 960;
-      break;
-    case AOT_ER_AAC_LD:
-      if (!frameLengthFlag)
-        self->m_samplesPerFrame = 512;
-      else
-        self->m_samplesPerFrame = 480;
-      break;
-    default:
-      break;
+  case AOT_AAC_LC:
+  case AOT_AAC_SCAL:
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_BSAC:
+    /*case AOT_USAC:*/
+    if (!frameLengthFlag)
+      self->m_samplesPerFrame = 1024;
+    else
+      self->m_samplesPerFrame = 960;
+    break;
+  case AOT_ER_AAC_LD:
+    if (!frameLengthFlag)
+      self->m_samplesPerFrame = 512;
+    else
+      self->m_samplesPerFrame = 480;
+    break;
+  default:
+    break;
   }
 
   switch (self->m_aot) {
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LD:
-    case AOT_ER_AAC_ELD:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_CELP:
-    case AOT_ER_HVXC:
-    case AOT_ER_BSAC:
-      self->m_epConfig = FDKreadBits(bs, 2);
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LD:
+  case AOT_ER_AAC_ELD:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_CELP:
+  case AOT_ER_HVXC:
+  case AOT_ER_BSAC:
+    self->m_epConfig = FDKreadBits(bs, 2);
 
-      if (self->m_epConfig > 1) {
-        return TRANSPORTDEC_UNSUPPORTED_FORMAT;  // EPCONFIG;
-      }
-      break;
-    default:
-      break;
+    if (self->m_epConfig > 1) {
+      return TRANSPORTDEC_UNSUPPORTED_FORMAT; // EPCONFIG;
+    }
+    break;
+  default:
+    break;
   }
 
   if (fExplicitBackwardCompatible &&
@@ -2290,113 +2295,116 @@ static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
   usc->element[elemIdx].m_stereoConfigIndex = 0;
 
   usc->m_usacNumElements = 1; /* Currently all extension elements are skipped
-                                 -> only one SCE or CPE. */
+                               -> only one SCE or CPE. */
 
   switch (audioMode) {
-    case 0: /* mono: ID_USAC_SCE */
-      usc->element[elemIdx].usacElementType = ID_USAC_SCE;
-      usc->m_nUsacChannels = 1;
-      usc->element[elemIdx].m_noiseFilling = FDKreadBits(hBs, 1);
-      if (usc->m_sbrRatioIndex > 0) {
-        if (cb == NULL) {
-          return ErrorStatus;
-        }
-        if (cb->cbSbr != NULL) {
-          usc->element[elemIdx].m_harmonicSBR = FDKreadBit(hBs);
-          usc->element[elemIdx].m_interTes = FDKreadBit(hBs);
-          usc->element[elemIdx].m_pvc = FDKreadBit(hBs);
-          if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
-                        asc->m_extensionSamplingFrequency,
-                        asc->m_samplesPerFrame, asc->m_aot, ID_SCE, elemIdx,
-                        usc->element[elemIdx].m_harmonicSBR,
-                        usc->element[elemIdx].m_stereoConfigIndex,
-                        asc->configMode, &asc->SbrConfigChanged, 1)) {
-            return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-          }
-        }
+  case 0: /* mono: ID_USAC_SCE */
+    usc->element[elemIdx].usacElementType = ID_USAC_SCE;
+    usc->m_nUsacChannels = 1;
+    usc->element[elemIdx].m_noiseFilling = FDKreadBits(hBs, 1);
+    if (usc->m_sbrRatioIndex > 0) {
+      if (cb == NULL) {
+        return ErrorStatus;
       }
-      break;
-    case 2: /* stereo: ID_USAC_CPE */
-      usc->element[elemIdx].usacElementType = ID_USAC_CPE;
-      usc->m_nUsacChannels = 2;
-      usc->element[elemIdx].m_noiseFilling = FDKreadBits(hBs, 1);
-      if (usc->m_sbrRatioIndex > 0) {
+      if (cb->cbSbr != NULL) {
         usc->element[elemIdx].m_harmonicSBR = FDKreadBit(hBs);
         usc->element[elemIdx].m_interTes = FDKreadBit(hBs);
         usc->element[elemIdx].m_pvc = FDKreadBit(hBs);
-        {
-          INT bitsToSkip = skipSbrHeader(hBs, 1);
-          /* read stereoConfigIndex */
-          usc->element[elemIdx].m_stereoConfigIndex = FDKreadBits(hBs, 2);
-          /* rewind */
-          FDKpushBack(hBs, bitsToSkip + 2);
-        }
-        /*
-        The application of the following tools is mutually exclusive per audio
-        stream configuration (see clause 5.3.2, xHE-AAC codec configuration):
-        - MPS212 parametric stereo tool with residual coding
-        (stereoConfigIndex>1); and
-        - QMF based Harmonic Transposer (harmonicSBR==1).
-        */
-        if ((usc->element[elemIdx].m_stereoConfigIndex > 1) &&
-            usc->element[elemIdx].m_harmonicSBR) {
+        if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
+                      asc->m_extensionSamplingFrequency, asc->m_samplesPerFrame,
+                      asc->m_aot, ID_SCE, elemIdx,
+                      usc->element[elemIdx].m_harmonicSBR,
+                      usc->element[elemIdx].m_stereoConfigIndex,
+                      asc->configMode, &asc->SbrConfigChanged, 1)) {
           return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-        }
-        /*
-        The 4:1 sbrRatio (sbrRatioIndex==1 in [11]) may only be employed:
-        - in mono operation; or
-        - in stereo operation if parametric stereo (MPS212) without residual
-        coding is applied, i.e. if stereoConfigIndex==1 (see clause 5.3.2,
-        xHE-AAC codec configuration).
-        */
-        if ((usc->m_sbrRatioIndex == 1) &&
-            (usc->element[elemIdx].m_stereoConfigIndex != 1)) {
-          return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-        }
-        if (cb == NULL) {
-          return ErrorStatus;
-        }
-        {
-          MP4_ELEMENT_ID el_type =
-              (usc->element[elemIdx].m_stereoConfigIndex == 1 ||
-               usc->element[elemIdx].m_stereoConfigIndex == 2)
-                  ? ID_SCE
-                  : ID_CPE;
-          if (cb->cbSbr == NULL) return ErrorStatus = TRANSPORTDEC_UNKOWN_ERROR;
-          if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
-                        asc->m_extensionSamplingFrequency,
-                        asc->m_samplesPerFrame, asc->m_aot, el_type, elemIdx,
-                        usc->element[elemIdx].m_harmonicSBR,
-                        usc->element[elemIdx].m_stereoConfigIndex,
-                        asc->configMode, &asc->SbrConfigChanged, 1)) {
-            return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-          }
-        }
-        /*usc->element[elemIdx].m_stereoConfigIndex =*/FDKreadBits(hBs, 2);
-        if (usc->element[elemIdx].m_stereoConfigIndex > 0) {
-          if (cb->cbSsc != NULL) {
-            int samplesPerFrame = asc->m_samplesPerFrame;
-
-            if (usc->m_sbrRatioIndex == 1) samplesPerFrame <<= 2;
-            if (usc->m_sbrRatioIndex == 2)
-              samplesPerFrame = (samplesPerFrame * 8) / 3;
-            if (usc->m_sbrRatioIndex == 3) samplesPerFrame <<= 1;
-
-            ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
-                cb->cbSscData, hBs,
-                AOT_DRM_USAC, /* syntax differs from MPEG Mps212Config() */
-                asc->m_extensionSamplingFrequency, samplesPerFrame,
-                usc->element[elemIdx].m_stereoConfigIndex,
-                usc->m_coreSbrFrameLengthIndex, 0, /* don't know the length */
-                asc->configMode, &asc->SacConfigChanged);
-          } else {
-            /* ErrorStatus = TRANSPORTDEC_UNSUPPORTED_FORMAT; */
-          }
         }
       }
-      break;
-    default:
-      return TRANSPORTDEC_PARSE_ERROR;
+    }
+    break;
+  case 2: /* stereo: ID_USAC_CPE */
+    usc->element[elemIdx].usacElementType = ID_USAC_CPE;
+    usc->m_nUsacChannels = 2;
+    usc->element[elemIdx].m_noiseFilling = FDKreadBits(hBs, 1);
+    if (usc->m_sbrRatioIndex > 0) {
+      usc->element[elemIdx].m_harmonicSBR = FDKreadBit(hBs);
+      usc->element[elemIdx].m_interTes = FDKreadBit(hBs);
+      usc->element[elemIdx].m_pvc = FDKreadBit(hBs);
+      {
+        INT bitsToSkip = skipSbrHeader(hBs, 1);
+        /* read stereoConfigIndex */
+        usc->element[elemIdx].m_stereoConfigIndex = FDKreadBits(hBs, 2);
+        /* rewind */
+        FDKpushBack(hBs, bitsToSkip + 2);
+      }
+      /*
+      The application of the following tools is mutually exclusive per audio
+      stream configuration (see clause 5.3.2, xHE-AAC codec configuration):
+      - MPS212 parametric stereo tool with residual coding
+      (stereoConfigIndex>1); and
+      - QMF based Harmonic Transposer (harmonicSBR==1).
+      */
+      if ((usc->element[elemIdx].m_stereoConfigIndex > 1) &&
+          usc->element[elemIdx].m_harmonicSBR) {
+        return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+      }
+      /*
+      The 4:1 sbrRatio (sbrRatioIndex==1 in [11]) may only be employed:
+      - in mono operation; or
+      - in stereo operation if parametric stereo (MPS212) without residual
+      coding is applied, i.e. if stereoConfigIndex==1 (see clause 5.3.2,
+      xHE-AAC codec configuration).
+      */
+      if ((usc->m_sbrRatioIndex == 1) &&
+          (usc->element[elemIdx].m_stereoConfigIndex != 1)) {
+        return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+      }
+      if (cb == NULL) {
+        return ErrorStatus;
+      }
+      {
+        MP4_ELEMENT_ID el_type =
+            (usc->element[elemIdx].m_stereoConfigIndex == 1 ||
+             usc->element[elemIdx].m_stereoConfigIndex == 2)
+                ? ID_SCE
+                : ID_CPE;
+        if (cb->cbSbr == NULL)
+          return ErrorStatus = TRANSPORTDEC_UNKOWN_ERROR;
+        if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
+                      asc->m_extensionSamplingFrequency, asc->m_samplesPerFrame,
+                      asc->m_aot, el_type, elemIdx,
+                      usc->element[elemIdx].m_harmonicSBR,
+                      usc->element[elemIdx].m_stereoConfigIndex,
+                      asc->configMode, &asc->SbrConfigChanged, 1)) {
+          return ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+        }
+      }
+      /*usc->element[elemIdx].m_stereoConfigIndex =*/FDKreadBits(hBs, 2);
+      if (usc->element[elemIdx].m_stereoConfigIndex > 0) {
+        if (cb->cbSsc != NULL) {
+          int samplesPerFrame = asc->m_samplesPerFrame;
+
+          if (usc->m_sbrRatioIndex == 1)
+            samplesPerFrame <<= 2;
+          if (usc->m_sbrRatioIndex == 2)
+            samplesPerFrame = (samplesPerFrame * 8) / 3;
+          if (usc->m_sbrRatioIndex == 3)
+            samplesPerFrame <<= 1;
+
+          ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
+              cb->cbSscData, hBs,
+              AOT_DRM_USAC, /* syntax differs from MPEG Mps212Config() */
+              asc->m_extensionSamplingFrequency, samplesPerFrame,
+              usc->element[elemIdx].m_stereoConfigIndex,
+              usc->m_coreSbrFrameLengthIndex, 0, /* don't know the length */
+              asc->configMode, &asc->SacConfigChanged);
+        } else {
+          /* ErrorStatus = TRANSPORTDEC_UNSUPPORTED_FORMAT; */
+        }
+      }
+    }
+    break;
+  default:
+    return TRANSPORTDEC_PARSE_ERROR;
   }
 
   return ErrorStatus;
@@ -2407,8 +2415,8 @@ TRANSPORTDEC_ERROR Drm_xHEAACStaticConfig(
     CSTpCallBacks *cb /* use cb == NULL to signal config check only mode */
 ) {
   int coreSbrFrameLengthIndexDrm = FDKreadBits(bs, 2);
-  if (UsacConfig_SetCoreSbrFrameLengthIndex(
-          asc, coreSbrFrameLengthIndexDrm + 1) != TRANSPORTDEC_OK) {
+  if (UsacConfig_SetCoreSbrFrameLengthIndex(asc, coreSbrFrameLengthIndexDrm +
+                                                     1) != TRANSPORTDEC_OK) {
     return TRANSPORTDEC_PARSE_ERROR;
   }
 
@@ -2481,27 +2489,27 @@ TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(
       sbrFlag = 0; /* rfa */
     } else {
       switch (cSamplingFreq) {
-        case 0: /*  8 kHz */
-          sfIdx = 11;
-          break;
-        case 1: /* 12 kHz */
-          sfIdx = 9;
-          break;
-        case 2: /* 16 kHz */
-          sfIdx = 8;
-          break;
-        case 3: /* 24 kHz */
-          sfIdx = 6;
-          break;
-        case 5: /* 48 kHz */
-          sfIdx = 3;
-          break;
-        case 4: /* reserved */
-        case 6: /* reserved */
-        case 7: /* reserved */
-        default:
-          ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-          goto bail;
+      case 0: /*  8 kHz */
+        sfIdx = 11;
+        break;
+      case 1: /* 12 kHz */
+        sfIdx = 9;
+        break;
+      case 2: /* 16 kHz */
+        sfIdx = 8;
+        break;
+      case 3: /* 24 kHz */
+        sfIdx = 6;
+        break;
+      case 5: /* 48 kHz */
+        sfIdx = 3;
+        break;
+      case 4: /* reserved */
+      case 6: /* reserved */
+      case 7: /* reserved */
+      default:
+        ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+        goto bail;
       }
     }
 
@@ -2526,59 +2534,59 @@ TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(
     }
 
     switch (audioCoding) {
-      case 0: /* AAC */
-        if ((coderField >> 2) && (audioMode != 1)) {
-          self->m_aot = AOT_DRM_SURROUND; /* Set pseudo AOT for Drm Surround */
-        } else {
-          self->m_aot = AOT_DRM_AAC; /* Set pseudo AOT for Drm AAC */
-        }
-        switch (audioMode) {
-          case 1: /* parametric stereo */
-            self->m_psPresentFlag = 1;
-            FDK_FALLTHROUGH;
-          case 0: /* mono */
-            self->m_channelConfiguration = 1;
-            break;
-          case 2: /* stereo */
-            self->m_channelConfiguration = 2;
-            break;
-          default:
-            ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-            goto bail;
-        }
-        self->m_vcb11Flag = 1;
-        self->m_hcrFlag = 1;
-        self->m_samplesPerFrame = 960;
-        self->m_epConfig = 1;
-        break;
-      case 1: /* CELP */
-        self->m_aot = AOT_ER_CELP;
-        self->m_channelConfiguration = 1;
-        break;
-      case 2: /* HVXC */
-        self->m_aot = AOT_ER_HVXC;
-        self->m_channelConfiguration = 1;
-        break;
-      case 3: /* xHE-AAC */
-      {
-        /* payload is MPEG conform -> no pseudo DRM AOT needed */
-        self->m_aot = AOT_USAC;
+    case 0: /* AAC */
+      if ((coderField >> 2) && (audioMode != 1)) {
+        self->m_aot = AOT_DRM_SURROUND; /* Set pseudo AOT for Drm Surround */
+      } else {
+        self->m_aot = AOT_DRM_AAC; /* Set pseudo AOT for Drm AAC */
       }
-        switch (audioMode) {
-          case 0: /* mono */
-          case 2: /* stereo */
-            /* codec specific config 8n bits */
-            ErrorStatus = Drm_xHEAACStaticConfig(self, bs, audioMode, cb);
-            break;
-          default:
-            ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-            goto bail;
-        }
+      switch (audioMode) {
+      case 1: /* parametric stereo */
+        self->m_psPresentFlag = 1;
+        FDK_FALLTHROUGH;
+      case 0: /* mono */
+        self->m_channelConfiguration = 1;
+        break;
+      case 2: /* stereo */
+        self->m_channelConfiguration = 2;
         break;
       default:
         ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-        self->m_aot = AOT_NONE;
+        goto bail;
+      }
+      self->m_vcb11Flag = 1;
+      self->m_hcrFlag = 1;
+      self->m_samplesPerFrame = 960;
+      self->m_epConfig = 1;
+      break;
+    case 1: /* CELP */
+      self->m_aot = AOT_ER_CELP;
+      self->m_channelConfiguration = 1;
+      break;
+    case 2: /* HVXC */
+      self->m_aot = AOT_ER_HVXC;
+      self->m_channelConfiguration = 1;
+      break;
+    case 3: /* xHE-AAC */
+    {
+      /* payload is MPEG conform -> no pseudo DRM AOT needed */
+      self->m_aot = AOT_USAC;
+    }
+      switch (audioMode) {
+      case 0: /* mono */
+      case 2: /* stereo */
+        /* codec specific config 8n bits */
+        ErrorStatus = Drm_xHEAACStaticConfig(self, bs, audioMode, cb);
         break;
+      default:
+        ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+        goto bail;
+      }
+      break;
+    default:
+      ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+      self->m_aot = AOT_NONE;
+      break;
     }
 
     if (self->m_psPresentFlag && !self->m_sbrPresentFlag) {

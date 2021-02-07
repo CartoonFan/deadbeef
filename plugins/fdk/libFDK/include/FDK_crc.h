@@ -125,8 +125,8 @@ typedef struct {
  */
 typedef struct {
   CCrcRegData crcRegData[MAX_CRC_REGS]; /*!< Multiple crc region description. */
-  const USHORT*
-      pCrcLookup; /*!< Pointer to lookup table filled in FDK_crcInit(). */
+  const USHORT
+      *pCrcLookup; /*!< Pointer to lookup table filled in FDK_crcInit(). */
 
   USHORT crcPoly;    /*!< CRC generator polynom. */
   USHORT crcMask;    /*!< CRC mask. */
@@ -143,7 +143,7 @@ typedef struct {
 /**
  *  CRC info handle.
  */
-typedef FDK_CRCINFO* HANDLE_FDK_CRCINFO;
+typedef FDK_CRCINFO *HANDLE_FDK_CRCINFO;
 
 /**
  * \brief  Initialize CRC structure.

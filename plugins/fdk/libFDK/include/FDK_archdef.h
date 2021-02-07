@@ -108,13 +108,14 @@ amm-info@iis.fraunhofer.de
 
 /* Use single macro (the GCC built in macro) for architecture identification
  * independent of the particular toolchain */
-#if defined(__i386__) || defined(__i486__) || defined(__i586__) ||  \
-    defined(__i686__) || (defined(_MSC_VER) && defined(_M_IX86)) || \
+#if defined(__i386__) || defined(__i486__) || defined(__i586__) ||             \
+    defined(__i686__) || (defined(_MSC_VER) && defined(_M_IX86)) ||            \
     (defined(_MSC_VER) && defined(_M_X64)) || defined(__x86_64__)
 #define __x86__
 #endif
 
-#if defined(_M_ARM) && !defined(__arm__) || defined(__aarch64__) || defined(_M_ARM64)
+#if defined(_M_ARM) && !defined(__arm__) || defined(__aarch64__) ||            \
+    defined(_M_ARM64)
 #define __arm__
 #endif
 
@@ -122,13 +123,13 @@ amm-info@iis.fraunhofer.de
 #define __powerpc__ 1
 #endif
 
-#if (__TARGET_ARCH_ARM == 5) || defined(__TARGET_FEATURE_DSPMUL) || \
+#if (__TARGET_ARCH_ARM == 5) || defined(__TARGET_FEATURE_DSPMUL) ||            \
     (_M_ARM == 5) || defined(__ARM_ARCH_5TEJ__) || defined(__ARM_ARCH_7EM__)
 /* Define __ARM_ARCH_5TE__ if armv5te features are supported  */
 #define __ARM_ARCH_5TE__
 #endif
 
-#if (__TARGET_ARCH_ARM == 6) || defined(__ARM_ARCH_6J__) || \
+#if (__TARGET_ARCH_ARM == 6) || defined(__ARM_ARCH_6J__) ||                    \
     defined(__ARM_ARCH_6ZK__)
 /* Define __ARM_ARCH_6__ if the armv6 intructions are being supported. */
 #define __ARM_ARCH_5TE__
@@ -142,7 +143,7 @@ amm-info@iis.fraunhofer.de
 #define __ARM_ARCH_7_R__
 #endif
 
-#if defined(__TARGET_ARCH_7_A) || defined(__ARM_ARCH_7A__) || \
+#if defined(__TARGET_ARCH_7_A) || defined(__ARM_ARCH_7A__) ||                  \
     ((__ARM_ARCH == 8) && (__ARM_32BIT_STATE == 1))
 /* Define __ARM_ARCH_7_A__ if the armv7 intructions are being supported. */
 #define __ARM_ARCH_5TE__
@@ -231,7 +232,7 @@ amm-info@iis.fraunhofer.de
 #define WINDOWTABLE_16BIT
 
 #else
-#warning >>>> Please set architecture characterization defines for your platform (FDK_HIGH_PERFORMANCE)! <<<<
+#warning>>>> Please set architecture characterization defines for your platform (FDK_HIGH_PERFORMANCE)! <<<<
 
 #endif /* Architecture switches */
 
@@ -245,9 +246,9 @@ amm-info@iis.fraunhofer.de
 #define STC(a) ((FIXP_DBL)(LONG)(a))
 #endif /* defined(SINETABLE_16BIT) */
 
-#define STCP(cos, sin)     \
-  {                        \
-    { STC(cos), STC(sin) } \
+#define STCP(cos, sin)                                                         \
+  {                                                                            \
+    { STC(cos), STC(sin) }                                                     \
   }
 
 #ifdef WINDOWTABLE_16BIT
@@ -262,9 +263,9 @@ amm-info@iis.fraunhofer.de
 #define WTC(a) (FIXP_DBL)(a)
 #endif /* SINETABLE_16BIT */
 
-#define WTCP(a, b)     \
-  {                    \
-    { WTC(a), WTC(b) } \
+#define WTCP(a, b)                                                             \
+  {                                                                            \
+    { WTC(a), WTC(b) }                                                         \
   }
 
 #endif /* FDK_ARCHDEF_H */

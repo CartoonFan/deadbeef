@@ -102,11 +102,11 @@ amm-info@iis.fraunhofer.de
 
 #include "intensity.h"
 
+#include "bit_cnt.h"
 #include "interface.h"
 #include "psy_configuration.h"
 #include "psy_const.h"
 #include "qc_main.h"
-#include "bit_cnt.h"
 
 /* only set an IS seed it left/right channel correlation is above IS_CORR_THRESH
  */
@@ -121,7 +121,7 @@ amm-info@iis.fraunhofer.de
 /* the maximum allowed change of the intensity direction (unit: IS scale) -
  * scaled with factor 0.25 - */
 #define IS_DIRECTION_DEVIATION_THRESH_SF 2
-#define IS_DIRECTION_DEVIATION_THRESH \
+#define IS_DIRECTION_DEVIATION_THRESH                                          \
   FL2FXCONST_DBL(2.0f / (1 << IS_DIRECTION_DEVIATION_THRESH_SF))
 
 /* IS regions need to have a minimal percentage of the overall loudness, e.g.
@@ -152,29 +152,29 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   FIXP_DBL corr_thresh; /*!< Only set an IS seed it left/right channel
-                           correlation is above corr_thresh */
+                         correlation is above corr_thresh */
 
   FIXP_DBL total_error_thresh; /*!< When expanding the IS region to more SFBs
-                                  only accept an error that is not more than
-                                  'total_error_thresh' overall. */
+                                only accept an error that is not more than
+                                'total_error_thresh' overall. */
 
   FIXP_DBL local_error_thresh; /*!< When expanding the IS region to more SFBs
-                                  only accept an error that is not more than
-                                  'local_error_thresh' for the current SFB. */
+                                only accept an error that is not more than
+                                'local_error_thresh' for the current SFB. */
 
   FIXP_DBL direction_deviation_thresh; /*!< The maximum allowed change of the
-                                          intensity direction (unit: IS scale)
-                                        */
+                                        intensity direction (unit: IS scale)
+                                      */
 
   FIXP_DBL is_region_min_loudness; /*!< IS regions need to have a minimal
-                                      percentage of the overall loudness, e.g.
-                                      0.06 == 6% */
+                                    percentage of the overall loudness, e.g.
+                                    0.06 == 6% */
 
   INT min_is_sfbs; /*!< Only perform IS if 'min_is_sfbs' neighboring SFBs can be
-                      processed */
+                    processed */
 
   FIXP_DBL left_right_ratio_threshold; /*!< No IS if the panning angle is not
-                                          far from the middle, MS will do */
+                                        far from the middle, MS will do */
 
 } INTENSITY_PARAMETERS;
 
@@ -379,30 +379,30 @@ static void FDKaacEnc_prepareIntensityDecision(
         for (j = sfbOffset[sfb + sfboffs]; j < sfbOffset[sfb + sfboffs + 1];
              j++) {
           ml += fMultDiv2((mdctSpectrumLeft[j] << s),
-                          inv_n);  // scaled with mdctScale - s + inv_n
+                          inv_n); // scaled with mdctScale - s + inv_n
           mr += fMultDiv2((mdctSpectrumRight[j] << s),
-                          inv_n);  // scaled with mdctScale - s + inv_n
+                          inv_n); // scaled with mdctScale - s + inv_n
         }
-        ml = fMultDiv2(ml, inv_n);  // scaled with mdctScale - s + inv_n
-        mr = fMultDiv2(mr, inv_n);  // scaled with mdctScale - s + inv_n
+        ml = fMultDiv2(ml, inv_n); // scaled with mdctScale - s + inv_n
+        mr = fMultDiv2(mr, inv_n); // scaled with mdctScale - s + inv_n
 
         for (j = sfbOffset[sfb + sfboffs]; j < sfbOffset[sfb + sfboffs + 1];
              j++) {
           tmp_l = fMultDiv2((mdctSpectrumLeft[j] << s), inv_n) -
-                  ml;  // scaled with mdctScale - s + inv_n
+                  ml; // scaled with mdctScale - s + inv_n
           tmp_r = fMultDiv2((mdctSpectrumRight[j] << s), inv_n) -
-                  mr;  // scaled with mdctScale - s + inv_n
+                  mr; // scaled with mdctScale - s + inv_n
 
           prod_lr += fMultDiv2(
-              tmp_l, tmp_r);  // scaled with 2*(mdctScale - s + inv_n) + 1
+              tmp_l, tmp_r); // scaled with 2*(mdctScale - s + inv_n) + 1
           square_l +=
-              fPow2Div2(tmp_l);  // scaled with 2*(mdctScale - s + inv_n) + 1
+              fPow2Div2(tmp_l); // scaled with 2*(mdctScale - s + inv_n) + 1
           square_r +=
-              fPow2Div2(tmp_r);  // scaled with 2*(mdctScale - s + inv_n) + 1
+              fPow2Div2(tmp_r); // scaled with 2*(mdctScale - s + inv_n) + 1
         }
-        prod_lr = prod_lr << 1;    // scaled with 2*(mdctScale - s + inv_n)
-        square_l = square_l << 1;  // scaled with 2*(mdctScale - s + inv_n)
-        square_r = square_r << 1;  // scaled with 2*(mdctScale - s + inv_n)
+        prod_lr = prod_lr << 1;   // scaled with 2*(mdctScale - s + inv_n)
+        square_l = square_l << 1; // scaled with 2*(mdctScale - s + inv_n)
+        square_r = square_r << 1; // scaled with 2*(mdctScale - s + inv_n)
 
         if (square_l > FL2FXCONST_DBL(0.0f) &&
             square_r > FL2FXCONST_DBL(0.0f)) {
@@ -556,7 +556,7 @@ static void FDKaacEnc_finalizeIntensityDecision(
       if (currentIsSfbCount > 0 && (!inIsBlock || sfb == maxSfbPerGroup - 1)) {
         /* not enough SFBs -> do not use IS */
         if (currentIsSfbCount < isParams->min_is_sfbs ||
-            (isRegionLoudness<isParams->is_region_min_loudness>>
+            (isRegionLoudness<isParams->is_region_min_loudness> >
              MAX_SFB_PER_GROUP_SF)) {
           for (j = startIsSfb; j <= sfboffs + sfb; j++) {
             isMask[j] = 0;
@@ -636,7 +636,8 @@ void FDKaacEnc_IntensityStereoProcessing(
   FDKmemclear((void *)isScale, sfbCnt * sizeof(INT));
   FDKmemclear((void *)hrrErr, sfbCnt * sizeof(FIXP_DBL));
 
-  if (!allowIS) return;
+  if (!allowIS)
+    return;
 
   FDKaacEnc_initIsParams(&isParams);
 
@@ -684,7 +685,7 @@ void FDKaacEnc_IntensityStereoProcessing(
 
       inv_n = GetInvInt(
           (sfbOffset[sfb + sfboffs + 1] - sfbOffset[sfb + sfboffs]) >>
-          1);  // scaled with 2 to compensate fMultDiv2() in subsequent loop
+          1); // scaled with 2 to compensate fMultDiv2() in subsequent loop
       sL = calcSfbMaxScale(mdctSpectrumLeft, sfbOffset[sfb + sfboffs],
                            sfbOffset[sfb + sfboffs + 1]);
       sR = calcSfbMaxScale(mdctSpectrumRight, sfbOffset[sfb + sfboffs],
@@ -716,7 +717,7 @@ void FDKaacEnc_IntensityStereoProcessing(
           tmp = tmp >> 1;
           s2 = s2 + 1;
         }
-        s2 = (s2 >> 1) + 1;  // +1 compensate fMultDiv2() in subsequent loop
+        s2 = (s2 >> 1) + 1; // +1 compensate fMultDiv2() in subsequent loop
         s2 = fixMin(fixMax(s2, -(DFRACT_BITS - 1)), (DFRACT_BITS - 1));
         scale = sqrtFixp(tmp);
         if (s2 < 0) {
@@ -747,9 +748,10 @@ void FDKaacEnc_IntensityStereoProcessing(
              j++) {
           s = ((mdctSpectrumLeft[j] << s0) >> 1) +
               ((mdctSpectrumRight[j] << s0) >> 1);
-          es = fAddSaturate(es, fMultDiv2(s, s) >>
-                (MDCT_SPEC_SF -
-                 1));  // scaled 2*(mdctScale - s0 + 1) + MDCT_SPEC_SF
+          es = fAddSaturate(
+              es, fMultDiv2(s, s) >>
+                      (MDCT_SPEC_SF -
+                       1)); // scaled 2*(mdctScale - s0 + 1) + MDCT_SPEC_SF
         }
         msMask[sfb + sfboffs] = 0;
         tmp = fDivNorm(sfbEnergyLeft[sfb + sfboffs], es, &s1);
@@ -758,7 +760,7 @@ void FDKaacEnc_IntensityStereoProcessing(
           tmp = tmp >> 1;
           s2 = s2 + 1;
         }
-        s2 = (s2 >> 1) + 1;  // +1 compensate fMultDiv2() in subsequent loop
+        s2 = (s2 >> 1) + 1; // +1 compensate fMultDiv2() in subsequent loop
         s2 = fixMin(fixMax(s2, -(DFRACT_BITS - 1)), (DFRACT_BITS - 1));
         scale = sqrtFixp(tmp);
         if (s2 < 0) {

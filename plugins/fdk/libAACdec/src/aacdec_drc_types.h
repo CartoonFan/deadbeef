@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#define MAX_DRC_THREADS \
+#define MAX_DRC_THREADS                                                        \
   ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
 #define MAX_DRC_BANDS (16) /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
 
@@ -124,7 +124,7 @@ typedef enum {
  */
 typedef enum {
   DISABLED_PARAMETER_HANDLING = -1, /*!< DRC parameter handling disabled, all
-                                       parameters are applied as requested. */
+                                     parameters are applied as requested. */
   ENABLED_PARAMETER_HANDLING =
       0, /*!< Apply changes to requested DRC parameters to prevent clipping */
   DRC_PRESENTATION_MODE_1 = 1, /*!< DRC Presentation mode 1*/
@@ -146,7 +146,7 @@ typedef struct {
   UINT excludedChnsMask;
   SCHAR progRefLevel;
   SCHAR presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
-                     (reserved). */
+                   (reserved). */
   SCHAR pceInstanceTag;
 
   CDrcChannelData channelData;
@@ -176,42 +176,41 @@ typedef struct {
 } CDrcParams;
 
 typedef struct {
-  CDrcParams
-      params; /* Module parameters that can be set by user (via SetParam API
-                 function) */
+  CDrcParams params; /* Module parameters that can be set by user (via SetParam
+                        API function) */
 
   UCHAR enable;      /* Switch that controls dynamic range processing */
   UCHAR digitalNorm; /* Switch to en-/disable reference level normalization in
-                        digital domain */
+                      digital domain */
 
   UCHAR update; /* Flag indicating the change of a user or bitstream parameter
-                   which affects aacDecoder_drcParameterHandling */
+                 which affects aacDecoder_drcParameterHandling */
   INT numOutChannels;     /* Number of output channels */
   INT prevAacNumChannels; /* Previous number of channels of aac bitstream, used
-                             for update flag */
+                           for update flag */
 
   USHORT numPayloads; /* The number of DRC data payload elements found within
-                         frame */
+                       frame */
   USHORT
   numThreads;         /* The number of DRC data threads extracted from the found
-                         payload elements */
+                       payload elements */
   SCHAR progRefLevel; /* Program reference level for all channels */
   UCHAR progRefLevelPresent; /* Program reference level found in bitstream */
 
   UINT prlExpiryCount; /* Counter that can be used to monitor the life time of
-                          the program reference level. */
+                        the program reference level. */
 
   SCHAR presMode; /* Presentation mode as defined in ETSI TS 101 154 */
   UCHAR dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
-                                is present or not */
+                              is present or not */
   UINT dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
-                                position in the bitstream (only one per frame) */
+                              position in the bitstream (only one per frame) */
   UINT drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
-                                               positions in the bitstream */
+                                             positions in the bitstream */
 
   UCHAR
   uniDrcPrecedence; /* Flag for signalling that uniDrc is active and takes
-                       precedence over legacy DRC */
+                     precedence over legacy DRC */
 
 } CDrcInfo;
 

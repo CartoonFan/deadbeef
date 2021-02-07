@@ -121,8 +121,8 @@ inline INT fixnormz_D(LONG value) {
 INT inline fixnormz_D(LONG value) {
   INT result;
   __asm__("clz %[result], %[value]"
-          : [result] "=r"(result)
-          : [value] "r"(value));
+          : [ result ] "=r"(result)
+          : [ value ] "r"(value));
 
   return result;
 }

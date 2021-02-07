@@ -280,12 +280,13 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
   return (ErrorStatus);
 }
 
-TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
-    HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
-    CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int *pfConfigFound, UCHAR configMode, UCHAR configChanged) {
+TRANSPORTDEC_ERROR
+CLatmDemux_ReadStreamMuxConfig(HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
+                               CSTpCallBacks *pTpDecCallbacks,
+                               CSAudioSpecificConfig *pAsc, int *pfConfigFound,
+                               UCHAR configMode, UCHAR configChanged) {
   CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
-                                     after that new config can be parsed */
+                                   after that new config can be parsed */
   CSAudioSpecificConfig *pAscDummy;
   pAscDummy = &ascDummy;
   pLatmDemux->usacExplicitCfgChanged = 0;
@@ -468,7 +469,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                         .extElement.usacExtElementHasAudioPreRoll) {
                   pLatmDemux->newCfgHasAudioPreRoll =
                       1; /* if dummy parsed cfg has audioPreRoll we first flush
-                            before applying new cfg */
+          before applying new cfg */
                 }
               }
             }
@@ -477,36 +478,35 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
 
         p_linfo->m_frameLengthType = FDKreadBits(bs, 3);
         switch (p_linfo->m_frameLengthType) {
-          case 0:
-            p_linfo->m_bufferFullness = FDKreadBits(bs, 8);
+        case 0:
+          p_linfo->m_bufferFullness = FDKreadBits(bs, 8);
 
-            if (!pLatmDemux->m_allStreamsSameTimeFraming) {
-              if ((lay > 0) &&
-                  (pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot == AOT_AAC_SCAL ||
-                   pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot ==
-                       AOT_ER_AAC_SCAL) &&
-                  (pAsc[TPDEC_TRACKINDEX(prog, lay - 1)].m_aot == AOT_CELP ||
-                   pAsc[TPDEC_TRACKINDEX(prog, lay - 1)].m_aot ==
-                       AOT_ER_CELP)) { /* The layer maybe
-                                          ignored later so
-                                          read it anyway: */
-                /* coreFrameOffset = */ FDKreadBits(bs, 6);
-              }
+          if (!pLatmDemux->m_allStreamsSameTimeFraming) {
+            if ((lay > 0) &&
+                (pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot == AOT_AAC_SCAL ||
+                 pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot == AOT_ER_AAC_SCAL) &&
+                (pAsc[TPDEC_TRACKINDEX(prog, lay - 1)].m_aot == AOT_CELP ||
+                 pAsc[TPDEC_TRACKINDEX(prog, lay - 1)].m_aot == AOT_ER_CELP)) {
+              /* The layer maybe
+                                 ignored later so
+                                 read it anyway: */
+              /* coreFrameOffset = */ FDKreadBits(bs, 6);
             }
-            break;
-          case 1:
-            p_linfo->m_frameLengthInBits = FDKreadBits(bs, 9);
-            break;
-          case 3:
-          case 4:
-          case 5:
-            /* CELP */
-          case 6:
-          case 7:
-            /* HVXC */
-          default:
-            ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
-            goto bail;
+          }
+          break;
+        case 1:
+          p_linfo->m_frameLengthInBits = FDKreadBits(bs, 9);
+          break;
+        case 3:
+        case 4:
+        case 5:
+        /* CELP */
+        case 6:
+        case 7:
+        /* HVXC */
+        default:
+          ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
+          goto bail;
         } /* switch framelengthtype*/
 
       } /* layer loop */
@@ -521,7 +521,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
       } else {
         int otherDataLenEsc = 0;
         do {
-          pLatmDemux->m_otherDataLength <<= 8;  // *= 256
+          pLatmDemux->m_otherDataLength <<= 8; // *= 256
           otherDataLenEsc = FDKreadBits(bs, 1);
           pLatmDemux->m_otherDataLength += FDKreadBits(bs, 8);
         } while (otherDataLenEsc);
@@ -585,7 +585,8 @@ bail:
     pLatmDemux->applyAsc = applyAsc;
   } else {
     /* no error and config parsing is finished */
-    if (configMode == AC_CM_ALLOC_MEM) pLatmDemux->applyAsc = 0;
+    if (configMode == AC_CM_ALLOC_MEM)
+      pLatmDemux->applyAsc = 0;
   }
 
   return (ErrorStatus);
@@ -604,20 +605,20 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
         LATM_LAYER_INFO *p_linfo = &pLatmDemux->m_linfo[prog][lay];
 
         switch (p_linfo->m_frameLengthType) {
-          case 0:
-            p_linfo->m_frameLengthInBits = CLatmDemux_ReadAuChunkLengthInfo(bs);
-            totalPayloadBits += p_linfo->m_frameLengthInBits;
-            break;
-          case 3:
-          case 5:
-          case 7:
-          default:
-            return TRANSPORTDEC_PARSE_ERROR;  // AAC_DEC_LATM_INVALIDFRAMELENGTHTYPE;
+        case 0:
+          p_linfo->m_frameLengthInBits = CLatmDemux_ReadAuChunkLengthInfo(bs);
+          totalPayloadBits += p_linfo->m_frameLengthInBits;
+          break;
+        case 3:
+        case 5:
+        case 7:
+        default:
+          return TRANSPORTDEC_PARSE_ERROR; // AAC_DEC_LATM_INVALIDFRAMELENGTHTYPE;
         }
       }
     }
   } else {
-    ErrorStatus = TRANSPORTDEC_PARSE_ERROR;  // AAC_DEC_LATM_TIMEFRAMING;
+    ErrorStatus = TRANSPORTDEC_PARSE_ERROR; // AAC_DEC_LATM_TIMEFRAMING;
   }
   if (pLatmDemux->m_audioMuxLengthBytes > (UINT)0 &&
       totalPayloadBits > (int)pLatmDemux->m_audioMuxLengthBytes * 8) {

@@ -126,7 +126,8 @@ static ULONG calcCRC(HANDLE_CRC hCrcBuf, ULONG bValue, int nBits) {
 
     flag ^= flag1;
     hCrcBuf->crcState <<= 1;
-    if (flag) hCrcBuf->crcState ^= hCrcBuf->crcPoly;
+    if (flag)
+      hCrcBuf->crcState ^= hCrcBuf->crcPoly;
   }
 
   return (hCrcBuf->crcState);

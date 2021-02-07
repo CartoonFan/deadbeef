@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TRANSCENDENT_H
 #define TRANSCENDENT_H
 
-#include "sbrdecoder.h"
 #include "sbr_rom.h"
+#include "sbrdecoder.h"
 
 /************************************************************************/
 /*!
@@ -223,13 +223,13 @@ inline void FDK_add_MantExp(FIXP_DBL a,       /*!< Mantissa of 1st operand a */
   which limits accuracy.
 */
 /************************************************************************/
-static inline void FDK_divide_MantExp(
-    FIXP_SGL a_m,          /*!< Mantissa of dividend a */
-    SCHAR a_e,             /*!< Exponent of dividend a */
-    FIXP_SGL b_m,          /*!< Mantissa of divisor b */
-    SCHAR b_e,             /*!< Exponent of divisor b */
-    FIXP_SGL *ptrResult_m, /*!< Mantissa of quotient a/b */
-    SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
+static inline void
+FDK_divide_MantExp(FIXP_SGL a_m,          /*!< Mantissa of dividend a */
+                   SCHAR a_e,             /*!< Exponent of dividend a */
+                   FIXP_SGL b_m,          /*!< Mantissa of divisor b */
+                   SCHAR b_e,             /*!< Exponent of divisor b */
+                   FIXP_SGL *ptrResult_m, /*!< Mantissa of quotient a/b */
+                   SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int preShift, postShift, index, shift;
@@ -279,13 +279,13 @@ static inline void FDK_divide_MantExp(
   *ptrResult_e = a_e - b_e + 1 + preShift - postShift;
 }
 
-static inline void FDK_divide_MantExp(
-    FIXP_DBL a_m,          /*!< Mantissa of dividend a */
-    SCHAR a_e,             /*!< Exponent of dividend a */
-    FIXP_DBL b_m,          /*!< Mantissa of divisor b */
-    SCHAR b_e,             /*!< Exponent of divisor b */
-    FIXP_DBL *ptrResult_m, /*!< Mantissa of quotient a/b */
-    SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
+static inline void
+FDK_divide_MantExp(FIXP_DBL a_m,          /*!< Mantissa of dividend a */
+                   SCHAR a_e,             /*!< Exponent of dividend a */
+                   FIXP_DBL b_m,          /*!< Mantissa of divisor b */
+                   SCHAR b_e,             /*!< Exponent of divisor b */
+                   FIXP_DBL *ptrResult_m, /*!< Mantissa of quotient a/b */
+                   SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int preShift, postShift, index, shift;
@@ -345,9 +345,9 @@ static inline void FDK_divide_MantExp(
   For performance reasons, the square root is based on a table lookup
   which limits accuracy.
 */
-static inline void FDK_sqrt_MantExp(
-    FIXP_DBL *mantissa, /*!< Pointer to mantissa */
-    SCHAR *exponent, const SCHAR *destScale) {
+static inline void
+FDK_sqrt_MantExp(FIXP_DBL *mantissa, /*!< Pointer to mantissa */
+                 SCHAR *exponent, const SCHAR *destScale) {
   FIXP_DBL input_m = *mantissa;
   int input_e = (int)*exponent;
   FIXP_DBL result = FL2FXCONST_DBL(0.0f);

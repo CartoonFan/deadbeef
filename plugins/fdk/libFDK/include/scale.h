@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #define SCALE_H
 
 #include "common_fix.h"
-#include "genericStds.h"
 #include "fixminmax.h"
+#include "genericStds.h"
 
 #define SCALE_INLINE
 
@@ -230,36 +230,36 @@ inline void scaleValueInPlace(FIXP_DBL *value, /*!< Value */
 }
 #endif
 
-  /*!
-   *
-   *  \brief  Scale input value by 2^{scale} and saturate output to 2^{dBits-1}
-   *  \return scaled and saturated value
-   *
-   *  This macro scales src value right or left and applies saturation to
-   * (2^dBits)-1 maxima output.
-   */
+/*!
+ *
+ *  \brief  Scale input value by 2^{scale} and saturate output to 2^{dBits-1}
+ *  \return scaled and saturated value
+ *
+ *  This macro scales src value right or left and applies saturation to
+ * (2^dBits)-1 maxima output.
+ */
 
 #ifndef SATURATE_RIGHT_SHIFT
-#define SATURATE_RIGHT_SHIFT(src, scale, dBits)                            \
-  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))          \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                 \
-       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 1))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                        \
+#define SATURATE_RIGHT_SHIFT(src, scale, dBits)                                \
+  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))              \
+       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                     \
+       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 1)))     \
+             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                            \
              : ((LONG)(src) >> (scale)))
 #endif
 
 #ifndef SATURATE_LEFT_SHIFT
-#define SATURATE_LEFT_SHIFT(src, scale, dBits)                           \
-  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))        \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                               \
-       : ((LONG)(src) < ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                      \
+#define SATURATE_LEFT_SHIFT(src, scale, dBits)                                 \
+  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))              \
+       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                     \
+       : ((LONG)(src) < ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))       \
+             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                            \
              : ((LONG)(src) << (scale)))
 #endif
 
 #ifndef SATURATE_SHIFT
-#define SATURATE_SHIFT(src, scale, dBits)                        \
-  (((scale) < 0) ? SATURATE_LEFT_SHIFT((src), -(scale), (dBits)) \
+#define SATURATE_SHIFT(src, scale, dBits)                                      \
+  (((scale) < 0) ? SATURATE_LEFT_SHIFT((src), -(scale), (dBits))               \
                  : SATURATE_RIGHT_SHIFT((src), (scale), (dBits)))
 #endif
 
@@ -268,30 +268,30 @@ inline void scaleValueInPlace(FIXP_DBL *value, /*!< Value */
  * to avoid problems when inverting the sign of the result.
  */
 #ifndef SATURATE_LEFT_SHIFT_ALT
-#define SATURATE_LEFT_SHIFT_ALT(src, scale, dBits)                        \
-  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))         \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                \
-       : ((LONG)(src) <= ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                       \
+#define SATURATE_LEFT_SHIFT_ALT(src, scale, dBits)                             \
+  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))              \
+       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                     \
+       : ((LONG)(src) <= ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))      \
+             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                            \
              : ((LONG)(src) << (scale)))
 #endif
 
 #ifndef SATURATE_RIGHT_SHIFT_ALT
-#define SATURATE_RIGHT_SHIFT_ALT(src, scale, dBits)                        \
-  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))          \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                 \
-       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 2))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                        \
+#define SATURATE_RIGHT_SHIFT_ALT(src, scale, dBits)                            \
+  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))              \
+       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                     \
+       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 2)))     \
+             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                            \
              : ((LONG)(src) >> (scale)))
 #endif
 
 #ifndef SATURATE_INT_PCM_RIGHT_SHIFT
-#define SATURATE_INT_PCM_RIGHT_SHIFT(src, scale) \
+#define SATURATE_INT_PCM_RIGHT_SHIFT(src, scale)                               \
   SATURATE_RIGHT_SHIFT(src, scale, SAMPLE_BITS)
 #endif
 
 #ifndef SATURATE_INT_PCM_LEFT_SHIFT
-#define SATURATE_INT_PCM_LEFT_SHIFT(src, scale) \
+#define SATURATE_INT_PCM_LEFT_SHIFT(src, scale)                                \
   SATURATE_LEFT_SHIFT(src, scale, SAMPLE_BITS)
 #endif
 

@@ -102,11 +102,11 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdec_pns.h"
 
+#include "FDK_bitstream.h"
 #include "aac_ram.h"
 #include "aac_rom.h"
-#include "channelinfo.h"
 #include "block.h"
-#include "FDK_bitstream.h"
+#include "channelinfo.h"
 
 #include "genericStds.h"
 

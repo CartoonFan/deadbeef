@@ -127,8 +127,8 @@ amm-info@iis.fraunhofer.de
 #include "sbr_ram.h"
 #include "sbr_rom.h"
 
-#include "genericStds.h"
 #include "autocorr2nd.h"
+#include "genericStds.h"
 
 #include "HFgen_preFlat.h"
 
@@ -151,23 +151,23 @@ amm-info@iis.fraunhofer.de
 static FIXP_DBL mapInvfMode(INVF_MODE mode, INVF_MODE prevMode,
                             WHITENING_FACTORS whFactors) {
   switch (mode) {
-    case INVF_LOW_LEVEL:
-      if (prevMode == INVF_OFF)
-        return whFactors.transitionLevel;
-      else
-        return whFactors.lowLevel;
+  case INVF_LOW_LEVEL:
+    if (prevMode == INVF_OFF)
+      return whFactors.transitionLevel;
+    else
+      return whFactors.lowLevel;
 
-    case INVF_MID_LEVEL:
-      return whFactors.midLevel;
+  case INVF_MID_LEVEL:
+    return whFactors.midLevel;
 
-    case INVF_HIGH_LEVEL:
-      return whFactors.highLevel;
+  case INVF_HIGH_LEVEL:
+    return whFactors.highLevel;
 
-    default:
-      if (prevMode == INVF_LOW_LEVEL)
-        return whFactors.transitionLevel;
-      else
-        return whFactors.off;
+  default:
+    if (prevMode == INVF_LOW_LEVEL)
+      return whFactors.transitionLevel;
+    else
+      return whFactors.off;
   }
 }
 
@@ -199,7 +199,7 @@ static void inverseFilteringLevelEmphasis(
              fMultDiv2(FL2FXCONST_DBL(0.09375f), hLppTrans->bwVectorOld[i]);
     }
 
-    if (accu<FL2FXCONST_DBL(0.015625f)>> 1) {
+    if (accu<FL2FXCONST_DBL(0.015625f)> > 1) {
       bwVector[i] = FL2FXCONST_DBL(0.0f);
     } else {
       bwVector[i] = fixMin(accu << 1, FL2FXCONST_DBL(0.99609375f));
@@ -208,7 +208,7 @@ static void inverseFilteringLevelEmphasis(
 }
 
 /* Resulting autocorrelation determinant exponent */
-#define ACDET_EXP \
+#define ACDET_EXP                                                              \
   (2 * (DFRACT_BITS + sbrScaleFactor->lb_scale + 10 - ac.det_scale))
 #define AC_EXP (-sbrScaleFactor->lb_scale + LPC_SCALE_FACTOR)
 #define ALPHA_EXP (-sbrScaleFactor->lb_scale + LPC_SCALE_FACTOR + 1)
@@ -483,7 +483,8 @@ void lppTransposer(
     }
 
     alphar[1] = FL2FXCONST_SGL(0.0f);
-    if (!useLP) alphai[1] = FL2FXCONST_SGL(0.0f);
+    if (!useLP)
+      alphai[1] = FL2FXCONST_SGL(0.0f);
 
     if (ac.det != FL2FXCONST_DBL(0.0f)) {
       FIXP_DBL tmp, absTmp, absDet;
@@ -549,7 +550,8 @@ void lppTransposer(
     }
 
     alphar[0] = FL2FXCONST_SGL(0.0f);
-    if (!useLP) alphai[0] = FL2FXCONST_SGL(0.0f);
+    if (!useLP)
+      alphai[0] = FL2FXCONST_SGL(0.0f);
 
     if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
       /* ac.r11r is always >=0 */
@@ -716,10 +718,12 @@ void lppTransposer(
       a0r = FX_DBL2FX_SGL(
           fMult(bw, alphar[0])); /* Apply current bandwidth expansion factor */
 
-      if (!useLP) a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
+      if (!useLP)
+        a0i = FX_DBL2FX_SGL(fMult(bw, alphai[0]));
       bw = FX_DBL2FX_SGL(fPow2(bw));
       a1r = FX_DBL2FX_SGL(fMult(bw, alphar[1]));
-      if (!useLP) a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
+      if (!useLP)
+        a1i = FX_DBL2FX_SGL(fMult(bw, alphai[1]));
 
       /*
         Filter Step 3: insert the middle part which won't be windowed
@@ -1243,12 +1247,12 @@ createLppTransposer(
   pSettings->overlap = overlap;
 
   switch (timeSlots) {
-    case 15:
-    case 16:
-      break;
+  case 15:
+  case 16:
+    break;
 
-    default:
-      return SBRDEC_UNSUPPORTED_CONFIG; /* Unimplemented */
+  default:
+    return SBRDEC_UNSUPPORTED_CONFIG; /* Unimplemented */
   }
 
   if (chan == 0) {
@@ -1265,9 +1269,11 @@ static int findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster,
                             UCHAR direction) {
   int index;
 
-  if (goalSb <= v_k_master[0]) return v_k_master[0];
+  if (goalSb <= v_k_master[0])
+    return v_k_master[0];
 
-  if (goalSb >= v_k_master[numMaster]) return v_k_master[numMaster];
+  if (goalSb >= v_k_master[numMaster])
+    return v_k_master[numMaster];
 
   if (direction) {
     index = 0;
@@ -1311,7 +1317,7 @@ resetLppTransposer(
   int numBandsInPatch;
 
   int lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
-                              terms*/
+                            terms*/
   int xoverOffset = highBandStartSb -
                     lsb; /* Calculate distance in QMF bands between k0 and kx */
   int startFreqHz;
@@ -1319,7 +1325,7 @@ resetLppTransposer(
   int desiredBorder;
 
   usb = fixMin(usb, v_k_master[numMaster]); /* Avoid endless loops (compare with
-                                               float code). */
+                                             float code). */
 
   /*
    * Plausibility check
@@ -1456,7 +1462,8 @@ resetLppTransposer(
       ((lsb + xoverOffset) * fs) >> 7; /* Shift does a division by 2*(64) */
 
   for (i = 1; i < NUM_WHFACTOR_TABLE_ENTRIES; i++) {
-    if (startFreqHz < FDK_sbrDecoder_sbr_whFactorsIndex[i]) break;
+    if (startFreqHz < FDK_sbrDecoder_sbr_whFactorsIndex[i])
+      break;
   }
   i--;
 

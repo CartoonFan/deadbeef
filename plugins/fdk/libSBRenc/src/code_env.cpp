@@ -116,69 +116,70 @@ INT FDKsbrEnc_InitSbrHuffmanTables(HANDLE_SBR_ENV_DATA sbrEnvData,
                                    HANDLE_SBR_CODE_ENVELOPE henv,
                                    HANDLE_SBR_CODE_ENVELOPE hnoise,
                                    AMP_RES amp_res) {
-  if ((!henv) || (!hnoise) || (!sbrEnvData)) return (1); /* not init. */
+  if ((!henv) || (!hnoise) || (!sbrEnvData))
+    return (1); /* not init. */
 
   sbrEnvData->init_sbr_amp_res = amp_res;
 
   switch (amp_res) {
-    case SBR_AMP_RES_3_0:
-      /*envelope data*/
+  case SBR_AMP_RES_3_0:
+    /*envelope data*/
 
-      /*Level/Pan - coding */
-      sbrEnvData->hufftableLevelTimeC = v_Huff_envelopeLevelC11T;
-      sbrEnvData->hufftableLevelTimeL = v_Huff_envelopeLevelL11T;
-      sbrEnvData->hufftableBalanceTimeC = bookSbrEnvBalanceC11T;
-      sbrEnvData->hufftableBalanceTimeL = bookSbrEnvBalanceL11T;
+    /*Level/Pan - coding */
+    sbrEnvData->hufftableLevelTimeC = v_Huff_envelopeLevelC11T;
+    sbrEnvData->hufftableLevelTimeL = v_Huff_envelopeLevelL11T;
+    sbrEnvData->hufftableBalanceTimeC = bookSbrEnvBalanceC11T;
+    sbrEnvData->hufftableBalanceTimeL = bookSbrEnvBalanceL11T;
 
-      sbrEnvData->hufftableLevelFreqC = v_Huff_envelopeLevelC11F;
-      sbrEnvData->hufftableLevelFreqL = v_Huff_envelopeLevelL11F;
-      sbrEnvData->hufftableBalanceFreqC = bookSbrEnvBalanceC11F;
-      sbrEnvData->hufftableBalanceFreqL = bookSbrEnvBalanceL11F;
+    sbrEnvData->hufftableLevelFreqC = v_Huff_envelopeLevelC11F;
+    sbrEnvData->hufftableLevelFreqL = v_Huff_envelopeLevelL11F;
+    sbrEnvData->hufftableBalanceFreqC = bookSbrEnvBalanceC11F;
+    sbrEnvData->hufftableBalanceFreqL = bookSbrEnvBalanceL11F;
 
-      /*Right/Left - coding */
-      sbrEnvData->hufftableTimeC = v_Huff_envelopeLevelC11T;
-      sbrEnvData->hufftableTimeL = v_Huff_envelopeLevelL11T;
-      sbrEnvData->hufftableFreqC = v_Huff_envelopeLevelC11F;
-      sbrEnvData->hufftableFreqL = v_Huff_envelopeLevelL11F;
+    /*Right/Left - coding */
+    sbrEnvData->hufftableTimeC = v_Huff_envelopeLevelC11T;
+    sbrEnvData->hufftableTimeL = v_Huff_envelopeLevelL11T;
+    sbrEnvData->hufftableFreqC = v_Huff_envelopeLevelC11F;
+    sbrEnvData->hufftableFreqL = v_Huff_envelopeLevelL11F;
 
-      sbrEnvData->codeBookScfLavBalance = CODE_BOOK_SCF_LAV_BALANCE11;
-      sbrEnvData->codeBookScfLav = CODE_BOOK_SCF_LAV11;
+    sbrEnvData->codeBookScfLavBalance = CODE_BOOK_SCF_LAV_BALANCE11;
+    sbrEnvData->codeBookScfLav = CODE_BOOK_SCF_LAV11;
 
-      sbrEnvData->si_sbr_start_env_bits = SI_SBR_START_ENV_BITS_AMP_RES_3_0;
-      sbrEnvData->si_sbr_start_env_bits_balance =
-          SI_SBR_START_ENV_BITS_BALANCE_AMP_RES_3_0;
-      break;
+    sbrEnvData->si_sbr_start_env_bits = SI_SBR_START_ENV_BITS_AMP_RES_3_0;
+    sbrEnvData->si_sbr_start_env_bits_balance =
+        SI_SBR_START_ENV_BITS_BALANCE_AMP_RES_3_0;
+    break;
 
-    case SBR_AMP_RES_1_5:
-      /*envelope data*/
+  case SBR_AMP_RES_1_5:
+    /*envelope data*/
 
-      /*Level/Pan - coding */
-      sbrEnvData->hufftableLevelTimeC = v_Huff_envelopeLevelC10T;
-      sbrEnvData->hufftableLevelTimeL = v_Huff_envelopeLevelL10T;
-      sbrEnvData->hufftableBalanceTimeC = bookSbrEnvBalanceC10T;
-      sbrEnvData->hufftableBalanceTimeL = bookSbrEnvBalanceL10T;
+    /*Level/Pan - coding */
+    sbrEnvData->hufftableLevelTimeC = v_Huff_envelopeLevelC10T;
+    sbrEnvData->hufftableLevelTimeL = v_Huff_envelopeLevelL10T;
+    sbrEnvData->hufftableBalanceTimeC = bookSbrEnvBalanceC10T;
+    sbrEnvData->hufftableBalanceTimeL = bookSbrEnvBalanceL10T;
 
-      sbrEnvData->hufftableLevelFreqC = v_Huff_envelopeLevelC10F;
-      sbrEnvData->hufftableLevelFreqL = v_Huff_envelopeLevelL10F;
-      sbrEnvData->hufftableBalanceFreqC = bookSbrEnvBalanceC10F;
-      sbrEnvData->hufftableBalanceFreqL = bookSbrEnvBalanceL10F;
+    sbrEnvData->hufftableLevelFreqC = v_Huff_envelopeLevelC10F;
+    sbrEnvData->hufftableLevelFreqL = v_Huff_envelopeLevelL10F;
+    sbrEnvData->hufftableBalanceFreqC = bookSbrEnvBalanceC10F;
+    sbrEnvData->hufftableBalanceFreqL = bookSbrEnvBalanceL10F;
 
-      /*Right/Left - coding */
-      sbrEnvData->hufftableTimeC = v_Huff_envelopeLevelC10T;
-      sbrEnvData->hufftableTimeL = v_Huff_envelopeLevelL10T;
-      sbrEnvData->hufftableFreqC = v_Huff_envelopeLevelC10F;
-      sbrEnvData->hufftableFreqL = v_Huff_envelopeLevelL10F;
+    /*Right/Left - coding */
+    sbrEnvData->hufftableTimeC = v_Huff_envelopeLevelC10T;
+    sbrEnvData->hufftableTimeL = v_Huff_envelopeLevelL10T;
+    sbrEnvData->hufftableFreqC = v_Huff_envelopeLevelC10F;
+    sbrEnvData->hufftableFreqL = v_Huff_envelopeLevelL10F;
 
-      sbrEnvData->codeBookScfLavBalance = CODE_BOOK_SCF_LAV_BALANCE10;
-      sbrEnvData->codeBookScfLav = CODE_BOOK_SCF_LAV10;
+    sbrEnvData->codeBookScfLavBalance = CODE_BOOK_SCF_LAV_BALANCE10;
+    sbrEnvData->codeBookScfLav = CODE_BOOK_SCF_LAV10;
 
-      sbrEnvData->si_sbr_start_env_bits = SI_SBR_START_ENV_BITS_AMP_RES_1_5;
-      sbrEnvData->si_sbr_start_env_bits_balance =
-          SI_SBR_START_ENV_BITS_BALANCE_AMP_RES_1_5;
-      break;
+    sbrEnvData->si_sbr_start_env_bits = SI_SBR_START_ENV_BITS_AMP_RES_1_5;
+    sbrEnvData->si_sbr_start_env_bits_balance =
+        SI_SBR_START_ENV_BITS_BALANCE_AMP_RES_1_5;
+    break;
 
-    default:
-      return (1); /* undefined amp_res mode */
+  default:
+    return (1); /* undefined amp_res mode */
   }
 
   /* these are common to both amp_res values */
@@ -460,10 +461,12 @@ void FDKsbrEnc_codeEnvelope(SCHAR *sfb_nrg, const FREQ_RES *freq_res,
   else
     envDataTableCompFactor = 0;
 
-  if (h_sbrCodeEnvelope->deltaTAcrossFrames == 0) h_sbrCodeEnvelope->upDate = 0;
+  if (h_sbrCodeEnvelope->deltaTAcrossFrames == 0)
+    h_sbrCodeEnvelope->upDate = 0;
 
   /* no delta coding in time in case of a header */
-  if (headerActive) h_sbrCodeEnvelope->upDate = 0;
+  if (headerActive)
+    h_sbrCodeEnvelope->upDate = 0;
 
   for (i = 0; i < nEnvelopes; i++) {
     if (freq_res[i] == FREQ_RES_HIGH)

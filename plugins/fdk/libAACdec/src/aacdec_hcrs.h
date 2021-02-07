@@ -109,21 +109,21 @@ amm-info@iis.fraunhofer.de
 /* The four different kinds of types of states are:                     */
 /* different states are defined as constants */ /* start   middle=self   next
                                                    stop */
-#define STOP_THIS_STATE \
+#define STOP_THIS_STATE                                                        \
   0 /*                                                                      */
-#define BODY_ONLY \
+#define BODY_ONLY                                                              \
   1 /*   X          X                X                                      */
-#define BODY_SIGN__BODY \
+#define BODY_SIGN__BODY                                                        \
   2 /*   X          X         X      X [stop if no sign]                    */
-#define BODY_SIGN__SIGN \
+#define BODY_SIGN__SIGN                                                        \
   3 /*              X                X [stop if sign bits decoded]          */
-#define BODY_SIGN_ESC__BODY \
+#define BODY_SIGN_ESC__BODY                                                    \
   4 /*   X          X         X      X [stop if no sign]                    */
-#define BODY_SIGN_ESC__SIGN \
+#define BODY_SIGN_ESC__SIGN                                                    \
   5 /*              X         X      X [stop if no escape sequence]         */
-#define BODY_SIGN_ESC__ESC_PREFIX \
+#define BODY_SIGN_ESC__ESC_PREFIX                                              \
   6 /*              X         X                                             */
-#define BODY_SIGN_ESC__ESC_WORD \
+#define BODY_SIGN_ESC__ESC_WORD                                                \
   7 /*              X         X      X [stop if abs(second qsc) != 16]      */
 
 /* examples: */
@@ -165,12 +165,12 @@ amm-info@iis.fraunhofer.de
 
 extern void DecodeNonPCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO hHcr);
 
-UINT Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM, void*);
-UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM, void*);
+UINT Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM, void *);
+UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM, void *);
 
 #endif /* AACDEC_HCRS_H */

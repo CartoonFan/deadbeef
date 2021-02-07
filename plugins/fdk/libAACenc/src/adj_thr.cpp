@@ -101,8 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "adj_thr.h"
-#include "sf_estim.h"
 #include "aacEnc_ram.h"
+#include "sf_estim.h"
 
 #define NUM_NRG_LEVS (8)
 #define INV_INT_TAB_SIZE (8)
@@ -307,7 +307,7 @@ static const BITS2PE_CFG_TAB bits2PeConfigTab[] = {
 enum _avoid_hole_state { NO_AH = 0, AH_INACTIVE = 1, AH_ACTIVE = 2 };
 
 /*  Q format definitions */
-#define Q_BITFAC \
+#define Q_BITFAC                                                               \
   (24) /* Q scaling used in FDKaacEnc_bitresCalcBitFac() calculation */
 #define Q_AVGBITS (17) /* scale bit values */
 
@@ -315,10 +315,11 @@ enum _avoid_hole_state { NO_AH = 0, AH_INACTIVE = 1, AH_ACTIVE = 2 };
     functionname: FDKaacEnc_InitBits2PeFactor
     description:  retrieve bits2PeFactor from table
 *****************************************************************************/
-static void FDKaacEnc_InitBits2PeFactor(
-    FIXP_DBL *bits2PeFactor_m, INT *bits2PeFactor_e, const INT bitRate,
-    const INT nChannels, const INT sampleRate, const INT advancedBitsToPe,
-    const INT dZoneQuantEnable, const INT invQuant) {
+static void
+FDKaacEnc_InitBits2PeFactor(FIXP_DBL *bits2PeFactor_m, INT *bits2PeFactor_e,
+                            const INT bitRate, const INT nChannels,
+                            const INT sampleRate, const INT advancedBitsToPe,
+                            const INT dZoneQuantEnable, const INT invQuant) {
   /**** 1) Set default bits2pe factor ****/
   FIXP_DBL bit2PE_m = FL2FXCONST_DBL(1.18f / (1 << (1)));
   INT bit2PE_e = 1;
@@ -340,15 +341,15 @@ static void FDKaacEnc_InitBits2PeFactor(
 
     if ((peTab != NULL) && (size != 0)) {
       INT startB = -1; /* bitrate entry in table that is the next-lower to
-                          actual bitrate  */
+                    actual bitrate  */
       INT stopB = -1;  /* bitrate entry in table that is the next-higher to
-                          actual bitrate */
+                    actual bitrate */
       FIXP_DBL startPF =
           FL2FXCONST_DBL(0.0f); /* bits2PE factor entry in table that is the
-                                   next-lower to actual bits2PE factor  */
+                             next-lower to actual bits2PE factor  */
       FIXP_DBL stopPF = FL2FXCONST_DBL(0.0f); /* bits2PE factor entry in table
-                                                 that is the next-higher to
-                                                 actual bits2PE factor */
+                                           that is the next-higher to
+                                           actual bits2PE factor */
       FIXP_DBL slope = FL2FXCONST_DBL(
           0.0f); /* the slope from the start bits2Pe entry to the next one */
       const int qualityIdx = (invQuant == 0) ? 0 : 1;
@@ -440,10 +441,11 @@ FDK_INLINE INT FDKaacEnc_bits2pe2(const INT bits, const FIXP_DBL factor_m,
 functionname: FDKaacEnc_calcThreshExp
 description:  loudness calculation (threshold to the power of redExp)
 *****************************************************************************/
-static void FDKaacEnc_calcThreshExp(
-    FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB],
-    const QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)], const INT nChannels) {
+static void
+FDKaacEnc_calcThreshExp(FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB],
+                        const QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                        const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                        const INT nChannels) {
   INT ch, sfb, sfbGrp;
   FIXP_DBL thrExpLdData;
 
@@ -463,10 +465,11 @@ static void FDKaacEnc_calcThreshExp(
     description:  reduce minSnr requirements for bands with relative low
 energies
 *****************************************************************************/
-static void FDKaacEnc_adaptMinSnr(
-    QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
-    const MINSNR_ADAPT_PARAM *const msaParam, const INT nChannels) {
+static void
+FDKaacEnc_adaptMinSnr(QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                      const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                      const MINSNR_ADAPT_PARAM *const msaParam,
+                      const INT nChannels) {
   INT ch, sfb, sfbGrp, nSfb;
   FIXP_DBL avgEnLD64, dbRatio, minSnrRed;
   FIXP_DBL minSnrLimitLD64 =
@@ -754,13 +757,13 @@ static void FDKaacEnc_preparePe(PE_DATA *const peData,
  *
  * \return  void
  */
-static void FDKaacEnc_calcWeighting(
-    const PE_DATA *const peData,
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
-    QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const struct TOOLSINFO *const toolsInfo,
-    ATS_ELEMENT *const adjThrStateElement, const INT nChannels,
-    const INT usePatchTool) {
+static void
+FDKaacEnc_calcWeighting(const PE_DATA *const peData,
+                        const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                        QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                        const struct TOOLSINFO *const toolsInfo,
+                        ATS_ELEMENT *const adjThrStateElement,
+                        const INT nChannels, const INT usePatchTool) {
   int ch, noShortWindowInFrame = TRUE;
   INT exePatchM = 0;
 
@@ -779,8 +782,9 @@ static void FDKaacEnc_calcWeighting(
   for (ch = 0; ch < nChannels; ch++) {
     const PSY_OUT_CHANNEL *const psyOutChan = psyOutChannel[ch];
 
-    if (noShortWindowInFrame) { /* retain energy ratio between blocks of
-                                   different length */
+    if (noShortWindowInFrame) {
+      /* retain energy ratio between blocks of
+                                     different length */
 
       FIXP_DBL nrgSum14, nrgSum12, nrgSum34, nrgTotal;
       FIXP_DBL nrgFacLd_14, nrgFacLd_12, nrgFacLd_34;
@@ -987,12 +991,13 @@ description:  apply reduction formula
 static const FIXP_DBL limitThrReducedLdData =
     (FIXP_DBL)0x00008000; /*FL2FXCONST_DBL(FDKpow(2.0,-LD_DATA_SCALING/4.0));*/
 
-static void FDKaacEnc_reduceThresholdsCBR(
-    QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
-    UCHAR ahFlag[(2)][MAX_GROUPED_SFB],
-    const FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB], const INT nChannels,
-    const FIXP_DBL redVal_m, const SCHAR redVal_e) {
+static void
+FDKaacEnc_reduceThresholdsCBR(QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                              const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                              UCHAR ahFlag[(2)][MAX_GROUPED_SFB],
+                              const FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB],
+                              const INT nChannels, const FIXP_DBL redVal_m,
+                              const SCHAR redVal_e) {
   INT ch, sfb, sfbGrp;
   FIXP_DBL sfbEnLdData, sfbThrLdData, sfbThrReducedLdData;
   FIXP_DBL sfbThrExp;
@@ -1053,10 +1058,10 @@ static void FDKaacEnc_reduceThresholdsCBR(
 }
 
 /* similar to prepareSfbPe1() */
-static FIXP_DBL FDKaacEnc_calcChaosMeasure(
-    const PSY_OUT_CHANNEL *const psyOutChannel,
-    const FIXP_DBL *const sfbFormFactorLdData) {
-#define SCALE_FORM_FAC \
+static FIXP_DBL
+FDKaacEnc_calcChaosMeasure(const PSY_OUT_CHANNEL *const psyOutChannel,
+                           const FIXP_DBL *const sfbFormFactorLdData) {
+#define SCALE_FORM_FAC                                                         \
   (4) /* (SCALE_FORM_FAC+FORM_FAC_SHIFT) >= ld(FRAME_LENGTH)*/
 #define SCALE_NRGS (8)
 #define SCALE_NLINES (16)
@@ -1107,12 +1112,13 @@ static FIXP_DBL FDKaacEnc_calcChaosMeasure(
 }
 
 /* apply reduction formula for VBR-mode */
-static void FDKaacEnc_reduceThresholdsVBR(
-    QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
-    UCHAR ahFlag[(2)][MAX_GROUPED_SFB],
-    const FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB], const INT nChannels,
-    const FIXP_DBL vbrQualFactor, FIXP_DBL *const chaosMeasureOld) {
+static void
+FDKaacEnc_reduceThresholdsVBR(QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                              const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                              UCHAR ahFlag[(2)][MAX_GROUPED_SFB],
+                              const FIXP_DBL thrExp[(2)][MAX_GROUPED_SFB],
+                              const INT nChannels, const FIXP_DBL vbrQualFactor,
+                              FIXP_DBL *const chaosMeasureOld) {
   INT ch, sfbGrp, sfb;
   FIXP_DBL chGroupEnergy[TRANS_FAC][2]; /*energy for each group and channel*/
   FIXP_DBL chChaosMeasure[2];
@@ -1123,7 +1129,7 @@ static void FDKaacEnc_reduceThresholdsVBR(
   FIXP_DBL chaosMeasureAvg;
   INT groupCnt;               /* loop counter */
   FIXP_DBL redVal[TRANS_FAC]; /* reduction values; in short-block case one
-                                 redVal for each group */
+                               redVal for each group */
   QC_OUT_CHANNEL *qcOutChan = NULL;
   const PSY_OUT_CHANNEL *psyOutChan = NULL;
 
@@ -1208,15 +1214,14 @@ static void FDKaacEnc_reduceThresholdsVBR(
       }
 
       FDK_ASSERT(psyOutChannel[0]->groupLen[groupCnt] <= INV_INT_TAB_SIZE);
-      groupEnergy = fMult(
-          groupEnergy,
-          invInt[psyOutChannel[0]->groupLen[groupCnt]]); /* correction of
-                                                            group energy */
-      groupEnergy = fixMin(groupEnergy,
-                           frameEnergy >> WIN_TYPE_SCALE); /* do not allow an
-                                                              higher redVal as
-                                                              calculated
-                                                              framewise */
+      groupEnergy =
+          fMult(groupEnergy, invInt[psyOutChannel[0]->groupLen[groupCnt]]); /* correction
+                                                           of group energy */
+      groupEnergy =
+          fixMin(groupEnergy, frameEnergy >> WIN_TYPE_SCALE); /* do not allow an
+                                                           higher redVal as
+                                                           calculated
+                                                           framewise */
 
       groupEnergy >>=
           2; /* 2*WIN_TYPE_SCALE = 6 => 6+2 = 8 ==> 8/4 = int number */
@@ -1397,11 +1402,10 @@ static void FDKaacEnc_correctThresh(
                                   (thrExp[elementId][ch][sfbGrp+sfb] +
                    redVal[elementId]); */
 
-                int minScale =
-                    fixMin(
-                        CountLeadingBits(thrExp[elementId][ch][sfbGrp + sfb]),
-                        CountLeadingBits(redVal_m) - redVal_e) -
-                    1;
+                int minScale = fixMin(CountLeadingBits(
+                                          thrExp[elementId][ch][sfbGrp + sfb]),
+                                      CountLeadingBits(redVal_m) - redVal_e) -
+                               1;
 
                 /* sumld = ld64( sfbThrExp + redVal ) */
                 FIXP_DBL sumLd =
@@ -1861,9 +1865,9 @@ static void FDKaacEnc_allowMoreHoles(
 }
 
 /* reset avoid hole flags from AH_ACTIVE to AH_INACTIVE  */
-static void FDKaacEnc_resetAHFlags(
-    UCHAR ahFlag[(2)][MAX_GROUPED_SFB], const INT nChannels,
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)]) {
+static void
+FDKaacEnc_resetAHFlags(UCHAR ahFlag[(2)][MAX_GROUPED_SFB], const INT nChannels,
+                       const PSY_OUT_CHANNEL *const psyOutChannel[(2)]) {
   int ch, sfb, sfbGrp;
 
   for (ch = 0; ch < nChannels; ch++) {
@@ -1896,13 +1900,14 @@ functionname: FDKaacEnc_adaptThresholdsToPe
 description:  two guesses for the reduction value and one final correction of
 the thresholds
 *****************************************************************************/
-static void FDKaacEnc_adaptThresholdsToPe(
-    const CHANNEL_MAPPING *const cm,
-    ATS_ELEMENT *const AdjThrStateElement[((8))],
-    QC_OUT_ELEMENT *const qcElement[((8))],
-    const PSY_OUT_ELEMENT *const psyOutElement[((8))], const INT desiredPe,
-    const INT maxIter2ndGuess, const INT processElements,
-    const INT elementOffset) {
+static void
+FDKaacEnc_adaptThresholdsToPe(const CHANNEL_MAPPING *const cm,
+                              ATS_ELEMENT *const AdjThrStateElement[((8))],
+                              QC_OUT_ELEMENT *const qcElement[((8))],
+                              const PSY_OUT_ELEMENT *const psyOutElement[((8))],
+                              const INT desiredPe, const INT maxIter2ndGuess,
+                              const INT processElements,
+                              const INT elementOffset) {
   FIXP_DBL reductionValue_m;
   SCHAR reductionValue_e;
   UCHAR(*pAhFlag)[(2)][MAX_GROUPED_SFB];
@@ -2167,11 +2172,12 @@ static void FDKaacEnc_adaptThresholdsToPe(
 }
 
 /* similar to FDKaacEnc_adaptThresholdsToPe(), for  VBR-mode */
-static void FDKaacEnc_AdaptThresholdsVBR(
-    QC_OUT_CHANNEL *const qcOutChannel[(2)],
-    const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
-    ATS_ELEMENT *const AdjThrStateElement,
-    const struct TOOLSINFO *const toolsInfo, const INT nChannels) {
+static void
+FDKaacEnc_AdaptThresholdsVBR(QC_OUT_CHANNEL *const qcOutChannel[(2)],
+                             const PSY_OUT_CHANNEL *const psyOutChannel[(2)],
+                             ATS_ELEMENT *const AdjThrStateElement,
+                             const struct TOOLSINFO *const toolsInfo,
+                             const INT nChannels) {
   UCHAR(*pAhFlag)[MAX_GROUPED_SFB];
   FIXP_DBL(*pThrExp)[MAX_GROUPED_SFB];
 
@@ -2225,12 +2231,10 @@ static void FDKaacEnc_AdaptThresholdsVBR(
                     minBitSave(%)|          \------------
                                           clipHigh      maxBitres
 */
-static FIXP_DBL FDKaacEnc_calcBitSave(FIXP_DBL fillLevel,
-                                      const FIXP_DBL clipLow,
-                                      const FIXP_DBL clipHigh,
-                                      const FIXP_DBL minBitSave,
-                                      const FIXP_DBL maxBitSave,
-                                      const FIXP_DBL bitsave_slope) {
+static FIXP_DBL
+FDKaacEnc_calcBitSave(FIXP_DBL fillLevel, const FIXP_DBL clipLow,
+                      const FIXP_DBL clipHigh, const FIXP_DBL minBitSave,
+                      const FIXP_DBL maxBitSave, const FIXP_DBL bitsave_slope) {
   FIXP_DBL bitsave;
 
   fillLevel = fixMax(fillLevel, clipLow);
@@ -2775,26 +2779,26 @@ void FDKaacEnc_DistributeBits(
 
   /* correction of pe value */
   switch (bitResMode) {
-    case AACENC_BR_MODE_DISABLED:
-    case AACENC_BR_MODE_REDUCED:
-      /* correction of pe value for low bitres */
-      FDKaacEnc_calcPeCorrectionLowBitRes(
-          &AdjThrStateElement->peCorrectionFactor_m,
-          &AdjThrStateElement->peCorrectionFactor_e, AdjThrStateElement->peLast,
-          AdjThrStateElement->dynBitsLast, bitresBits, nChannels,
-          AdjThrStateElement->bits2PeFactor_m,
-          AdjThrStateElement->bits2PeFactor_e);
-      break;
-    case AACENC_BR_MODE_FULL:
-    default:
-      /* correction of pe value for high bitres */
-      FDKaacEnc_FDKaacEnc_calcPeCorrection(
-          &AdjThrStateElement->peCorrectionFactor_m,
-          &AdjThrStateElement->peCorrectionFactor_e,
-          fixMin(*grantedPe, noRedPe), AdjThrStateElement->peLast,
-          AdjThrStateElement->dynBitsLast, AdjThrStateElement->bits2PeFactor_m,
-          AdjThrStateElement->bits2PeFactor_e);
-      break;
+  case AACENC_BR_MODE_DISABLED:
+  case AACENC_BR_MODE_REDUCED:
+    /* correction of pe value for low bitres */
+    FDKaacEnc_calcPeCorrectionLowBitRes(
+        &AdjThrStateElement->peCorrectionFactor_m,
+        &AdjThrStateElement->peCorrectionFactor_e, AdjThrStateElement->peLast,
+        AdjThrStateElement->dynBitsLast, bitresBits, nChannels,
+        AdjThrStateElement->bits2PeFactor_m,
+        AdjThrStateElement->bits2PeFactor_e);
+    break;
+  case AACENC_BR_MODE_FULL:
+  default:
+    /* correction of pe value for high bitres */
+    FDKaacEnc_FDKaacEnc_calcPeCorrection(
+        &AdjThrStateElement->peCorrectionFactor_m,
+        &AdjThrStateElement->peCorrectionFactor_e, fixMin(*grantedPe, noRedPe),
+        AdjThrStateElement->peLast, AdjThrStateElement->dynBitsLast,
+        AdjThrStateElement->bits2PeFactor_m,
+        AdjThrStateElement->bits2PeFactor_e);
+    break;
   }
 
   *grantedPeCorr =

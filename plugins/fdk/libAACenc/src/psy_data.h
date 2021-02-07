@@ -139,7 +139,7 @@ typedef shouldBeUnion {
 SFB_MAX_SCALE;
 
 typedef struct {
-  INT_PCM* psyInputBuffer;
+  INT_PCM *psyInputBuffer;
   FIXP_DBL overlapAddBuffer[3 * 512 / 2];
 
   mdct_t mdctPers;                               /* MDCT persistent data */
@@ -151,14 +151,14 @@ typedef struct {
 } PSY_STATIC;
 
 typedef struct {
-  FIXP_DBL* mdctSpectrum;
+  FIXP_DBL *mdctSpectrum;
   SFB_THRESHOLD sfbThreshold;    /* adapt                                  */
   SFB_ENERGY sfbEnergy;          /* sfb energies                           */
   SFB_LD_ENERGY sfbEnergyLdData; /* sfb energies in ldData format          */
   SFB_MAX_SCALE sfbMaxScaleSpec;
   SFB_ENERGY sfbEnergyMS; /* mid/side sfb energies                  */
   FIXP_DBL sfbEnergyMSLdData[MAX_GROUPED_SFB]; /* mid/side sfb energies in
-                                                  ldData format */
+                                                ldData format */
   SFB_ENERGY sfbSpreadEnergy;
   INT mdctScale; /* exponent of data in mdctSpectrum       */
   INT groupedSfbOffset[MAX_GROUPED_SFB + 1];

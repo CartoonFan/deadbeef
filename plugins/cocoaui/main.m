@@ -21,46 +21,46 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
 #include "deadbeef.h"
+#import <Cocoa/Cocoa.h>
 
 extern DB_functions_t *deadbeef;
 
 BOOL g_CanQuit = NO;
 
 int cocoaui_start(void) {
-    char *argv[1];
-    argv[0] = "FIXME";
-    return NSApplicationMain(1, (const char **)argv);
+  char *argv[1];
+  argv[0] = "FIXME";
+  return NSApplicationMain(1, (const char **)argv);
 }
 
 int cocoaui_stop(void) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        g_CanQuit = YES;
-        [NSApp terminate:g_appDelegate];
-    });
-    return 0;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    g_CanQuit = YES;
+    [NSApp terminate:g_appDelegate];
+  });
+  return 0;
 }
 
-int cocoaui_message (uint32_t _id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
-    return [AppDelegate ddb_message:_id ctx:ctx p1:p1 p2:p2];
+int cocoaui_message(uint32_t _id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
+  return [AppDelegate ddb_message:_id ctx:ctx p1:p1 p2:p2];
 }
 
 DB_gui_t plugin = {
     .plugin.type = DB_PLUGIN_GUI,
-    DDB_PLUGIN_SET_API_VERSION
-    .plugin.version_major = 1,
+    DDB_PLUGIN_SET_API_VERSION.plugin.version_major = 1,
     .plugin.version_minor = 0,
     .plugin.id = "cocoaui",
     .plugin.name = "Cocoa UI",
     .plugin.start = cocoaui_start,
     .plugin.stop = cocoaui_stop,
     .plugin.message = cocoaui_message,
-    // NSApplicationMain doesn't return, so it doesn't seem it's possible to cleanup
+    // NSApplicationMain doesn't return, so it doesn't seem it's possible to
+    // cleanup
 };
 
-DB_plugin_t *cocoaui_load (DB_functions_t *_deadbeef) {
-    deadbeef = _deadbeef;
-    return (DB_plugin_t *)&plugin;
+DB_plugin_t *cocoaui_load(DB_functions_t *_deadbeef) {
+  deadbeef = _deadbeef;
+  return (DB_plugin_t *)&plugin;
 }

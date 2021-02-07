@@ -103,9 +103,9 @@ amm-info@iis.fraunhofer.de
 
 #include "pcmdmx_lib.h"
 
-#include "genericStds.h"
-#include "fixpoint_math.h"
 #include "FDK_core.h"
+#include "fixpoint_math.h"
+#include "genericStds.h"
 
 /* library version */
 #include "version.h"
@@ -144,7 +144,7 @@ amm-info@iis.fraunhofer.de
 #define CENTER_FRONT_CHANNEL (0) /* C  */
 #define LEFT_FRONT_CHANNEL (1)   /* L  */
 #define RIGHT_FRONT_CHANNEL (2)  /* R  */
-#define LEFT_REAR_CHANNEL \
+#define LEFT_REAR_CHANNEL                                                      \
   (3) /* Lr (aka left back channel) or center back channel */
 #define RIGHT_REAR_CHANNEL (4)      /* Rr (aka right back channel) */
 #define LOW_FREQUENCY_CHANNEL (5)   /* Lf */
@@ -178,7 +178,7 @@ amm-info@iis.fraunhofer.de
 
 #define PCMDMX_THRESHOLD_MAP_HEAT_1 (0) /* Store only exact matches */
 #define PCMDMX_THRESHOLD_MAP_HEAT_2 (20)
-#define PCMDMX_THRESHOLD_MAP_HEAT_3 \
+#define PCMDMX_THRESHOLD_MAP_HEAT_3                                            \
   (256) /* Do not assign normal channels to LFE */
 
 #define SP_Z_NRM (0)
@@ -347,8 +347,8 @@ typedef struct {
   UCHAR matrixMixdownIdx;
   /* Attributes: */
   SCHAR pseudoSurround; /*!< If set to 1 the signal is pseudo surround
-                           compatible. The value 0 tells that it is not. If the
-                           value is -1 the information is not available.  */
+                         compatible. The value 0 tells that it is not. If the
+                         value is -1 the information is not available.  */
   UINT expiryCount; /*!< Counter to monitor the life time of a meta data set. */
 
 } DMX_BS_META_DATA;
@@ -378,7 +378,7 @@ struct PCM_DMX_INSTANCE {
   PCM_DMX_USER_PARAMS userParams;
 
   UCHAR applyProcessing; /*!< Flag to en-/disable modules processing.
-                              The max channel limiting is done independently. */
+                            The max channel limiting is done independently. */
 };
 
 /* Memory allocation macro */
@@ -412,7 +412,8 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
   FDK_ASSERT(chIndex < numChInGrp);
 
   if ((chGrp == ACT_FRONT) && fHasCenter) {
-    if (chIndex == 0) fIsCenter = 1;
+    if (chIndex == 0)
+      fIsCenter = 1;
     chIndex = (UCHAR)fMax(0, chIndex - 1);
   } else if (fHasCenter && (chIndex == numChInGrp - 1)) {
     fIsCenter = 1;
@@ -465,30 +466,30 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
  *cases where the (packed) channel mode is ambiguous.
  * @returns Returns the packed channel mode of the requested channel plain.
  **/
-static PCM_DMX_CHANNEL_MODE getChMode4Plain(
-    const int plainIndex, const PCM_DMX_CHANNEL_MODE totChMode,
-    const int chCfg) {
+static PCM_DMX_CHANNEL_MODE
+getChMode4Plain(const int plainIndex, const PCM_DMX_CHANNEL_MODE totChMode,
+                const int chCfg) {
   PCM_DMX_CHANNEL_MODE plainChMode = totChMode;
 
   switch (totChMode) {
-    case CH_MODE_5_0_2_1:
-      if (chCfg == 14) {
-        switch (plainIndex) {
-          case CH_PLAIN_BOTTOM:
-            plainChMode = (PCM_DMX_CHANNEL_MODE)0x0000;
-            break;
-          case CH_PLAIN_TOP:
-            plainChMode = CH_MODE_2_0_0_0;
-            break;
-          case CH_PLAIN_NORMAL:
-          default:
-            plainChMode = CH_MODE_3_0_2_1;
-            break;
-        }
+  case CH_MODE_5_0_2_1:
+    if (chCfg == 14) {
+      switch (plainIndex) {
+      case CH_PLAIN_BOTTOM:
+        plainChMode = (PCM_DMX_CHANNEL_MODE)0x0000;
+        break;
+      case CH_PLAIN_TOP:
+        plainChMode = CH_MODE_2_0_0_0;
+        break;
+      case CH_PLAIN_NORMAL:
+      default:
+        plainChMode = CH_MODE_3_0_2_1;
+        break;
       }
-      break;
-    default:
-      break;
+    }
+    break;
+  default:
+    break;
   }
 
   return plainChMode;
@@ -516,12 +517,12 @@ static inline UINT getIdxSum(UCHAR numCh) {
  *input configuration.
  * @returns Returns an error code.
  **/
-static PCMDMX_ERROR getChannelMode(
-    const UINT numChannels,                 /* in */
-    const AUDIO_CHANNEL_TYPE channelType[], /* in */
-    UCHAR channelIndices[],                 /* in */
-    UCHAR offsetTable[(8)],                 /* out */
-    PCM_DMX_CHANNEL_MODE *chMode            /* out */
+static PCMDMX_ERROR
+getChannelMode(const UINT numChannels,                 /* in */
+               const AUDIO_CHANNEL_TYPE channelType[], /* in */
+               UCHAR channelIndices[],                 /* in */
+               UCHAR offsetTable[(8)],                 /* out */
+               PCM_DMX_CHANNEL_MODE *chMode            /* out */
 ) {
   UINT idxSum[(3)][(4)];
   UCHAR numCh[(3)][(4)];
@@ -691,12 +692,12 @@ static PCMDMX_ERROR getChannelMode(
  * @param [out] Array where the buffer offsets for each channel are stored into.
  * @returns None.
  **/
-static void getChannelDescription(
-    const PCM_DMX_CHANNEL_MODE chMode,         /* in */
-    const FDK_channelMapDescr *const mapDescr, /* in */
-    AUDIO_CHANNEL_TYPE channelType[],          /* out */
-    UCHAR channelIndices[],                    /* out */
-    UCHAR offsetTable[(8)]                     /* out */
+static void
+getChannelDescription(const PCM_DMX_CHANNEL_MODE chMode,         /* in */
+                      const FDK_channelMapDescr *const mapDescr, /* in */
+                      AUDIO_CHANNEL_TYPE channelType[],          /* out */
+                      UCHAR channelIndices[],                    /* out */
+                      UCHAR offsetTable[(8)]                     /* out */
 ) {
   int grpIdx, plainIdx, numPlains = 1, numTotalChannels = 0;
   int chCfg, ch = 0;
@@ -718,27 +719,27 @@ static void getChannelDescription(
 
   /* Get the appropriate channel map */
   switch (chMode) {
-    case CH_MODE_1_0_0_0:
-    case CH_MODE_2_0_0_0:
-    case CH_MODE_3_0_0_0:
-    case CH_MODE_3_0_1_0:
-    case CH_MODE_3_0_2_0:
-    case CH_MODE_3_0_2_1:
-      chCfg = numTotalChannels;
-      break;
-    case CH_MODE_3_0_3_1:
-      chCfg = 11;
-      break;
-    case CH_MODE_3_0_4_1:
-      chCfg = 12;
-      break;
-    case CH_MODE_5_0_2_1:
-      chCfg = 7;
-      break;
-    default:
-      /* fallback */
-      chCfg = 0;
-      break;
+  case CH_MODE_1_0_0_0:
+  case CH_MODE_2_0_0_0:
+  case CH_MODE_3_0_0_0:
+  case CH_MODE_3_0_1_0:
+  case CH_MODE_3_0_2_0:
+  case CH_MODE_3_0_2_1:
+    chCfg = numTotalChannels;
+    break;
+  case CH_MODE_3_0_3_1:
+    chCfg = 11;
+    break;
+  case CH_MODE_3_0_4_1:
+    chCfg = 12;
+    break;
+  case CH_MODE_5_0_2_1:
+    chCfg = 7;
+    break;
+  default:
+    /* fallback */
+    chCfg = 0;
+    break;
   }
 
   /* Compose channel offset table */
@@ -772,46 +773,46 @@ static void getChannelDescription(
       int chIdx = 0; /* Index of channel within the specific group */
 
       switch (grpIdx) {
-        case CH_GROUP_FRONT:
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_FRONT);
-          switch (plainIdx) {
-            default:
-              chMapPos = LEFT_FRONT_CHANNEL;
-              chIdx = numChInGrp[grpIdx] & 0x1;
-              break;
-          }
-          maxChannels = 3;
-          break;
-        case CH_GROUP_SIDE:
-          /* Always map side channels to the multipurpose group. */
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_SIDE);
-          if (plainIdx == CH_PLAIN_TOP) {
-            chMapPos = LEFT_SIDE_CHANNEL_TOP;
-            maxChannels = 3;
-          } else {
-            chMapPos = LEFT_MULTIPRPS_CHANNEL;
-            maxChannels = 2;
-          }
-          break;
-        case CH_GROUP_REAR:
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_BACK);
-          if (plainIdx == CH_PLAIN_TOP) {
-            chMapPos = LEFT_REAR_CHANNEL_TOP;
-            maxChannels = 3;
-          } else {
-            chMapPos = LEFT_REAR_CHANNEL;
-            maxChannels = 2;
-          }
-          break;
-        case CH_GROUP_LFE:
-          if (plainIdx == CH_PLAIN_NORMAL) {
-            type = ACT_LFE;
-            chMapPos = LOW_FREQUENCY_CHANNEL;
-            maxChannels = 1;
-          }
-          break;
+      case CH_GROUP_FRONT:
+        type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_FRONT);
+        switch (plainIdx) {
         default:
+          chMapPos = LEFT_FRONT_CHANNEL;
+          chIdx = numChInGrp[grpIdx] & 0x1;
           break;
+        }
+        maxChannels = 3;
+        break;
+      case CH_GROUP_SIDE:
+        /* Always map side channels to the multipurpose group. */
+        type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_SIDE);
+        if (plainIdx == CH_PLAIN_TOP) {
+          chMapPos = LEFT_SIDE_CHANNEL_TOP;
+          maxChannels = 3;
+        } else {
+          chMapPos = LEFT_MULTIPRPS_CHANNEL;
+          maxChannels = 2;
+        }
+        break;
+      case CH_GROUP_REAR:
+        type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_BACK);
+        if (plainIdx == CH_PLAIN_TOP) {
+          chMapPos = LEFT_REAR_CHANNEL_TOP;
+          maxChannels = 3;
+        } else {
+          chMapPos = LEFT_REAR_CHANNEL;
+          maxChannels = 2;
+        }
+        break;
+      case CH_GROUP_LFE:
+        if (plainIdx == CH_PLAIN_NORMAL) {
+          type = ACT_LFE;
+          chMapPos = LOW_FREQUENCY_CHANNEL;
+          maxChannels = 1;
+        }
+        break;
+      default:
+        break;
       }
 
       /* Map all channels in this group */
@@ -983,26 +984,26 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     /* Convert channel config to channel mode: */
     inChCfg = (unsigned int)inChMode;
     switch (inChCfg) {
-      case 1:
-      case 2:
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-        inChMode = outChModeTable[inChCfg];
-        break;
-      case 11:
-        inChMode = CH_MODE_3_0_3_1;
-        break;
-      case 12:
-        inChMode = CH_MODE_3_0_4_1;
-        break;
-      case 7:
-      case 14:
-        inChMode = CH_MODE_5_0_2_1;
-        break;
-      default:
-        FDK_ASSERT(0);
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      inChMode = outChModeTable[inChCfg];
+      break;
+    case 11:
+      inChMode = CH_MODE_3_0_3_1;
+      break;
+    case 12:
+      inChMode = CH_MODE_3_0_4_1;
+      break;
+    case 7:
+    case 14:
+      inChMode = CH_MODE_5_0_2_1;
+      break;
+    default:
+      FDK_ASSERT(0);
     }
   }
 
@@ -1025,8 +1026,9 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
   }
 
   /* FIRST STAGE: */
-  if (numInChannel > SIX_CHANNEL) { /* Always use MPEG equations either with
-                                       meta data or with default values. */
+  if (numInChannel > SIX_CHANNEL) {
+    /* Always use MPEG equations either with
+                                         meta data or with default values. */
     FIXP_DMX dMixFactA, dMixFactB;
     INT dMixScaleA, dMixScaleB;
     int isValidCfg = TRUE;
@@ -1039,90 +1041,89 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
 
     /* Check if input is in the list of supported configurations */
     switch (inChMode) {
-      case CH_MODE_3_2_1_1: /* chCfg 11 but with side channels */
-      case CH_MODE_3_2_1_0:
-        isValidCfg = FALSE;
-        err = PCMDMX_INVALID_MODE;
-        FDK_FALLTHROUGH;
-      case CH_MODE_3_0_3_1: /* chCfg 11 */
-        /* 6.1ch:  C' = C;  L' = L;  R' = R;  LFE' = LFE;
-                   Ls' = Ls*dmix_a_idx + Cs*dmix_b_idx;
-                   Rs' = Rs*dmix_a_idx + Cs*dmix_b_idx; */
-        dmxClearChannel(
-            mixFactors, mixScales,
-            RIGHT_MULTIPRPS_CHANNEL); /* clear empty input channel */
-        dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, dMixFactA, dMixScaleA);
-        dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
+    case CH_MODE_3_2_1_1: /* chCfg 11 but with side channels */
+    case CH_MODE_3_2_1_0:
+      isValidCfg = FALSE;
+      err = PCMDMX_INVALID_MODE;
+      FDK_FALLTHROUGH;
+    case CH_MODE_3_0_3_1: /* chCfg 11 */
+      /* 6.1ch:  C' = C;  L' = L;  R' = R;  LFE' = LFE;
+                 Ls' = Ls*dmix_a_idx + Cs*dmix_b_idx;
+                 Rs' = Rs*dmix_a_idx + Cs*dmix_b_idx; */
+      dmxClearChannel(mixFactors, mixScales,
+                      RIGHT_MULTIPRPS_CHANNEL); /* clear empty input channel */
+      dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL, LEFT_REAR_CHANNEL,
+                    dMixFactA, dMixScaleA);
+      dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
+                    LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+      dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+                    RIGHT_REAR_CHANNEL, dMixFactA, dMixScaleA);
+      dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+                    LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+      break;
+    case CH_MODE_3_0_4_1: /* chCfg 12 */
+      /* 7.1ch Surround Back:  C' = C;  L' = L;  R' = R;  LFE' = LFE;
+                               Ls' = Ls*dmix_a_idx + Lsr*dmix_b_idx;
+                               Rs' = Rs*dmix_a_idx + Rsr*dmix_b_idx; */
+      dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL, LEFT_REAR_CHANNEL,
+                    dMixFactA, dMixScaleA);
+      dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
+                    LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+      dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+                    RIGHT_REAR_CHANNEL, dMixFactA, dMixScaleA);
+      dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+                    RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+      break;
+    case CH_MODE_5_0_1_0:
+    case CH_MODE_5_0_1_1:
+      dmxClearChannel(mixFactors, mixScales,
+                      RIGHT_REAR_CHANNEL); /* clear empty input channel */
+      dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+                    LEFT_REAR_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+      dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL, LEFT_REAR_CHANNEL,
+                    FL2FXCONST_DMX(0.5f), 1);
+      FDK_FALLTHROUGH;
+    case CH_MODE_5_2_1_0:
+      isValidCfg = FALSE;
+      err = PCMDMX_INVALID_MODE;
+      FDK_FALLTHROUGH;
+    case CH_MODE_5_0_2_1: /* chCfg 7 || 14 */
+      if (inChCfg == 14) {
+        /* 7.1ch Front Height:  C' = C;  Ls' = Ls;  Rs' = Rs;  LFE' = LFE;
+                                L' = L*dmix_a_idx + Lv*dmix_b_idx;
+                                R' = R*dmix_a_idx + Rv*dmix_b_idx; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, dMixFactA, dMixScaleA);
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-        dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
-                      RIGHT_REAR_CHANNEL, dMixFactA, dMixScaleA);
-        dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
-                      LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-        break;
-      case CH_MODE_3_0_4_1: /* chCfg 12 */
-        /* 7.1ch Surround Back:  C' = C;  L' = L;  R' = R;  LFE' = LFE;
-                                 Ls' = Ls*dmix_a_idx + Lsr*dmix_b_idx;
-                                 Rs' = Rs*dmix_a_idx + Rsr*dmix_b_idx; */
-        dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, dMixFactA, dMixScaleA);
-        dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
-                      LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-        dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
-                      RIGHT_REAR_CHANNEL, dMixFactA, dMixScaleA);
-        dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, dMixFactA, dMixScaleA);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
                       RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-        break;
-      case CH_MODE_5_0_1_0:
-      case CH_MODE_5_0_1_1:
-        dmxClearChannel(mixFactors, mixScales,
-                        RIGHT_REAR_CHANNEL); /* clear empty input channel */
-        dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
-        dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
-        FDK_FALLTHROUGH;
-      case CH_MODE_5_2_1_0:
-        isValidCfg = FALSE;
-        err = PCMDMX_INVALID_MODE;
-        FDK_FALLTHROUGH;
-      case CH_MODE_5_0_2_1: /* chCfg 7 || 14 */
-        if (inChCfg == 14) {
-          /* 7.1ch Front Height:  C' = C;  Ls' = Ls;  Rs' = Rs;  LFE' = LFE;
-                                  L' = L*dmix_a_idx + Lv*dmix_b_idx;
-                                  R' = R*dmix_a_idx + Rv*dmix_b_idx; */
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, dMixFactA, dMixScaleA);
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, dMixFactA, dMixScaleA);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-        } else {
-          /* 7.1ch Front:  Ls' = Ls;  Rs' = Rs;  LFE' = LFE;
-                           C' = C + (Lc+Rc)*dmix_a_idx;
-                           L' = L + Lc*dmix_b_idx;
-                           R' = R + Rc*dmix_b_idx; */
-          dmxSetChannel(mixFactors, mixScales, CENTER_FRONT_CHANNEL,
-                        LEFT_MULTIPRPS_CHANNEL, dMixFactA, dMixScaleA);
-          dmxSetChannel(mixFactors, mixScales, CENTER_FRONT_CHANNEL,
-                        RIGHT_MULTIPRPS_CHANNEL, dMixFactA, dMixScaleA);
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
-        }
-        break;
-      default:
-        /* Nothing to do. Just use the identity matrix. */
-        isValidCfg = FALSE;
-        err = PCMDMX_INVALID_MODE;
-        break;
+      } else {
+        /* 7.1ch Front:  Ls' = Ls;  Rs' = Rs;  LFE' = LFE;
+                         C' = C + (Lc+Rc)*dmix_a_idx;
+                         L' = L + Lc*dmix_b_idx;
+                         R' = R + Rc*dmix_b_idx; */
+        dmxSetChannel(mixFactors, mixScales, CENTER_FRONT_CHANNEL,
+                      LEFT_MULTIPRPS_CHANNEL, dMixFactA, dMixScaleA);
+        dmxSetChannel(mixFactors, mixScales, CENTER_FRONT_CHANNEL,
+                      RIGHT_MULTIPRPS_CHANNEL, dMixFactA, dMixScaleA);
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+      }
+      break;
+    default:
+      /* Nothing to do. Just use the identity matrix. */
+      isValidCfg = FALSE;
+      err = PCMDMX_INVALID_MODE;
+      break;
     }
 
     /* Add additional DMX gain */
@@ -1170,10 +1171,10 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     inChMode = CH_MODE_3_0_2_1;
   }
 
-    /* For the X (> 6) to 6 channel downmix we had no choice.
-       To mix from 6 to 2 (or 1) channel(s) we have several possibilities (MPEG
-       DSE | MPEG PCE | ITU | ARIB | DLB). Use profile and the metadata
-       available flags to determine which equation to use: */
+  /* For the X (> 6) to 6 channel downmix we had no choice.
+     To mix from 6 to 2 (or 1) channel(s) we have several possibilities (MPEG
+     DSE | MPEG PCE | ITU | ARIB | DLB). Use profile and the metadata
+     available flags to determine which equation to use: */
 
 #define DMX_METHOD_MPEG_AMD4 1
 #define DMX_METHOD_MPEG_LEGACY 2
@@ -1189,19 +1190,19 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
   } else if (!(pMetaData->typeFlags &
                (TYPE_DSE_CLEV_DATA | TYPE_DSE_SLEV_DATA))) {
     switch (pParams->dmxProfile) {
-      default:
-      case DMX_PRFL_STANDARD:
-        /* dmxMethod = DMX_METHOD_MPEG_AMD4; */
-        break;
-      case DMX_PRFL_MATRIX_MIX:
-      case DMX_PRFL_FORCE_MATRIX_MIX:
-        if (pMetaData->typeFlags & TYPE_PCE_DATA) {
-          dmxMethod = DMX_METHOD_MPEG_LEGACY;
-        }
-        break;
-      case DMX_PRFL_ARIB_JAPAN:
-        dmxMethod = DMX_METHOD_ARIB_JAPAN;
-        break;
+    default:
+    case DMX_PRFL_STANDARD:
+      /* dmxMethod = DMX_METHOD_MPEG_AMD4; */
+      break;
+    case DMX_PRFL_MATRIX_MIX:
+    case DMX_PRFL_FORCE_MATRIX_MIX:
+      if (pMetaData->typeFlags & TYPE_PCE_DATA) {
+        dmxMethod = DMX_METHOD_MPEG_LEGACY;
+      }
+      break;
+    case DMX_PRFL_ARIB_JAPAN:
+      dmxMethod = DMX_METHOD_ARIB_JAPAN;
+      break;
     }
   }
 
@@ -1209,250 +1210,253 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
   if (numOutChannel <= TWO_CHANNEL) {
     /* Create DMX matrix according to input configuration */
     switch (inChMode) {
-      case CH_MODE_2_0_0_0: /* chCfg 2 */
-        /* Apply the dual channel mode. */
-        switch (pParams->dualChannelMode) {
-          case CH1_MODE: /* L' = 0.707 * Ch1;
-                            R' = 0.707 * Ch1; */
-            dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-            dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-            break;
-          case CH2_MODE: /* L' = 0.707 * Ch2;
-                            R' = 0.707 * Ch2; */
-            dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-            dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-            break;
-          case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;
-                              R' = 0.5*Ch1 + 0.5*Ch2; */
-            dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
-            dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
-            dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
-            dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
-            break;
-          default:
-          case STEREO_MODE:
-            /* Nothing to do */
-            break;
-        }
+    case CH_MODE_2_0_0_0: /* chCfg 2 */
+      /* Apply the dual channel mode. */
+      switch (pParams->dualChannelMode) {
+      case CH1_MODE: /* L' = 0.707 * Ch1;
+                      R' = 0.707 * Ch1; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
         break;
-      /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       * - - - - - - - - - - - - - - - - - - - */
-      case CH_MODE_2_0_1_0: {
-        FIXP_DMX sMixLvl;
-        if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
-          /* L' = 0.707*L + 0.5*S;  R' = 0.707*R + 0.5*S; */
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          sMixLvl = FL2FXCONST_DMX(0.5f);
-        } else { /* L' = L + 0.707*S;  R' = R + 0.707*S; */
-          sMixLvl = FL2FXCONST_DMX(0.707f);
-        }
+      case CH2_MODE: /* L' = 0.707 * Ch2;
+                      R' = 0.707 * Ch2; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        break;
+      case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;
+                        R' = 0.5*Ch1 + 0.5*Ch2; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
         dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                      LEFT_REAR_CHANNEL, sMixLvl, 0);
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
         dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                      LEFT_REAR_CHANNEL, sMixLvl, 0);
-      } break;
-      /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       * - - - - - - - - - - - - - - - - - - - */
-      case CH_MODE_3_0_0_0: /* chCfg 3 */
-      {
-        FIXP_DMX cMixLvl;
-        if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
-          /* L' = 0.707*L + 0.5*C;  R' = 0.707*R + 0.5*C; */
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          cMixLvl = FL2FXCONST_DMX(0.5f);
-        } else { /* L' = L + 0.707*C;  R' = R + 0.707*C; */
-          cMixLvl = FL2FXCONST_DMX(0.707f);
-        }
-        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                      CENTER_FRONT_CHANNEL, cMixLvl, 0);
-        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                      CENTER_FRONT_CHANNEL, cMixLvl, 0);
-      } break;
-      /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       * - - - - - - - - - - - - - - - - - - - */
-      case CH_MODE_3_0_1_0: /* chCfg 4 */
-      {
-        FIXP_DMX csMixLvl;
-        if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
-          /* L' = 0.707*L + 0.5*C + 0.5*S;  R' = 0.707*R + 0.5*C + 0.5*S; */
-          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          csMixLvl = FL2FXCONST_DMX(0.5f);
-        } else { /* L' = L + 0.707*C + 0.707*S;
-                    R' = R + 0.707*C + 0.707*S; */
-          csMixLvl = FL2FXCONST_DMX(0.707f);
-        }
-        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                      CENTER_FRONT_CHANNEL, csMixLvl, 0);
-        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                      LEFT_REAR_CHANNEL, csMixLvl, 0);
-        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                      CENTER_FRONT_CHANNEL, csMixLvl, 0);
-        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                      LEFT_REAR_CHANNEL, csMixLvl, 0);
-      } break;
-      /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       * - - - - - - - - - - - - - - - - - - - */
-      case CH_MODE_3_0_2_0: /* chCfg 5 */
-      case CH_MODE_3_0_2_1: /* chCfg 6 */
-      {
-        switch (dmxMethod) {
-          default:
-          case DMX_METHOD_MPEG_AMD4: {
-            FIXP_DMX cMixLvl, sMixLvl, lMixLvl;
-            INT cMixScale, sMixScale, lMixScale;
-
-            /* Get factors from meta data */
-            cMixLvl = abMixLvlValueTab[pMetaData->cLevIdx];
-            cMixScale = (pMetaData->cLevIdx == 0) ? 1 : 0;
-            sMixLvl = abMixLvlValueTab[pMetaData->sLevIdx];
-            sMixScale = (pMetaData->sLevIdx == 0) ? 1 : 0;
-            lMixLvl = lfeMixLvlValueTab[pMetaData->dmixIdxLfe];
-            if (pMetaData->dmixIdxLfe <= 1) {
-              lMixScale = 2;
-            } else if (pMetaData->dmixIdxLfe <= 5) {
-              lMixScale = 1;
-            } else {
-              lMixScale = 0;
-            }
-            /* Setup the DMX matrix */
-            if ((pParams->pseudoSurrMode == FORCE_PS_DMX) ||
-                ((pParams->pseudoSurrMode == AUTO_PS_DMX) &&
-                 (pMetaData->pseudoSurround ==
-                  1))) { /* L' = L + C*clev - (Ls+Rs)*slev + LFE*lflev;
-                            R' = R + C*clev + (Ls+Rs)*slev + LFE*lflev; */
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            LEFT_REAR_CHANNEL, -sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            RIGHT_REAR_CHANNEL, -sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            LEFT_REAR_CHANNEL, sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            RIGHT_REAR_CHANNEL, sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
-            } else { /* L' = L + C*clev + Ls*slev + LFE*llev;
-                        R' = R + C*clev + Rs*slev + LFE*llev; */
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            LEFT_REAR_CHANNEL, sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            RIGHT_REAR_CHANNEL, sMixLvl, sMixScale);
-              dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
-            }
-
-            /* Add additional DMX gain */
-            if (pMetaData->dmxGainIdx2 != 0) { /* Apply DMX gain 2 */
-              FIXP_DMX dmxGain;
-              INT dmxScale;
-              INT sign = (pMetaData->dmxGainIdx2 & 0x40) ? -1 : 1;
-              INT val = pMetaData->dmxGainIdx2 & 0x3F;
-
-              /* 10^(dmx_gain_2/80) */
-              dmxGain = FX_DBL2FX_DMX(
-                  fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
-                         (FIXP_DBL)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)),
-                         0, &dmxScale));
-              /* Currently only positive scale factors supported! */
-              if (dmxScale < 0) {
-                dmxGain >>= -dmxScale;
-                dmxScale = 0;
-              }
-
-              dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                            LEFT_FRONT_CHANNEL, dmxGain, dmxScale);
-              dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                            RIGHT_FRONT_CHANNEL, dmxGain, dmxScale);
-            }
-          } break;
-          case DMX_METHOD_ARIB_JAPAN:
-          case DMX_METHOD_MPEG_LEGACY: {
-            FIXP_DMX flev, clev, slevLL, slevLR, slevRL, slevRR;
-            FIXP_DMX mtrxMixDwnCoef =
-                mpegMixDownIdx2Coef[pMetaData->matrixMixdownIdx];
-
-            if ((pParams->pseudoSurrMode == FORCE_PS_DMX) ||
-                ((pParams->pseudoSurrMode == AUTO_PS_DMX) &&
-                 (pMetaData->pseudoSurround == 1))) {
-              if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
-                /* 3/2 input: L' = 0.707 * [L+0.707*C-k*Ls-k*Rs];
-                              R' = 0.707 * [R+0.707*C+k*Ls+k*Rs]; */
-                flev = mpegMixDownIdx2Coef[0]; /* a = 0.707 */
-              } else { /* 3/2 input: L' = (1.707+2*A)^-1 *
-                          [L+0.707*C-A*Ls-A*Rs]; R' = (1.707+2*A)^-1 *
-                          [R+0.707*C+A*Ls+A*Rs]; */
-                flev = mpegMixDownIdx2PreFact[1][pMetaData->matrixMixdownIdx];
-              }
-              slevRR = slevRL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
-              slevLL = slevLR = -slevRL;
-            } else {
-              if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
-                /* 3/2 input: L' = 0.707 * [L+0.707*C+k*Ls];
-                              R' = 0.707 * [R+0.707*C+k*Rs]; */
-                flev = mpegMixDownIdx2Coef[0]; /* a = 0.707 */
-              } else { /* 3/2 input: L' = (1.707+A)^-1 * [L+0.707*C+A*Ls];
-                                     R' = (1.707+A)^-1 * [R+0.707*C+A*Rs]; */
-                flev = mpegMixDownIdx2PreFact[0][pMetaData->matrixMixdownIdx];
-              }
-              slevRR = slevLL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
-              slevLR = slevRL = (FIXP_DMX)0;
-            }
-            /* common factor */
-            clev =
-                FX_DBL2FX_DMX(fMult(flev, mpegMixDownIdx2Coef[0] /* 0.707 */));
-
-            dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, flev, 0);
-            dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          CENTER_FRONT_CHANNEL, clev, 0);
-            dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_REAR_CHANNEL, slevLL, 0);
-            dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          RIGHT_REAR_CHANNEL, slevLR, 0);
-
-            dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, flev, 0);
-            dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          CENTER_FRONT_CHANNEL, clev, 0);
-            dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          LEFT_REAR_CHANNEL, slevRL, 0);
-            dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_REAR_CHANNEL, slevRR, 0);
-          } break;
-        } /* switch (dmxMethod) */
-      } break;
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+        break;
       default:
-        /* This configuration does not fit to any known downmix equation! */
-        err = PCMDMX_INVALID_MODE;
+      case STEREO_MODE:
+        /* Nothing to do */
         break;
+      }
+      break;
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * - - - - - - - - - - - - - - - - - - - */
+    case CH_MODE_2_0_1_0: {
+      FIXP_DMX sMixLvl;
+      if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
+        /* L' = 0.707*L + 0.5*S;  R' = 0.707*R + 0.5*S; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        sMixLvl = FL2FXCONST_DMX(0.5f);
+      } else { /* L' = L + 0.707*S;  R' = R + 0.707*S; */
+        sMixLvl = FL2FXCONST_DMX(0.707f);
+      }
+      dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                    LEFT_REAR_CHANNEL, sMixLvl, 0);
+      dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                    LEFT_REAR_CHANNEL, sMixLvl, 0);
+    } break;
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * - - - - - - - - - - - - - - - - - - - */
+    case CH_MODE_3_0_0_0: /* chCfg 3 */
+    {
+      FIXP_DMX cMixLvl;
+      if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
+        /* L' = 0.707*L + 0.5*C;  R' = 0.707*R + 0.5*C; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        cMixLvl = FL2FXCONST_DMX(0.5f);
+      } else { /* L' = L + 0.707*C;  R' = R + 0.707*C; */
+        cMixLvl = FL2FXCONST_DMX(0.707f);
+      }
+      dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                    CENTER_FRONT_CHANNEL, cMixLvl, 0);
+      dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                    CENTER_FRONT_CHANNEL, cMixLvl, 0);
+    } break;
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * - - - - - - - - - - - - - - - - - - - */
+    case CH_MODE_3_0_1_0: /* chCfg 4 */
+    {
+      FIXP_DMX csMixLvl;
+      if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
+        /* L' = 0.707*L + 0.5*C + 0.5*S;  R' = 0.707*R + 0.5*C + 0.5*S; */
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+        csMixLvl = FL2FXCONST_DMX(0.5f);
+      } else {
+        /* L' = L + 0.707*C + 0.707*S;
+                    R' = R + 0.707*C + 0.707*S; */
+        csMixLvl = FL2FXCONST_DMX(0.707f);
+      }
+      dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                    CENTER_FRONT_CHANNEL, csMixLvl, 0);
+      dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                    LEFT_REAR_CHANNEL, csMixLvl, 0);
+      dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                    CENTER_FRONT_CHANNEL, csMixLvl, 0);
+      dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                    LEFT_REAR_CHANNEL, csMixLvl, 0);
+    } break;
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     * - - - - - - - - - - - - - - - - - - - */
+    case CH_MODE_3_0_2_0: /* chCfg 5 */
+    case CH_MODE_3_0_2_1: /* chCfg 6 */
+    {
+      switch (dmxMethod) {
+      default:
+      case DMX_METHOD_MPEG_AMD4: {
+        FIXP_DMX cMixLvl, sMixLvl, lMixLvl;
+        INT cMixScale, sMixScale, lMixScale;
+
+        /* Get factors from meta data */
+        cMixLvl = abMixLvlValueTab[pMetaData->cLevIdx];
+        cMixScale = (pMetaData->cLevIdx == 0) ? 1 : 0;
+        sMixLvl = abMixLvlValueTab[pMetaData->sLevIdx];
+        sMixScale = (pMetaData->sLevIdx == 0) ? 1 : 0;
+        lMixLvl = lfeMixLvlValueTab[pMetaData->dmixIdxLfe];
+        if (pMetaData->dmixIdxLfe <= 1) {
+          lMixScale = 2;
+        } else if (pMetaData->dmixIdxLfe <= 5) {
+          lMixScale = 1;
+        } else {
+          lMixScale = 0;
+        }
+        /* Setup the DMX matrix */
+        if ((pParams->pseudoSurrMode == FORCE_PS_DMX) ||
+            ((pParams->pseudoSurrMode == AUTO_PS_DMX) &&
+             (pMetaData->pseudoSurround == 1))) {
+          /* L' = L + C*clev - (Ls+Rs)*slev + LFE*lflev;
+                    R' = R + C*clev + (Ls+Rs)*slev + LFE*lflev; */
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        LEFT_REAR_CHANNEL, -sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        RIGHT_REAR_CHANNEL, -sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        LEFT_REAR_CHANNEL, sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        RIGHT_REAR_CHANNEL, sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
+        } else {
+          /* L' = L + C*clev + Ls*slev + LFE*llev;
+                      R' = R + C*clev + Rs*slev + LFE*llev; */
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        LEFT_REAR_CHANNEL, sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        CENTER_FRONT_CHANNEL, cMixLvl, cMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        RIGHT_REAR_CHANNEL, sMixLvl, sMixScale);
+          dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        LOW_FREQUENCY_CHANNEL, lMixLvl, lMixScale);
+        }
+
+        /* Add additional DMX gain */
+        if (pMetaData->dmxGainIdx2 != 0) { /* Apply DMX gain 2 */
+          FIXP_DMX dmxGain;
+          INT dmxScale;
+          INT sign = (pMetaData->dmxGainIdx2 & 0x40) ? -1 : 1;
+          INT val = pMetaData->dmxGainIdx2 & 0x3F;
+
+          /* 10^(dmx_gain_2/80) */
+          dmxGain = FX_DBL2FX_DMX(
+              fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
+                     (FIXP_DBL)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)), 0,
+                     &dmxScale));
+          /* Currently only positive scale factors supported! */
+          if (dmxScale < 0) {
+            dmxGain >>= -dmxScale;
+            dmxScale = 0;
+          }
+
+          dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                        LEFT_FRONT_CHANNEL, dmxGain, dmxScale);
+          dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                        RIGHT_FRONT_CHANNEL, dmxGain, dmxScale);
+        }
+      } break;
+      case DMX_METHOD_ARIB_JAPAN:
+      case DMX_METHOD_MPEG_LEGACY: {
+        FIXP_DMX flev, clev, slevLL, slevLR, slevRL, slevRR;
+        FIXP_DMX mtrxMixDwnCoef =
+            mpegMixDownIdx2Coef[pMetaData->matrixMixdownIdx];
+
+        if ((pParams->pseudoSurrMode == FORCE_PS_DMX) ||
+            ((pParams->pseudoSurrMode == AUTO_PS_DMX) &&
+             (pMetaData->pseudoSurround == 1))) {
+          if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
+            /* 3/2 input: L' = 0.707 * [L+0.707*C-k*Ls-k*Rs];
+                          R' = 0.707 * [R+0.707*C+k*Ls+k*Rs]; */
+            flev = mpegMixDownIdx2Coef[0]; /* a = 0.707 */
+          } else {
+            /* 3/2 input: L' = (1.707+2*A)^-1 *
+                        [L+0.707*C-A*Ls-A*Rs]; R' = (1.707+2*A)^-1 *
+                        [R+0.707*C+A*Ls+A*Rs]; */
+            flev = mpegMixDownIdx2PreFact[1][pMetaData->matrixMixdownIdx];
+          }
+          slevRR = slevRL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
+          slevLL = slevLR = -slevRL;
+        } else {
+          if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
+            /* 3/2 input: L' = 0.707 * [L+0.707*C+k*Ls];
+                          R' = 0.707 * [R+0.707*C+k*Rs]; */
+            flev = mpegMixDownIdx2Coef[0]; /* a = 0.707 */
+          } else {
+            /* 3/2 input: L' = (1.707+A)^-1 * [L+0.707*C+A*Ls];
+                                   R' = (1.707+A)^-1 * [R+0.707*C+A*Rs]; */
+            flev = mpegMixDownIdx2PreFact[0][pMetaData->matrixMixdownIdx];
+          }
+          slevRR = slevLL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
+          slevLR = slevRL = (FIXP_DMX)0;
+        }
+        /* common factor */
+        clev = FX_DBL2FX_DMX(fMult(flev, mpegMixDownIdx2Coef[0] /* 0.707 */));
+
+        dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_FRONT_CHANNEL, flev, 0);
+        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      CENTER_FRONT_CHANNEL, clev, 0);
+        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      LEFT_REAR_CHANNEL, slevLL, 0);
+        dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
+                      RIGHT_REAR_CHANNEL, slevLR, 0);
+
+        dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_FRONT_CHANNEL, flev, 0);
+        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      CENTER_FRONT_CHANNEL, clev, 0);
+        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      LEFT_REAR_CHANNEL, slevRL, 0);
+        dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
+                      RIGHT_REAR_CHANNEL, slevRR, 0);
+      } break;
+      } /* switch (dmxMethod) */
+    } break;
+    default:
+      /* This configuration does not fit to any known downmix equation! */
+      err = PCMDMX_INVALID_MODE;
+      break;
     } /* switch (inChMode) */
 
     /* Mark the output channels */
@@ -1481,16 +1485,16 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
       mixFactors[CENTER_FRONT_CHANNEL][RIGHT_REAR_CHANNEL] = monoMixLevel;
     } else {
       switch (dmxMethod) {
-        case DMX_METHOD_MPEG_AMD4:
-          /* C' = L + R; */
-          monoMixLevel = FL2FXCONST_DMX(0.5f);
-          monoMixScale = 1;
-          break;
-        default:
-          /* C' = 0.5*L + 0.5*R; */
-          monoMixLevel = FL2FXCONST_DMX(0.5f);
-          monoMixScale = 0;
-          break;
+      case DMX_METHOD_MPEG_AMD4:
+        /* C' = L + R; */
+        monoMixLevel = FL2FXCONST_DMX(0.5f);
+        monoMixScale = 1;
+        break;
+      default:
+        /* C' = 0.5*L + 0.5*R; */
+        monoMixLevel = FL2FXCONST_DMX(0.5f);
+        monoMixScale = 0;
+        break;
       }
       dmxSetChannel(mixFactors, mixScales, CENTER_FRONT_CHANNEL,
                     LEFT_FRONT_CHANNEL, monoMixLevel, monoMixScale);
@@ -1657,115 +1661,120 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags) {
 PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
                              const INT value) {
   switch (param) {
-    case DMX_PROFILE_SETTING:
-      switch ((DMX_PROFILE_TYPE)value) {
-        case DMX_PRFL_STANDARD:
-        case DMX_PRFL_MATRIX_MIX:
-        case DMX_PRFL_FORCE_MATRIX_MIX:
-        case DMX_PRFL_ARIB_JAPAN:
-          break;
-        default:
-          return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      self->userParams.dmxProfile = (DMX_PROFILE_TYPE)value;
+  case DMX_PROFILE_SETTING:
+    switch ((DMX_PROFILE_TYPE)value) {
+    case DMX_PRFL_STANDARD:
+    case DMX_PRFL_MATRIX_MIX:
+    case DMX_PRFL_FORCE_MATRIX_MIX:
+    case DMX_PRFL_ARIB_JAPAN:
       break;
-
-    case DMX_BS_DATA_EXPIRY_FRAME:
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      self->userParams.expiryFrame = (value > 0) ? (UINT)value : 0;
-      break;
-
-    case DMX_BS_DATA_DELAY:
-      if ((value > (1)) || (value < 0)) {
-        return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) {
-        return (PCMDMX_INVALID_HANDLE);
-      }
-      self->userParams.frameDelay = (UCHAR)value;
-      break;
-
-    case MIN_NUMBER_OF_OUTPUT_CHANNELS:
-      switch (value) { /* supported output channels */
-        case -1:
-        case 0:
-        case ONE_CHANNEL:
-        case TWO_CHANNEL:
-        case SIX_CHANNEL:
-        case EIGHT_CHANNEL:
-          break;
-        default:
-          return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      /* Store the new value */
-      self->userParams.numOutChannelsMin = (value > 0) ? (SHORT)value : -1;
-      if ((value > 0) && (self->userParams.numOutChannelsMax > 0) &&
-          (value > self->userParams
-                       .numOutChannelsMax)) { /* MIN > MAX would be an invalid
-                                                 state. Thus set MAX = MIN in
-                                                 this case. */
-        self->userParams.numOutChannelsMax = self->userParams.numOutChannelsMin;
-      }
-      break;
-
-    case MAX_NUMBER_OF_OUTPUT_CHANNELS:
-      switch (value) { /* supported output channels */
-        case -1:
-        case 0:
-        case ONE_CHANNEL:
-        case TWO_CHANNEL:
-        case SIX_CHANNEL:
-        case EIGHT_CHANNEL:
-          break;
-        default:
-          return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      /* Store the new value */
-      self->userParams.numOutChannelsMax = (value > 0) ? (SHORT)value : -1;
-      if ((value > 0) &&
-          (value < self->userParams
-                       .numOutChannelsMin)) { /* MAX < MIN would be an invalid
-                                                 state. Thus set MIN = MAX in
-                                                 this case. */
-        self->userParams.numOutChannelsMin = self->userParams.numOutChannelsMax;
-      }
-      break;
-
-    case DMX_DUAL_CHANNEL_MODE:
-      switch ((DUAL_CHANNEL_MODE)value) {
-        case STEREO_MODE:
-        case CH1_MODE:
-        case CH2_MODE:
-        case MIXED_MODE:
-          break;
-        default:
-          return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      self->userParams.dualChannelMode = (DUAL_CHANNEL_MODE)value;
-      self->applyProcessing = ((DUAL_CHANNEL_MODE)value != STEREO_MODE)
-                                  ? 1
-                                  : 0; /* Force processing if necessary. */
-      break;
-
-    case DMX_PSEUDO_SURROUND_MODE:
-      switch ((PSEUDO_SURROUND_MODE)value) {
-        case NEVER_DO_PS_DMX:
-        case AUTO_PS_DMX:
-        case FORCE_PS_DMX:
-          break;
-        default:
-          return (PCMDMX_UNABLE_TO_SET_PARAM);
-      }
-      if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      self->userParams.pseudoSurrMode = (PSEUDO_SURROUND_MODE)value;
-      break;
-
     default:
-      return (PCMDMX_UNKNOWN_PARAM);
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    self->userParams.dmxProfile = (DMX_PROFILE_TYPE)value;
+    break;
+
+  case DMX_BS_DATA_EXPIRY_FRAME:
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    self->userParams.expiryFrame = (value > 0) ? (UINT)value : 0;
+    break;
+
+  case DMX_BS_DATA_DELAY:
+    if ((value > (1)) || (value < 0)) {
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL) {
+      return (PCMDMX_INVALID_HANDLE);
+    }
+    self->userParams.frameDelay = (UCHAR)value;
+    break;
+
+  case MIN_NUMBER_OF_OUTPUT_CHANNELS:
+    switch (value) { /* supported output channels */
+    case -1:
+    case 0:
+    case ONE_CHANNEL:
+    case TWO_CHANNEL:
+    case SIX_CHANNEL:
+    case EIGHT_CHANNEL:
+      break;
+    default:
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    /* Store the new value */
+    self->userParams.numOutChannelsMin = (value > 0) ? (SHORT)value : -1;
+    if ((value > 0) && (self->userParams.numOutChannelsMax > 0) &&
+        (value > self->userParams.numOutChannelsMax)) {
+      /* MIN > MAX would be an invalid
+                                state. Thus set MAX = MIN in
+                                this case. */
+      self->userParams.numOutChannelsMax = self->userParams.numOutChannelsMin;
+    }
+    break;
+
+  case MAX_NUMBER_OF_OUTPUT_CHANNELS:
+    switch (value) { /* supported output channels */
+    case -1:
+    case 0:
+    case ONE_CHANNEL:
+    case TWO_CHANNEL:
+    case SIX_CHANNEL:
+    case EIGHT_CHANNEL:
+      break;
+    default:
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    /* Store the new value */
+    self->userParams.numOutChannelsMax = (value > 0) ? (SHORT)value : -1;
+    if ((value > 0) && (value < self->userParams.numOutChannelsMin)) {
+      /* MAX < MIN would be an invalid
+                                state. Thus set MIN = MAX in
+                                this case. */
+      self->userParams.numOutChannelsMin = self->userParams.numOutChannelsMax;
+    }
+    break;
+
+  case DMX_DUAL_CHANNEL_MODE:
+    switch ((DUAL_CHANNEL_MODE)value) {
+    case STEREO_MODE:
+    case CH1_MODE:
+    case CH2_MODE:
+    case MIXED_MODE:
+      break;
+    default:
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    self->userParams.dualChannelMode = (DUAL_CHANNEL_MODE)value;
+    self->applyProcessing = ((DUAL_CHANNEL_MODE)value != STEREO_MODE)
+                                ? 1
+                                : 0; /* Force processing if necessary. */
+    break;
+
+  case DMX_PSEUDO_SURROUND_MODE:
+    switch ((PSEUDO_SURROUND_MODE)value) {
+    case NEVER_DO_PS_DMX:
+    case AUTO_PS_DMX:
+    case FORCE_PS_DMX:
+      break;
+    default:
+      return (PCMDMX_UNABLE_TO_SET_PARAM);
+    }
+    if (self == NULL)
+      return (PCMDMX_INVALID_HANDLE);
+    self->userParams.pseudoSurrMode = (PSEUDO_SURROUND_MODE)value;
+    break;
+
+  default:
+    return (PCMDMX_UNKNOWN_PARAM);
   }
 
   return (PCMDMX_OK);
@@ -1787,29 +1796,29 @@ PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
   pUsrParams = &self->userParams;
 
   switch (param) {
-    case DMX_PROFILE_SETTING:
-      *pValue = (INT)pUsrParams->dmxProfile;
-      break;
-    case DMX_BS_DATA_EXPIRY_FRAME:
-      *pValue = (INT)pUsrParams->expiryFrame;
-      break;
-    case DMX_BS_DATA_DELAY:
-      *pValue = (INT)pUsrParams->frameDelay;
-      break;
-    case MIN_NUMBER_OF_OUTPUT_CHANNELS:
-      *pValue = (INT)pUsrParams->numOutChannelsMin;
-      break;
-    case MAX_NUMBER_OF_OUTPUT_CHANNELS:
-      *pValue = (INT)pUsrParams->numOutChannelsMax;
-      break;
-    case DMX_DUAL_CHANNEL_MODE:
-      *pValue = (INT)pUsrParams->dualChannelMode;
-      break;
-    case DMX_PSEUDO_SURROUND_MODE:
-      *pValue = (INT)pUsrParams->pseudoSurrMode;
-      break;
-    default:
-      return (PCMDMX_UNKNOWN_PARAM);
+  case DMX_PROFILE_SETTING:
+    *pValue = (INT)pUsrParams->dmxProfile;
+    break;
+  case DMX_BS_DATA_EXPIRY_FRAME:
+    *pValue = (INT)pUsrParams->expiryFrame;
+    break;
+  case DMX_BS_DATA_DELAY:
+    *pValue = (INT)pUsrParams->frameDelay;
+    break;
+  case MIN_NUMBER_OF_OUTPUT_CHANNELS:
+    *pValue = (INT)pUsrParams->numOutChannelsMin;
+    break;
+  case MAX_NUMBER_OF_OUTPUT_CHANNELS:
+    *pValue = (INT)pUsrParams->numOutChannelsMax;
+    break;
+  case DMX_DUAL_CHANNEL_MODE:
+    *pValue = (INT)pUsrParams->dualChannelMode;
+    break;
+  case DMX_PSEUDO_SURROUND_MODE:
+    *pValue = (INT)pUsrParams->pseudoSurrMode;
+    break;
+  default:
+    return (PCMDMX_UNKNOWN_PARAM);
   }
 
   return (PCMDMX_OK);
@@ -1859,11 +1868,14 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
   if (isMpeg2) {
     /* int numAncBytes = */ FDKreadBits(hBs, 4);
     /* advanced dynamic range control */
-    if (FDKreadBit(hBs)) skip4Dmx += 24;
+    if (FDKreadBit(hBs))
+      skip4Dmx += 24;
     /* dialog normalization */
-    if (FDKreadBit(hBs)) skip4Dmx += 8;
+    if (FDKreadBit(hBs))
+      skip4Dmx += 8;
     /* reproduction_level */
-    if (FDKreadBit(hBs)) skip4Dmx += 8;
+    if (FDKreadBit(hBs))
+      skip4Dmx += 8;
   } else {
     FDKpushFor(hBs, 2); /* drc presentation mode */
     pBsMetaData->pseudoSurround = (SCHAR)FDKreadBit(hBs);
@@ -1875,18 +1887,22 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
 
   if (isMpeg2) {
     /* scale factor CRC status */
-    if (FDKreadBit(hBs)) skip4Ext += 16;
+    if (FDKreadBit(hBs))
+      skip4Ext += 16;
   } else {
     /* ancillary data extension status */
     extDataAvail = FDKreadBit(hBs);
   }
 
   /* audio coding and compression status */
-  if (FDKreadBit(hBs)) skip4Ext += 16;
+  if (FDKreadBit(hBs))
+    skip4Ext += 16;
   /* coarse grain timecode status */
-  if (FDKreadBit(hBs)) skip4Ext += 16;
+  if (FDKreadBit(hBs))
+    skip4Ext += 16;
   /* fine grain timecode status */
-  if (FDKreadBit(hBs)) skip4Ext += 16;
+  if (FDKreadBit(hBs))
+    skip4Ext += 16;
 
   /* skip the useless data to get to the DMX levels */
   FDKpushFor(hBs, skip4Dmx);
@@ -2175,25 +2191,25 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
 
       /* Check if the input configuration is one defined in the standard. */
       switch (inChMode) {
-        case CH_MODE_5_0_2_1: /* chCfg 7 || 14 */
-          /* Further analyse the input config to distinguish the two
-           * CH_MODE_5_0_2_1 configs. */
-          if ((multiPurposeChType[0] == ACT_FRONT_TOP) &&
-              (multiPurposeChType[1] == ACT_FRONT_TOP)) {
-            chCfg = 14;
-          } else {
-            chCfg = 7;
-          }
-          break;
-        case CH_MODE_3_0_3_1: /* chCfg 11 */
-          chCfg = 11;
-          break;
-        case CH_MODE_3_0_4_1: /* chCfg 12 */
-          chCfg = 12;
-          break;
-        default:
-          chCfg = 0; /* Not a known config */
-          break;
+      case CH_MODE_5_0_2_1: /* chCfg 7 || 14 */
+        /* Further analyse the input config to distinguish the two
+         * CH_MODE_5_0_2_1 configs. */
+        if ((multiPurposeChType[0] == ACT_FRONT_TOP) &&
+            (multiPurposeChType[1] == ACT_FRONT_TOP)) {
+          chCfg = 14;
+        } else {
+          chCfg = 7;
+        }
+        break;
+      case CH_MODE_3_0_3_1: /* chCfg 11 */
+        chCfg = 11;
+        break;
+      case CH_MODE_3_0_4_1: /* chCfg 12 */
+        chCfg = 12;
+        break;
+      default:
+        chCfg = 0; /* Not a known config */
+        break;
       }
     }
 
@@ -2300,7 +2316,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     *nChannels = numOutChannels;
 
   } /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       - - - - - - - - - - - - - - - - - - */
+     - - - - - - - - - - - - - - - - - - */
   else if (numInChannels < numOutChannels) { /* Apply rudimentary upmix */
     /* Set up channel pointer */
     UCHAR outOffsetTable[(8)];
@@ -2325,10 +2341,9 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
 
       /* Set input channel pointer. The first channel is always at index 0. */
       pInPcm[CENTER_FRONT_CHANNEL] =
-          &pPcmBuf[(frameSize - 1) *
-                   inStride]; /* Considering input mapping could lead to a
-                                 invalid pointer here if the channel is not
-                                 declared to be a front channel. */
+          &pPcmBuf[(frameSize - 1) * inStride]; /* Considering input mapping
+                             could lead to a invalid pointer here if the channel
+                             is not declared to be a front channel. */
 
       /* Set output channel pointer (for this stage). */
       pOutLF = &pPcmBuf[outOffsetTable[LEFT_FRONT_CHANNEL] * offset +
@@ -2514,86 +2529,86 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     /* update the number of output channels */
     *nChannels = numOutChannels;
   } /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-       - - - - - - - - - - - - - - - - - - */
+     - - - - - - - - - - - - - - - - - - */
   else if (numInChannels == numOutChannels) {
     /* Don't need to change the channel description here */
 
     switch (numInChannels) {
-      case 2: { /* Set up channel pointer */
-        DMX_PCM *pInPcm[(8)];
-        DMX_PCM *pOutL, *pOutR;
-        FIXP_DMX flev;
+    case 2: { /* Set up channel pointer */
+      DMX_PCM *pInPcm[(8)];
+      DMX_PCM *pOutL, *pOutR;
+      FIXP_DMX flev;
 
-        UINT sample;
+      UINT sample;
 
-        if (fInterleaved) {
-          inStride = numInChannels;
-          outStride =
-              2; /* fixed !!! (below stereo is donwmixed to mono if required */
-          offset = 1; /* Channel specific offset factor */
-        } else {
-          inStride = 1;
-          outStride = 1;
-          offset = frameSize; /* Channel specific offset factor */
+      if (fInterleaved) {
+        inStride = numInChannels;
+        outStride =
+            2; /* fixed !!! (below stereo is donwmixed to mono if required */
+        offset = 1; /* Channel specific offset factor */
+      } else {
+        inStride = 1;
+        outStride = 1;
+        offset = frameSize; /* Channel specific offset factor */
+      }
+
+      /* Set input channel pointer */
+      pInPcm[LEFT_FRONT_CHANNEL] =
+          &pPcmBuf[inOffsetTable[LEFT_FRONT_CHANNEL] * offset];
+      pInPcm[RIGHT_FRONT_CHANNEL] =
+          &pPcmBuf[inOffsetTable[RIGHT_FRONT_CHANNEL] * offset];
+
+      /* Set output channel pointer (same as input) */
+      pOutL = pInPcm[LEFT_FRONT_CHANNEL];
+      pOutR = pInPcm[RIGHT_FRONT_CHANNEL];
+
+      /* Set downmix levels: */
+      flev = FL2FXCONST_DMX(0.70710678f);
+      /* 2/0 input: */
+      switch (dualChannelMode) {
+      case CH1_MODE: /* L' = 0.707 * Ch1;  R' = 0.707 * Ch1 */
+        for (sample = 0; sample < frameSize; sample++) {
+          *pOutL = *pOutR = (DMX_PCM)SATURATE_RIGHT_SHIFT(
+              fMult((DMX_PCMF)*pInPcm[LEFT_FRONT_CHANNEL], flev),
+              DFRACT_BITS - DMX_PCM_BITS, DMX_PCM_BITS);
+
+          pInPcm[LEFT_FRONT_CHANNEL] += inStride;
+          pOutL += outStride;
+          pOutR += outStride;
         }
+        break;
+      case CH2_MODE: /* L' = 0.707 * Ch2;  R' = 0.707 * Ch2 */
+        for (sample = 0; sample < frameSize; sample++) {
+          *pOutL = *pOutR = (DMX_PCM)SATURATE_RIGHT_SHIFT(
+              fMult((DMX_PCMF)*pInPcm[RIGHT_FRONT_CHANNEL], flev),
+              DFRACT_BITS - DMX_PCM_BITS, DMX_PCM_BITS);
 
-        /* Set input channel pointer */
-        pInPcm[LEFT_FRONT_CHANNEL] =
-            &pPcmBuf[inOffsetTable[LEFT_FRONT_CHANNEL] * offset];
-        pInPcm[RIGHT_FRONT_CHANNEL] =
-            &pPcmBuf[inOffsetTable[RIGHT_FRONT_CHANNEL] * offset];
-
-        /* Set output channel pointer (same as input) */
-        pOutL = pInPcm[LEFT_FRONT_CHANNEL];
-        pOutR = pInPcm[RIGHT_FRONT_CHANNEL];
-
-        /* Set downmix levels: */
-        flev = FL2FXCONST_DMX(0.70710678f);
-        /* 2/0 input: */
-        switch (dualChannelMode) {
-          case CH1_MODE: /* L' = 0.707 * Ch1;  R' = 0.707 * Ch1 */
-            for (sample = 0; sample < frameSize; sample++) {
-              *pOutL = *pOutR = (DMX_PCM)SATURATE_RIGHT_SHIFT(
-                  fMult((DMX_PCMF)*pInPcm[LEFT_FRONT_CHANNEL], flev),
-                  DFRACT_BITS - DMX_PCM_BITS, DMX_PCM_BITS);
-
-              pInPcm[LEFT_FRONT_CHANNEL] += inStride;
-              pOutL += outStride;
-              pOutR += outStride;
-            }
-            break;
-          case CH2_MODE: /* L' = 0.707 * Ch2;  R' = 0.707 * Ch2 */
-            for (sample = 0; sample < frameSize; sample++) {
-              *pOutL = *pOutR = (DMX_PCM)SATURATE_RIGHT_SHIFT(
-                  fMult((DMX_PCMF)*pInPcm[RIGHT_FRONT_CHANNEL], flev),
-                  DFRACT_BITS - DMX_PCM_BITS, DMX_PCM_BITS);
-
-              pInPcm[RIGHT_FRONT_CHANNEL] += inStride;
-              pOutL += outStride;
-              pOutR += outStride;
-            }
-            break;
-          case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;  R' = 0.5*Ch1 + 0.5*Ch2 */
-            for (sample = 0; sample < frameSize; sample++) {
-              *pOutL = *pOutR = (*pInPcm[LEFT_FRONT_CHANNEL] >> 1) +
-                                (*pInPcm[RIGHT_FRONT_CHANNEL] >> 1);
-
-              pInPcm[LEFT_FRONT_CHANNEL] += inStride;
-              pInPcm[RIGHT_FRONT_CHANNEL] += inStride;
-              pOutL += outStride;
-              pOutR += outStride;
-            }
-            break;
-          default:
-          case STEREO_MODE:
-            /* nothing to do */
-            break;
+          pInPcm[RIGHT_FRONT_CHANNEL] += inStride;
+          pOutL += outStride;
+          pOutR += outStride;
         }
-      } break;
+        break;
+      case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;  R' = 0.5*Ch1 + 0.5*Ch2 */
+        for (sample = 0; sample < frameSize; sample++) {
+          *pOutL = *pOutR = (*pInPcm[LEFT_FRONT_CHANNEL] >> 1) +
+                            (*pInPcm[RIGHT_FRONT_CHANNEL] >> 1);
 
+          pInPcm[LEFT_FRONT_CHANNEL] += inStride;
+          pInPcm[RIGHT_FRONT_CHANNEL] += inStride;
+          pOutL += outStride;
+          pOutR += outStride;
+        }
+        break;
       default:
+      case STEREO_MODE:
         /* nothing to do */
         break;
+      }
+    } break;
+
+    default:
+      /* nothing to do */
+      break;
     }
   }
 
@@ -2628,7 +2643,8 @@ PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info) {
 
   /* Search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return PCMDMX_INVALID_ARGUMENT;
@@ -2646,13 +2662,13 @@ PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info) {
   /* Set flags */
   info[i].flags = 0 | CAPF_DMX_BLIND /* At least blind downmixing is possible */
                   | CAPF_DMX_PCE     /* Guided downmix with data from MPEG-2/4
-                                        Program Config Elements (PCE). */
+                                      Program Config Elements (PCE). */
                   | CAPF_DMX_ARIB /* PCE guided downmix with slightly different
-                                     equations and levels. */
+                                   equations and levels. */
                   | CAPF_DMX_DVB  /* Guided downmix with data from DVB ancillary
-                                     data fields. */
+                                   data fields. */
                   | CAPF_DMX_CH_EXP /* Simple upmixing by dublicating channels
-                                       or adding zero channels. */
+                                     or adding zero channels. */
                   | CAPF_DMX_6_CH | CAPF_DMX_8_CH;
 
   /* Add lib info for FDK tools (if not yet done). */

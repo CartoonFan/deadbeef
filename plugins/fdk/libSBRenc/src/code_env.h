@@ -108,9 +108,9 @@ amm-info@iis.fraunhofer.de
 #ifndef CODE_ENV_H
 #define CODE_ENV_H
 
-#include "sbr_def.h"
 #include "bit_sbr.h"
 #include "fram_gen.h"
+#include "sbr_def.h"
 
 typedef struct {
   INT offset;

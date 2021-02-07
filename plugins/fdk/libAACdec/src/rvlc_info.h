@@ -113,14 +113,14 @@ amm-info@iis.fraunhofer.de
 
 #define MAX_RVL 7  /* positive RVLC escape */
 #define MIN_RVL -7 /* negative RVLC escape */
-#define MAX_ALLOWED_DPCM_INDEX                                    \
-  14 /* the maximum allowed index of a decoded dpcm value (offset \
+#define MAX_ALLOWED_DPCM_INDEX                                                 \
+  14 /* the maximum allowed index of a decoded dpcm value (offset              \
         'TABLE_OFFSET' incl --> must be subtracted) */
 #define TABLE_OFFSET                                                           \
   7 /* dpcm offset of valid output values of rvl table decoding, the rvl table \
        ouly returns positive values, therefore the offset */
 #define MAX_LEN_RVLC_CODE_WORD 9 /* max length of a RVL codeword in bits */
-#define MAX_LEN_RVLC_ESCAPE_WORD \
+#define MAX_LEN_RVLC_ESCAPE_WORD                                               \
   20 /* max length of huffman coded RVLC escape word in bits */
 
 #define DPCM_NOISE_NRG_BITS 9
@@ -140,8 +140,8 @@ typedef struct {
   INT sf_concealment;                 /* 1          */
   INT rev_global_gain;                /* 2          */
   SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
-                                               (subtract 9) in case of noise
-                                               (PNS); is kept for later use */
+                                             (subtract 9) in case of noise
+                                             (PNS); is kept for later use */
   INT dpcm_noise_nrg;                       /* 4 optional */
   INT sf_escapes_present;                   /* 5          */
   SHORT length_of_rvlc_escapes;             /* 6 optional */
@@ -166,9 +166,9 @@ typedef struct {
   /* bitstream indices */
   INT bsAnchor;             /* hcr bit buffer reference index */
   INT bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
-                               2) for forward  decoding */
+                             2) for forward  decoding */
   INT bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
-                               2) for backward decoding */
+                             2) for backward decoding */
   INT bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
 
   /* decoding trees */

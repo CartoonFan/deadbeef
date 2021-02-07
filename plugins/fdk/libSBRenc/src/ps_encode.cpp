@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
   \brief  PS parameter extraction, encoding functions $Revision: 96441 $
 */
 
-#include "ps_main.h"
 #include "ps_encode.h"
+#include "ps_main.h"
 #include "qmf.h"
 #include "sbr_misc.h"
 #include "sbrenc_ram.h"
@@ -115,7 +115,8 @@ amm-info@iis.fraunhofer.de
 
 inline void FDKsbrEnc_addFIXP_DBL(const FIXP_DBL *X, const FIXP_DBL *Y,
                                   FIXP_DBL *Z, INT n) {
-  for (INT i = 0; i < n; i++) Z[i] = (X[i] >> 1) + (Y[i] >> 1);
+  for (INT i = 0; i < n; i++)
+    Z[i] = (X[i] >> 1) + (Y[i] >> 1);
 }
 
 #define LOG10_2_10 3.01029995664f /* 10.0f*log10(2.f) */
@@ -225,7 +226,7 @@ static FIXP_DBL quantizeCoef(const FIXP_DBL *RESTRICT input, const INT nBands,
     }
     quantErr += (fixp_abs(input[band] - quantTable[idx]) >>
                  PS_QUANT_SCALE); /* don't scale before subtraction; diff
-                                     smaller (64-25)/64 */
+                                 smaller (64-25)/64 */
     quantOut[band] = idx - idxOffset;
   }
 
@@ -236,14 +237,14 @@ static INT getICCMode(const INT nBands, const INT rotType) {
   INT mode = 0;
 
   switch (nBands) {
-    case PS_BANDS_COARSE:
-      mode = PS_RES_COARSE;
-      break;
-    case PS_BANDS_MID:
-      mode = PS_RES_MID;
-      break;
-    default:
-      mode = 0;
+  case PS_BANDS_COARSE:
+    mode = PS_RES_COARSE;
+    break;
+  case PS_BANDS_MID:
+    mode = PS_RES_MID;
+    break;
+  default:
+    mode = 0;
   }
   if (rotType == PS_ICC_ROT_B) {
     mode += 3;
@@ -256,15 +257,15 @@ static INT getIIDMode(const INT nBands, const INT iidRes) {
   INT mode = 0;
 
   switch (nBands) {
-    case PS_BANDS_COARSE:
-      mode = PS_RES_COARSE;
-      break;
-    case PS_BANDS_MID:
-      mode = PS_RES_MID;
-      break;
-    default:
-      mode = 0;
-      break;
+  case PS_BANDS_COARSE:
+    mode = PS_RES_COARSE;
+    break;
+  case PS_BANDS_MID:
+    mode = PS_RES_MID;
+    break;
+  default:
+    mode = 0;
+    break;
   }
 
   if (iidRes == PS_IID_RES_FINE) {
@@ -530,8 +531,9 @@ static INT similarIid(PS_DATA *psData, const INT psBands,
         diff = fixp_abs(psData->iidIdx[env][b] - psData->iidIdxLast[b]);
         sumDiff += diff;
         if ((diff > diffThr) /* more than x quantization steps in any band */
-            || (sumDiff > sumDiffThr)) { /* more than x quantisations steps
-                                            overall difference */
+            || (sumDiff > sumDiffThr)) {
+          /* more than x quantisations steps
+                                          overall difference */
           similar = 0;
         }
         b++;
@@ -560,8 +562,9 @@ static INT similarIcc(PS_DATA *psData, const INT psBands,
         diff = fixp_abs(psData->iccIdx[env][b] - psData->iccIdxLast[b]);
         sumDiff += diff;
         if ((diff > diffThr) /* more than x quantisation step in any band */
-            || (sumDiff > sumDiffThr)) { /* more than x quantisations steps
-                                            overall difference */
+            || (sumDiff > sumDiffThr)) {
+          /* more than x quantisations steps
+                                          overall difference */
           similar = 0;
         }
         b++;
@@ -670,14 +673,14 @@ static void calculateICC(FIXP_DBL pwrL[PS_MAX_ENVELOPES][PS_MAX_BANDS],
   INT border = psBands;
 
   switch (psBands) {
-    case PS_BANDS_COARSE:
-      border = 5;
-      break;
-    case PS_BANDS_MID:
-      border = 11;
-      break;
-    default:
-      break;
+  case PS_BANDS_COARSE:
+    border = 5;
+    break;
+  case PS_BANDS_MID:
+    border = 11;
+    break;
+  default:
+    break;
   }
 
   for (env = 0; env < nEnvelopes; env++) {
@@ -771,23 +774,23 @@ FDK_PSENC_ERROR FDKsbrEnc_InitPSEncode(HANDLE_PS_ENCODE hPsEncode,
     }
 
     switch (psEncMode) {
-      case PS_BANDS_COARSE:
-      case PS_BANDS_MID:
-        hPsEncode->nQmfIidGroups = QMF_GROUPS_LO_RES;
-        hPsEncode->nSubQmfIidGroups = SUBQMF_GROUPS_LO_RES;
-        FDKmemcpy(hPsEncode->iidGroupBorders, iidGroupBordersLoRes,
-                  (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups + 1) *
-                      sizeof(INT));
-        FDKmemcpy(hPsEncode->subband2parameterIndex, subband2parameter20,
-                  (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups) *
-                      sizeof(INT));
-        FDKmemcpy(hPsEncode->iidGroupWidthLd, iidGroupWidthLdLoRes,
-                  (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups) *
-                      sizeof(UCHAR));
-        break;
-      default:
-        error = PSENC_INIT_ERROR;
-        goto bail;
+    case PS_BANDS_COARSE:
+    case PS_BANDS_MID:
+      hPsEncode->nQmfIidGroups = QMF_GROUPS_LO_RES;
+      hPsEncode->nSubQmfIidGroups = SUBQMF_GROUPS_LO_RES;
+      FDKmemcpy(hPsEncode->iidGroupBorders, iidGroupBordersLoRes,
+                (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups + 1) *
+                    sizeof(INT));
+      FDKmemcpy(hPsEncode->subband2parameterIndex, subband2parameter20,
+                (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups) *
+                    sizeof(INT));
+      FDKmemcpy(hPsEncode->iidGroupWidthLd, iidGroupWidthLdLoRes,
+                (hPsEncode->nQmfIidGroups + hPsEncode->nSubQmfIidGroups) *
+                    sizeof(UCHAR));
+      break;
+    default:
+      error = PSENC_INIT_ERROR;
+      goto bail;
     }
 
     hPsEncode->psEncMode = psEncMode;
@@ -818,11 +821,11 @@ typedef struct {
 
 } PS_PWR_DATA;
 
-FDK_PSENC_ERROR FDKsbrEnc_PSEncode(
-    HANDLE_PS_ENCODE hPsEncode, HANDLE_PS_OUT hPsOut, UCHAR *dynBandScale,
-    UINT maxEnvelopes,
-    FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
-    const INT frameSize, const INT sendHeader) {
+FDK_PSENC_ERROR
+FDKsbrEnc_PSEncode(HANDLE_PS_ENCODE hPsEncode, HANDLE_PS_OUT hPsOut,
+                   UCHAR *dynBandScale, UINT maxEnvelopes,
+                   FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
+                   const INT frameSize, const INT sendHeader) {
   FDK_PSENC_ERROR error = PSENC_OK;
 
   HANDLE_PS_DATA hPsData = &hPsEncode->psData;

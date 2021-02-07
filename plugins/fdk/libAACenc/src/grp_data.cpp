@@ -100,8 +100,8 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "psy_const.h"
 #include "interface.h"
+#include "psy_const.h"
 
 /*
  * this routine does not work in-place
@@ -150,7 +150,8 @@ void FDKaacEnc_groupShortData(FIXP_DBL *mdctSpectrum,      /* in-out      */
             FL2FXCONST_SPC(0.0))
           break; /* this band is not completely zero */
       }
-      if (line >= sfbOffset[sfb]) break; /* this band was not completely zero */
+      if (line >= sfbOffset[sfb])
+        break; /* this band was not completely zero */
     }
     highestSfb = fixMax(highestSfb, sfb);
   }

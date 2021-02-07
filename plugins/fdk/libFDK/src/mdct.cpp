@@ -219,7 +219,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     segments to (-D-Cr) but D is zero, because in this part of the MDCT sequence
     the window coefficients with which D must be multiplied are zero.    */
     for (i = 0; i < nr; i++) {
-#if SAMPLE_BITS == \
+#if SAMPLE_BITS ==                                                             \
     DFRACT_BITS /* This should be SPC_BITS instead of DFRACT_BITS. */
       mdctData[(tl / 2) - 1 - i] = -((FIXP_DBL)timeData[tl + i] >> (1));
 #else
@@ -250,7 +250,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
       mdctData[(tl / 2) - nr - i - 1] =
           -fMultAddDiv2(tmp1, (FIXP_PCM)timeData[(tl * 2) - nr - i - 1],
                         wrs[i].v.im); /* -(C*window+Dr*window) and flip before
-                                         placing -> -Cr - D */
+                                   placing -> -Cr - D */
     }
 
     /* We pass the shortened folded data (-D-Cr,A-Br) to the MDCT function */
@@ -288,36 +288,36 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
   /* Detect non-radix 2 transform length and add amplitude compensation factor
      which cannot be included into the exponent above */
   switch ((tl) >> (log2_tl - 2)) {
-    case 0x7: /* 10 ms, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) *
-                 0.53333333333333333333) */
-      if (gain_m == (FIXP_DBL)0) {
-        gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
-      } else {
-        gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
-      }
-      break;
-    case 0x6: /* 3/4 of radix 2, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) * 2.0/3.0) */
-      if (gain_m == (FIXP_DBL)0) {
-        gain_m = FL2FXCONST_DBL(2.0 / 3.0f);
-      } else {
-        gain_m = fMult(gain_m, FL2FXCONST_DBL(2.0 / 3.0f));
-      }
-      break;
-    case 0x5: /* 0.8 of radix 2 (e.g. tl 160), 1/tl = 1.0/(FDKpow(2.0, -log2_tl)
-               * 0.8/1.5) */
-      if (gain_m == (FIXP_DBL)0) {
-        gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
-      } else {
-        gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
-      }
-      break;
-    case 0x4:
-      /* radix 2, nothing to do. */
-      break;
-    default:
-      /* unsupported */
-      FDK_ASSERT(0);
-      break;
+  case 0x7: /* 10 ms, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) *
+               0.53333333333333333333) */
+    if (gain_m == (FIXP_DBL)0) {
+      gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
+    } else {
+      gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
+    }
+    break;
+  case 0x6: /* 3/4 of radix 2, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) * 2.0/3.0) */
+    if (gain_m == (FIXP_DBL)0) {
+      gain_m = FL2FXCONST_DBL(2.0 / 3.0f);
+    } else {
+      gain_m = fMult(gain_m, FL2FXCONST_DBL(2.0 / 3.0f));
+    }
+    break;
+  case 0x5: /* 0.8 of radix 2 (e.g. tl 160), 1/tl = 1.0/(FDKpow(2.0, -log2_tl)
+             * 0.8/1.5) */
+    if (gain_m == (FIXP_DBL)0) {
+      gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
+    } else {
+      gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
+    }
+    break;
+  case 0x4:
+    /* radix 2, nothing to do. */
+    break;
+  default:
+    /* unsupported */
+    FDK_ASSERT(0);
+    break;
   }
 
   *pGain_m = gain_m;

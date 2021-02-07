@@ -108,9 +108,9 @@ amm-info@iis.fraunhofer.de
 #define MAX_NUM_QMF_BANDS (128)
 #define MAX_TIME_SLOTS 64
 #define MAX_INPUT_CHANNELS 1
-#define MAX_OUTPUT_CHANNELS                                             \
-  2 /* CAUTION: This does NOT restrict the number of                    \
-                            output channels exclusively! In addition it \
+#define MAX_OUTPUT_CHANNELS                                                    \
+  2 /* CAUTION: This does NOT restrict the number of                           \
+                            output channels exclusively! In addition it        \
        affects the max number of bitstream and residual channels! */
 #define MAX_NUM_OTT (5)
 #define MAX_NUM_TTT (0)

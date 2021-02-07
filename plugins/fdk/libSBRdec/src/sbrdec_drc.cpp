@@ -502,7 +502,7 @@ void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
   }
   if (hDrcData->enable == 0) {
     return; /* Avoid changing the scaleFactor even though the processing is
-               disabled. */
+           disabled. */
   }
 
   /* get max scale factor */

@@ -136,9 +136,9 @@ amm-info@iis.fraunhofer.de
 #define FL2FXCONST_HTB FL2FXCONST_DBL
 #endif
 
-#define HTCP(real, imag)     \
-  {                          \
-    { HTC(real), HTC(imag) } \
+#define HTCP(real, imag)                                                       \
+  {                                                                            \
+    { HTC(real), HTC(imag) }                                                   \
   } /* How to arrange the packed values. */
 
 struct FDK_HYBRID_SETUP {
@@ -224,18 +224,18 @@ INT FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   HANDLE_FDK_HYBRID_SETUP setup = NULL;
 
   switch (mode) {
-    case THREE_TO_TEN:
-      setup = &setup_3_10;
-      break;
-    case THREE_TO_TWELVE:
-      setup = &setup_3_12;
-      break;
-    case THREE_TO_SIXTEEN:
-      setup = &setup_3_16;
-      break;
-    default:
-      err = -1;
-      goto bail;
+  case THREE_TO_TEN:
+    setup = &setup_3_10;
+    break;
+  case THREE_TO_TWELVE:
+    setup = &setup_3_12;
+    break;
+  case THREE_TO_SIXTEEN:
+    setup = &setup_3_16;
+    break;
+  default:
+    err = -1;
+    goto bail;
   }
 
   /* Initialize handle. */
@@ -355,7 +355,8 @@ INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   const int writIndex = hAnalysisHybFilter->bufferLFpos;
   int readIndex = hAnalysisHybFilter->bufferLFpos;
 
-  if (++readIndex >= hAnalysisHybFilter->pSetup->protoLen) readIndex = 0;
+  if (++readIndex >= hAnalysisHybFilter->pSetup->protoLen)
+    readIndex = 0;
   const INT *pBufferLFreadIdx =
       &hAnalysisHybFilter->pSetup->pReadIdxTable[readIndex];
 
@@ -386,12 +387,12 @@ INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
      */
     if (hAnalysisHybFilter->hfMode != 0) {
       /* HF delay compensation was applied outside. */
-      FDKmemcpy(
-          pHybridReal + hybOffset, &pQmfReal[nrQmfBandsLF],
-          (hAnalysisHybFilter->nrBands - nrQmfBandsLF) * sizeof(FIXP_DBL));
-      FDKmemcpy(
-          pHybridImag + hybOffset, &pQmfImag[nrQmfBandsLF],
-          (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(FIXP_DBL));
+      FDKmemcpy(pHybridReal + hybOffset, &pQmfReal[nrQmfBandsLF],
+                (hAnalysisHybFilter->nrBands - nrQmfBandsLF) *
+                    sizeof(FIXP_DBL));
+      FDKmemcpy(pHybridImag + hybOffset, &pQmfImag[nrQmfBandsLF],
+                (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) *
+                    sizeof(FIXP_DBL));
     } else {
       FDK_ASSERT(hAnalysisHybFilter->HFmemorySize != 0);
       /* HF delay compensation, filterlength/2. */
@@ -442,18 +443,18 @@ INT FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
   HANDLE_FDK_HYBRID_SETUP setup = NULL;
 
   switch (mode) {
-    case THREE_TO_TEN:
-      setup = &setup_3_10;
-      break;
-    case THREE_TO_TWELVE:
-      setup = &setup_3_12;
-      break;
-    case THREE_TO_SIXTEEN:
-      setup = &setup_3_16;
-      break;
-    default:
-      err = -1;
-      goto bail;
+  case THREE_TO_TEN:
+    setup = &setup_3_10;
+    break;
+  case THREE_TO_TWELVE:
+    setup = &setup_3_12;
+    break;
+  case THREE_TO_SIXTEEN:
+    setup = &setup_3_16;
+    break;
+  default:
+    err = -1;
+    goto bail;
   }
 
   hSynthesisHybFilter->pSetup = setup;
@@ -498,9 +499,9 @@ void FDKhybridSynthesisApply(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
      */
     FDKmemcpy(&pQmfReal[nrQmfBandsLF], &pHybridReal[hybOffset],
               (hSynthesisHybFilter->nrBands - nrQmfBandsLF) * sizeof(FIXP_DBL));
-    FDKmemcpy(
-        &pQmfImag[nrQmfBandsLF], &pHybridImag[hybOffset],
-        (hSynthesisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(FIXP_DBL));
+    FDKmemcpy(&pQmfImag[nrQmfBandsLF], &pHybridImag[hybOffset],
+              (hSynthesisHybFilter->cplxBands - nrQmfBandsLF) *
+                  sizeof(FIXP_DBL));
   }
 
   return;
@@ -790,23 +791,23 @@ static INT kChannelFiltering(const FIXP_DBL *const pQmfReal,
   INT err = 0;
 
   switch (hybridConfig) {
-    case 2:
-    case -2:
-      dualChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal,
-                           mHybridImag, (hybridConfig < 0) ? 1 : 0);
-      break;
-    case 4:
-    case -4:
-      fourChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal,
-                           mHybridImag, (hybridConfig < 0) ? 1 : 0);
-      break;
-    case 8:
-    case -8:
-      eightChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal,
-                            mHybridImag, (hybridConfig < 0) ? 1 : 0);
-      break;
-    default:
-      err = -1;
+  case 2:
+  case -2:
+    dualChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal, mHybridImag,
+                         (hybridConfig < 0) ? 1 : 0);
+    break;
+  case 4:
+  case -4:
+    fourChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal, mHybridImag,
+                         (hybridConfig < 0) ? 1 : 0);
+    break;
+  case 8:
+  case -8:
+    eightChannelFiltering(pQmfReal, pQmfImag, pReadIdx, mHybridReal,
+                          mHybridImag, (hybridConfig < 0) ? 1 : 0);
+    break;
+  default:
+    err = -1;
   }
 
   return err;

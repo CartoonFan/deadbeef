@@ -101,8 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "line_pe.h"
-#include "sf_estim.h"
 #include "bit_cnt.h"
+#include "sf_estim.h"
 
 #include "genericStds.h"
 

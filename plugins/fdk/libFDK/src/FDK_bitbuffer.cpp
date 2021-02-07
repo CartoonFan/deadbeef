@@ -102,9 +102,9 @@ amm-info@iis.fraunhofer.de
 
 #include "FDK_bitbuffer.h"
 
-#include "genericStds.h"
 #include "common_fix.h"
 #include "fixminmax.h"
+#include "genericStds.h"
 
 const UINT BitMask[32 + 1] = {
     0x0,        0x1,        0x3,       0x7,       0xf,       0x1f,
@@ -371,13 +371,13 @@ void FDK_Feed(HANDLE_FDK_BITBUF hBitBuf, const UCHAR *RESTRICT inputBuffer,
   UINT bToRead = (hBitBuf->bufBits - hBitBuf->ValidBits) >> 3;
   UINT noOfBytes =
       fMin(bToRead,
-           *bytesValid);  //(bToRead < *bytesValid) ? bToRead : *bytesValid ;
+           *bytesValid); //(bToRead < *bytesValid) ? bToRead : *bytesValid ;
 
   while (noOfBytes > 0) {
     /* split read to buffer size */
     bToRead = hBitBuf->bufSize - hBitBuf->ReadOffset;
     bToRead = fMin(bToRead,
-                   noOfBytes);  //(bToRead < noOfBytes) ? bToRead : noOfBytes ;
+                   noOfBytes); //(bToRead < noOfBytes) ? bToRead : noOfBytes ;
 
     /* copy 'bToRead' bytes from 'ptr' to inputbuffer */
     FDKmemcpy(&hBitBuf->Buffer[hBitBuf->ReadOffset], inputBuffer,
@@ -422,16 +422,16 @@ void FDK_Copy(HANDLE_FDK_BITBUF h_BitBufDst, HANDLE_FDK_BITBUF h_BitBufSrc,
   UINT bToRead = h_BitBufSrc->ValidBits >> 3;
   UINT noOfBytes =
       fMin(bToRead,
-           *bytesValid);  //(*bytesValid < bToRead) ? *bytesValid : bToRead ;
+           *bytesValid); //(*bytesValid < bToRead) ? *bytesValid : bToRead ;
   bToRead = FDK_getFreeBits(h_BitBufDst);
   noOfBytes =
-      fMin(bToRead, noOfBytes);  //(bToRead < noOfBytes) ? bToRead : noOfBytes;
+      fMin(bToRead, noOfBytes); //(bToRead < noOfBytes) ? bToRead : noOfBytes;
 
   while (noOfBytes > 0) {
     /* Split Read to buffer size */
     bToRead = h_BitBufDst->bufSize - h_BitBufDst->ReadOffset;
     bToRead = fMin(noOfBytes,
-                   bToRead);  //(noOfBytes < bToRead) ? noOfBytes : bToRead ;
+                   bToRead); //(noOfBytes < bToRead) ? noOfBytes : bToRead ;
 
     /* copy 'bToRead' bytes from buffer to buffer */
     if (!(h_BitBufSrc->BitNdx & 0x07)) {
@@ -463,13 +463,13 @@ void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuf, UCHAR *outBuf, UINT *writeBytes) {
   UINT bToWrite = (hBitBuf->ValidBits) >> 3;
   UINT noOfBytes =
       fMin(bToWrite,
-           *writeBytes);  //(bToWrite < *writeBytes) ? bToWrite : *writeBytes ;
+           *writeBytes); //(bToWrite < *writeBytes) ? bToWrite : *writeBytes ;
 
   while (noOfBytes > 0) {
     /* split write to buffer size */
     bToWrite = hBitBuf->bufSize - hBitBuf->WriteOffset;
     bToWrite = fMin(
-        bToWrite, noOfBytes);  //(bToWrite < noOfBytes) ? bToWrite : noOfBytes ;
+        bToWrite, noOfBytes); //(bToWrite < noOfBytes) ? bToWrite : noOfBytes ;
 
     /* copy 'bToWrite' bytes from bitbuffer to outputbuffer */
     FDKmemcpy(outputBuffer, &hBitBuf->Buffer[hBitBuf->WriteOffset],

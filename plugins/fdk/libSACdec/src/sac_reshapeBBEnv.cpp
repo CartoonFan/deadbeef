@@ -102,9 +102,9 @@ amm-info@iis.fraunhofer.de
 
 #include "sac_reshapeBBEnv.h"
 
-#include "sac_dec.h"
 #include "sac_bitdec.h"
 #include "sac_calcM1andM2.h"
+#include "sac_dec.h"
 #include "sac_reshapeBBEnv.h"
 #include "sac_rom.h"
 
@@ -127,13 +127,14 @@ void initBBEnv(spatialDec *self, int initStatesFlag) {
   for (ch = 0; ch < self->numOutputChannels; ch++) {
     k = row2channelGES[self->treeConfig][ch];
     self->row2channelDmxGES[ch] = k;
-    if (k == -1) continue;
+    if (k == -1)
+      continue;
 
     switch (self->treeConfig) {
-      case TREE_212:
-        self->row2channelDmxGES[ch] = 0;
-        break;
-      default:;
+    case TREE_212:
+      self->row2channelDmxGES[ch] = 0;
+      break;
+    default:;
     }
   }
 
@@ -407,8 +408,8 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
     {
       getSlotNrgHQ(&pReal[12], &pImag[12], slotNrg, clz,
                    fixMin(42, self->hybridBands)); /* scale slotNrg:
-                                                      2*(staticScale-clz) +
-                                                      SF_FACTOR_SLOT */
+                                                2*(staticScale-clz) +
+                                                SF_FACTOR_SLOT */
     }
 
     slotNrgSF = 2 * (staticScale - clz) + SF_FACTOR_SLOT;
@@ -579,9 +580,9 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
 
   /* extract downmix envelope(s) */
   switch (self->treeConfig) {
-    default:
-      extractBBEnv(self, INP_DMX, 0, fMin(self->numInputChannels, 2), envDmx,
-                   frame);
+  default:
+    extractBBEnv(self, INP_DMX, 0, fMin(self->numInputChannels, 2), envDmx,
+                 frame);
   }
 
   /* extract dry and wet envelopes */
@@ -592,7 +593,8 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
 
     ch2 = row2channelGES[self->treeConfig][ch];
 
-    if (ch2 == -1) continue;
+    if (ch2 == -1)
+      continue;
 
     if (frame->tempShapeEnableChannelGES[ch2]) {
       INT sc;
@@ -648,22 +650,21 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       }
 
       /* calculate common scale factor */
-      scale =
-          fixMax(3, fixMax(dryFacSF, slotAmpSF)); /* scale is at least with 3
-                                                     bits to avoid overflows
-                                                     when calculating dryFac  */
+      scale = fixMax(3, fixMax(dryFacSF, slotAmpSF)); /* scale is at least with
+                                                   3 bits to avoid overflows
+                                                   when calculating dryFac  */
       dryFac = dryFac >> (scale - dryFacSF);
       slotAmp_ratio = slotAmp_ratio >> (scale - slotAmpSF);
 
       /* limit dryFac */
-      dryFac = fixMax(
-          FL2FXCONST_DBL(0.25f) >> (INT)fixMin(2 * scale, DFRACT_BITS - 1),
-          fMult(dryFac, slotAmp_ratio) - (slotAmp_ratio >> scale) +
-              (dryFac >> scale));
-      dryFac = fixMin(
-          FL2FXCONST_DBL(0.50f) >> (INT)fixMin(2 * scale - 3, DFRACT_BITS - 1),
-          dryFac); /* reduce shift bits by 3, because upper
-                      limit 4.0 is scaled with 3 bits */
+      dryFac = fixMax(FL2FXCONST_DBL(0.25f) >>
+                          (INT)fixMin(2 * scale, DFRACT_BITS - 1),
+                      fMult(dryFac, slotAmp_ratio) - (slotAmp_ratio >> scale) +
+                          (dryFac >> scale));
+      dryFac = fixMin(FL2FXCONST_DBL(0.50f) >>
+                          (INT)fixMin(2 * scale - 3, DFRACT_BITS - 1),
+                      dryFac); /* reduce shift bits by 3, because upper
+                   limit 4.0 is scaled with 3 bits */
       scale = 2 * scale + 1;
 
       /* improve precision for dryFac */

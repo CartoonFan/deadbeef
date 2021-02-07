@@ -101,8 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "aacdec_tns.h"
-#include "aac_rom.h"
 #include "FDK_bitstream.h"
+#include "aac_rom.h"
 #include "channelinfo.h"
 
 #include "FDK_lpc.h"
@@ -310,23 +310,23 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
           }
 
           switch (granuleLength) {
-            case 480:
-              tns_max_bands =
-                  tns_max_bands_tbl_480[pSamplingRateInfo->samplingRateIndex];
-              break;
-            case 512:
-              tns_max_bands =
-                  tns_max_bands_tbl_512[pSamplingRateInfo->samplingRateIndex];
-              break;
-            default:
-              tns_max_bands = GetMaximumTnsBands(
-                  pIcsInfo, pSamplingRateInfo->samplingRateIndex);
-              /* See redefinition of TNS_MAX_BANDS table */
-              if ((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) &&
-                  (pSamplingRateInfo->samplingRateIndex > 5)) {
-                tns_max_bands += 1;
-              }
-              break;
+          case 480:
+            tns_max_bands =
+                tns_max_bands_tbl_480[pSamplingRateInfo->samplingRateIndex];
+            break;
+          case 512:
+            tns_max_bands =
+                tns_max_bands_tbl_512[pSamplingRateInfo->samplingRateIndex];
+            break;
+          default:
+            tns_max_bands = GetMaximumTnsBands(
+                pIcsInfo, pSamplingRateInfo->samplingRateIndex);
+            /* See redefinition of TNS_MAX_BANDS table */
+            if ((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) &&
+                (pSamplingRateInfo->samplingRateIndex > 5)) {
+              tns_max_bands += 1;
+            }
+            break;
           }
 
           start = fixMin(fixMin(filter->StartBand, tns_max_bands), nbands);

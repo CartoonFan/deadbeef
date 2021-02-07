@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TRAN_DET_H
 #define TRAN_DET_H
 
-#include "sbr_encoder.h"
 #include "sbr_def.h"
+#include "sbr_encoder.h"
 
 typedef struct {
   FIXP_DBL transients[32 + (32 / 2)];
@@ -132,10 +132,10 @@ typedef SBR_TRANSIENT_DETECTOR *HANDLE_SBR_TRANSIENT_DETECTOR;
 #define TRAN_DET_LOOKAHEAD 2
 #define TRAN_DET_START_FREQ 4500 /*start frequency for transient detection*/
 #define TRAN_DET_STOP_FREQ 13500 /*stop frequency for transient detection*/
-#define TRAN_DET_MIN_QMFBANDS                    \
-  4 /* minimum qmf bands for transient detection \
+#define TRAN_DET_MIN_QMFBANDS                                                  \
+  4 /* minimum qmf bands for transient detection                               \
      */
-#define QMF_HP_dBd_SLOPE_FIX \
+#define QMF_HP_dBd_SLOPE_FIX                                                   \
   FL2FXCONST_DBL(0.00075275f) /* 0.002266f/10 * log2(10) */
 #define TRAN_DET_THRSHLD FL2FXCONST_DBL(5.0f / 8.0f)
 #define TRAN_DET_THRSHLD_SCALE (3)

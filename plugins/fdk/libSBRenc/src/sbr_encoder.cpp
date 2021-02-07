@@ -102,14 +102,14 @@ amm-info@iis.fraunhofer.de
 
 #include "sbr_encoder.h"
 
+#include "cmondata.h"
+#include "env_bit.h"
+#include "qmf.h"
+#include "sbr.h"
+#include "sbr_misc.h"
+#include "sbrenc_freq_sca.h"
 #include "sbrenc_ram.h"
 #include "sbrenc_rom.h"
-#include "sbrenc_freq_sca.h"
-#include "env_bit.h"
-#include "cmondata.h"
-#include "sbr_misc.h"
-#include "sbr.h"
-#include "qmf.h"
 
 #include "ps_main.h"
 
@@ -129,65 +129,64 @@ amm-info@iis.fraunhofer.de
            (core2sbr delay     )          ds     (read, core and ds area)
 */
 
-#define SFB(dwnsmp) \
-  (32 << (dwnsmp -  \
+#define SFB(dwnsmp)                                                            \
+  (32 << (dwnsmp -                                                             \
           1)) /* SBR Frequency bands: 64 for dual-rate, 32 for single-rate */
-#define STS(fl)                                                              \
-  (((fl) == 1024) ? 32                                                       \
-                  : 30) /* SBR Time Slots: 32 for core frame length 1024, 30 \
-                           for core frame length 960 */
+#define STS(fl)                                                                \
+  (((fl) == 1024) ? 32 : 30) /* SBR Time Slots: 32 for core frame length 1024, \
+                                30 for core frame length 960 */
 
-#define DELAY_QMF_ANA(dwnsmp) \
+#define DELAY_QMF_ANA(dwnsmp)                                                  \
   ((320 << ((dwnsmp)-1)) - (32 << ((dwnsmp)-1))) /* Full bandwidth */
 #define DELAY_HYB_ANA (10 * 64) /* + 0.5 */      /*  */
 #define DELAY_HYB_SYN (6 * 64 - 32)              /*  */
-#define DELAY_QMF_POSTPROC(dwnsmp) \
+#define DELAY_QMF_POSTPROC(dwnsmp)                                             \
   (32 * (dwnsmp))                               /* QMF postprocessing delay */
 #define DELAY_DEC_QMF(dwnsmp) (6 * SFB(dwnsmp)) /* Decoder QMF overlap */
-#define DELAY_QMF_SYN(dwnsmp) \
-  (1 << (dwnsmp -             \
+#define DELAY_QMF_SYN(dwnsmp)                                                  \
+  (1 << (dwnsmp -                                                              \
          1)) /* QMF_NO_POLY/2=2.5, rounded down to 2, half for single-rate */
 #define DELAY_QMF_DS (32) /* QMF synthesis for downsampled time signal */
 
 /* Delay in QMF paths */
-#define DELAY_SBR(fl, dwnsmp) \
+#define DELAY_SBR(fl, dwnsmp)                                                  \
   (DELAY_QMF_ANA(dwnsmp) + (SFB(dwnsmp) * STS(fl) - 1) + DELAY_QMF_SYN(dwnsmp))
-#define DELAY_PS(fl, dwnsmp)                                       \
-  (DELAY_QMF_ANA(dwnsmp) + DELAY_HYB_ANA + DELAY_DEC_QMF(dwnsmp) + \
+#define DELAY_PS(fl, dwnsmp)                                                   \
+  (DELAY_QMF_ANA(dwnsmp) + DELAY_HYB_ANA + DELAY_DEC_QMF(dwnsmp) +             \
    (SFB(dwnsmp) * STS(fl) - 1) + DELAY_HYB_SYN + DELAY_QMF_SYN(dwnsmp))
-#define DELAY_ELDSBR(fl, dwnsmp) \
+#define DELAY_ELDSBR(fl, dwnsmp)                                               \
   ((((fl) / 2) * (dwnsmp)) - 1 + DELAY_QMF_POSTPROC(dwnsmp))
-#define DELAY_ELDv2SBR(fl, dwnsmp)                                        \
-  ((((fl) / 2) * (dwnsmp)) - 1 + 80 * (dwnsmp)) /* 80 is the delay caused \
-                                                   by the sum of the CLD  \
-                                                   analysis and the MPSLD \
+#define DELAY_ELDv2SBR(fl, dwnsmp)                                             \
+  ((((fl) / 2) * (dwnsmp)) - 1 + 80 * (dwnsmp)) /* 80 is the delay caused      \
+                                                   by the sum of the CLD       \
+                                                   analysis and the MPSLD      \
                                                    synthesis filterbank */
 
 /* Delay in core path (core and downsampler not taken into account) */
-#define DELAY_COREPATH_SBR(fl, dwnsmp) \
+#define DELAY_COREPATH_SBR(fl, dwnsmp)                                         \
   ((DELAY_QMF_ANA(dwnsmp) + DELAY_DEC_QMF(dwnsmp) + DELAY_QMF_SYN(dwnsmp)))
 #define DELAY_COREPATH_ELDSBR(fl, dwnsmp) ((DELAY_QMF_POSTPROC(dwnsmp)))
 #define DELAY_COREPATH_ELDv2SBR(fl, dwnsmp) (128 * (dwnsmp)) /* 4 slots */
-#define DELAY_COREPATH_PS(fl, dwnsmp)                                        \
-  ((DELAY_QMF_ANA(dwnsmp) + DELAY_QMF_DS +                                   \
-    /*(DELAY_AAC(fl)*2) + */ DELAY_QMF_ANA(dwnsmp) + DELAY_DEC_QMF(dwnsmp) + \
+#define DELAY_COREPATH_PS(fl, dwnsmp)                                          \
+  ((DELAY_QMF_ANA(dwnsmp) + DELAY_QMF_DS +                                     \
+    /*(DELAY_AAC(fl)*2) + */ DELAY_QMF_ANA(dwnsmp) + DELAY_DEC_QMF(dwnsmp) +   \
     DELAY_HYB_SYN + DELAY_QMF_SYN(dwnsmp))) /* 2048 - 463*2 */
 
 /* Delay differences between SBR- and downsampled path for SBR and SBR+PS */
-#define DELAY_AAC2SBR(fl, dwnsmp) \
+#define DELAY_AAC2SBR(fl, dwnsmp)                                              \
   ((DELAY_COREPATH_SBR(fl, dwnsmp)) - DELAY_SBR((fl), (dwnsmp)))
-#define DELAY_ELD2SBR(fl, dwnsmp) \
+#define DELAY_ELD2SBR(fl, dwnsmp)                                              \
   ((DELAY_COREPATH_ELDSBR(fl, dwnsmp)) - DELAY_ELDSBR(fl, dwnsmp))
-#define DELAY_AAC2PS(fl, dwnsmp) \
+#define DELAY_AAC2PS(fl, dwnsmp)                                               \
   ((DELAY_COREPATH_PS(fl, dwnsmp)) - DELAY_PS(fl, dwnsmp)) /* 2048 - 463*2 */
 
 /* Assumption: The sample delay resulting of of DELAY_AAC2PS is always smaller
  * than the sample delay implied by DELAY_AAC2SBR */
-#define MAX_DS_FILTER_DELAY \
+#define MAX_DS_FILTER_DELAY                                                    \
   (5) /* the additional max downsampler filter delay (source fs) */
-#define MAX_SAMPLE_DELAY                                                 \
-  (DELAY_AAC2SBR(1024, 2) + MAX_DS_FILTER_DELAY) /* maximum delay: frame \
-                                                    length of 1024 and   \
+#define MAX_SAMPLE_DELAY                                                       \
+  (DELAY_AAC2SBR(1024, 2) + MAX_DS_FILTER_DELAY) /* maximum delay: frame       \
+                                                    length of 1024 and         \
                                                     dual-rate sbr */
 
 /***************************************************************************/
@@ -198,9 +197,9 @@ typedef struct {
   int delay;          /* overall delay / samples  */
   int sbrDecDelay;    /* SBR decoder's delay */
   int corePathOffset; /* core path offset / samples; added by
-                         sbrEncoder_Init_delay() */
+                       sbrEncoder_Init_delay() */
   int sbrPathOffset;  /* SBR path offset / samples; added by
-                         sbrEncoder_Init_delay() */
+                       sbrEncoder_Init_delay() */
   int bitstrDelay; /* bitstream delay / frames; added by sbrEncoder_Init_delay()
                     */
   int delayInput2Core; /* delay of the input to the core / samples */
@@ -228,8 +227,8 @@ static INT getSbrTuningTableIndex(
          found = 0;
   UINT bitRateClosestUpper = 0, bitRateClosestLower = DISTANCE_CEIL_VALUE;
 
-#define isForThisCore(i)                                                     \
-  ((sbrTuningTable[i].coreCoder == CODEC_AACLD && core == AOT_ER_AAC_ELD) || \
+#define isForThisCore(i)                                                       \
+  ((sbrTuningTable[i].coreCoder == CODEC_AACLD && core == AOT_ER_AAC_ELD) ||   \
    (sbrTuningTable[i].coreCoder == CODEC_AAC && core != AOT_ER_AAC_ELD))
 
   for (i = 0; i < sbrTuningTableSize; i++) {
@@ -379,7 +378,8 @@ static INT FDKsbrEnc_GetDownsampledStopFreq(const INT sampleRateCore,
   err = FDKsbrEnc_FindStartAndStopBand(
       sampleRateCore << (downSampleFactor - 1), sampleRateCore,
       32 << (downSampleFactor - 1), startFreq, stopFreq, &startBand, &stopBand);
-  if (err) return -1;
+  if (err)
+    return -1;
 
   return stopFreq;
 }
@@ -403,7 +403,8 @@ static UINT FDKsbrEnc_IsSbrSettingAvail(
     AUDIO_OBJECT_TYPE core) {
   INT idx = INVALID_TABLE_IDX;
 
-  if (sampleRateInput < 16000) return 0;
+  if (sampleRateInput < 16000)
+    return 0;
 
   if (bitrate == 0) {
     /* map vbr quality to bitrate */
@@ -490,7 +491,8 @@ static UINT FDKsbrEnc_AdjustSbrSettings(
     /* fix to enable mono vbrMode<40 @ 44.1 of 48kHz */
     if (numChannels == 1) {
       if (sampleRateSbr == 44100 || sampleRateSbr == 48000) {
-        if (vbrMode < 40) bitRate = 32000;
+        if (vbrMode < 40)
+          bitRate = 32000;
       }
     }
   }
@@ -519,7 +521,8 @@ static UINT FDKsbrEnc_AdjustSbrSettings(
     }
 
     config->sbr_noise_bands = sbrTuningTable[idx].numNoiseBands;
-    if (core == AOT_ER_AAC_ELD) config->init_amp_res_FF = SBR_AMP_RES_1_5;
+    if (core == AOT_ER_AAC_ELD)
+      config->init_amp_res_FF = SBR_AMP_RES_1_5;
     config->noiseFloorOffset = sbrTuningTable[idx].noiseFloorOffset;
 
     config->ana_max_level = sbrTuningTable[idx].noiseMaxLevel;
@@ -529,61 +532,61 @@ static UINT FDKsbrEnc_AdjustSbrSettings(
     if (numChannels == 1) {
       /* stereo case */
       switch (core) {
-        case AOT_AAC_LC:
-          if (bitRate <= (useSpeechConfig ? 24000U : 20000U)) {
-            config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for
-                                                          non-split frames */
-            config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for split
-                                                          frames */
-          }
-          break;
-        case AOT_ER_AAC_ELD:
-          if (bitRate < 36000)
-            config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for split
-                                                          frames */
-          if (bitRate < 26000) {
-            config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for
-                                                          non-split frames */
-            config->fResTransIsLow =
-                1; /* for transient frames, set low frequency resolution */
-          }
-          break;
-        default:
-          break;
+      case AOT_AAC_LC:
+        if (bitRate <= (useSpeechConfig ? 24000U : 20000U)) {
+          config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for
+                                                non-split frames */
+          config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for split
+                                                frames */
+        }
+        break;
+      case AOT_ER_AAC_ELD:
+        if (bitRate < 36000)
+          config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for split
+                                                frames */
+        if (bitRate < 26000) {
+          config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for
+                                                non-split frames */
+          config->fResTransIsLow =
+              1; /* for transient frames, set low frequency resolution */
+        }
+        break;
+      default:
+        break;
       }
     } else {
       /* stereo case */
       switch (core) {
-        case AOT_AAC_LC:
-          if (bitRate <= 28000) {
-            config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for
-                                                          non-split frames */
-            config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for split
-                                                          frames */
-          }
-          break;
-        case AOT_ER_AAC_ELD:
-          if (bitRate < 72000) {
-            config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for split
-                                                          frames */
-          }
-          if (bitRate < 52000) {
-            config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
-                                                          resolution for
-                                                          non-split frames */
-            config->fResTransIsLow =
-                1; /* for transient frames, set low frequency resolution */
-          }
-          break;
-        default:
-          break;
+      case AOT_AAC_LC:
+        if (bitRate <= 28000) {
+          config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for
+                                                non-split frames */
+          config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for split
+                                                frames */
+        }
+        break;
+      case AOT_ER_AAC_ELD:
+        if (bitRate < 72000) {
+          config->freq_res_fixfix[1] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for split
+                                                frames */
+        }
+        if (bitRate < 52000) {
+          config->freq_res_fixfix[0] = FREQ_RES_LOW; /* set low frequency
+                                                resolution for
+                                                non-split frames */
+          config->fResTransIsLow =
+              1; /* for transient frames, set low frequency resolution */
+        }
+        break;
+      default:
+        break;
       }
       if (bitRate <= 28000) {
         /*
@@ -596,10 +599,12 @@ static UINT FDKsbrEnc_AdjustSbrSettings(
 
     /* adjust usage of parametric coding dependent on bitrate and speech config
      * flag */
-    if (useSpeechConfig) config->parametricCoding = 0;
+    if (useSpeechConfig)
+      config->parametricCoding = 0;
 
     if (core == AOT_ER_AAC_ELD) {
-      if (bitRate < 28000) config->init_amp_res_FF = SBR_AMP_RES_3_0;
+      if (bitRate < 28000)
+        config->init_amp_res_FF = SBR_AMP_RES_3_0;
       config->SendHeaderDataTime = -1;
     }
 
@@ -687,7 +692,7 @@ static UINT FDKsbrEnc_InitializeSbrDefaults(sbrConfigurationPtr config,
   config->freq_res_fixfix[0] = FREQ_RES_HIGH; /* non-split case */
   config->freq_res_fixfix[1] = FREQ_RES_HIGH; /* split case */
   config->fResTransIsLow = 0; /* for transient frames, set variable frequency
-                                 resolution according to freqResTable */
+                               resolution according to freqResTable */
 
   /* header_extra_1 */
   config->freqScale = SBR_FREQ_SCALE_DEFAULT;
@@ -954,11 +959,13 @@ INT FDKsbrEnc_EnvEncodeFrame(
   INT cutoffSb;
   INT newXOver;
 
-  if (hEnvEncoder == NULL) return -1;
+  if (hEnvEncoder == NULL)
+    return -1;
 
   hSbrElement = hEnvEncoder->sbrElement[iElement];
 
-  if (hSbrElement == NULL) return -1;
+  if (hSbrElement == NULL)
+    return -1;
 
   /* header bitstream handling */
   HANDLE_SBR_BITSTREAM_DATA sbrBitstreamData = &hSbrElement->sbrBitstreamData;
@@ -1009,7 +1016,8 @@ INT FDKsbrEnc_EnvEncodeFrame(
                  1;
 
       for (band = 0; band < hSbrElement->sbrConfigData.num_Master; band++) {
-        if (cutoffSb == hSbrElement->sbrConfigData.v_k_master[band]) break;
+        if (cutoffSb == hSbrElement->sbrConfigData.v_k_master[band])
+          break;
       }
       FDK_ASSERT(band < hSbrElement->sbrConfigData.num_Master);
 
@@ -1059,7 +1067,8 @@ INT FDKsbrEnc_EnvEncodeFrame(
     FDKmemclear(&eData[1], sizeof(SBR_ENV_TEMP_DATA));
     FDKmemclear(fData, sizeof(SBR_FRAME_TEMP_DATA));
 
-    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++) fData->res[i] = FREQ_RES_HIGH;
+    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
+      fData->res[i] = FREQ_RES_HIGH;
   }
 
   if (!clearOutput) {
@@ -1360,24 +1369,24 @@ static INT initEnvChannel(HANDLE_SBR_CONFIG_DATA sbrConfigData,
   startIndex = QMF_FILTER_PROTOTYPE_SIZE - sbrConfigData->noQmfBands;
 
   switch (params->sbrFrameSize) {
-    case 2304:
-      timeSlots = 18;
-      break;
-    case 2048:
-    case 1024:
-    case 512:
-      timeSlots = 16;
-      break;
-    case 1920:
-    case 960:
-    case 480:
-      timeSlots = 15;
-      break;
-    case 1152:
-      timeSlots = 9;
-      break;
-    default:
-      return (1); /* Illegal frame size */
+  case 2304:
+    timeSlots = 18;
+    break;
+  case 2048:
+  case 1024:
+  case 512:
+    timeSlots = 16;
+    break;
+  case 1920:
+  case 960:
+  case 480:
+    timeSlots = 15;
+    break;
+  case 1152:
+    timeSlots = 9;
+    break;
+  default:
+    return (1); /* Illegal frame size */
   }
 
   timeStep = sbrConfigData->noQmfSlots / timeSlots;
@@ -1423,15 +1432,15 @@ static INT initEnvChannel(HANDLE_SBR_CONFIG_DATA sbrConfigData,
   } else {
     frameShift = 0;
     switch (timeSlots) {
-      /* The factor of 2 is by definition. */
-      case NUMBER_TIME_SLOTS_2048:
-        tran_off = 8 + FRAME_MIDDLE_SLOT_2048 * timeStep;
-        break;
-      case NUMBER_TIME_SLOTS_1920:
-        tran_off = 7 + FRAME_MIDDLE_SLOT_1920 * timeStep;
-        break;
-      default:
-        return 1;
+    /* The factor of 2 is by definition. */
+    case NUMBER_TIME_SLOTS_2048:
+      tran_off = 8 + FRAME_MIDDLE_SLOT_2048 * timeStep;
+      break;
+    case NUMBER_TIME_SLOTS_1920:
+      tran_off = 7 + FRAME_MIDDLE_SLOT_1920 * timeStep;
+      break;
+    default:
+      return 1;
     }
   }
   if (FDKsbrEnc_InitExtractSbrEnvelope(
@@ -1674,11 +1683,11 @@ static INT FDKsbrEnc_EnvInit(HANDLE_SBR_ELEMENT hSbrElement,
   hSbrElement->sbrConfigData.sbrSyntaxFlags = 0;
 
   switch (aot) {
-    case AOT_ER_AAC_ELD:
-      hSbrElement->sbrConfigData.sbrSyntaxFlags |= SBR_SYNTAX_LOW_DELAY;
-      break;
-    default:
-      break;
+  case AOT_ER_AAC_ELD:
+    hSbrElement->sbrConfigData.sbrSyntaxFlags |= SBR_SYNTAX_LOW_DELAY;
+    break;
+  default:
+    break;
   }
   if (params->crcSbr) {
     hSbrElement->sbrConfigData.sbrSyntaxFlags |= SBR_SYNTAX_CRC;
@@ -1686,15 +1695,15 @@ static INT FDKsbrEnc_EnvInit(HANDLE_SBR_ELEMENT hSbrElement,
 
   hSbrElement->sbrConfigData.noQmfBands = 64 >> (2 - params->downSampleFactor);
   switch (hSbrElement->sbrConfigData.noQmfBands) {
-    case 64:
-      hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 6;
-      break;
-    case 32:
-      hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 5;
-      break;
-    default:
-      hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 6;
-      return (2);
+  case 64:
+    hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 6;
+    break;
+  case 32:
+    hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 5;
+    break;
+  default:
+    hSbrElement->sbrConfigData.noQmfSlots = params->sbrFrameSize >> 6;
+    return (2);
   }
 
   /*
@@ -1872,10 +1881,10 @@ static INT FDKsbrEnc_DelayCompensation(HANDLE_SBR_ENCODER hEnvEnc,
 
   for (n = hEnvEnc->nBitstrDelay; n > 0; n--) {
     for (el = 0; el < hEnvEnc->noElements; el++) {
-      if (FDKsbrEnc_EnvEncodeFrame(
-              hEnvEnc, el,
-              timeBuffer + hEnvEnc->downsampledOffset / hEnvEnc->nChannels,
-              timeBufferBufSize, NULL, NULL, 1))
+      if (FDKsbrEnc_EnvEncodeFrame(hEnvEnc, el,
+                                   timeBuffer + hEnvEnc->downsampledOffset /
+                                                    hEnvEnc->nChannels,
+                                   timeBufferBufSize, NULL, NULL, 1))
         return -1;
     }
     sbrEncoder_UpdateBuffers(hEnvEnc, timeBuffer, timeBufferBufSize);
@@ -1948,15 +1957,15 @@ UINT sbrEncoder_IsSingleRatePossible(AUDIO_OBJECT_TYPE aot) {
 /*                                 SBR path                                  */
 /*                                                                           */
 /*****************************************************************************/
-static INT sbrEncoder_Init_delay(
-    const int coreFrameLength,               /* input */
-    const int numChannels,                   /* input */
-    const int downSampleFactor,              /* input */
-    const int lowDelay,                      /* input */
-    const int usePs,                         /* input */
-    const int is212,                         /* input */
-    const SBRENC_DS_TYPE downsamplingMethod, /* input */
-    DELAY_PARAM *hDelayParam                 /* input/output */
+static INT
+sbrEncoder_Init_delay(const int coreFrameLength,               /* input */
+                      const int numChannels,                   /* input */
+                      const int downSampleFactor,              /* input */
+                      const int lowDelay,                      /* input */
+                      const int usePs,                         /* input */
+                      const int is212,                         /* input */
+                      const SBRENC_DS_TYPE downsamplingMethod, /* input */
+                      DELAY_PARAM *hDelayParam /* input/output */
 ) {
   int delayCorePath = 0;   /* delay in core path */
   int delaySbrPath = 0;    /* delay difference in QMF aka SBR path */
@@ -2123,17 +2132,17 @@ INT sbrEncoder_Init(HANDLE_SBR_ENCODER hSbrEncoder,
 
   /* set the core's sample rate */
   switch (*downSampleFactor) {
-    case 1:
-      *coreSampleRate = inputSampleRate;
-      downsamplingMethod = SBRENC_DS_NONE;
-      break;
-    case 2:
-      *coreSampleRate = inputSampleRate >> 1;
-      downsamplingMethod = usePs ? SBRENC_DS_QMF : SBRENC_DS_TIME;
-      break;
-    default:
-      *coreSampleRate = inputSampleRate >> 1;
-      return 0; /* return error */
+  case 1:
+    *coreSampleRate = inputSampleRate;
+    downsamplingMethod = SBRENC_DS_NONE;
+    break;
+  case 2:
+    *coreSampleRate = inputSampleRate >> 1;
+    downsamplingMethod = usePs ? SBRENC_DS_QMF : SBRENC_DS_TIME;
+    break;
+  default:
+    *coreSampleRate = inputSampleRate >> 1;
+    return 0; /* return error */
   }
 
   /* check whether SBR setting is available for the current encoder
@@ -2300,7 +2309,7 @@ INT sbrEncoder_Init(HANDLE_SBR_ENCODER hSbrEncoder,
       FDK_ASSERT(hSbrEncoder->noElements == 1);
       INT psTuningTableIdx = getPsTuningTableIndex(elInfo[0].bitRate, NULL);
 
-      psEncConfig.frameSize = coreFrameLength;  // sbrConfig.sbrFrameSize;
+      psEncConfig.frameSize = coreFrameLength; // sbrConfig.sbrFrameSize;
       psEncConfig.qmfFilterMode = 0;
       psEncConfig.sbrPsDelay = 0;
 
@@ -2359,7 +2368,8 @@ INT sbrEncoder_Init(HANDLE_SBR_ENCODER hSbrEncoder,
     if (hSbrEncoder->nBitstrDelay > 0) {
       error = FDKsbrEnc_DelayCompensation(hSbrEncoder, inputBuffer,
                                           inputBufferBufSize);
-      if (error != 0) goto bail;
+      if (error != 0)
+        goto bail;
     }
 
     /* Set Output frame length */
@@ -2393,7 +2403,8 @@ INT sbrEncoder_EncodeFrame(HANDLE_SBR_ENCODER hSbrEncoder, INT_PCM *samples,
           hSbrEncoder, el,
           samples + hSbrEncoder->downsampledOffset / hSbrEncoder->nChannels,
           samplesBufSize, &sbrDataBits[el], sbrData[el], 0);
-      if (error) return error;
+      if (error)
+        return error;
     }
   }
 
@@ -2401,7 +2412,8 @@ INT sbrEncoder_EncodeFrame(HANDLE_SBR_ENCODER hSbrEncoder, INT_PCM *samples,
       hSbrEncoder,
       samples + hSbrEncoder->downsampledOffset / hSbrEncoder->nChannels,
       samplesBufSize, hSbrEncoder->nChannels, &sbrDataBits[el], sbrData[el], 0);
-  if (error) return error;
+  if (error)
+    return error;
 
   return 0;
 }
@@ -2424,20 +2436,20 @@ INT sbrEncoder_UpdateBuffers(HANDLE_SBR_ENCODER hSbrEncoder,
 
     for (c = 0; c < hSbrEncoder->nChannels; c++) {
       /* Move delayed input data */
-      FDKmemcpy(
-          timeBuffer + timeBufferBufSize * c,
-          timeBuffer + timeBufferBufSize * c + hSbrEncoder->frameSize,
-          sizeof(INT_PCM) * hSbrEncoder->bufferOffset / hSbrEncoder->nChannels);
+      FDKmemcpy(timeBuffer + timeBufferBufSize * c,
+                timeBuffer + timeBufferBufSize * c + hSbrEncoder->frameSize,
+                sizeof(INT_PCM) * hSbrEncoder->bufferOffset /
+                    hSbrEncoder->nChannels);
     }
   }
   if (hSbrEncoder->nBitstrDelay > 0) {
     int el;
 
     for (el = 0; el < hSbrEncoder->noElements; el++) {
-      FDKmemmove(
-          hSbrEncoder->sbrElement[el]->payloadDelayLine[0],
-          hSbrEncoder->sbrElement[el]->payloadDelayLine[1],
-          sizeof(UCHAR) * (hSbrEncoder->nBitstrDelay * MAX_PAYLOAD_SIZE));
+      FDKmemmove(hSbrEncoder->sbrElement[el]->payloadDelayLine[0],
+                 hSbrEncoder->sbrElement[el]->payloadDelayLine[1],
+                 sizeof(UCHAR) *
+                     (hSbrEncoder->nBitstrDelay * MAX_PAYLOAD_SIZE));
 
       FDKmemmove(&hSbrEncoder->sbrElement[el]->payloadDelayLineSize[0],
                  &hSbrEncoder->sbrElement[el]->payloadDelayLineSize[1],
@@ -2549,7 +2561,8 @@ INT sbrEncoder_GetLibInfo(LIB_INFO *info) {
   }
   /* search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return -1;

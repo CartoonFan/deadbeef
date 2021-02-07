@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "mh_det.h"
 
-#include "sbrenc_ram.h"
 #include "sbr_misc.h"
+#include "sbrenc_ram.h"
 
 #include "genericStds.h"
 
@@ -128,10 +128,9 @@ static const DETECTOR_PARAMETERS_MH paramsAac = {
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresMaxLD64 */
         FL2FXCONST_DBL(-0.000112993269),
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresBelowLD64 */
-        FL2FXCONST_DBL(
-            -0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
-                                                                  derivThresAboveLD64
-                                                                */
+        FL2FXCONST_DBL(-0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
+                                                        derivThresAboveLD64
+                                                      */
     },
     50 /*!< maxComp */
 };
@@ -154,10 +153,9 @@ static const DETECTOR_PARAMETERS_MH paramsAacLd = {
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresMaxLD64 */
         FL2FXCONST_DBL(-0.000112993269),
         /* LD64(FL2FXCONST_DBL(0.995f)) */ /*!< derivThresBelowLD64 */
-        FL2FXCONST_DBL(
-            -0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
-                                                                  derivThresAboveLD64
-                                                                */
+        FL2FXCONST_DBL(-0.005030126483f) /* LD64(FL2FXCONST_DBL(0.8f)) */ /*!<
+                                                        derivThresAboveLD64
+                                                      */
     },
     50 /*!< maxComp */
 };
@@ -344,12 +342,11 @@ static void calculateDetectorInput(
 
 */
 /**************************************************************************/
-static void removeLowPassDetection(UCHAR *RESTRICT pAddHarmSfb,
-                                   UCHAR **RESTRICT pDetectionVectors,
-                                   INT start, INT stop, INT nSfb,
-                                   const UCHAR *RESTRICT pFreqBandTable,
-                                   FIXP_DBL *RESTRICT pNrgVector,
-                                   THRES_HOLDS mhThresh)
+static void
+removeLowPassDetection(UCHAR *RESTRICT pAddHarmSfb,
+                       UCHAR **RESTRICT pDetectionVectors, INT start, INT stop,
+                       INT nSfb, const UCHAR *RESTRICT pFreqBandTable,
+                       FIXP_DBL *RESTRICT pNrgVector, THRES_HOLDS mhThresh)
 
 {
   INT i, est;
@@ -637,7 +634,8 @@ static void transientCleanUp(FIXP_DBL **quotaBuffer, INT nSfb,
      * the transient-flag needs to be set in order to be allowed to detect it.
      *************************************************************************/
     for (i = 0; i < nSfb; i++) {
-      if (pAddHarmSfb[i] - pPrevAddHarmSfb[i] > 0) pAddHarmSfb[i] = 0;
+      if (pAddHarmSfb[i] - pPrevAddHarmSfb[i] > 0)
+        pAddHarmSfb[i] = 0;
     }
   }
 }
@@ -961,7 +959,8 @@ static void calculateCompVector(UCHAR *pAddHarmSfb, FIXP_DBL **pTonalityMatrix,
             compValue = ((INT)(LONG)tmp) >> 1;
 
             /* limit the comp-value*/
-            if (compValue > maxComp) compValue = maxComp;
+            if (compValue > maxComp)
+              compValue = maxComp;
 
             pEnvComp[scfBand - 1] = compValue;
           }
@@ -982,7 +981,8 @@ static void calculateCompVector(UCHAR *pAddHarmSfb, FIXP_DBL **pTonalityMatrix,
                   (FIXP_DBL)1; /* shift one bit less for rounding */
             compValue = ((INT)(LONG)tmp) >> 1;
 
-            if (compValue > maxComp) compValue = maxComp;
+            if (compValue > maxComp)
+              compValue = maxComp;
 
             pEnvComp[scfBand + 1] = compValue;
           }
@@ -1178,33 +1178,33 @@ INT FDKsbrEnc_InitSbrMissingHarmonicsDetector(
 
   if (sbrSyntaxFlags & SBR_SYNTAX_LOW_DELAY) {
     switch (frameSize) {
-      case 1024:
-      case 512:
-        hs->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
-        hs->timeSlots = 16;
-        break;
-      case 960:
-      case 480:
-        hs->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
-        hs->timeSlots = 15;
-        break;
-      default:
-        return -1;
+    case 1024:
+    case 512:
+      hs->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
+      hs->timeSlots = 16;
+      break;
+    case 960:
+    case 480:
+      hs->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
+      hs->timeSlots = 15;
+      break;
+    default:
+      return -1;
     }
   } else {
     switch (frameSize) {
-      case 2048:
-      case 1024:
-        hs->transientPosOffset = FRAME_MIDDLE_SLOT_2048;
-        hs->timeSlots = NUMBER_TIME_SLOTS_2048;
-        break;
-      case 1920:
-      case 960:
-        hs->transientPosOffset = FRAME_MIDDLE_SLOT_1920;
-        hs->timeSlots = NUMBER_TIME_SLOTS_1920;
-        break;
-      default:
-        return -1;
+    case 2048:
+    case 1024:
+      hs->transientPosOffset = FRAME_MIDDLE_SLOT_2048;
+      hs->timeSlots = NUMBER_TIME_SLOTS_2048;
+      break;
+    case 1920:
+    case 960:
+      hs->transientPosOffset = FRAME_MIDDLE_SLOT_1920;
+      hs->timeSlots = NUMBER_TIME_SLOTS_1920;
+      break;
+    default:
+      return -1;
     }
   }
 

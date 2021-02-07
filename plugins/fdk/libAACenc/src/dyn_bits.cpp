@@ -101,16 +101,16 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "dyn_bits.h"
-#include "bit_cnt.h"
-#include "psy_const.h"
-#include "aacenc_pns.h"
 #include "aacEnc_ram.h"
 #include "aacEnc_rom.h"
+#include "aacenc_pns.h"
+#include "bit_cnt.h"
+#include "psy_const.h"
 
 typedef INT (*lookUpTable)[CODE_BOOK_ESC_NDX + 1];
 
-static INT FDKaacEnc_getSideInfoBits(const SECTION_INFO* const huffsection,
-                                     const SHORT* const sideInfoTab,
+static INT FDKaacEnc_getSideInfoBits(const SECTION_INFO *const huffsection,
+                                     const SHORT *const sideInfoTab,
                                      const INT useHCR) {
   INT sideInfoBits;
 
@@ -125,11 +125,11 @@ static INT FDKaacEnc_getSideInfoBits(const SECTION_INFO* const huffsection,
 }
 
 /* count bits using all possible tables */
-static void FDKaacEnc_buildBitLookUp(
-    const SHORT* const quantSpectrum, const INT maxSfb,
-    const INT* const sfbOffset, const UINT* const sfbMax,
-    INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
-    SECTION_INFO* const huffsection) {
+static void
+FDKaacEnc_buildBitLookUp(const SHORT *const quantSpectrum, const INT maxSfb,
+                         const INT *const sfbOffset, const UINT *const sfbMax,
+                         INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
+                         SECTION_INFO *const huffsection) {
   INT i, sfbWidth;
 
   for (i = 0; i < maxSfb; i++) {
@@ -144,7 +144,7 @@ static void FDKaacEnc_buildBitLookUp(
 }
 
 /* essential helper functions */
-static inline INT FDKaacEnc_findBestBook(const INT* const bc, INT* const book,
+static inline INT FDKaacEnc_findBestBook(const INT *const bc, INT *const book,
                                          const INT useVCB11) {
   INT minBits = INVALID_BITCOUNT, j;
 
@@ -159,8 +159,8 @@ static inline INT FDKaacEnc_findBestBook(const INT* const bc, INT* const book,
   return (minBits);
 }
 
-static inline INT FDKaacEnc_findMinMergeBits(const INT* const bc1,
-                                             const INT* const bc2,
+static inline INT FDKaacEnc_findMinMergeBits(const INT *const bc1,
+                                             const INT *const bc2,
                                              const INT useVCB11) {
   INT minBits = INVALID_BITCOUNT, j;
 
@@ -173,8 +173,8 @@ static inline INT FDKaacEnc_findMinMergeBits(const INT* const bc1,
   return (minBits);
 }
 
-static inline void FDKaacEnc_mergeBitLookUp(INT* const RESTRICT bc1,
-                                            const INT* const RESTRICT bc2) {
+static inline void FDKaacEnc_mergeBitLookUp(INT *const RESTRICT bc1,
+                                            const INT *const RESTRICT bc2) {
   int j;
 
   for (j = 0; j <= CODE_BOOK_ESC_NDX; j++) {
@@ -183,9 +183,9 @@ static inline void FDKaacEnc_mergeBitLookUp(INT* const RESTRICT bc1,
   }
 }
 
-static inline INT FDKaacEnc_findMaxMerge(const INT* const mergeGainLookUp,
-                                         const SECTION_INFO* const huffsection,
-                                         const INT maxSfb, INT* const maxNdx) {
+static inline INT FDKaacEnc_findMaxMerge(const INT *const mergeGainLookUp,
+                                         const SECTION_INFO *const huffsection,
+                                         const INT maxSfb, INT *const maxNdx) {
   INT i, maxMergeGain = 0;
   int lastMaxNdx = 0;
 
@@ -200,9 +200,9 @@ static inline INT FDKaacEnc_findMaxMerge(const INT* const mergeGainLookUp,
 }
 
 static inline INT FDKaacEnc_CalcMergeGain(
-    const SECTION_INFO* const huffsection,
+    const SECTION_INFO *const huffsection,
     const INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
-    const SHORT* const sideInfoTab, const INT ndx1, const INT ndx2,
+    const SHORT *const sideInfoTab, const INT ndx1, const INT ndx2,
     const INT useVCB11) {
   INT MergeGain, MergeBits, SplitBits;
 
@@ -227,10 +227,11 @@ static inline INT FDKaacEnc_CalcMergeGain(
 }
 
 /* sectioning Stage 0:find minimum codbooks */
-static void FDKaacEnc_gmStage0(
-    SECTION_INFO* const RESTRICT huffsection,
-    const INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1], const INT maxSfb,
-    const INT* const noiseNrg, const INT* const isBook) {
+static void
+FDKaacEnc_gmStage0(SECTION_INFO *const RESTRICT huffsection,
+                   const INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
+                   const INT maxSfb, const INT *const noiseNrg,
+                   const INT *const isBook) {
   INT i;
 
   for (i = 0; i < maxSfb; i++) {
@@ -256,10 +257,11 @@ static void FDKaacEnc_gmStage0(
    sectioning Stage 1:merge all connected regions with the same code book and
    calculate side info
  */
-static void FDKaacEnc_gmStage1(
-    SECTION_INFO* const RESTRICT huffsection,
-    INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1], const INT maxSfb,
-    const SHORT* const sideInfoTab, const INT useVCB11) {
+static void
+FDKaacEnc_gmStage1(SECTION_INFO *const RESTRICT huffsection,
+                   INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
+                   const INT maxSfb, const SHORT *const sideInfoTab,
+                   const INT useVCB11) {
   INT mergeStart = 0, mergeEnd;
 
   do {
@@ -291,11 +293,12 @@ static void FDKaacEnc_gmStage1(
    sectioning Stage 2:greedy merge algorithm, merge connected sections with
    maximum bit gain until no more gain is possible
  */
-static inline void FDKaacEnc_gmStage2(
-    SECTION_INFO* const RESTRICT huffsection,
-    INT* const RESTRICT mergeGainLookUp,
-    INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1], const INT maxSfb,
-    const SHORT* const sideInfoTab, const INT useVCB11) {
+static inline void
+FDKaacEnc_gmStage2(SECTION_INFO *const RESTRICT huffsection,
+                   INT *const RESTRICT mergeGainLookUp,
+                   INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
+                   const INT maxSfb, const SHORT *const sideInfoTab,
+                   const INT useVCB11) {
   INT i;
 
   for (i = 0; i + huffsection[i].sfbCnt < maxSfb; i += huffsection[i].sfbCnt) {
@@ -311,7 +314,8 @@ static inline void FDKaacEnc_gmStage2(
         FDKaacEnc_findMaxMerge(mergeGainLookUp, huffsection, maxSfb, &maxNdx);
 
     /* exit while loop if no more gain is possible */
-    if (maxMergeGain <= 0) break;
+    if (maxMergeGain <= 0)
+      break;
 
     maxNdxNext = maxNdx + huffsection[maxNdx].sfbCnt;
 
@@ -341,33 +345,34 @@ static inline void FDKaacEnc_gmStage2(
 
 /* count bits used by the noiseless coder */
 static void FDKaacEnc_noiselessCounter(
-    SECTION_DATA* const RESTRICT sectionData, INT mergeGainLookUp[MAX_SFB_LONG],
+    SECTION_DATA *const RESTRICT sectionData, INT mergeGainLookUp[MAX_SFB_LONG],
     INT bitLookUp[MAX_SFB_LONG][CODE_BOOK_ESC_NDX + 1],
-    const SHORT* const quantSpectrum, const UINT* const maxValueInSfb,
-    const INT* const sfbOffset, const INT blockType, const INT* const noiseNrg,
-    const INT* const isBook, const INT useVCB11) {
+    const SHORT *const quantSpectrum, const UINT *const maxValueInSfb,
+    const INT *const sfbOffset, const INT blockType, const INT *const noiseNrg,
+    const INT *const isBook, const INT useVCB11) {
   INT grpNdx, i;
-  const SHORT* sideInfoTab = NULL;
-  SECTION_INFO* huffsection;
+  const SHORT *sideInfoTab = NULL;
+  SECTION_INFO *huffsection;
 
   /* use appropriate side info table */
   switch (blockType) {
-    case LONG_WINDOW:
-    case START_WINDOW:
-    case STOP_WINDOW:
-    default:
-      sideInfoTab = FDKaacEnc_sideInfoTabLong;
-      break;
-    case SHORT_WINDOW:
-      sideInfoTab = FDKaacEnc_sideInfoTabShort;
-      break;
+  case LONG_WINDOW:
+  case START_WINDOW:
+  case STOP_WINDOW:
+  default:
+    sideInfoTab = FDKaacEnc_sideInfoTabLong;
+    break;
+  case SHORT_WINDOW:
+    sideInfoTab = FDKaacEnc_sideInfoTabShort;
+    break;
   }
 
   sectionData->noOfSections = 0;
   sectionData->huffmanBits = 0;
   sectionData->sideInfoBits = 0;
 
-  if (sectionData->maxSfbPerGroup == 0) return;
+  if (sectionData->maxSfbPerGroup == 0)
+    return;
 
   /* loop trough groups */
   for (grpNdx = 0; grpNdx < sectionData->sfbCnt;
@@ -464,10 +469,10 @@ static void FDKaacEnc_noiselessCounter(
                   scalfacGain (75) and the future scalefacGain (5) is 70.
 
 ********************************************************************************/
-static void FDKaacEnc_scfCount(const INT* const scalefacGain,
-                               const UINT* const maxValueInSfb,
-                               SECTION_DATA* const RESTRICT sectionData,
-                               const INT* const isScale) {
+static void FDKaacEnc_scfCount(const INT *const scalefacGain,
+                               const UINT *const maxValueInSfb,
+                               SECTION_DATA *const RESTRICT sectionData,
+                               const INT *const isScale) {
   INT i, j, k, m, n;
 
   INT lastValScf = 0;
@@ -478,7 +483,8 @@ static void FDKaacEnc_scfCount(const INT* const scalefacGain,
 
   sectionData->scalefacBits = 0;
 
-  if (scalefacGain == NULL) return;
+  if (scalefacGain == NULL)
+    return;
 
   sectionData->firstScf = 0;
 
@@ -586,8 +592,8 @@ static void FDKaacEnc_scfCount(const INT* const scalefacGain,
 }
 
 /* count bits used by pns */
-static void FDKaacEnc_noiseCount(SECTION_DATA* const RESTRICT sectionData,
-                                 const INT* const noiseNrg) {
+static void FDKaacEnc_noiseCount(SECTION_DATA *const RESTRICT sectionData,
+                                 const INT *const noiseNrg) {
   INT noisePCMFlag = TRUE;
   INT lastValPns = 0, deltaPns;
   int i, j;
@@ -614,15 +620,15 @@ static void FDKaacEnc_noiseCount(SECTION_DATA* const RESTRICT sectionData,
   }
 }
 
-INT FDKaacEnc_dynBitCount(BITCNTR_STATE* const hBC,
-                          const SHORT* const quantSpectrum,
-                          const UINT* const maxValueInSfb,
-                          const INT* const scalefac, const INT blockType,
+INT FDKaacEnc_dynBitCount(BITCNTR_STATE *const hBC,
+                          const SHORT *const quantSpectrum,
+                          const UINT *const maxValueInSfb,
+                          const INT *const scalefac, const INT blockType,
                           const INT sfbCnt, const INT maxSfbPerGroup,
-                          const INT sfbPerGroup, const INT* const sfbOffset,
-                          SECTION_DATA* const RESTRICT sectionData,
-                          const INT* const noiseNrg, const INT* const isBook,
-                          const INT* const isScale, const UINT syntaxFlags) {
+                          const INT sfbPerGroup, const INT *const sfbOffset,
+                          SECTION_DATA *const RESTRICT sectionData,
+                          const INT *const noiseNrg, const INT *const isBook,
+                          const INT *const isScale, const UINT syntaxFlags) {
   sectionData->blockType = blockType;
   sectionData->sfbCnt = sfbCnt;
   sectionData->sfbPerGroup = sfbPerGroup;
@@ -642,8 +648,8 @@ INT FDKaacEnc_dynBitCount(BITCNTR_STATE* const hBC,
           sectionData->scalefacBits + sectionData->noiseNrgBits);
 }
 
-INT FDKaacEnc_BCNew(BITCNTR_STATE** phBC, UCHAR* dynamic_RAM) {
-  BITCNTR_STATE* hBC = GetRam_aacEnc_BitCntrState();
+INT FDKaacEnc_BCNew(BITCNTR_STATE **phBC, UCHAR *dynamic_RAM) {
+  BITCNTR_STATE *hBC = GetRam_aacEnc_BitCntrState();
 
   if (hBC) {
     *phBC = hBC;
@@ -656,7 +662,7 @@ INT FDKaacEnc_BCNew(BITCNTR_STATE** phBC, UCHAR* dynamic_RAM) {
   return (hBC == 0) ? 1 : 0;
 }
 
-void FDKaacEnc_BCClose(BITCNTR_STATE** phBC) {
+void FDKaacEnc_BCClose(BITCNTR_STATE **phBC) {
   if (*phBC != NULL) {
     FreeRam_aacEnc_BitCntrState(phBC);
   }

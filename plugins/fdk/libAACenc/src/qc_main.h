@@ -104,9 +104,9 @@ amm-info@iis.fraunhofer.de
 #define QC_MAIN_H
 
 #include "aacenc.h"
-#include "qc_data.h"
 #include "interface.h"
 #include "psy_main.h"
+#include "qc_data.h"
 #include "tpenc_lib.h"
 
 /* Quantizing & coding stage */

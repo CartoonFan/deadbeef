@@ -136,8 +136,8 @@ amm-info@iis.fraunhofer.de
 #include "qmf.h"
 
 #include "FDK_trigFcts.h"
-#include "fixpoint_math.h"
 #include "dct.h"
+#include "fixpoint_math.h"
 
 #define QSSCALE (0)
 #define FX_DBL2FX_QSS(x) (x)
@@ -367,8 +367,8 @@ static void qmfForwardModulationHQ(
       const FIXP_QTW *sbr_t_cos;
       const FIXP_QTW *sbr_t_sin;
       const int len = L; /* was len = fMin(anaQmf->lsb, L) but in case of USAC
-                            the signal above lsb is actually needed in some
-                            cases (HBE?) */
+                      the signal above lsb is actually needed in some
+                      cases (HBE?) */
       sbr_t_cos = anaQmf->t_cos;
       sbr_t_sin = anaQmf->t_sin;
 
@@ -463,7 +463,7 @@ void qmfAnalysisFilteringSlot(
 
     /* Feed and scale actual time in slot */
     for (int i = anaQmf->no_channels >> 1; i != 0; i--) {
-    /* Place INT_PCM value left aligned in scaledTimeIn */
+      /* Place INT_PCM value left aligned in scaledTimeIn */
 #if (QAS_BITS == SAMPLE_BITS)
       *FilterStatesAnaTmp++ = (FIXP_QAS)*timeIn;
       timeIn += stride;
@@ -768,15 +768,15 @@ inline static void qmfInverseModulationHQ(
  * \return 0 if successful
  *
  */
-static int qmfInitFilterBank(
-    HANDLE_QMF_FILTER_BANK h_Qmf, /*!< Handle to return */
-    void *pFilterStates,          /*!< Handle to filter states */
-    int noCols,                   /*!< Number of timeslots per frame */
-    int lsb,                      /*!< Lower end of QMF frequency range */
-    int usb,                      /*!< Upper end of QMF frequency range */
-    int no_channels,              /*!< Number of channels (bands) */
-    UINT flags,                   /*!< flags */
-    int synflag)                  /*!< 1: synthesis; 0: analysis */
+static int
+qmfInitFilterBank(HANDLE_QMF_FILTER_BANK h_Qmf, /*!< Handle to return */
+                  void *pFilterStates,          /*!< Handle to filter states */
+                  int noCols,      /*!< Number of timeslots per frame */
+                  int lsb,         /*!< Lower end of QMF frequency range */
+                  int usb,         /*!< Upper end of QMF frequency range */
+                  int no_channels, /*!< Number of channels (bands) */
+                  UINT flags,      /*!< flags */
+                  int synflag)     /*!< 1: synthesis; 0: analysis */
 {
   FDKmemclear(h_Qmf, sizeof(QMF_FILTER_BANK));
 
@@ -790,16 +790,16 @@ static int qmfInitFilterBank(
     h_Qmf->p_stride = 1;
 
     switch (no_channels) {
-      case 64:
-        h_Qmf->p_filter = qmf_mpsldfb_640;
-        h_Qmf->FilterSize = 640;
-        break;
-      case 32:
-        h_Qmf->p_filter = qmf_mpsldfb_320;
-        h_Qmf->FilterSize = 320;
-        break;
-      default:
-        return -1;
+    case 64:
+      h_Qmf->p_filter = qmf_mpsldfb_640;
+      h_Qmf->FilterSize = 640;
+      break;
+    case 32:
+      h_Qmf->p_filter = qmf_mpsldfb_320;
+      h_Qmf->FilterSize = 320;
+      break;
+    default:
+      return -1;
     }
   }
 
@@ -809,144 +809,144 @@ static int qmfInitFilterBank(
 
     h_Qmf->p_stride = 1;
     switch (no_channels) {
-      case 64:
-        h_Qmf->t_cos = qmf_phaseshift_cos64_cldfb;
-        h_Qmf->t_sin = qmf_phaseshift_sin64_cldfb;
-        h_Qmf->p_filter = qmf_cldfb_640;
-        h_Qmf->FilterSize = 640;
-        break;
-      case 32:
-        h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos32_cldfb_syn
-                                 : qmf_phaseshift_cos32_cldfb_ana;
-        h_Qmf->t_sin = qmf_phaseshift_sin32_cldfb;
-        h_Qmf->p_filter = qmf_cldfb_320;
-        h_Qmf->FilterSize = 320;
-        break;
-      case 16:
-        h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos16_cldfb_syn
-                                 : qmf_phaseshift_cos16_cldfb_ana;
-        h_Qmf->t_sin = qmf_phaseshift_sin16_cldfb;
-        h_Qmf->p_filter = qmf_cldfb_160;
-        h_Qmf->FilterSize = 160;
-        break;
-      case 8:
-        h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos8_cldfb_syn
-                                 : qmf_phaseshift_cos8_cldfb_ana;
-        h_Qmf->t_sin = qmf_phaseshift_sin8_cldfb;
-        h_Qmf->p_filter = qmf_cldfb_80;
-        h_Qmf->FilterSize = 80;
-        break;
-      default:
-        return -1;
+    case 64:
+      h_Qmf->t_cos = qmf_phaseshift_cos64_cldfb;
+      h_Qmf->t_sin = qmf_phaseshift_sin64_cldfb;
+      h_Qmf->p_filter = qmf_cldfb_640;
+      h_Qmf->FilterSize = 640;
+      break;
+    case 32:
+      h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos32_cldfb_syn
+                               : qmf_phaseshift_cos32_cldfb_ana;
+      h_Qmf->t_sin = qmf_phaseshift_sin32_cldfb;
+      h_Qmf->p_filter = qmf_cldfb_320;
+      h_Qmf->FilterSize = 320;
+      break;
+    case 16:
+      h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos16_cldfb_syn
+                               : qmf_phaseshift_cos16_cldfb_ana;
+      h_Qmf->t_sin = qmf_phaseshift_sin16_cldfb;
+      h_Qmf->p_filter = qmf_cldfb_160;
+      h_Qmf->FilterSize = 160;
+      break;
+    case 8:
+      h_Qmf->t_cos = (synflag) ? qmf_phaseshift_cos8_cldfb_syn
+                               : qmf_phaseshift_cos8_cldfb_ana;
+      h_Qmf->t_sin = qmf_phaseshift_sin8_cldfb;
+      h_Qmf->p_filter = qmf_cldfb_80;
+      h_Qmf->FilterSize = 80;
+      break;
+    default:
+      return -1;
     }
   }
 
   if (!(flags & QMF_FLAG_MPSLDFB) && ((flags & QMF_FLAG_CLDFB) == 0)) {
     switch (no_channels) {
-      case 64:
-        h_Qmf->p_filter = qmf_pfilt640;
-        h_Qmf->t_cos = qmf_phaseshift_cos64;
-        h_Qmf->t_sin = qmf_phaseshift_sin64;
-        h_Qmf->p_stride = 1;
-        h_Qmf->FilterSize = 640;
-        h_Qmf->filterScale = 0;
+    case 64:
+      h_Qmf->p_filter = qmf_pfilt640;
+      h_Qmf->t_cos = qmf_phaseshift_cos64;
+      h_Qmf->t_sin = qmf_phaseshift_sin64;
+      h_Qmf->p_stride = 1;
+      h_Qmf->FilterSize = 640;
+      h_Qmf->filterScale = 0;
+      break;
+    case 40:
+      if (synflag) {
         break;
-      case 40:
-        if (synflag) {
-          break;
-        } else {
-          h_Qmf->p_filter = qmf_pfilt400; /* Scaling factor 0.8 */
-          h_Qmf->t_cos = qmf_phaseshift_cos40;
-          h_Qmf->t_sin = qmf_phaseshift_sin40;
-          h_Qmf->filterScale = 1;
-          h_Qmf->p_stride = 1;
-          h_Qmf->FilterSize = no_channels * 10;
-        }
-        break;
-      case 32:
-        h_Qmf->p_filter = qmf_pfilt640;
-        if (flags & QMF_FLAG_DOWNSAMPLED) {
-          h_Qmf->t_cos = qmf_phaseshift_cos_downsamp32;
-          h_Qmf->t_sin = qmf_phaseshift_sin_downsamp32;
-        } else {
-          h_Qmf->t_cos = qmf_phaseshift_cos32;
-          h_Qmf->t_sin = qmf_phaseshift_sin32;
-        }
-        h_Qmf->p_stride = 2;
-        h_Qmf->FilterSize = 640;
-        h_Qmf->filterScale = 0;
-        break;
-      case 20:
-        h_Qmf->p_filter = qmf_pfilt200;
-        h_Qmf->p_stride = 1;
-        h_Qmf->FilterSize = 200;
-        h_Qmf->filterScale = 0;
-        break;
-      case 12:
-        h_Qmf->p_filter = qmf_pfilt120;
-        h_Qmf->p_stride = 1;
-        h_Qmf->FilterSize = 120;
-        h_Qmf->filterScale = 0;
-        break;
-      case 8:
-        h_Qmf->p_filter = qmf_pfilt640;
-        h_Qmf->p_stride = 8;
-        h_Qmf->FilterSize = 640;
-        h_Qmf->filterScale = 0;
-        break;
-      case 16:
-        h_Qmf->p_filter = qmf_pfilt640;
-        h_Qmf->t_cos = qmf_phaseshift_cos16;
-        h_Qmf->t_sin = qmf_phaseshift_sin16;
-        h_Qmf->p_stride = 4;
-        h_Qmf->FilterSize = 640;
-        h_Qmf->filterScale = 0;
-        break;
-      case 24:
-        h_Qmf->p_filter = qmf_pfilt240;
-        h_Qmf->t_cos = qmf_phaseshift_cos24;
-        h_Qmf->t_sin = qmf_phaseshift_sin24;
-        h_Qmf->p_stride = 1;
-        h_Qmf->FilterSize = 240;
+      } else {
+        h_Qmf->p_filter = qmf_pfilt400; /* Scaling factor 0.8 */
+        h_Qmf->t_cos = qmf_phaseshift_cos40;
+        h_Qmf->t_sin = qmf_phaseshift_sin40;
         h_Qmf->filterScale = 1;
-        break;
-      default:
-        return -1;
+        h_Qmf->p_stride = 1;
+        h_Qmf->FilterSize = no_channels * 10;
+      }
+      break;
+    case 32:
+      h_Qmf->p_filter = qmf_pfilt640;
+      if (flags & QMF_FLAG_DOWNSAMPLED) {
+        h_Qmf->t_cos = qmf_phaseshift_cos_downsamp32;
+        h_Qmf->t_sin = qmf_phaseshift_sin_downsamp32;
+      } else {
+        h_Qmf->t_cos = qmf_phaseshift_cos32;
+        h_Qmf->t_sin = qmf_phaseshift_sin32;
+      }
+      h_Qmf->p_stride = 2;
+      h_Qmf->FilterSize = 640;
+      h_Qmf->filterScale = 0;
+      break;
+    case 20:
+      h_Qmf->p_filter = qmf_pfilt200;
+      h_Qmf->p_stride = 1;
+      h_Qmf->FilterSize = 200;
+      h_Qmf->filterScale = 0;
+      break;
+    case 12:
+      h_Qmf->p_filter = qmf_pfilt120;
+      h_Qmf->p_stride = 1;
+      h_Qmf->FilterSize = 120;
+      h_Qmf->filterScale = 0;
+      break;
+    case 8:
+      h_Qmf->p_filter = qmf_pfilt640;
+      h_Qmf->p_stride = 8;
+      h_Qmf->FilterSize = 640;
+      h_Qmf->filterScale = 0;
+      break;
+    case 16:
+      h_Qmf->p_filter = qmf_pfilt640;
+      h_Qmf->t_cos = qmf_phaseshift_cos16;
+      h_Qmf->t_sin = qmf_phaseshift_sin16;
+      h_Qmf->p_stride = 4;
+      h_Qmf->FilterSize = 640;
+      h_Qmf->filterScale = 0;
+      break;
+    case 24:
+      h_Qmf->p_filter = qmf_pfilt240;
+      h_Qmf->t_cos = qmf_phaseshift_cos24;
+      h_Qmf->t_sin = qmf_phaseshift_sin24;
+      h_Qmf->p_stride = 1;
+      h_Qmf->FilterSize = 240;
+      h_Qmf->filterScale = 1;
+      break;
+    default:
+      return -1;
     }
   }
 
   h_Qmf->synScalefactor = h_Qmf->filterScale;
   // DCT|DST dependency
   switch (no_channels) {
-    case 128:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK + 1;
-      break;
-    case 40: {
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
-    } break;
-    case 64:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK;
-      break;
-    case 8:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 3;
-      break;
-    case 12:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK;
-      break;
-    case 20:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK + 1;
-      break;
-    case 32:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
-      break;
-    case 16:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 2;
-      break;
-    case 24:
-      h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
-      break;
-    default:
-      return -1;
+  case 128:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK + 1;
+    break;
+  case 40: {
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
+  } break;
+  case 64:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK;
+    break;
+  case 8:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 3;
+    break;
+  case 12:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK;
+    break;
+  case 20:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK + 1;
+    break;
+  case 32:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
+    break;
+  case 16:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 2;
+    break;
+  case 24:
+    h_Qmf->synScalefactor += ALGORITHMIC_SCALING_IN_SYNTHESIS_FILTERBANK - 1;
+    break;
+  default:
+    return -1;
   }
 
   h_Qmf->flags = flags;
@@ -1047,9 +1047,9 @@ int qmfInitSynthesisFilterBank(
                               no_channels, flags, 1);
   if (h_Qmf->FilterStates != NULL) {
     if (!(flags & QMF_FLAG_KEEP_STATES)) {
-      FDKmemclear(
-          h_Qmf->FilterStates,
-          (2 * QMF_NO_POLY - 1) * h_Qmf->no_channels * sizeof(FIXP_QSS));
+      FDKmemclear(h_Qmf->FilterStates, (2 * QMF_NO_POLY - 1) *
+                                           h_Qmf->no_channels *
+                                           sizeof(FIXP_QSS));
     } else {
       qmfAdaptFilterStates(h_Qmf, oldOutScale - h_Qmf->outScalefactor);
     }

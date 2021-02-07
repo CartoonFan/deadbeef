@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef ENV_DEC_H
 #define ENV_DEC_H
 
-#include "sbrdecoder.h"
 #include "env_extr.h"
+#include "sbrdecoder.h"
 
 void decodeSbrData(HANDLE_SBR_HEADER_DATA hHeaderData,
                    HANDLE_SBR_FRAME_DATA h_data_left,

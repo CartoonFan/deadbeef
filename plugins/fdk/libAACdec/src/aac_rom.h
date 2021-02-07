@@ -103,10 +103,10 @@ amm-info@iis.fraunhofer.de
 #ifndef AAC_ROM_H
 #define AAC_ROM_H
 
-#include "common_fix.h"
 #include "FDK_audio.h"
 #include "aacdec_hcr_types.h"
 #include "aacdec_hcrs.h"
+#include "common_fix.h"
 
 #define PCM_DEC FIXP_DBL
 #define MAXVAL_PCM_DEC MAXVAL_DBL
@@ -120,7 +120,7 @@ amm-info@iis.fraunhofer.de
 #define AACDEC_MAX_CH_CONF 14
 #define AACDEC_CH_ELEMENTS_TAB_SIZE 7 /*!< Size of element tables */
 
-#define AAC_NF_NO_RANDOM_VAL \
+#define AAC_NF_NO_RANDOM_VAL                                                   \
   512 /*!< Size of random number array for noise floor */
 
 #define INV_QUANT_TABLESIZE 256
@@ -213,7 +213,7 @@ extern const UCHAR channelMappingTableWAV[15][8];
 extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
                                        [AACDEC_CH_ELEMENTS_TAB_SIZE];
 
-#define SF_FNA_COEFFS \
+#define SF_FNA_COEFFS                                                          \
   1 /* Compile-time prescaler for MDST-filter coefficients. */
 /* SF_FNA_COEFFS > 0 should only be considered for FIXP_DBL-coefficients  */
 /* (i.e. if CPLX_PRED_FILTER_16BIT is not defined).                       */

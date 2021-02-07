@@ -102,13 +102,13 @@ amm-info@iis.fraunhofer.de
 
 #include "usacdec_fac.h"
 
+#include "FDK_tools_rom.h"
+#include "dct.h"
+#include "mdct.h"
+#include "usacdec_acelp.h"
 #include "usacdec_const.h"
 #include "usacdec_lpc.h"
-#include "usacdec_acelp.h"
 #include "usacdec_rom.h"
-#include "dct.h"
-#include "FDK_tools_rom.h"
-#include "mdct.h"
 
 #define SPEC_FAC(ptr, i, gl) ((ptr) + ((i) * (gl)))
 
@@ -397,36 +397,36 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
 
   FDK_ASSERT(fac_length <= 1024 / (4 * 2));
   switch (fac_length) {
-    /* coreCoderFrameLength = 1024 */
-    case 128:
-      pWindow = SineWindow256;
-      FacWindowZir = FacWindowZir128;
-      FacWindowSynth = FacWindowSynth128;
-      break;
-    case 64:
-      pWindow = SineWindow128;
-      FacWindowZir = FacWindowZir64;
-      FacWindowSynth = FacWindowSynth64;
-      break;
-    case 32:
-      pWindow = SineWindow64;
-      FacWindowZir = FacWindowZir32;
-      FacWindowSynth = FacWindowSynth32;
-      break;
-    /* coreCoderFrameLength = 768 */
-    case 96:
-      pWindow = SineWindow192;
-      FacWindowZir = FacWindowZir96;
-      FacWindowSynth = FacWindowSynth96;
-      break;
-    case 48:
-      pWindow = SineWindow96;
-      FacWindowZir = FacWindowZir48;
-      FacWindowSynth = FacWindowSynth48;
-      break;
-    default:
-      FDK_ASSERT(0);
-      return 0;
+  /* coreCoderFrameLength = 1024 */
+  case 128:
+    pWindow = SineWindow256;
+    FacWindowZir = FacWindowZir128;
+    FacWindowSynth = FacWindowSynth128;
+    break;
+  case 64:
+    pWindow = SineWindow128;
+    FacWindowZir = FacWindowZir64;
+    FacWindowSynth = FacWindowSynth64;
+    break;
+  case 32:
+    pWindow = SineWindow64;
+    FacWindowZir = FacWindowZir32;
+    FacWindowSynth = FacWindowSynth32;
+    break;
+  /* coreCoderFrameLength = 768 */
+  case 96:
+    pWindow = SineWindow192;
+    FacWindowZir = FacWindowZir96;
+    FacWindowSynth = FacWindowSynth96;
+    break;
+  case 48:
+    pWindow = SineWindow96;
+    FacWindowZir = FacWindowZir48;
+    FacWindowSynth = FacWindowSynth48;
+    break;
+  default:
+    FDK_ASSERT(0);
+    return 0;
   }
 
   FacWindowZir_conceal = FacWindowSynth;

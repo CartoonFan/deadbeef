@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "psbitdec.h"
 
-#include "sbr_rom.h"
 #include "huff_dec.h"
+#include "sbr_rom.h"
 
 /* PS dec privat functions */
 SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d);
@@ -115,10 +115,10 @@ SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d);
   \return index of huffman codebook table
 
 ****************************************************************************/
-static SCHAR decode_huff_cw(
-    Huffman h,                    /*!< pointer to huffman codebook table */
-    HANDLE_FDK_BITSTREAM hBitBuf, /*!< Handle to Bitbuffer */
-    int *length)                  /*!< length of huffman codeword (or NULL) */
+static SCHAR
+decode_huff_cw(Huffman h, /*!< pointer to huffman codebook table */
+               HANDLE_FDK_BITSTREAM hBitBuf, /*!< Handle to Bitbuffer */
+               int *length) /*!< length of huffman codeword (or NULL) */
 {
   UCHAR bit = 0;
   SCHAR index = 0;
@@ -167,8 +167,8 @@ static void deltaDecodeArray(
     SCHAR enable, SCHAR *aIndex,  /*!< ICC/IID parameters */
     SCHAR *aPrevFrameIndex,       /*!< ICC/IID parameters  of previous frame */
     SCHAR DtDf, UCHAR nrElements, /*!< as conveyed in bitstream */
-                                  /*!< output array size: nrElements*stride */
-    UCHAR stride,                 /*!< 1=dflt, 2=half freq. resolution */
+    /*!< output array size: nrElements*stride */
+    UCHAR stride, /*!< 1=dflt, 2=half freq. resolution */
     SCHAR minIdx, SCHAR maxIdx) {
   int i;
 
@@ -446,10 +446,10 @@ int DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
   \return
 
 ****************************************************************************/
-unsigned int ReadPsData(
-    HANDLE_PS_DEC h_ps_d,         /*!< handle to struct PS_DEC */
-    HANDLE_FDK_BITSTREAM hBitBuf, /*!< handle to struct BIT_BUF */
-    int nBitsLeft                 /*!< max number of bits available */
+unsigned int
+ReadPsData(HANDLE_PS_DEC h_ps_d,         /*!< handle to struct PS_DEC */
+           HANDLE_FDK_BITSTREAM hBitBuf, /*!< handle to struct BIT_BUF */
+           int nBitsLeft                 /*!< max number of bits available */
 ) {
   MPEG_PS_BS_DATA *pBsData;
 
@@ -459,7 +459,8 @@ unsigned int ReadPsData(
   Huffman CurrentTable;
   SCHAR bEnableHeader;
 
-  if (!h_ps_d) return 0;
+  if (!h_ps_d)
+    return 0;
 
   pBsData = &h_ps_d->bsData[h_ps_d->bsReadSlot].mpeg;
 
@@ -584,7 +585,8 @@ unsigned int ReadPsData(
     if (cnt == (1 << PS_EXTENSION_SIZE_BITS) - 1) {
       cnt += FDKreadBits(hBitBuf, PS_EXTENSION_ESC_COUNT_BITS);
     }
-    while (cnt--) FDKreadBits(hBitBuf, 8);
+    while (cnt--)
+      FDKreadBits(hBitBuf, 8);
   }
 
   /* new PS data was read from bitstream */

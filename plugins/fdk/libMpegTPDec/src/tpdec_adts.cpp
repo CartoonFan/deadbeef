@@ -136,7 +136,8 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
   USHORT crc;
 
-  if (pAdts->bs.protection_absent) return TRANSPORTDEC_OK;
+  if (pAdts->bs.protection_absent)
+    return TRANSPORTDEC_OK;
 
   crc = FDKcrcGetCRC(&pAdts->crcInfo);
   if (crc != pAdts->crcReadValue) {
@@ -261,10 +262,10 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   }
 
   /* check if valid header */
-  if ((bs.layer != 0) ||            // we only support MPEG ADTS
-      (bs.sample_freq_index >= 13)  // we only support 96kHz - 7350kHz
+  if ((bs.layer != 0) ||           // we only support MPEG ADTS
+      (bs.sample_freq_index >= 13) // we only support 96kHz - 7350kHz
   ) {
-    FDKpushFor(hBs, bs.frame_length * 8);  // try again one frame later
+    FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
     return TRANSPORTDEC_UNSUPPORTED_FORMAT;
   }
 
@@ -272,7 +273,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   if ((bs.mpeg_id == 0) && (pAdts->decoderCanDoMpeg4 == 0)) {
     /* MPEG-2 decoder cannot play MPEG-4 bitstreams */
 
-    FDKpushFor(hBs, bs.frame_length * 8);  // try again one frame later
+    FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
     return TRANSPORTDEC_UNSUPPORTED_FORMAT;
   }
 
@@ -334,7 +335,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
       if (oldPce.isValid &&
           (bs.sample_freq_index ==
            pAdts->bs.sample_freq_index) /* we could compare the complete fixed
-                                           header (bytes) here! */
+                                 header (bytes) here! */
           && (bs.channel_config == pAdts->bs.channel_config) /* == 0 */
           &&
           (bs.mpeg_id ==

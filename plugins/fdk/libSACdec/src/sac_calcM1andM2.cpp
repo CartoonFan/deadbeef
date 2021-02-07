@@ -101,19 +101,19 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "sac_calcM1andM2.h"
+#include "FDK_trigFcts.h"
 #include "sac_bitdec.h"
 #include "sac_process.h"
 #include "sac_rom.h"
 #include "sac_smoothing.h"
-#include "FDK_trigFcts.h"
 
 /* assorted definitions and constants */
 
 #define ABS_THR2 1.0e-9
-#define SQRT2_FDK \
+#define SQRT2_FDK                                                              \
   ((FIXP_DBL)FL2FXCONST_DBL(0.70710678118f)) /* FDKsqrt(2.0) scaled by 0.5 */
 
-static void param2UMX_PS__FDK(spatialDec* self,
+static void param2UMX_PS__FDK(spatialDec *self,
                               FIXP_DBL H11[MAX_PARAMETER_BANDS],
                               FIXP_DBL H12[MAX_PARAMETER_BANDS],
                               FIXP_DBL H21[MAX_PARAMETER_BANDS],
@@ -130,14 +130,14 @@ static void param2UMX_PS_Core__FDK(
     FIXP_DBL c_l[MAX_PARAMETER_BANDS], FIXP_DBL c_r[MAX_PARAMETER_BANDS]);
 
 static void param2UMX_PS_IPD_OPD__FDK(
-    spatialDec* self, const SPATIAL_BS_FRAME* frame,
+    spatialDec *self, const SPATIAL_BS_FRAME *frame,
     FIXP_DBL H11re[MAX_PARAMETER_BANDS], FIXP_DBL H12re[MAX_PARAMETER_BANDS],
     FIXP_DBL H21re[MAX_PARAMETER_BANDS], FIXP_DBL H22re[MAX_PARAMETER_BANDS],
     FIXP_DBL c_l[MAX_PARAMETER_BANDS], FIXP_DBL c_r[MAX_PARAMETER_BANDS],
     int ottBoxIndx, int parameterSetIndx, int residualBands);
 
 static void param2UMX_Prediction__FDK(
-    spatialDec* self, FIXP_DBL H11re[MAX_PARAMETER_BANDS],
+    spatialDec *self, FIXP_DBL H11re[MAX_PARAMETER_BANDS],
     FIXP_DBL H11im[MAX_PARAMETER_BANDS], FIXP_DBL H12re[MAX_PARAMETER_BANDS],
     FIXP_DBL H12im[MAX_PARAMETER_BANDS], FIXP_DBL H21re[MAX_PARAMETER_BANDS],
     FIXP_DBL H21im[MAX_PARAMETER_BANDS], FIXP_DBL H22re[MAX_PARAMETER_BANDS],
@@ -145,8 +145,9 @@ static void param2UMX_Prediction__FDK(
     int resBands);
 
 /* static void SpatialDecCalculateM0(spatialDec* self,int ps); */
-static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
-    spatialDec* self, int ps, const SPATIAL_BS_FRAME* frame);
+static SACDEC_ERROR
+SpatialDecCalculateM1andM2_212(spatialDec *self, int ps,
+                               const SPATIAL_BS_FRAME *frame);
 
 /*******************************************************************************
  Functionname: SpatialDecGetResidualIndex
@@ -161,7 +162,7 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
  Output:
 
 *******************************************************************************/
-int SpatialDecGetResidualIndex(spatialDec* self, int row) {
+int SpatialDecGetResidualIndex(spatialDec *self, int row) {
   return row2residual[self->treeConfig][row];
 }
 
@@ -178,7 +179,7 @@ int SpatialDecGetResidualIndex(spatialDec* self, int row) {
  Output:
 
 *******************************************************************************/
-static void updateAlpha(spatialDec* self) {
+static void updateAlpha(spatialDec *self) {
   int nChIn = self->numInputChannels;
   int ch;
 
@@ -197,8 +198,8 @@ static void updateAlpha(spatialDec* self) {
  Description:
  Arguments:
 *******************************************************************************/
-SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int ps,
-                                        const SPATIAL_BS_FRAME* frame) {
+SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec *self, int ps,
+                                        const SPATIAL_BS_FRAME *frame) {
   SACDEC_ERROR err = MPS_OK;
 
   if ((self->arbitraryDownmix != 0) && (ps == 0)) {
@@ -208,19 +209,19 @@ SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int ps,
   self->pActivM2ParamBands = NULL;
 
   switch (self->upmixType) {
-    case UPMIXTYPE_BYPASS:
-    case UPMIXTYPE_NORMAL:
-      switch (self->treeConfig) {
-        case TREE_212:
-          err = SpatialDecCalculateM1andM2_212(self, ps, frame);
-          break;
-        default:
-          err = MPS_WRONG_TREECONFIG;
-      };
+  case UPMIXTYPE_BYPASS:
+  case UPMIXTYPE_NORMAL:
+    switch (self->treeConfig) {
+    case TREE_212:
+      err = SpatialDecCalculateM1andM2_212(self, ps, frame);
       break;
-
     default:
       err = MPS_WRONG_TREECONFIG;
+    };
+    break;
+
+  default:
+    err = MPS_WRONG_TREECONFIG;
   }
 
   if (err != MPS_OK) {
@@ -242,8 +243,9 @@ bail:
  Return:
 
 *******************************************************************************/
-static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
-    spatialDec* self, int ps, const SPATIAL_BS_FRAME* frame) {
+static SACDEC_ERROR
+SpatialDecCalculateM1andM2_212(spatialDec *self, int ps,
+                               const SPATIAL_BS_FRAME *frame) {
   SACDEC_ERROR err = MPS_OK;
   int pb;
 
@@ -257,27 +259,26 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
   INT phaseCoding = self->phaseCoding;
 
   switch (phaseCoding) {
-    case 1:
-      /* phase coding: yes; residuals: no */
-      param2UMX_PS_IPD_OPD__FDK(self, frame, H11re, H12re, H21re, H22re, NULL,
-                                NULL, 0, ps, self->residualBands[0]);
-      break;
-    case 3:
-      /* phase coding: yes; residuals: yes */
-      param2UMX_Prediction__FDK(self, H11re, H11im, H12re, NULL, H21re, H21im,
+  case 1:
+    /* phase coding: yes; residuals: no */
+    param2UMX_PS_IPD_OPD__FDK(self, frame, H11re, H12re, H21re, H22re, NULL,
+                              NULL, 0, ps, self->residualBands[0]);
+    break;
+  case 3:
+    /* phase coding: yes; residuals: yes */
+    param2UMX_Prediction__FDK(self, H11re, H11im, H12re, NULL, H21re, H21im,
+                              H22re, NULL, 0, ps, self->residualBands[0]);
+    break;
+  default:
+    if (self->residualCoding) {
+      /* phase coding: no; residuals: yes */
+      param2UMX_Prediction__FDK(self, H11re, NULL, H12re, NULL, H21re, NULL,
                                 H22re, NULL, 0, ps, self->residualBands[0]);
-      break;
-    default:
-      if (self->residualCoding) {
-        /* phase coding: no; residuals: yes */
-        param2UMX_Prediction__FDK(self, H11re, NULL, H12re, NULL, H21re, NULL,
-                                  H22re, NULL, 0, ps, self->residualBands[0]);
-      } else {
-        /* phase coding: no; residuals: no */
-        param2UMX_PS__FDK(self, H11re, H12re, H21re, H22re, NULL, NULL, 0, ps,
-                          0);
-      }
-      break;
+    } else {
+      /* phase coding: no; residuals: no */
+      param2UMX_PS__FDK(self, H11re, H12re, H21re, H22re, NULL, NULL, 0, ps, 0);
+    }
+    break;
   }
 
   for (pb = 0; pb < self->numParameterBands; pb++) {
@@ -291,8 +292,8 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
     for (pb = 0; pb < self->numParameterBands; pb++) {
       self->M2Imag__FDK[0][0][pb] = (H11im[pb]);
       self->M2Imag__FDK[1][0][pb] = (H21im[pb]);
-      self->M2Imag__FDK[0][1][pb] = (FIXP_DBL)0;  // H12im[pb];
-      self->M2Imag__FDK[1][1][pb] = (FIXP_DBL)0;  // H22im[pb];
+      self->M2Imag__FDK[0][1][pb] = (FIXP_DBL)0; // H12im[pb];
+      self->M2Imag__FDK[1][1][pb] = (FIXP_DBL)0; // H22im[pb];
     }
   }
 
@@ -354,7 +355,7 @@ static void param2UMX_PS_Core__FDK(
  Return:
 
 *******************************************************************************/
-static void param2UMX_PS__FDK(spatialDec* self,
+static void param2UMX_PS__FDK(spatialDec *self,
                               FIXP_DBL H11[MAX_PARAMETER_BANDS],
                               FIXP_DBL H12[MAX_PARAMETER_BANDS],
                               FIXP_DBL H21[MAX_PARAMETER_BANDS],
@@ -388,7 +389,7 @@ static const FIXP_DBL sinIpd_tab[N_IPD] = {
 
 /* cosIpd[i] = sinIpd[(i+4)&15] */
 #define SIN_IPD(a) (sinIpd_tab[(a)])
-#define COS_IPD(a) (sinIpd_tab[((a) + 4) & 15])  //(cosIpd_tab[(a)])
+#define COS_IPD(a) (sinIpd_tab[((a) + 4) & 15]) //(cosIpd_tab[(a)])
 
 static const FIXP_SGL sqrt_one_minus_ICC2[8] = {
     FL2FXCONST_SGL(0.0f),
@@ -506,7 +507,7 @@ static FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK_Function(INT ipdIdx,
   sinIpd = SIN_IPD(ipdIdx);
 
   temp1c_m = fMult(temp1_m, cosIpd);
-  temp1c_e = temp1_e;  //+cosIpd_e;
+  temp1c_e = temp1_e; //+cosIpd_e;
 
   int temp2_e, temp3_e, inv_temp3_e, ratio_e;
   FIXP_DBL temp2_m =
@@ -536,7 +537,7 @@ static FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK_Function(INT ipdIdx,
                            &tempb_atan2_e);
 
   FIXP_DBL tempa_atan2_m = fMult(weight2_m, sinIpd);
-  int tempa_atan2_e = weight2_e;  // + sinIpd_e;
+  int tempa_atan2_e = weight2_e; // + sinIpd_e;
 
   if (tempa_atan2_e > tempb_atan2_e) {
     tempb_atan2_m = (tempb_atan2_m >> (tempa_atan2_e - tempb_atan2_e));
@@ -548,7 +549,7 @@ static FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK_Function(INT ipdIdx,
   return fixp_atan2(tempa_atan2_m, tempb_atan2_m);
 }
 
-static void calculateOpd(spatialDec* self, INT ottBoxIndx, INT parameterSetIndx,
+static void calculateOpd(spatialDec *self, INT ottBoxIndx, INT parameterSetIndx,
                          FIXP_DBL opd[MAX_PARAMETER_BANDS]) {
   INT band;
 
@@ -576,8 +577,10 @@ static void calculateOpd(spatialDec* self, INT ottBoxIndx, INT parameterSetIndx,
 
 /* wrap phase in rad to the range of 0 <= x < 2*pi */
 static FIXP_DBL wrapPhase(FIXP_DBL phase) {
-  while (phase < (FIXP_DBL)0) phase += PIx2__IPD;
-  while (phase >= PIx2__IPD) phase -= PIx2__IPD;
+  while (phase < (FIXP_DBL)0)
+    phase += PIx2__IPD;
+  while (phase >= PIx2__IPD)
+    phase -= PIx2__IPD;
   FDK_ASSERT((phase >= (FIXP_DBL)0) && (phase < PIx2__IPD));
 
   return phase;
@@ -595,7 +598,7 @@ static FIXP_DBL wrapPhase(FIXP_DBL phase) {
 
 *******************************************************************************/
 static void param2UMX_PS_IPD_OPD__FDK(
-    spatialDec* self, const SPATIAL_BS_FRAME* frame,
+    spatialDec *self, const SPATIAL_BS_FRAME *frame,
     FIXP_DBL H11[MAX_PARAMETER_BANDS], FIXP_DBL H12[MAX_PARAMETER_BANDS],
     FIXP_DBL H21[MAX_PARAMETER_BANDS], FIXP_DBL H22[MAX_PARAMETER_BANDS],
     FIXP_DBL c_l[MAX_PARAMETER_BANDS], FIXP_DBL c_r[MAX_PARAMETER_BANDS],
@@ -635,8 +638,8 @@ static void param2UMX_PS_IPD_OPD__FDK(
 }
 
 FDK_INLINE void param2UMX_Prediction_Core__FDK(
-    FIXP_DBL* H11re, FIXP_DBL* H11im, FIXP_DBL* H12re, FIXP_DBL* H12im,
-    FIXP_DBL* H21re, FIXP_DBL* H21im, FIXP_DBL* H22re, FIXP_DBL* H22im,
+    FIXP_DBL *H11re, FIXP_DBL *H11im, FIXP_DBL *H12re, FIXP_DBL *H12im,
+    FIXP_DBL *H21re, FIXP_DBL *H21im, FIXP_DBL *H22re, FIXP_DBL *H22im,
     int cldIdx, int iccIdx, int ipdIdx, int band, int numOttBandsIPD,
     int resBands) {
 #define MAX_WEIGHT (1.2f)
@@ -790,11 +793,11 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
   }
 }
 
-static void param2UMX_Prediction__FDK(spatialDec* self, FIXP_DBL* H11re,
-                                      FIXP_DBL* H11im, FIXP_DBL* H12re,
-                                      FIXP_DBL* H12im, FIXP_DBL* H21re,
-                                      FIXP_DBL* H21im, FIXP_DBL* H22re,
-                                      FIXP_DBL* H22im, int ottBoxIndx,
+static void param2UMX_Prediction__FDK(spatialDec *self, FIXP_DBL *H11re,
+                                      FIXP_DBL *H11im, FIXP_DBL *H12re,
+                                      FIXP_DBL *H12im, FIXP_DBL *H21re,
+                                      FIXP_DBL *H21im, FIXP_DBL *H22re,
+                                      FIXP_DBL *H22im, int ottBoxIndx,
                                       int parameterSetIndx, int resBands) {
   int band;
   FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
@@ -823,7 +826,7 @@ static void param2UMX_Prediction__FDK(spatialDec* self, FIXP_DBL* H11re,
 
 *******************************************************************************/
 
-SACDEC_ERROR initM1andM2(spatialDec* self, int initStatesFlag,
+SACDEC_ERROR initM1andM2(spatialDec *self, int initStatesFlag,
                          int configChanged) {
   SACDEC_ERROR err = MPS_OK;
 

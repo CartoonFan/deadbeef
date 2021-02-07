@@ -101,9 +101,9 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "sac_stp.h"
-#include "sac_calcM1andM2.h"
-#include "sac_bitdec.h"
 #include "FDK_matrixCalloc.h"
+#include "sac_bitdec.h"
+#include "sac_calcM1andM2.h"
 #include "sac_rom.h"
 
 #define BP_GF_START 6
@@ -112,7 +112,7 @@ amm-info@iis.fraunhofer.de
 #define STP_UPDATE_ENERGY_RATE 32
 
 #define SF_WET 5
-#define SF_DRY \
+#define SF_DRY                                                                 \
   3 /* SF_DRY == 2 would produce good conformance test results as well */
 #define SF_PRODUCT_BP_GF 13
 #define SF_PRODUCT_BP_GF_GF 26
@@ -122,28 +122,28 @@ amm-info@iis.fraunhofer.de
 #define STP_LPF_COEFF1__FDK FL2FXCONST_DBL(0.950f) /* 0.95 */
 #define ONE_MINUS_STP_LPF_COEFF1__FDK FL2FXCONST_DBL(0.05f) /* 1.0 - 0.95 */
 #define STP_LPF_COEFF2__FDK FL2FXCONST_DBL(0.450f)          /* 0.45 */
-#define ONE_MINUS_STP_LPF_COEFF2__FDK \
+#define ONE_MINUS_STP_LPF_COEFF2__FDK                                          \
   FL2FXCONST_DBL(1.0f - 0.450f) /* 1.0 - 0.45 */
-#define STP_SCALE_LIMIT__FDK \
+#define STP_SCALE_LIMIT__FDK                                                   \
   FL2FXCONST_DBL(2.82f / (float)(1 << SF_SCALE)) /* scaled by SF_SCALE */
-#define ONE_DIV_STP_SCALE_LIMIT__FDK                                          \
-  FL2FXCONST_DBL(1.0f / 2.82f / (float)(1 << SF_SCALE)) /* scaled by SF_SCALE \
+#define ONE_DIV_STP_SCALE_LIMIT__FDK                                           \
+  FL2FXCONST_DBL(1.0f / 2.82f / (float)(1 << SF_SCALE)) /* scaled by SF_SCALE  \
                                                          */
-#define ABS_THR__FDK       \
-  FL2FXCONST_DBL(ABS_THR / \
+#define ABS_THR__FDK                                                           \
+  FL2FXCONST_DBL(ABS_THR /                                                     \
                  ((float)(1 << (22 + 22 - 26)))) /* scaled by 18 bits */
-#define ABS_THR2__FDK                      \
-  FL2FXCONST_DBL(ABS_THR * 32.0f * 32.0f / \
+#define ABS_THR2__FDK                                                          \
+  FL2FXCONST_DBL(ABS_THR * 32.0f * 32.0f /                                     \
                  ((float)(1 << (22 + 22 - 26)))) /* scaled by 10 bits */
-#define STP_SCALE_LIMIT_HI \
+#define STP_SCALE_LIMIT_HI                                                     \
   FL2FXCONST_DBL(3.02222222222 / (1 << SF_SCALE)) /* see 4. below */
-#define STP_SCALE_LIMIT_LO \
+#define STP_SCALE_LIMIT_LO                                                     \
   FL2FXCONST_DBL(0.28289992119 / (1 << SF_SCALE)) /* see 4. below */
-#define STP_SCALE_LIMIT_HI_LD64                 \
-  FL2FXCONST_DBL(0.04986280452) /* see 4. below \
+#define STP_SCALE_LIMIT_HI_LD64                                                \
+  FL2FXCONST_DBL(0.04986280452) /* see 4. below                                \
                                  */
-#define STP_SCALE_LIMIT_LO_LD64                 \
-  FL2FXCONST_DBL(0.05692613500) /* see 4. below \
+#define STP_SCALE_LIMIT_LO_LD64                                                \
+  FL2FXCONST_DBL(0.05692613500) /* see 4. below                                \
                                  */
 
 /*  Scale factor calculation for the diffuse signal needs adapted thresholds
@@ -176,12 +176,12 @@ amm-info@iis.fraunhofer.de
 
 #define WET_ENER_WEIGHT(WetEner) WetEner = WetEner << wet_scale_dmx
 
-#define DRY_ENER_SUM_REAL(DryEner, dmxReal, n) \
-  DryEner +=                                   \
+#define DRY_ENER_SUM_REAL(DryEner, dmxReal, n)                                 \
+  DryEner +=                                                                   \
       fMultDiv2(fPow2Div2(dmxReal << SF_DRY), pBP[n]) >> ((2 * SF_DRY) - 2)
 
-#define DRY_ENER_SUM_CPLX(DryEner, dmxReal, dmxImag, n) \
-  DryEner += fMultDiv2(                                 \
+#define DRY_ENER_SUM_CPLX(DryEner, dmxReal, dmxImag, n)                        \
+  DryEner += fMultDiv2(                                                        \
       fPow2Div2(dmxReal << SF_DRY) + fPow2Div2(dmxImag << SF_DRY), pBP[n])
 
 #define CALC_WET_SCALE(dryIdx, wetIdx)                                         \
@@ -243,12 +243,10 @@ inline void combineSignalCplx(FIXP_DBL *hybOutputRealDry,
   }
 }
 
-inline void combineSignalCplxScale1(FIXP_DBL *hybOutputRealDry,
-                                    FIXP_DBL *hybOutputImagDry,
-                                    FIXP_DBL *hybOutputRealWet,
-                                    FIXP_DBL *hybOutputImagWet,
-                                    const FIXP_CFG *pBP, FIXP_DBL scaleX,
-                                    int bands) {
+inline void
+combineSignalCplxScale1(FIXP_DBL *hybOutputRealDry, FIXP_DBL *hybOutputImagDry,
+                        FIXP_DBL *hybOutputRealWet, FIXP_DBL *hybOutputImagWet,
+                        const FIXP_CFG *pBP, FIXP_DBL scaleX, int bands) {
   int n;
   FIXP_DBL scaleY;
   for (n = bands - 1; n >= 0; n--) {
@@ -399,26 +397,26 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
 
   /* get channel configuration */
   switch (self->treeConfig) {
-    case TREE_212:
-      i_LF = 0;
-      i_RF = 1;
-      break;
-    default:
-      return MPS_WRONG_TREECONFIG;
+  case TREE_212:
+    i_LF = 0;
+    i_RF = 1;
+    break;
+  default:
+    return MPS_WRONG_TREECONFIG;
   }
 
   /* form the 'direct' downmix signal */
   pBP = hStpDec->BP_GF - BP_GF_START;
   switch (self->treeConfig) {
-    case TREE_212:
-      for (n = BP_GF_START; n < cplxBands; n++) {
-        dmxReal0 = qmfOutputRealDry[i_LF][n] + qmfOutputRealDry[i_RF][n];
-        dmxImag0 = qmfOutputImagDry[i_LF][n] + qmfOutputImagDry[i_RF][n];
-        DRY_ENER_SUM_CPLX(DryEner0, dmxReal0, dmxImag0, n);
-      }
-      DRY_ENER_WEIGHT(DryEner0);
-      break;
-    default:;
+  case TREE_212:
+    for (n = BP_GF_START; n < cplxBands; n++) {
+      dmxReal0 = qmfOutputRealDry[i_LF][n] + qmfOutputRealDry[i_RF][n];
+      dmxImag0 = qmfOutputImagDry[i_LF][n] + qmfOutputImagDry[i_RF][n];
+      DRY_ENER_SUM_CPLX(DryEner0, dmxReal0, dmxImag0, n);
+    }
+    DRY_ENER_WEIGHT(DryEner0);
+    break;
+  default:;
   }
   DryEner[0] = DryEner0;
 
@@ -473,13 +471,13 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
 
   /* compute scale factor for the 'diffuse' signals */
   switch (self->treeConfig) {
-    case TREE_212:
-      if (DryEner[0] != FL2FXCONST_DBL(0.0f)) {
-        CALC_WET_SCALE(0, i_LF);
-        CALC_WET_SCALE(0, i_RF);
-      }
-      break;
-    default:;
+  case TREE_212:
+    if (DryEner[0] != FL2FXCONST_DBL(0.0f)) {
+      CALC_WET_SCALE(0, i_LF);
+      CALC_WET_SCALE(0, i_RF);
+    }
+    break;
+  default:;
   }
 
   damp = FL2FXCONST_DBL(0.1f / (1 << SF_SCALE));

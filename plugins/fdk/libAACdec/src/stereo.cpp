@@ -102,10 +102,10 @@ amm-info@iis.fraunhofer.de
 
 #include "stereo.h"
 
-#include "aac_rom.h"
-#include "FDK_bitstream.h"
-#include "channelinfo.h"
 #include "FDK_audio.h"
+#include "FDK_bitstream.h"
+#include "aac_rom.h"
+#include "channelinfo.h"
 
 enum { L = 0, R = 1 };
 
@@ -136,59 +136,59 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
   }
 
   switch (pJointStereoData->MsMaskPresent) {
-    case 0: /* no M/S */
-      /* all flags are already cleared */
-      break;
+  case 0: /* no M/S */
+    /* all flags are already cleared */
+    break;
 
-    case 1: /* read ms_used */
-      for (group = 0; group < windowGroups; group++) {
-        for (band = 0; band < scaleFactorBandsTransmitted; band++) {
-          pJointStereoData->MsUsed[band] |= (FDKreadBits(bs, 1) << group);
-        }
-      }
-      break;
-
-    case 2: /* full spectrum M/S */
+  case 1: /* read ms_used */
+    for (group = 0; group < windowGroups; group++) {
       for (band = 0; band < scaleFactorBandsTransmitted; band++) {
-        pJointStereoData->MsUsed[band] = 255; /* set all flags to 1 */
+        pJointStereoData->MsUsed[band] |= (FDKreadBits(bs, 1) << group);
       }
-      break;
+    }
+    break;
 
-    case 3:
-      /* M/S coding is disabled, complex stereo prediction is enabled */
-      if (flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) {
-        if (cplxPredictionActiv) { /* 'if (stereoConfigIndex == 0)' */
+  case 2: /* full spectrum M/S */
+    for (band = 0; band < scaleFactorBandsTransmitted; band++) {
+      pJointStereoData->MsUsed[band] = 255; /* set all flags to 1 */
+    }
+    break;
 
-          pJointStereoData->cplx_pred_flag = 1;
+  case 3:
+    /* M/S coding is disabled, complex stereo prediction is enabled */
+    if (flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) {
+      if (cplxPredictionActiv) { /* 'if (stereoConfigIndex == 0)' */
 
-          /* cplx_pred_data()  cp. ISO/IEC FDIS 23003-3:2011(E)  Table 26 */
-          int cplx_pred_all = 0; /* local use only */
-          cplx_pred_all = FDKreadBits(bs, 1);
+        pJointStereoData->cplx_pred_flag = 1;
 
-          if (cplx_pred_all) {
-            for (group = 0; group < windowGroups; group++) {
-              UCHAR groupmask = ((UCHAR)1 << group);
-              for (band = 0; band < scaleFactorBandsTransmitted; band++) {
-                pJointStereoData->MsUsed[band] |= groupmask;
-              }
-            }
-          } else {
-            for (group = 0; group < windowGroups; group++) {
-              for (band = 0; band < scaleFactorBandsTransmitted;
-                   band += SFB_PER_PRED_BAND) {
-                pJointStereoData->MsUsed[band] |= (FDKreadBits(bs, 1) << group);
-                if ((band + 1) < scaleFactorBandsTotal) {
-                  pJointStereoData->MsUsed[band + 1] |=
-                      (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group));
-                }
-              }
+        /* cplx_pred_data()  cp. ISO/IEC FDIS 23003-3:2011(E)  Table 26 */
+        int cplx_pred_all = 0; /* local use only */
+        cplx_pred_all = FDKreadBits(bs, 1);
+
+        if (cplx_pred_all) {
+          for (group = 0; group < windowGroups; group++) {
+            UCHAR groupmask = ((UCHAR)1 << group);
+            for (band = 0; band < scaleFactorBandsTransmitted; band++) {
+              pJointStereoData->MsUsed[band] |= groupmask;
             }
           }
         } else {
-          return -1;
+          for (group = 0; group < windowGroups; group++) {
+            for (band = 0; band < scaleFactorBandsTransmitted;
+                 band += SFB_PER_PRED_BAND) {
+              pJointStereoData->MsUsed[band] |= (FDKreadBits(bs, 1) << group);
+              if ((band + 1) < scaleFactorBandsTotal) {
+                pJointStereoData->MsUsed[band + 1] |=
+                    (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group));
+              }
+            }
+          }
         }
+      } else {
+        return -1;
       }
-      break;
+    }
+    break;
   }
 
   if (cplxPredictionActiv) {
@@ -255,7 +255,8 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                            (pJointStereoPersistentData->winSeqPrev ==
                             BLOCK_SHORT)) {
                   /* Included for error-robustness */
-                  if (pJointStereoPersistentData->winGroupsPrev == 0) return -1;
+                  if (pJointStereoPersistentData->winGroupsPrev == 0)
+                    return -1;
 
                   last_alpha_q_re =
                       pJointStereoPersistentData->alpha_q_re_prev
@@ -309,10 +310,10 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                 cplxPredictionData->alpha_q_im[group][band] = 0;
               } /* if (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group)) */
 
-              if ((band + 1) <
-                  scaleFactorBandsTransmitted) { /* <= this should be the
-                                                    correct way (cp.
-                                                    ISO_IEC_FDIS_23003-0(E) */
+              if ((band + 1) < scaleFactorBandsTransmitted) {
+                /* <= this should be the
+                                                  correct way (cp.
+                                                  ISO_IEC_FDIS_23003-0(E) */
                 /*    7.7.2.3.2 Decoding of prediction coefficients) */
                 cplxPredictionData->alpha_q_re[group][band + 1] =
                     cplxPredictionData->alpha_q_re[group][band];
@@ -612,7 +613,7 @@ void CJointStereo_ApplyMS(
     /* get length of short window for current configuration */
     windowLen =
         pAacDecoderChannelInfo[L]->granuleLength; /* framelength 768 => 96,
-                                                     framelength 1024 => 128 */
+                                                 framelength 1024 => 128 */
 
     /* if this is no short-block set length for long-block */
     if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence != BLOCK_SHORT) {
@@ -629,29 +630,29 @@ void CJointStereo_ApplyMS(
     if (cplxPredictionData->complex_coef == 1) {
       switch (pAacDecoderChannelInfo[L]
                   ->icsInfo.WindowSequence) { /* current window sequence */
-        case BLOCK_SHORT:
-        case BLOCK_LONG:
-          pCoeffPrev = mdst_filt_coef_prev[previousShape];
-          break;
+      case BLOCK_SHORT:
+      case BLOCK_LONG:
+        pCoeffPrev = mdst_filt_coef_prev[previousShape];
+        break;
 
-        case BLOCK_START:
-          if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
-              (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
-            /* a stop-start-sequence can only follow on an eight-short-sequence
-             * or a start-sequence */
-            pCoeffPrev = mdst_filt_coef_prev[2 + previousShape];
-          } else {
-            pCoeffPrev = mdst_filt_coef_prev[previousShape];
-          }
-          break;
-
-        case BLOCK_STOP:
+      case BLOCK_START:
+        if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
+            (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
+          /* a stop-start-sequence can only follow on an eight-short-sequence
+           * or a start-sequence */
           pCoeffPrev = mdst_filt_coef_prev[2 + previousShape];
-          break;
-
-        default:
+        } else {
           pCoeffPrev = mdst_filt_coef_prev[previousShape];
-          break;
+        }
+        break;
+
+      case BLOCK_STOP:
+        pCoeffPrev = mdst_filt_coef_prev[2 + previousShape];
+        break;
+
+      default:
+        pCoeffPrev = mdst_filt_coef_prev[previousShape];
+        break;
       }
     }
 
@@ -666,7 +667,7 @@ void CJointStereo_ApplyMS(
     } else if ((previousShape == SHAPE_KBD) && (currentShape == SHAPE_KBD)) {
       coeffPointerOffset = 1;
     } else /* if ( (previousShape == SHAPE_KBD) && (currentShape == SHAPE_SINE)
-              ) */
+          ) */
     {
       coeffPointerOffset = 3;
     }
@@ -675,28 +676,28 @@ void CJointStereo_ApplyMS(
      * table 124 */
     switch (pAacDecoderChannelInfo[L]
                 ->icsInfo.WindowSequence) { /* current window sequence */
-      case BLOCK_SHORT:
-      case BLOCK_LONG:
-        pCoeff = mdst_filt_coef_curr[coeffPointerOffset];
-        break;
+    case BLOCK_SHORT:
+    case BLOCK_LONG:
+      pCoeff = mdst_filt_coef_curr[coeffPointerOffset];
+      break;
 
-      case BLOCK_START:
-        if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
-            (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
-          /* a stop-start-sequence can only follow on an eight-short-sequence or
-           * a start-sequence */
-          pCoeff = mdst_filt_coef_curr[12 + coeffPointerOffset];
-        } else {
-          pCoeff = mdst_filt_coef_curr[4 + coeffPointerOffset];
-        }
-        break;
+    case BLOCK_START:
+      if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
+          (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
+        /* a stop-start-sequence can only follow on an eight-short-sequence or
+         * a start-sequence */
+        pCoeff = mdst_filt_coef_curr[12 + coeffPointerOffset];
+      } else {
+        pCoeff = mdst_filt_coef_curr[4 + coeffPointerOffset];
+      }
+      break;
 
-      case BLOCK_STOP:
-        pCoeff = mdst_filt_coef_curr[8 + coeffPointerOffset];
-        break;
+    case BLOCK_STOP:
+      pCoeff = mdst_filt_coef_curr[8 + coeffPointerOffset];
+      break;
 
-      default:
-        pCoeff = mdst_filt_coef_curr[coeffPointerOffset];
+    default:
+      pCoeff = mdst_filt_coef_curr[coeffPointerOffset];
     }
 
     /* 0.4. find maximum common (l/r) band-scaling-factor for whole sequence
@@ -717,18 +718,18 @@ void CJointStereo_ApplyMS(
           windowMaxScale =
               (windowMaxScale < commonScale) ? commonScale : windowMaxScale;
         }
-        if (scaleFactorBandsTransmittedL >
-            min_sfb_ste) { /* i.e. scaleFactorBandsTransmittedL == max_sfb_ste
-                            */
+        if (scaleFactorBandsTransmittedL > min_sfb_ste) {
+          /* i.e. scaleFactorBandsTransmittedL == max_sfb_ste
+           */
           for (; band < max_sfb_ste; band++) {
             int lScale = leftScale[band];
             windowMaxScale =
                 (windowMaxScale < lScale) ? lScale : windowMaxScale;
           }
         } else {
-          if (scaleFactorBandsTransmittedR >
-              min_sfb_ste) { /* i.e. scaleFactorBandsTransmittedR == max_sfb_ste
-                              */
+          if (scaleFactorBandsTransmittedR > min_sfb_ste) {
+            /* i.e. scaleFactorBandsTransmittedR == max_sfb_ste
+             */
             for (; band < max_sfb_ste; band++) {
               int rScale = rightScale[band];
               windowMaxScale =
@@ -835,7 +836,7 @@ void CJointStereo_ApplyMS(
               *store_dmx_re_prev_e = dmx_re_prev_e;
 
             } /* if ( (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence !=
-                 BLOCK_SHORT) || (window == 0) ) */
+     BLOCK_SHORT) || (window == 0) ) */
 
           } /* if ( pJointStereoData->use_prev_frame == 1 ) */
 
@@ -895,12 +896,11 @@ void CJointStereo_ApplyMS(
           int rScale = rightScale[band];
 
           lScale = fMin(DFRACT_BITS - 1, specScaleL[window] - lScale);
-          rScale = fMin(DFRACT_BITS - 1,
-                        specScaleL[window] - rScale); /* L or R doesn't
-                                                         matter,
-                                                         specScales are
-                                                         equal at this
-                                                         point */
+          rScale = fMin(DFRACT_BITS - 1, specScaleL[window] - rScale); /* L or R
+                                                                doesn't matter,
+                                                                specScales are
+                                                                equal at this
+                                                                point */
 
           /* Write back to sfb scale to cover the case when max_sfb_ste <
            * max_sfb */
@@ -1006,9 +1006,11 @@ void CJointStereo_ApplyMS(
 
             /* Find the minimum common headroom for alpha_re and alpha_im */
             int alpha_re_headroom = CountLeadingBits((INT)tempRe) - 16;
-            if (tempRe == (FIXP_SGL)0) alpha_re_headroom = 15;
+            if (tempRe == (FIXP_SGL)0)
+              alpha_re_headroom = 15;
             int alpha_im_headroom = CountLeadingBits((INT)tempIm) - 16;
-            if (tempIm == (FIXP_SGL)0) alpha_im_headroom = 15;
+            if (tempIm == (FIXP_SGL)0)
+              alpha_im_headroom = 15;
             int val = fMin(alpha_re_headroom, alpha_im_headroom);
 
             /* Multiply alpha by 0.1 with maximum precision */
@@ -1074,7 +1076,7 @@ void CJointStereo_ApplyMS(
 
         } /* for ( band=0; band < max_sfb_ste; band++ ) */
       }   /* for ( groupwin=0; groupwin<pWindowGroupLength[group]; groupwin++,
-             window++ ) */
+       window++ ) */
 
     } /* for ( window = 0, group = 0; group < windowGroups; group++ ) */
 

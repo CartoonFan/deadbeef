@@ -103,17 +103,17 @@ amm-info@iis.fraunhofer.de
 #ifndef STEREO_H
 #define STEREO_H
 
-#include "machine_type.h"
 #include "FDK_bitstream.h"
 #include "common_fix.h"
+#include "machine_type.h"
 
 #define SFB_PER_PRED_BAND 2
 
-#define SR_FNA_OUT                                                           \
-  0 /* Additional scaling of the CJointStereo_filterAndAdd()-output to avoid \
+#define SR_FNA_OUT                                                             \
+  0 /* Additional scaling of the CJointStereo_filterAndAdd()-output to avoid   \
        overflows.    */
-    /* The scaling factor can be set to 0 if the coefficients are prescaled
-     * appropriately. */
+/* The scaling factor can be set to 0 if the coefficients are prescaled
+ * appropriately. */
 /* Prescaling via factor SF_FNA_COEFFS is done at compile-time but should only
  * be      */
 /* utilized if the coefficients are stored as FIXP_DBL. (cp. aac_rom.cpp/.h) */
@@ -130,13 +130,13 @@ amm-info@iis.fraunhofer.de
 enum { JointStereoMaximumGroups = 8, JointStereoMaximumBands = 64 };
 
 typedef struct {
-  UCHAR pred_dir;  // 0 = prediction from mid to side channel, 1 = vice versa
+  UCHAR pred_dir; // 0 = prediction from mid to side channel, 1 = vice versa
   UCHAR
-  igf_pred_dir;  // 0 = prediction from mid to side channel, 1 = vice versa
-  UCHAR complex_coef;    // 0 = alpha_q_im[x] is 0 for all prediction bands, 1 =
-                         // alpha_q_im[x] is transmitted via bitstream
-  UCHAR use_prev_frame;  // 0 = use current frame for MDST estimation, 1 = use
-                         // current and previous frame
+  igf_pred_dir;       // 0 = prediction from mid to side channel, 1 = vice versa
+  UCHAR complex_coef; // 0 = alpha_q_im[x] is 0 for all prediction bands, 1 =
+  // alpha_q_im[x] is transmitted via bitstream
+  UCHAR use_prev_frame; // 0 = use current frame for MDST estimation, 1 = use
+  // current and previous frame
 
   SHORT alpha_q_re[JointStereoMaximumGroups][JointStereoMaximumBands];
   SHORT alpha_q_im[JointStereoMaximumGroups][JointStereoMaximumBands];
@@ -146,13 +146,13 @@ typedef struct {
 typedef struct {
   UCHAR MsMaskPresent;
   UCHAR MsUsed[JointStereoMaximumBands]; /*!< every arry element contains flags
-                                            for up to 8 groups. this array is
-                                            also utilized for complex stereo
-                                            prediction. */
+                                          for up to 8 groups. this array is
+                                          also utilized for complex stereo
+                                          prediction. */
   UCHAR IGF_MsMaskPresent;
 
   UCHAR cplx_pred_flag; /* stereo complex prediction was signalled for this
-                           frame */
+                         frame */
   UCHAR igf_cplx_pred_flag;
 
   /* The following array and variable are needed for the case  when INF is
@@ -165,15 +165,15 @@ typedef struct {
 /* joint stereo persistent memory */
 typedef struct {
   UCHAR clearSpectralCoeffs; /* indicates that the spectral coeffs must be
-                                cleared because the transform splitting active
-                                flag of the left and right channel was different
-                              */
+                              cleared because the transform splitting active
+                              flag of the left and right channel was different
+                            */
 
   FIXP_DBL *scratchBuffer; /* pointer to scratch buffer */
 
   FIXP_DBL
   *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
-                         complex stereo prediction */
+                       complex stereo prediction */
   SHORT *specScale[2];
 
   SHORT alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];

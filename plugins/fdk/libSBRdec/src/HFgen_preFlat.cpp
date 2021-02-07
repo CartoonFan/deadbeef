@@ -117,17 +117,17 @@ amm-info@iis.fraunhofer.de
 typedef struct backsubst_data {
   FIXP_CHB Lnorm1d[3]; /*!< Normalized L matrix */
   SCHAR Lnorm1d_sf[3];
-  FIXP_CHB Lnormii
-      [3]; /*!< The diagonal data points [i][i] of the normalized L matrix */
+  FIXP_CHB Lnormii[3]; /*!< The diagonal data points [i][i] of the normalized L
+                          matrix */
   SCHAR Lnormii_sf[3];
-  FIXP_CHB Bmul0
-      [4]; /*!< To normalize L*x=b, Bmul0 is what we need to multiply b with. */
+  FIXP_CHB Bmul0[4]; /*!< To normalize L*x=b, Bmul0 is what we need to multiply
+                        b with. */
   SCHAR Bmul0_sf[4];
   FIXP_CHB LnormInv1d[6]; /*!< Normalized inverted L matrix (L') */
   SCHAR LnormInv1d_sf[6];
   FIXP_CHB
   Bmul1[4]; /*!< To normalize L'*x=b, Bmul1 is what we need to multiply b
-               with. */
+             with. */
   SCHAR Bmul1_sf[4];
 } backsubst_data;
 
@@ -142,8 +142,8 @@ const UCHAR getLog2[32] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
  */
 #define BSD_IDX_OFFSET 5
 
-#define N_NUMBANDS               \
-  MAXLOWBANDS - BSD_IDX_OFFSET + \
+#define N_NUMBANDS                                                             \
+  MAXLOWBANDS - BSD_IDX_OFFSET +                                               \
       1 /*!< Number of backsubst_data elements in bsd */
 
 const backsubst_data bsd[N_NUMBANDS] = {
@@ -642,7 +642,7 @@ static void backsubst_bw(const int numBands, const FIXP_DBL *const b,
   for (i = POLY_ORDER - 1, m = 0; i >= 0; i--) {
     FIXP_DBL sum = b[i] >> SUM_SAFETY;
     int sum_sf = x_sf[i]; /* sum's sf but disregarding SUM_SAFETY (added at the
-                             iteration's end) */
+                         iteration's end) */
 
     for (k = i + 1; k <= POLY_ORDER; ++k, ++m) {
       int e;
@@ -736,7 +736,8 @@ static void polyfit(const int numBands, const FIXP_DBL *const y, const int y_sf,
   FDKmemclear(p, (POLY_ORDER + 1) * sizeof(FIXP_DBL));
 
   /* p[] are the sums over n values and each p[i] has its own sf */
-  for (i = 0; i <= POLY_ORDER; ++i) p_sf[i] = 1 - DFRACT_BITS;
+  for (i = 0; i <= POLY_ORDER; ++i)
+    p_sf[i] = 1 - DFRACT_BITS;
 
   for (k = 0; k < numBands; k++) {
     v[0] = (LONG)1;

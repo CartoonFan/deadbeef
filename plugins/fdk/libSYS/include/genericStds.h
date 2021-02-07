@@ -157,167 +157,167 @@ typedef enum {
  */
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define H_ALLOC_MEM(name, type) \
-  type *Get##name(int n = 0);   \
-  void Free##name(type **p);    \
+#define H_ALLOC_MEM(name, type)                                                \
+  type *Get##name(int n = 0);                                                  \
+  void Free##name(type **p);                                                   \
   UINT GetRequiredMem##name(void);
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define H_ALLOC_MEM_OVERLAY(name, type) \
-  type *Get##name(int n = 0);           \
-  void Free##name(type **p);            \
+#define H_ALLOC_MEM_OVERLAY(name, type)                                        \
+  type *Get##name(int n = 0);                                                  \
+  void Free##name(type **p);                                                   \
   UINT GetRequiredMem##name(void);
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_ALLOC_MEM(name, type, num)               \
-  type *Get##name(int n) {                         \
-    FDK_ASSERT((n) == 0);                          \
-    return ((type *)FDKcalloc(num, sizeof(type))); \
-  }                                                \
-  void Free##name(type **p) {                      \
-    if (p != NULL) {                               \
-      FDKfree(*p);                                 \
-      *p = NULL;                                   \
-    }                                              \
-  }                                                \
-  UINT GetRequiredMem##name(void) {                \
-    return ALGN_SIZE_EXTRES((num) * sizeof(type)); \
+#define C_ALLOC_MEM(name, type, num)                                           \
+  type *Get##name(int n) {                                                     \
+    FDK_ASSERT((n) == 0);                                                      \
+    return ((type *)FDKcalloc(num, sizeof(type)));                             \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKfree(*p);                                                             \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((num) * sizeof(type));                             \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_ALLOC_MEM2(name, type, n1, n2)                 \
-  type *Get##name(int n) {                               \
-    FDK_ASSERT((n) < (n2));                              \
-    return ((type *)FDKcalloc(n1, sizeof(type)));        \
-  }                                                      \
-  void Free##name(type **p) {                            \
-    if (p != NULL) {                                     \
-      FDKfree(*p);                                       \
-      *p = NULL;                                         \
-    }                                                    \
-  }                                                      \
-  UINT GetRequiredMem##name(void) {                      \
-    return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2); \
+#define C_ALLOC_MEM2(name, type, n1, n2)                                       \
+  type *Get##name(int n) {                                                     \
+    FDK_ASSERT((n) < (n2));                                                    \
+    return ((type *)FDKcalloc(n1, sizeof(type)));                              \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKfree(*p);                                                             \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2);                       \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_MEM(name, type, num)                                  \
-  type *Get##name(int n) {                                             \
-    type *ap;                                                          \
-    FDK_ASSERT((n) == 0);                                              \
-    ap = ((type *)FDKaalloc((num) * sizeof(type), ALIGNMENT_DEFAULT)); \
-    return ap;                                                         \
-  }                                                                    \
-  void Free##name(type **p) {                                          \
-    if (p != NULL) {                                                   \
-      FDKafree(*p);                                                    \
-      *p = NULL;                                                       \
-    }                                                                  \
-  }                                                                    \
-  UINT GetRequiredMem##name(void) {                                    \
-    return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT + \
-                            sizeof(void *));                           \
+#define C_AALLOC_MEM(name, type, num)                                          \
+  type *Get##name(int n) {                                                     \
+    type *ap;                                                                  \
+    FDK_ASSERT((n) == 0);                                                      \
+    ap = ((type *)FDKaalloc((num) * sizeof(type), ALIGNMENT_DEFAULT));         \
+    return ap;                                                                 \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKafree(*p);                                                            \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT +         \
+                            sizeof(void *));                                   \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_MEM2(name, type, n1, n2)                             \
-  type *Get##name(int n) {                                            \
-    type *ap;                                                         \
-    FDK_ASSERT((n) < (n2));                                           \
-    ap = ((type *)FDKaalloc((n1) * sizeof(type), ALIGNMENT_DEFAULT)); \
-    return ap;                                                        \
-  }                                                                   \
-  void Free##name(type **p) {                                         \
-    if (p != NULL) {                                                  \
-      FDKafree(*p);                                                   \
-      *p = NULL;                                                      \
-    }                                                                 \
-  }                                                                   \
-  UINT GetRequiredMem##name(void) {                                   \
-    return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT + \
-                            sizeof(void *)) *                         \
-           (n2);                                                      \
+#define C_AALLOC_MEM2(name, type, n1, n2)                                      \
+  type *Get##name(int n) {                                                     \
+    type *ap;                                                                  \
+    FDK_ASSERT((n) < (n2));                                                    \
+    ap = ((type *)FDKaalloc((n1) * sizeof(type), ALIGNMENT_DEFAULT));          \
+    return ap;                                                                 \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKafree(*p);                                                            \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT +          \
+                            sizeof(void *)) *                                  \
+           (n2);                                                               \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_ALLOC_MEM_L(name, type, num, s)               \
-  type *Get##name(int n) {                              \
-    FDK_ASSERT((n) == 0);                               \
-    return ((type *)FDKcalloc_L(num, sizeof(type), s)); \
-  }                                                     \
-  void Free##name(type **p) {                           \
-    if (p != NULL) {                                    \
-      FDKfree_L(*p);                                    \
-      *p = NULL;                                        \
-    }                                                   \
-  }                                                     \
-  UINT GetRequiredMem##name(void) {                     \
-    return ALGN_SIZE_EXTRES((num) * sizeof(type));      \
+#define C_ALLOC_MEM_L(name, type, num, s)                                      \
+  type *Get##name(int n) {                                                     \
+    FDK_ASSERT((n) == 0);                                                      \
+    return ((type *)FDKcalloc_L(num, sizeof(type), s));                        \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKfree_L(*p);                                                           \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((num) * sizeof(type));                             \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_ALLOC_MEM2_L(name, type, n1, n2, s)            \
-  type *Get##name(int n) {                               \
-    FDK_ASSERT((n) < (n2));                              \
-    return (type *)FDKcalloc_L(n1, sizeof(type), s);     \
-  }                                                      \
-  void Free##name(type **p) {                            \
-    if (p != NULL) {                                     \
-      FDKfree_L(*p);                                     \
-      *p = NULL;                                         \
-    }                                                    \
-  }                                                      \
-  UINT GetRequiredMem##name(void) {                      \
-    return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2); \
+#define C_ALLOC_MEM2_L(name, type, n1, n2, s)                                  \
+  type *Get##name(int n) {                                                     \
+    FDK_ASSERT((n) < (n2));                                                    \
+    return (type *)FDKcalloc_L(n1, sizeof(type), s);                           \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKfree_L(*p);                                                           \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2);                       \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_MEM_L(name, type, num, s)                                  \
-  type *Get##name(int n) {                                                  \
-    type *ap;                                                               \
-    FDK_ASSERT((n) == 0);                                                   \
-    ap = ((type *)FDKaalloc_L((num) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
-    return ap;                                                              \
-  }                                                                         \
-  void Free##name(type **p) {                                               \
-    if (p != NULL) {                                                        \
-      FDKafree_L(*p);                                                       \
-      *p = NULL;                                                            \
-    }                                                                       \
-  }                                                                         \
-  UINT GetRequiredMem##name(void) {                                         \
-    return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT +      \
-                            sizeof(void *));                                \
+#define C_AALLOC_MEM_L(name, type, num, s)                                     \
+  type *Get##name(int n) {                                                     \
+    type *ap;                                                                  \
+    FDK_ASSERT((n) == 0);                                                      \
+    ap = ((type *)FDKaalloc_L((num) * sizeof(type), ALIGNMENT_DEFAULT, s));    \
+    return ap;                                                                 \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKafree_L(*p);                                                          \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT +         \
+                            sizeof(void *));                                   \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_MEM2_L(name, type, n1, n2, s)                             \
-  type *Get##name(int n) {                                                 \
-    type *ap;                                                              \
-    FDK_ASSERT((n) < (n2));                                                \
-    ap = ((type *)FDKaalloc_L((n1) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
-    return ap;                                                             \
-  }                                                                        \
-  void Free##name(type **p) {                                              \
-    if (p != NULL) {                                                       \
-      FDKafree_L(*p);                                                      \
-      *p = NULL;                                                           \
-    }                                                                      \
-  }                                                                        \
-  UINT GetRequiredMem##name(void) {                                        \
-    return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT +      \
-                            sizeof(void *)) *                              \
-           (n2);                                                           \
+#define C_AALLOC_MEM2_L(name, type, n1, n2, s)                                 \
+  type *Get##name(int n) {                                                     \
+    type *ap;                                                                  \
+    FDK_ASSERT((n) < (n2));                                                    \
+    ap = ((type *)FDKaalloc_L((n1) * sizeof(type), ALIGNMENT_DEFAULT, s));     \
+    return ap;                                                                 \
+  }                                                                            \
+  void Free##name(type **p) {                                                  \
+    if (p != NULL) {                                                           \
+      FDKafree_L(*p);                                                          \
+      *p = NULL;                                                               \
+    }                                                                          \
+  }                                                                            \
+  UINT GetRequiredMem##name(void) {                                            \
+    return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT +          \
+                            sizeof(void *)) *                                  \
+           (n2);                                                               \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_ALLOC_MEM_OVERLAY(name, type, num, sect, tag) \
+#define C_ALLOC_MEM_OVERLAY(name, type, num, sect, tag)                        \
   C_AALLOC_MEM_L(name, type, num, sect)
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_SCRATCH_START(name, type, n)                 \
-  type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)]; \
-  type *name = (type *)ALIGN_PTR(_##name);                    \
+#define C_AALLOC_SCRATCH_START(name, type, n)                                  \
+  type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)];                  \
+  type *name = (type *)ALIGN_PTR(_##name);                                     \
   C_ALLOC_ALIGNED_REGISTER(name, (n) * sizeof(type));
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
@@ -329,9 +329,9 @@ typedef enum {
 #define C_ALLOC_SCRATCH_END(name, type, n)
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_STACK_START(name, type, n)                   \
-  type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)]; \
-  type *name = (type *)ALIGN_PTR(_##name);                    \
+#define C_AALLOC_STACK_START(name, type, n)                                    \
+  type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)];                  \
+  type *name = (type *)ALIGN_PTR(_##name);                                     \
   C_ALLOC_ALIGNED_REGISTER(name, (n) * sizeof(type));
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
@@ -352,26 +352,26 @@ typedef enum {
  *  @{
  */
 #define FDK_EXITCODE_OK 0 /*!< Successful termination. No errors. */
-#define FDK_EXITCODE_USAGE                                                  \
-  64 /*!< The command/application was used incorrectly, e.g. with the wrong \
-        number of arguments, a bad flag, a bad syntax in a parameter, or    \
+#define FDK_EXITCODE_USAGE                                                     \
+  64 /*!< The command/application was used incorrectly, e.g. with the wrong    \
+        number of arguments, a bad flag, a bad syntax in a parameter, or       \
         whatever. */
-#define FDK_EXITCODE_DATAERROR                                               \
-  65 /*!< The input data was incorrect in some way. This should only be used \
+#define FDK_EXITCODE_DATAERROR                                                 \
+  65 /*!< The input data was incorrect in some way. This should only be used   \
         for user data and not system files. */
 #define FDK_EXITCODE_NOINPUT                                                   \
   66 /*!< An input file (not a system file) did not exist or was not readable. \
       */
-#define FDK_EXITCODE_UNAVAILABLE                                              \
-  69 /*!< A service is unavailable. This can occur if a support program or    \
-        file does not exist. This can also be used as a catchall message when \
+#define FDK_EXITCODE_UNAVAILABLE                                               \
+  69 /*!< A service is unavailable. This can occur if a support program or     \
+        file does not exist. This can also be used as a catchall message when  \
         something you wanted to do doesn't work, but you don't know why. */
 #define FDK_EXITCODE_SOFTWARE                                                  \
   70 /*!< An internal software error has been detected. This should be limited \
         to non- operating system related errors as possible. */
-#define FDK_EXITCODE_CANTCREATE \
+#define FDK_EXITCODE_CANTCREATE                                                \
   73 /*!< A (user specified) output file cannot be created. */
-#define FDK_EXITCODE_IOERROR \
+#define FDK_EXITCODE_IOERROR                                                   \
   74 /*!< An error occurred while doing I/O on some file. */
 /*! @} */
 

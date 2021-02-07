@@ -29,7 +29,7 @@ The contributors:
         Global Hotkeys, CD Audio, Cover Art, ShellExec plugins, lots of patches and suggestions, and the default cover art image
 
     These people have also contributed significantly to the project by sending patches, testing, etc:
-    
+
         Alex Dedul <rotmer@gmail.com>
         David Bryant <david@wavpack.com>
         Derreck <sarumyanxxl@users.sourceforge.net>
@@ -41,7 +41,7 @@ The contributors:
         Serghey Kotlyarov <shadowsbrother@gmail.com>
         Themaister <maister@archlinux.us>
         Veniamin Gvozdikov <g.veniamin@googlemail.com>
-        
+
 
     If you think your name is missing here, or needs to be removed, please send an email to Alexey Yakovenko <waker@users.sf.net>
 

@@ -135,7 +135,8 @@ static void crcAdvance(USHORT crcPoly, USHORT crcMask, USHORT *crc,
     flag ^= (bValue & (1 << i)) ? (1) : (0);
 
     (*crc) <<= 1;
-    if (flag) (*crc) ^= crcPoly;
+    if (flag)
+      (*crc) ^= crcPoly;
   }
 }
 
@@ -195,7 +196,8 @@ void FDKsbrEnc_AssembleSbrBitstream(HANDLE_COMMON_DATA hCmonData,
   INT numCrcBits, i;
 
   /* check if SBR is present */
-  if (hCmonData == NULL) return;
+  if (hCmonData == NULL)
+    return;
 
   hCmonData->sbrFillBits = 0; /* Fill bits are written only for GA streams */
 
@@ -217,7 +219,7 @@ void FDKsbrEnc_AssembleSbrBitstream(HANDLE_COMMON_DATA hCmonData,
       }
 
       sbrLoad += 4; /* Do byte Align with 4 bit offset. ISO/IEC 14496-3:2005(E)
-                       page 39. */
+                 page 39. */
 
       hCmonData->sbrFillBits = (8 - (sbrLoad % 8)) % 8;
 

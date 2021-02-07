@@ -113,8 +113,8 @@ amm-info@iis.fraunhofer.de
  *  This macro scales src value right or left and applies saturation to
  * (2^dBits)-1 maxima output.
  */
-#define SATURATE_RIGHT_SHIFT(src, scale, dBits)                          \
-  (__builtin_mips_shll_s_w((src) >> (scale), (DFRACT_BITS - (dBits))) >> \
+#define SATURATE_RIGHT_SHIFT(src, scale, dBits)                                \
+  (__builtin_mips_shll_s_w((src) >> (scale), (DFRACT_BITS - (dBits))) >>       \
    (DFRACT_BITS - (dBits)))
 
 #endif /*__mips_dsp */

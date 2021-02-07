@@ -128,8 +128,10 @@ inline INT fixnormz_D(LONG value) {
 
 #ifdef FUNCTION_fixnorm_D
 inline INT fixnorm_D(LONG value) {
-  if (!value) return 0;
-  if (value < 0) value = ~value;
+  if (!value)
+    return 0;
+  if (value < 0)
+    value = ~value;
   return fixnormz_D(value) - 1;
 }
 #endif /* #ifdef FUNCTION_fixnorm_D */
@@ -149,8 +151,10 @@ inline INT fixnormz_S(SHORT value) {
 #ifdef FUNCTION_fixnorm_S
 inline INT fixnorm_S(SHORT value) {
   LONG lvalue = (LONG)(value << 16);
-  if (!lvalue) return 0;
-  if (lvalue < 0) lvalue = ~lvalue;
+  if (!lvalue)
+    return 0;
+  if (lvalue < 0)
+    lvalue = ~lvalue;
   return fixnormz_D(lvalue) - 1;
 }
 #endif /* #ifdef FUNCTION_fixnorm_S */

@@ -108,20 +108,20 @@ Description of file contents
 
 /* Includes ******************************************************************/
 #include "sacenc_lib.h"
-#include "sacenc_const.h"
-#include "genericStds.h"
 #include "FDK_core.h"
-#include "sacenc_tree.h"
+#include "genericStds.h"
+#include "qmf.h"
 #include "sacenc_bitstream.h"
-#include "sacenc_onsetdetect.h"
-#include "sacenc_framewindowing.h"
-#include "sacenc_filter.h"
-#include "sacenc_paramextract.h"
-#include "sacenc_staticgain.h"
+#include "sacenc_const.h"
 #include "sacenc_delay.h"
 #include "sacenc_dmx_tdom_enh.h"
+#include "sacenc_filter.h"
+#include "sacenc_framewindowing.h"
+#include "sacenc_onsetdetect.h"
+#include "sacenc_paramextract.h"
+#include "sacenc_staticgain.h"
+#include "sacenc_tree.h"
 #include "sacenc_vectorfunctions.h"
-#include "qmf.h"
 
 /* Defines *******************************************************************/
 
@@ -285,26 +285,29 @@ static const UCHAR qmf2qmf[] = /* Bypass the HybridAnylyis/Synthesis*/
      120, 121, 122, 123, 124, 125, 126, 127};
 
 /* Function / Class Declarations *********************************************/
-static FDK_SACENC_ERROR mp4SpaceEnc_create(
-    HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc);
+static FDK_SACENC_ERROR
+mp4SpaceEnc_create(HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc);
 
-static FDK_SACENC_ERROR FillSpatialSpecificConfig(
-    const HANDLE_MP4SPACE_ENCODER hEnc, SPATIALSPECIFICCONFIG *const hSsc);
+static FDK_SACENC_ERROR
+FillSpatialSpecificConfig(const HANDLE_MP4SPACE_ENCODER hEnc,
+                          SPATIALSPECIFICCONFIG *const hSsc);
 
-static FDK_SACENC_ERROR mp4SpaceEnc_FillSpaceTreeSetup(
-    const HANDLE_MP4SPACE_ENCODER hEnc,
-    SPACE_TREE_SETUP *const hSpaceTreeSetup);
+static FDK_SACENC_ERROR
+mp4SpaceEnc_FillSpaceTreeSetup(const HANDLE_MP4SPACE_ENCODER hEnc,
+                               SPACE_TREE_SETUP *const hSpaceTreeSetup);
 
-static FDK_SACENC_ERROR mp4SpaceEnc_InitDelayCompensation(
-    HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc, const INT coreCoderDelay);
+static FDK_SACENC_ERROR
+mp4SpaceEnc_InitDelayCompensation(HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc,
+                                  const INT coreCoderDelay);
 
-static FDK_SACENC_ERROR mp4SpaceEnc_InitDefault(
-    HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc);
+static FDK_SACENC_ERROR
+mp4SpaceEnc_InitDefault(HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc);
 
 static DECORRCONFIG mp4SpaceEnc_GetDecorrConfig(const MP4SPACEENC_MODE encMode);
 
-static FDK_SACENC_ERROR mp4SpaceEnc_InitNumParamBands(
-    HANDLE_MP4SPACE_ENCODER hEnc, const MP4SPACEENC_BANDS_CONFIG nParamBands);
+static FDK_SACENC_ERROR
+mp4SpaceEnc_InitNumParamBands(HANDLE_MP4SPACE_ENCODER hEnc,
+                              const MP4SPACEENC_BANDS_CONFIG nParamBands);
 
 /* Function / Class Definition ***********************************************/
 static UINT mp4SpaceEnc_GetNumQmfBands(const UINT nSampleRate) {
@@ -373,8 +376,8 @@ FDK_SACENC_ERROR FDK_sacenc_open(HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc) {
   return mp4SpaceEnc_create(phMp4SpaceEnc);
 }
 
-static FDK_SACENC_ERROR mp4SpaceEnc_create(
-    HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc) {
+static FDK_SACENC_ERROR
+mp4SpaceEnc_create(HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc) {
   FDK_SACENC_ERROR error = SACENC_OK;
   HANDLE_MP4SPACE_ENCODER hEnc = NULL;
   ENC_CONFIG_SETUP setup;
@@ -510,10 +513,10 @@ static FDK_SACENC_ERROR mp4SpaceEnc_create(
     if (setup.bEncMode_212 == 1) {
       /* pppHybridIn__FDK buffer can be reduced by maxFrameTimeSlots/2 slots for
        * SACENC_212 mode */
-      FDK_ALLOCATE_MEMORY_3D(
-          hEnc->pppHybridIn__FDK, setup.maxChIn,
-          setup.maxAnalysisLengthTimeSlots - (setup.maxFrameTimeSlots >> 1),
-          setup.maxHybridBands, FIXP_DPK);
+      FDK_ALLOCATE_MEMORY_3D(hEnc->pppHybridIn__FDK, setup.maxChIn,
+                             setup.maxAnalysisLengthTimeSlots -
+                                 (setup.maxFrameTimeSlots >> 1),
+                             setup.maxHybridBands, FIXP_DPK);
       FDK_ALLOCATE_MEMORY_3D(hEnc->pppHybridInStatic__FDK, setup.maxChIn,
                              setup.maxHybridInStaticSlots, setup.maxHybridBands,
                              FIXP_DPK);
@@ -577,8 +580,9 @@ bail:
   return err;
 }
 
-static FDK_SACENC_ERROR FDK_sacenc_configure(
-    HANDLE_MP4SPACE_ENCODER hEnc, const HANDLE_MP4SPACEENC_SETUP hSetup) {
+static FDK_SACENC_ERROR
+FDK_sacenc_configure(HANDLE_MP4SPACE_ENCODER hEnc,
+                     const HANDLE_MP4SPACEENC_SETUP hSetup) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   hEnc->nSampleRate = hSetup->sampleRate;
@@ -682,12 +686,12 @@ FDK_SACENC_ERROR FDK_sacenc_init(HANDLE_MP4SPACE_ENCODER hEnc,
 
       hEnc->nInputChannels =
           spaceTreeDescription.nOutChannels; /* space tree description
-                                                describes decoder
-                                                configuration */
+                                          describes decoder
+                                          configuration */
       hEnc->nOutputChannels =
           spaceTreeDescription.nInChannels; /* space tree description
-                                               describes decoder
-                                               configuration */
+                                         describes decoder
+                                         configuration */
     }
 
     nChInArbDmx = 0;
@@ -1404,8 +1408,9 @@ FDK_SACENC_ERROR FDK_sacenc_encode(const HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc,
 
       /* return number of valid bits */
       outargs->nOutputBits = outBits;
-    } else { /* No spatial data should be returned if the current frame is to be
-                discarded. */
+    } else {
+      /* No spatial data should be returned if the current frame is to be
+                  discarded. */
       outargs->nOutputBits = 0;
     }
 
@@ -1450,10 +1455,10 @@ FDK_SACENC_ERROR FDK_sacenc_encode(const HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc,
                   nOutputSamplesMax * sizeof(INT_PCM));
 
         /* update delay buffer (move back end to the beginning of the buffer) */
-        FDKmemmove(
-            hMp4SpaceEnc->pOutputDelayBuffer__FDK,
-            &hMp4SpaceEnc->pOutputDelayBuffer__FDK[nOutputSamplesMax],
-            nChOut * (hMp4SpaceEnc->nOutputBufferDelay) * sizeof(INT_PCM));
+        FDKmemmove(hMp4SpaceEnc->pOutputDelayBuffer__FDK,
+                   &hMp4SpaceEnc->pOutputDelayBuffer__FDK[nOutputSamplesMax],
+                   nChOut * (hMp4SpaceEnc->nOutputBufferDelay) *
+                       sizeof(INT_PCM));
       }
 
       if (hMp4SpaceEnc->useTimeDomDownmix <= 0) {
@@ -1561,7 +1566,9 @@ FDK_SACENC_ERROR FDK_sacenc_close(HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc) {
         FDK_FREE_MEMORY_1D(hEnc->pOutputDelayBuffer__FDK);
       }
       if (hEnc->ppTimeSigIn__FDK != NULL) {
-        { FDK_FREE_MEMORY_2D(hEnc->ppTimeSigIn__FDK); }
+        {
+          FDK_FREE_MEMORY_2D(hEnc->ppTimeSigIn__FDK);
+        }
       }
       if (hEnc->ppTimeSigDelayIn__FDK != NULL) {
         FDK_FREE_MEMORY_2D(hEnc->ppTimeSigDelayIn__FDK);
@@ -1595,8 +1602,9 @@ FDK_SACENC_ERROR FDK_sacenc_close(HANDLE_MP4SPACE_ENCODER *phMp4SpaceEnc) {
   description:  initialzes delay compensation
   returns:      noError on success, an apropriate error code else
   -----------------------------------------------------------------------------*/
-static FDK_SACENC_ERROR mp4SpaceEnc_InitDelayCompensation(
-    HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc, const INT coreCoderDelay) {
+static FDK_SACENC_ERROR
+mp4SpaceEnc_InitDelayCompensation(HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc,
+                                  const INT coreCoderDelay) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   /* Sanity Check */
@@ -1700,26 +1708,27 @@ static QUANTMODE __mapQuantMode(const MP4SPACEENC_QUANTMODE quantMode) {
   QUANTMODE bsQuantMode = QUANTMODE_INVALID;
 
   switch (quantMode) {
-    case SACENC_QUANTMODE_FINE:
-      bsQuantMode = QUANTMODE_FINE;
-      break;
-    case SACENC_QUANTMODE_EBQ1:
-      bsQuantMode = QUANTMODE_EBQ1;
-      break;
-    case SACENC_QUANTMODE_EBQ2:
-      bsQuantMode = QUANTMODE_EBQ2;
-      break;
-    case SACENC_QUANTMODE_RSVD3:
-    case SACENC_QUANTMODE_INVALID:
-    default:
-      bsQuantMode = QUANTMODE_INVALID;
+  case SACENC_QUANTMODE_FINE:
+    bsQuantMode = QUANTMODE_FINE;
+    break;
+  case SACENC_QUANTMODE_EBQ1:
+    bsQuantMode = QUANTMODE_EBQ1;
+    break;
+  case SACENC_QUANTMODE_EBQ2:
+    bsQuantMode = QUANTMODE_EBQ2;
+    break;
+  case SACENC_QUANTMODE_RSVD3:
+  case SACENC_QUANTMODE_INVALID:
+  default:
+    bsQuantMode = QUANTMODE_INVALID;
   } /* switch hEnc->quantMode */
 
   return bsQuantMode;
 }
 
-static FDK_SACENC_ERROR FillSpatialSpecificConfig(
-    const HANDLE_MP4SPACE_ENCODER hEnc, SPATIALSPECIFICCONFIG *const hSsc) {
+static FDK_SACENC_ERROR
+FillSpatialSpecificConfig(const HANDLE_MP4SPACE_ENCODER hEnc,
+                          SPATIALSPECIFICCONFIG *const hSsc) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((NULL == hEnc) || (NULL == hSsc)) {
@@ -1749,13 +1758,13 @@ static FDK_SACENC_ERROR FillSpatialSpecificConfig(
     }
 
     switch (hEnc->encMode) {
-      case SACENC_212:
-        hSsc->bsTreeConfig = TREE_212;
-        break;
-      case SACENC_INVALID_MODE:
-      default:
-        error = SACENC_INVALID_CONFIG;
-        goto bail;
+    case SACENC_212:
+      hSsc->bsTreeConfig = TREE_212;
+      break;
+    case SACENC_INVALID_MODE:
+    default:
+      error = SACENC_INVALID_CONFIG;
+      goto bail;
     }
 
     hSsc->bsSamplingFrequency =
@@ -1786,9 +1795,9 @@ bail:
   return error;
 }
 
-static FDK_SACENC_ERROR mp4SpaceEnc_FillSpaceTreeSetup(
-    const HANDLE_MP4SPACE_ENCODER hEnc,
-    SPACE_TREE_SETUP *const hSpaceTreeSetup) {
+static FDK_SACENC_ERROR
+mp4SpaceEnc_FillSpaceTreeSetup(const HANDLE_MP4SPACE_ENCODER hEnc,
+                               SPACE_TREE_SETUP *const hSpaceTreeSetup) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   /* Sanity Check */
@@ -1810,14 +1819,14 @@ static FDK_SACENC_ERROR mp4SpaceEnc_FillSpaceTreeSetup(
     hSpaceTreeSetup->nHybridBandsMax = hEnc->nHybridBands;
 
     switch (hEnc->encMode) {
-      case SACENC_212:
-        hSpaceTreeSetup->mode = SPACETREE_212;
-        hSpaceTreeSetup->nChannelsInMax = 2;
-        break;
-      case SACENC_INVALID_MODE:
-      default:
-        error = SACENC_INVALID_CONFIG;
-        goto bail;
+    case SACENC_212:
+      hSpaceTreeSetup->mode = SPACETREE_212;
+      hSpaceTreeSetup->nChannelsInMax = 2;
+      break;
+    case SACENC_INVALID_MODE:
+    default:
+      error = SACENC_INVALID_CONFIG;
+      goto bail;
     } /* switch hEnc->encMode */
 
   } /* valid handle */
@@ -1862,115 +1871,115 @@ FDK_SACENC_ERROR FDK_sacenc_setParam(HANDLE_MP4SPACE_ENCODER hMp4SpaceEnc,
 
   /* apply param value */
   switch (param) {
-    case SACENC_LOWDELAY:
-      if (!((value == 0) || (value == 1) || (value == 2))) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.bLdMode = value;
+  case SACENC_LOWDELAY:
+    if (!((value == 0) || (value == 1) || (value == 2))) {
+      error = SACENC_INVALID_CONFIG;
       break;
+    }
+    hMp4SpaceEnc->user.bLdMode = value;
+    break;
 
-    case SACENC_ENC_MODE:
-      switch ((MP4SPACEENC_MODE)value) {
-        case SACENC_212:
-          hMp4SpaceEnc->user.encMode = (MP4SPACEENC_MODE)value;
-          break;
-        default:
-          error = SACENC_INVALID_CONFIG;
-      }
+  case SACENC_ENC_MODE:
+    switch ((MP4SPACEENC_MODE)value) {
+    case SACENC_212:
+      hMp4SpaceEnc->user.encMode = (MP4SPACEENC_MODE)value;
       break;
-
-    case SACENC_SAMPLERATE:
-      if (((int)value < 0) ||
-          ((int)value > hMp4SpaceEnc->setup.maxSamplingrate)) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.sampleRate = value;
-      break;
-
-    case SACENC_FRAME_TIME_SLOTS:
-      if (((int)value < 0) ||
-          ((int)value > hMp4SpaceEnc->setup.maxFrameTimeSlots)) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.frameTimeSlots = value;
-      break;
-
-    case SACENC_PARAM_BANDS:
-      switch ((MP4SPACEENC_BANDS_CONFIG)value) {
-        case SACENC_BANDS_4:
-        case SACENC_BANDS_5:
-        case SACENC_BANDS_7:
-        case SACENC_BANDS_9:
-        case SACENC_BANDS_12:
-        case SACENC_BANDS_15:
-        case SACENC_BANDS_23:
-          hMp4SpaceEnc->user.nParamBands = (MP4SPACEENC_BANDS_CONFIG)value;
-          break;
-        default:
-          error = SACENC_INVALID_CONFIG;
-      }
-      break;
-
-    case SACENC_TIME_DOM_DMX:
-      if (!((value == 0) || (value == 2))) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.bTimeDomainDmx = value;
-      break;
-
-    case SACENC_DMX_GAIN:
-      if (!((value == 0) || (value == 1) || (value == 2) || (value == 3) ||
-            (value == 4) || (value == 5) || (value == 6) || (value == 7))) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      error = fdk_sacenc_staticGain_SetDmxGain(hMp4SpaceEnc->hStaticGainConfig,
-                                               (MP4SPACEENC_DMX_GAIN)value);
-      break;
-
-    case SACENC_COARSE_QUANT:
-      if (!((value == 0) || (value == 1))) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.bUseCoarseQuant = value;
-      break;
-
-    case SACENC_QUANT_MODE:
-      switch ((MP4SPACEENC_QUANTMODE)value) {
-        case SACENC_QUANTMODE_FINE:
-        case SACENC_QUANTMODE_EBQ1:
-        case SACENC_QUANTMODE_EBQ2:
-          hMp4SpaceEnc->user.quantMode = (MP4SPACEENC_QUANTMODE)value;
-          break;
-        default:
-          error = SACENC_INVALID_CONFIG;
-      }
-      break;
-
-    case SACENC_TIME_ALIGNMENT:
-      if ((INT)value < -32768 || (INT)value > 32767) {
-        error = SACENC_INVALID_CONFIG;
-        break;
-      }
-      hMp4SpaceEnc->user.timeAlignment = value;
-      break;
-
-    case SACENC_INDEPENDENCY_COUNT:
-      hMp4SpaceEnc->independencyCount = value;
-      break;
-
-    case SACENC_INDEPENDENCY_FACTOR:
-      hMp4SpaceEnc->user.independencyFactor = value;
-      break;
-
     default:
-      error = SACENC_UNSUPPORTED_PARAMETER;
+      error = SACENC_INVALID_CONFIG;
+    }
+    break;
+
+  case SACENC_SAMPLERATE:
+    if (((int)value < 0) ||
+        ((int)value > hMp4SpaceEnc->setup.maxSamplingrate)) {
+      error = SACENC_INVALID_CONFIG;
       break;
+    }
+    hMp4SpaceEnc->user.sampleRate = value;
+    break;
+
+  case SACENC_FRAME_TIME_SLOTS:
+    if (((int)value < 0) ||
+        ((int)value > hMp4SpaceEnc->setup.maxFrameTimeSlots)) {
+      error = SACENC_INVALID_CONFIG;
+      break;
+    }
+    hMp4SpaceEnc->user.frameTimeSlots = value;
+    break;
+
+  case SACENC_PARAM_BANDS:
+    switch ((MP4SPACEENC_BANDS_CONFIG)value) {
+    case SACENC_BANDS_4:
+    case SACENC_BANDS_5:
+    case SACENC_BANDS_7:
+    case SACENC_BANDS_9:
+    case SACENC_BANDS_12:
+    case SACENC_BANDS_15:
+    case SACENC_BANDS_23:
+      hMp4SpaceEnc->user.nParamBands = (MP4SPACEENC_BANDS_CONFIG)value;
+      break;
+    default:
+      error = SACENC_INVALID_CONFIG;
+    }
+    break;
+
+  case SACENC_TIME_DOM_DMX:
+    if (!((value == 0) || (value == 2))) {
+      error = SACENC_INVALID_CONFIG;
+      break;
+    }
+    hMp4SpaceEnc->user.bTimeDomainDmx = value;
+    break;
+
+  case SACENC_DMX_GAIN:
+    if (!((value == 0) || (value == 1) || (value == 2) || (value == 3) ||
+          (value == 4) || (value == 5) || (value == 6) || (value == 7))) {
+      error = SACENC_INVALID_CONFIG;
+      break;
+    }
+    error = fdk_sacenc_staticGain_SetDmxGain(hMp4SpaceEnc->hStaticGainConfig,
+                                             (MP4SPACEENC_DMX_GAIN)value);
+    break;
+
+  case SACENC_COARSE_QUANT:
+    if (!((value == 0) || (value == 1))) {
+      error = SACENC_INVALID_CONFIG;
+      break;
+    }
+    hMp4SpaceEnc->user.bUseCoarseQuant = value;
+    break;
+
+  case SACENC_QUANT_MODE:
+    switch ((MP4SPACEENC_QUANTMODE)value) {
+    case SACENC_QUANTMODE_FINE:
+    case SACENC_QUANTMODE_EBQ1:
+    case SACENC_QUANTMODE_EBQ2:
+      hMp4SpaceEnc->user.quantMode = (MP4SPACEENC_QUANTMODE)value;
+      break;
+    default:
+      error = SACENC_INVALID_CONFIG;
+    }
+    break;
+
+  case SACENC_TIME_ALIGNMENT:
+    if ((INT)value < -32768 || (INT)value > 32767) {
+      error = SACENC_INVALID_CONFIG;
+      break;
+    }
+    hMp4SpaceEnc->user.timeAlignment = value;
+    break;
+
+  case SACENC_INDEPENDENCY_COUNT:
+    hMp4SpaceEnc->independencyCount = value;
+    break;
+
+  case SACENC_INDEPENDENCY_FACTOR:
+    hMp4SpaceEnc->user.independencyFactor = value;
+    break;
+
+  default:
+    error = SACENC_UNSUPPORTED_PARAMETER;
+    break;
   } /* switch(param) */
 bail:
   return error;
@@ -1987,7 +1996,8 @@ FDK_SACENC_ERROR FDK_sacenc_getLibInfo(LIB_INFO *info) {
 
   /* search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return SACENC_INIT_ERROR;
@@ -2007,24 +2017,25 @@ FDK_SACENC_ERROR FDK_sacenc_getLibInfo(LIB_INFO *info) {
   return SACENC_OK;
 }
 
-static DECORRCONFIG mp4SpaceEnc_GetDecorrConfig(
-    const MP4SPACEENC_MODE encMode) {
+static DECORRCONFIG
+mp4SpaceEnc_GetDecorrConfig(const MP4SPACEENC_MODE encMode) {
   DECORRCONFIG decorrConfig = DECORR_INVALID;
 
   /* set decorrConfig dependent on tree mode */
   switch (encMode) {
-    case SACENC_212:
-      decorrConfig = DECORR_QMFSPLIT0;
-      break;
-    case SACENC_INVALID_MODE:
-    default:
-      decorrConfig = DECORR_INVALID;
+  case SACENC_212:
+    decorrConfig = DECORR_QMFSPLIT0;
+    break;
+  case SACENC_INVALID_MODE:
+  default:
+    decorrConfig = DECORR_INVALID;
   }
   return decorrConfig;
 }
 
-static FDK_SACENC_ERROR mp4SpaceEnc_InitNumParamBands(
-    HANDLE_MP4SPACE_ENCODER hEnc, const MP4SPACEENC_BANDS_CONFIG nParamBands) {
+static FDK_SACENC_ERROR
+mp4SpaceEnc_InitNumParamBands(HANDLE_MP4SPACE_ENCODER hEnc,
+                              const MP4SPACEENC_BANDS_CONFIG nParamBands) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   /* Set/Check nParamBands */
@@ -2032,7 +2043,8 @@ static FDK_SACENC_ERROR mp4SpaceEnc_InitNumParamBands(
   const int n = sizeof(pValidBands_Ld) / sizeof(UCHAR);
   const UCHAR *pBands = pValidBands_Ld;
 
-  while (k < n && pBands[k] != (UCHAR)nParamBands) ++k;
+  while (k < n && pBands[k] != (UCHAR)nParamBands)
+    ++k;
   if (k == n) {
     hEnc->nParamBands = SACENC_BANDS_INVALID;
   } else {

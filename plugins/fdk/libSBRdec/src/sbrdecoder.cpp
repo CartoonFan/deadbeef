@@ -139,14 +139,14 @@ amm-info@iis.fraunhofer.de
 
 #include "FDK_bitstream.h"
 
-#include "sbrdec_freq_sca.h"
-#include "env_extr.h"
-#include "sbr_dec.h"
 #include "env_dec.h"
+#include "env_extr.h"
+#include "lpp_tran.h"
 #include "sbr_crc.h"
+#include "sbr_dec.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"
-#include "lpp_tran.h"
+#include "sbrdec_freq_sca.h"
 #include "transcendent.h"
 
 #include "FDK_crc.h"
@@ -171,12 +171,12 @@ amm-info@iis.fraunhofer.de
 static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, UCHAR value) {
   if (pSbrElement != NULL) {
     switch (value) {
-      case FRAME_ERROR_ALLSLOTS:
-        FDKmemset(pSbrElement->frameErrorFlag, FRAME_ERROR,
-                  sizeof(pSbrElement->frameErrorFlag));
-        break;
-      default:
-        pSbrElement->frameErrorFlag[pSbrElement->useFrameSlot] = value;
+    case FRAME_ERROR_ALLSLOTS:
+      FDKmemset(pSbrElement->frameErrorFlag, FRAME_ERROR,
+                sizeof(pSbrElement->frameErrorFlag));
+      break;
+    default:
+      pSbrElement->frameErrorFlag[pSbrElement->useFrameSlot] = value;
     }
   }
 }
@@ -299,7 +299,8 @@ static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self,
   }
 
   /* Set QMF mode flags */
-  if (self->flags & SBRDEC_LOW_POWER) qmfFlags |= QMF_FLAG_LP;
+  if (self->flags & SBRDEC_LOW_POWER)
+    qmfFlags |= QMF_FLAG_LP;
 
   if (self->coreCodec == AOT_ER_AAC_ELD) {
     if (self->flags & SBRDEC_LD_MPS_QMF) {
@@ -396,19 +397,19 @@ static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self,
 
   if (self->numSbrElements == 1) {
     switch (self->coreCodec) {
-      case AOT_AAC_LC:
-      case AOT_SBR:
-      case AOT_PS:
-      case AOT_ER_AAC_SCAL:
-      case AOT_DRM_AAC:
-      case AOT_DRM_SURROUND:
-        if (CreatePsDec(&self->hParametricStereoDec, samplesPerFrame)) {
-          sbrError = SBRDEC_CREATE_ERROR;
-          goto bail;
-        }
-        break;
-      default:
-        break;
+    case AOT_AAC_LC:
+    case AOT_SBR:
+    case AOT_PS:
+    case AOT_ER_AAC_SCAL:
+    case AOT_DRM_AAC:
+    case AOT_DRM_SURROUND:
+      if (CreatePsDec(&self->hParametricStereoDec, samplesPerFrame)) {
+        sbrError = SBRDEC_CREATE_ERROR;
+        goto bail;
+      }
+      break;
+    default:
+      break;
     }
   }
 
@@ -494,17 +495,17 @@ bail:
  */
 static int sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE coreCodec) {
   switch (coreCodec) {
-    case AOT_AAC_LC:
-    case AOT_SBR:
-    case AOT_PS:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_AAC_ELD:
-    case AOT_DRM_AAC:
-    case AOT_DRM_SURROUND:
-    case AOT_USAC:
-      return 1;
-    default:
-      return 0;
+  case AOT_AAC_LC:
+  case AOT_SBR:
+  case AOT_PS:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_AAC_ELD:
+  case AOT_DRM_AAC:
+  case AOT_DRM_SURROUND:
+  case AOT_USAC:
+    return 1;
+  default:
+    return 0;
   }
 }
 
@@ -560,11 +561,12 @@ SBR_ERROR sbrDecoder_InitElement(
       self->pSbrElement[elementIndex]->elementID == elementID &&
       !(self->flags & SBRDEC_FORCE_RESET) &&
       ((sampleRateOut == 0) ? 1 : (self->sampleRateOut == sampleRateOut)) &&
-      ((harmonicSBR == 2) ? 1
-                          : (self->harmonicSBR ==
-                             harmonicSBR)) /* The value 2 signalizes that
-                                              harmonicSBR shall be ignored in
-                                              the config change detection */
+      ((harmonicSBR == 2)
+           ? 1
+           : (self->harmonicSBR ==
+              harmonicSBR)) /* The value 2 signalizes that
+                                            harmonicSBR shall be ignored in
+                                            the config change detection */
   ) {
     /* Nothing to do */
     return SBRDEC_OK;
@@ -579,7 +581,7 @@ SBR_ERROR sbrDecoder_InitElement(
   /* The flags field is used for all elements! */
   self->flags &=
       (SBRDEC_FORCE_RESET | SBRDEC_FLUSH); /* Keep the global flags. They will
-                                              be reset after decoding. */
+                                            be reset after decoding. */
   self->flags |= (downscaleFactor > 1) ? SBRDEC_ELD_DOWNSCALE : 0;
   self->flags |= (coreCodec == AOT_ER_AAC_ELD) ? SBRDEC_ELD_GRID : 0;
   self->flags |= (coreCodec == AOT_ER_AAC_SCAL) ? SBRDEC_SYNTAX_SCAL : 0;
@@ -625,32 +627,32 @@ SBR_ERROR sbrDecoder_InitElement(
 
     /* Determine amount of channels for this element */
     switch (elementID) {
-      case ID_NONE:
-      case ID_CPE:
-        elChannels = 2;
-        break;
-      case ID_LFE:
-      case ID_SCE:
-        elChannels = 1;
-        break;
-      default:
-        elChannels = 0;
-        break;
+    case ID_NONE:
+    case ID_CPE:
+      elChannels = 2;
+      break;
+    case ID_LFE:
+    case ID_SCE:
+      elChannels = 1;
+      break;
+    default:
+      elChannels = 0;
+      break;
     }
 
     /* Handle case of Parametric Stereo */
     if (elementIndex == 0 && elementID == ID_SCE) {
       switch (coreCodec) {
-        case AOT_AAC_LC:
-        case AOT_SBR:
-        case AOT_PS:
-        case AOT_ER_AAC_SCAL:
-        case AOT_DRM_AAC:
-        case AOT_DRM_SURROUND:
-          elChannels = 2;
-          break;
-        default:
-          break;
+      case AOT_AAC_LC:
+      case AOT_SBR:
+      case AOT_PS:
+      case AOT_ER_AAC_SCAL:
+      case AOT_DRM_AAC:
+      case AOT_DRM_SURROUND:
+        elChannels = 2;
+        break;
+      default:
+        break;
       }
     }
 
@@ -809,9 +811,8 @@ INT sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   HANDLE_SBR_HEADER_DATA hSbrHeader;
   SBR_ERROR sbrError = SBRDEC_OK;
   int headerIndex;
-  UINT flagsSaved =
-      0; /* flags should not be changed in AC_CM_DET_CFG_CHANGE - mode after
-            parsing */
+  UINT flagsSaved = 0; /* flags should not be changed in AC_CM_DET_CFG_CHANGE -
+                        mode after parsing */
 
   if (self == NULL || elementIndex >= (8)) {
     return SBRDEC_UNSUPPORTED_CONFIG;
@@ -892,110 +893,110 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
 
   /* configure the subsystems */
   switch (param) {
-    case SBR_SYSTEM_BITSTREAM_DELAY:
-      if (value < 0 || value > (1)) {
-        errorStatus = SBRDEC_SET_PARAM_FAIL;
-        break;
-      }
-      if (self == NULL) {
-        errorStatus = SBRDEC_NOT_INITIALIZED;
-      } else {
-        self->numDelayFrames = (UCHAR)value;
-      }
-      break;
-    case SBR_QMF_MODE:
-      if (self == NULL) {
-        errorStatus = SBRDEC_NOT_INITIALIZED;
-      } else {
-        if (value == 1) {
-          self->flags |= SBRDEC_LOW_POWER;
-        } else {
-          self->flags &= ~SBRDEC_LOW_POWER;
-        }
-      }
-      break;
-    case SBR_LD_QMF_TIME_ALIGN:
-      if (self == NULL) {
-        errorStatus = SBRDEC_NOT_INITIALIZED;
-      } else {
-        if (value == 1) {
-          self->flags |= SBRDEC_LD_MPS_QMF;
-        } else {
-          self->flags &= ~SBRDEC_LD_MPS_QMF;
-        }
-      }
-      break;
-    case SBR_FLUSH_DATA:
-      if (value != 0) {
-        if (self == NULL) {
-          errorStatus = SBRDEC_NOT_INITIALIZED;
-        } else {
-          self->flags |= SBRDEC_FLUSH;
-        }
-      }
-      break;
-    case SBR_CLEAR_HISTORY:
-      if (value != 0) {
-        if (self == NULL) {
-          errorStatus = SBRDEC_NOT_INITIALIZED;
-        } else {
-          self->flags |= SBRDEC_FORCE_RESET;
-        }
-      }
-      break;
-    case SBR_BS_INTERRUPTION: {
-      int elementIndex;
-
-      if (self == NULL) {
-        errorStatus = SBRDEC_NOT_INITIALIZED;
-        break;
-      }
-
-      /* Loop over SBR elements */
-      for (elementIndex = 0; elementIndex < self->numSbrElements;
-           elementIndex++) {
-        if (self->pSbrElement[elementIndex] != NULL) {
-          HANDLE_SBR_HEADER_DATA hSbrHeader;
-          int headerIndex =
-              getHeaderSlot(self->pSbrElement[elementIndex]->useFrameSlot,
-                            self->pSbrElement[elementIndex]->useHeaderSlot);
-
-          hSbrHeader = &(self->sbrHeader[elementIndex][headerIndex]);
-
-          /* Set sync state UPSAMPLING for the corresponding slot.
-             This switches off bitstream parsing until a new header arrives. */
-          hSbrHeader->syncState = UPSAMPLING;
-          hSbrHeader->status |= SBRDEC_HDR_STAT_UPDATE;
-        }
-      }
-    } break;
-
-    case SBR_SKIP_QMF:
-      if (self == NULL) {
-        errorStatus = SBRDEC_NOT_INITIALIZED;
-      } else {
-        if (value == 1) {
-          self->flags |= SBRDEC_SKIP_QMF_ANA;
-        } else {
-          self->flags &= ~SBRDEC_SKIP_QMF_ANA;
-        }
-        if (value == 2) {
-          self->flags |= SBRDEC_SKIP_QMF_SYN;
-        } else {
-          self->flags &= ~SBRDEC_SKIP_QMF_SYN;
-        }
-      }
-      break;
-    default:
+  case SBR_SYSTEM_BITSTREAM_DELAY:
+    if (value < 0 || value > (1)) {
       errorStatus = SBRDEC_SET_PARAM_FAIL;
       break;
+    }
+    if (self == NULL) {
+      errorStatus = SBRDEC_NOT_INITIALIZED;
+    } else {
+      self->numDelayFrames = (UCHAR)value;
+    }
+    break;
+  case SBR_QMF_MODE:
+    if (self == NULL) {
+      errorStatus = SBRDEC_NOT_INITIALIZED;
+    } else {
+      if (value == 1) {
+        self->flags |= SBRDEC_LOW_POWER;
+      } else {
+        self->flags &= ~SBRDEC_LOW_POWER;
+      }
+    }
+    break;
+  case SBR_LD_QMF_TIME_ALIGN:
+    if (self == NULL) {
+      errorStatus = SBRDEC_NOT_INITIALIZED;
+    } else {
+      if (value == 1) {
+        self->flags |= SBRDEC_LD_MPS_QMF;
+      } else {
+        self->flags &= ~SBRDEC_LD_MPS_QMF;
+      }
+    }
+    break;
+  case SBR_FLUSH_DATA:
+    if (value != 0) {
+      if (self == NULL) {
+        errorStatus = SBRDEC_NOT_INITIALIZED;
+      } else {
+        self->flags |= SBRDEC_FLUSH;
+      }
+    }
+    break;
+  case SBR_CLEAR_HISTORY:
+    if (value != 0) {
+      if (self == NULL) {
+        errorStatus = SBRDEC_NOT_INITIALIZED;
+      } else {
+        self->flags |= SBRDEC_FORCE_RESET;
+      }
+    }
+    break;
+  case SBR_BS_INTERRUPTION: {
+    int elementIndex;
+
+    if (self == NULL) {
+      errorStatus = SBRDEC_NOT_INITIALIZED;
+      break;
+    }
+
+    /* Loop over SBR elements */
+    for (elementIndex = 0; elementIndex < self->numSbrElements;
+         elementIndex++) {
+      if (self->pSbrElement[elementIndex] != NULL) {
+        HANDLE_SBR_HEADER_DATA hSbrHeader;
+        int headerIndex =
+            getHeaderSlot(self->pSbrElement[elementIndex]->useFrameSlot,
+                          self->pSbrElement[elementIndex]->useHeaderSlot);
+
+        hSbrHeader = &(self->sbrHeader[elementIndex][headerIndex]);
+
+        /* Set sync state UPSAMPLING for the corresponding slot.
+           This switches off bitstream parsing until a new header arrives. */
+        hSbrHeader->syncState = UPSAMPLING;
+        hSbrHeader->status |= SBRDEC_HDR_STAT_UPDATE;
+      }
+    }
+  } break;
+
+  case SBR_SKIP_QMF:
+    if (self == NULL) {
+      errorStatus = SBRDEC_NOT_INITIALIZED;
+    } else {
+      if (value == 1) {
+        self->flags |= SBRDEC_SKIP_QMF_ANA;
+      } else {
+        self->flags &= ~SBRDEC_SKIP_QMF_ANA;
+      }
+      if (value == 2) {
+        self->flags |= SBRDEC_SKIP_QMF_SYN;
+      } else {
+        self->flags &= ~SBRDEC_SKIP_QMF_SYN;
+      }
+    }
+    break;
+  default:
+    errorStatus = SBRDEC_SET_PARAM_FAIL;
+    break;
   } /* switch(param) */
 
   return (errorStatus);
 }
 
-static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
-    const HANDLE_SBRDECODER self, const INT channel) {
+static SBRDEC_DRC_CHANNEL *
+sbrDecoder_drcGetChannel(const HANDLE_SBRDECODER self, const INT channel) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
   int elementIndex, elChanIdx = 0, numCh = 0;
 
@@ -1005,21 +1006,22 @@ static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
     int c, elChannels;
 
     elChanIdx = 0;
-    if (pSbrElement == NULL) break;
+    if (pSbrElement == NULL)
+      break;
 
     /* Determine amount of channels for this element */
     switch (pSbrElement->elementID) {
-      case ID_CPE:
-        elChannels = 2;
-        break;
-      case ID_LFE:
-      case ID_SCE:
-        elChannels = 1;
-        break;
-      case ID_NONE:
-      default:
-        elChannels = 0;
-        break;
+    case ID_CPE:
+      elChannels = 2;
+      break;
+    case ID_LFE:
+    case ID_SCE:
+      elChannels = 1;
+      break;
+    case ID_NONE:
+    default:
+      elChannels = 0;
+      break;
     }
 
     /* Limit with actual allocated element channels */
@@ -1217,10 +1219,10 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   lastSlot = (hSbrElement->useFrameSlot > 0) ? hSbrElement->useFrameSlot - 1
                                              : self->numDelayFrames;
   lastHdrSlot = hSbrElement->useHeaderSlot[lastSlot];
-  thisHdrSlot = getHeaderSlot(
-      hSbrElement->useFrameSlot,
-      hSbrElement->useHeaderSlot); /* Get a free header slot not used by
-                                      frames not processed yet. */
+  thisHdrSlot =
+      getHeaderSlot(hSbrElement->useFrameSlot,
+                    hSbrElement->useHeaderSlot); /* Get a free header slot not
+                                    used by frames not processed yet. */
 
   /* Assign the free slot to store a new header if there is one. */
   hSbrHeader = &self->sbrHeader[elementIndex][thisHdrSlot];
@@ -1278,26 +1280,26 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   if (fDoDecodeSbrData) {
     if (crcFlag) {
       switch (self->coreCodec) {
-        case AOT_ER_AAC_ELD:
-          FDKpushFor(hBs, 10);
-          /* check sbrcrc later: we don't know the payload length now */
-          break;
-        case AOT_DRM_AAC:
-        case AOT_DRM_SURROUND:
-          drmSbrCrc = (USHORT)FDKreadBits(hBs, 8);
-          /* Setup CRC decoder */
-          FDKcrcInit(&crcInfo, 0x001d, 0xFFFF, 8);
-          /* Start CRC region */
-          crcReg = FDKcrcStartReg(&crcInfo, hBs, 0);
-          break;
-        default:
-          CRCLen = bsPayLen - 10; /* change: 0 => i */
-          if (CRCLen < 0) {
-            fDoDecodeSbrData = 0;
-          } else {
-            fDoDecodeSbrData = SbrCrcCheck(hBs, CRCLen);
-          }
-          break;
+      case AOT_ER_AAC_ELD:
+        FDKpushFor(hBs, 10);
+        /* check sbrcrc later: we don't know the payload length now */
+        break;
+      case AOT_DRM_AAC:
+      case AOT_DRM_SURROUND:
+        drmSbrCrc = (USHORT)FDKreadBits(hBs, 8);
+        /* Setup CRC decoder */
+        FDKcrcInit(&crcInfo, 0x001d, 0xFFFF, 8);
+        /* Start CRC region */
+        crcReg = FDKcrcStartReg(&crcInfo, hBs, 0);
+        break;
+      default:
+        CRCLen = bsPayLen - 10; /* change: 0 => i */
+        if (CRCLen < 0) {
+          fDoDecodeSbrData = 0;
+        } else {
+          fDoDecodeSbrData = SbrCrcCheck(hBs, CRCLen);
+        }
+        break;
       }
     }
   } /* if (fDoDecodeSbrData) */
@@ -1453,30 +1455,30 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
 
       if (crcFlag) {
         switch (self->coreCodec) {
-          case AOT_ER_AAC_ELD: {
-            /* late crc check for eld */
-            INT payloadbits =
-                (INT)startPos - (INT)FDKgetValidBits(hBs) - startPos;
-            INT crcLen = payloadbits - 10;
-            FDKpushBack(hBs, payloadbits);
-            fDoDecodeSbrData = SbrCrcCheck(hBs, crcLen);
-            FDKpushFor(hBs, crcLen);
-          } break;
-          case AOT_DRM_AAC:
-          case AOT_DRM_SURROUND:
-            /* End CRC region */
-            FDKcrcEndReg(&crcInfo, hBs, crcReg);
-            /* Check CRC */
-            if ((FDKcrcGetCRC(&crcInfo) ^ 0xFF) != drmSbrCrc) {
-              fDoDecodeSbrData = 0;
-              if (headerStatus != HEADER_NOT_PRESENT) {
-                headerStatus = HEADER_ERROR;
-                hSbrHeader->syncState = SBR_NOT_INITIALIZED;
-              }
+        case AOT_ER_AAC_ELD: {
+          /* late crc check for eld */
+          INT payloadbits =
+              (INT)startPos - (INT)FDKgetValidBits(hBs) - startPos;
+          INT crcLen = payloadbits - 10;
+          FDKpushBack(hBs, payloadbits);
+          fDoDecodeSbrData = SbrCrcCheck(hBs, crcLen);
+          FDKpushFor(hBs, crcLen);
+        } break;
+        case AOT_DRM_AAC:
+        case AOT_DRM_SURROUND:
+          /* End CRC region */
+          FDKcrcEndReg(&crcInfo, hBs, crcReg);
+          /* Check CRC */
+          if ((FDKcrcGetCRC(&crcInfo) ^ 0xFF) != drmSbrCrc) {
+            fDoDecodeSbrData = 0;
+            if (headerStatus != HEADER_NOT_PRESENT) {
+              headerStatus = HEADER_ERROR;
+              hSbrHeader->syncState = SBR_NOT_INITIALIZED;
             }
-            break;
-          default:
-            break;
+          }
+          break;
+        default:
+          break;
         }
       }
 
@@ -1485,20 +1487,20 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
         fDoDecodeSbrData = 0;
       } else {
         switch (self->coreCodec) {
-          case AOT_SBR:
-          case AOT_PS:
-          case AOT_AAC_LC: {
-            /* This sanity check is only meaningful with General Audio
-             * bitstreams */
-            int alignBits = valBits & 0x7;
+        case AOT_SBR:
+        case AOT_PS:
+        case AOT_AAC_LC: {
+          /* This sanity check is only meaningful with General Audio
+           * bitstreams */
+          int alignBits = valBits & 0x7;
 
-            if (valBits > alignBits) {
-              fDoDecodeSbrData = 0;
-            }
-          } break;
-          default:
-            /* No sanity check available */
-            break;
+          if (valBits > alignBits) {
+            fDoDecodeSbrData = 0;
+          }
+        } break;
+        default:
+          /* No sanity check available */
+          break;
         }
       }
     }
@@ -1796,7 +1798,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
       ptr = timeData;
       for (i = copyFrameSize >> 1; i--;) {
         INT_PCM tmp; /* This temporal variable is required because some
-                        compilers can't do *ptr++ = *ptr++ correctly. */
+                compilers can't do *ptr++ = *ptr++ correctly. */
         tmp = *ptr++;
         *ptr++ = tmp;
         tmp = *ptr++;
@@ -1966,9 +1968,11 @@ INT sbrDecoder_GetLibInfo(LIB_INFO *info) {
 
   /* search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
-  if (i == FDK_MODULE_LAST) return -1;
+  if (i == FDK_MODULE_LAST)
+    return -1;
   info += i;
 
   info->module_id = FDK_SBRDEC;

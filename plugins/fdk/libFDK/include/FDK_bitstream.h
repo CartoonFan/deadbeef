@@ -138,7 +138,8 @@ HANDLE_FDK_BITSTREAM FDKcreateBitStream(UCHAR *pBuffer, UINT bufSize,
                                         FDK_BS_CFG config = BS_READER) {
   HANDLE_FDK_BITSTREAM hBitStream =
       (HANDLE_FDK_BITSTREAM)FDKcalloc(1, sizeof(FDK_BITSTREAM));
-  if (hBitStream == NULL) return NULL;
+  if (hBitStream == NULL)
+    return NULL;
   FDK_InitBitBuffer(&hBitStream->hBitBuf, pBuffer, bufSize, 0);
 
   /* init cache */
@@ -214,7 +215,8 @@ FDK_INLINE UINT FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream,
 
   FDK_ASSERT(numberOfBits <= 32);
   if (missingBits > 0) {
-    if (missingBits != 32) bits = hBitStream->CacheWord << missingBits;
+    if (missingBits != 32)
+      bits = hBitStream->CacheWord << missingBits;
     hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
     hBitStream->BitsInCache += CACHE_BITS;
   }

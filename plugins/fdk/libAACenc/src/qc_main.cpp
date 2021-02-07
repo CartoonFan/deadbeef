@@ -101,14 +101,14 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "qc_main.h"
-#include "quantize.h"
-#include "interface.h"
-#include "adj_thr.h"
-#include "sf_estim.h"
-#include "bit_cnt.h"
-#include "dyn_bits.h"
-#include "channel_map.h"
 #include "aacEnc_ram.h"
+#include "adj_thr.h"
+#include "bit_cnt.h"
+#include "channel_map.h"
+#include "dyn_bits.h"
+#include "interface.h"
+#include "quantize.h"
+#include "sf_estim.h"
 
 #include "genericStds.h"
 
@@ -119,22 +119,23 @@ typedef struct {
   LONG vbrQualFactor;
 } TAB_VBR_QUAL_FACTOR;
 
-static const TAB_VBR_QUAL_FACTOR tableVbrQualFactor[] = {
-    {QCDATA_BR_MODE_VBR_1,
-     FL2FXCONST_DBL(0.160f)}, /* Approx. 32 -  48 (AC-LC),  32 -  56
-                                 (AAC-LD/ELD) kbps/channel */
-    {QCDATA_BR_MODE_VBR_2,
-     FL2FXCONST_DBL(0.148f)}, /* Approx. 40 -  56 (AC-LC),  40 -  64
-                                 (AAC-LD/ELD) kbps/channel */
-    {QCDATA_BR_MODE_VBR_3,
-     FL2FXCONST_DBL(0.135f)}, /* Approx. 48 -  64 (AC-LC),  48 -  72
-                                 (AAC-LD/ELD) kbps/channel */
-    {QCDATA_BR_MODE_VBR_4,
-     FL2FXCONST_DBL(0.111f)}, /* Approx. 64 -  80 (AC-LC),  64 -  88
-                                 (AAC-LD/ELD) kbps/channel */
-    {QCDATA_BR_MODE_VBR_5,
-     FL2FXCONST_DBL(0.070f)} /* Approx. 96 - 120 (AC-LC), 112 - 144
-                                (AAC-LD/ELD) kbps/channel */
+static const TAB_VBR_QUAL_FACTOR tableVbrQualFactor[] =
+    {
+        {QCDATA_BR_MODE_VBR_1, FL2FXCONST_DBL(
+                                   0.160f)}, /* Approx. 32 -  48 (AC-LC),  32 -
+                                                56 (AAC-LD/ELD) kbps/channel */
+        {QCDATA_BR_MODE_VBR_2, FL2FXCONST_DBL(
+                                   0.148f)}, /* Approx. 40 -  56 (AC-LC),  40 -
+                                                64 (AAC-LD/ELD) kbps/channel */
+        {QCDATA_BR_MODE_VBR_3, FL2FXCONST_DBL(
+                                   0.135f)}, /* Approx. 48 -  64 (AC-LC),  48 -
+                                                72 (AAC-LD/ELD) kbps/channel */
+        {QCDATA_BR_MODE_VBR_4, FL2FXCONST_DBL(
+                                   0.111f)}, /* Approx. 64 -  80 (AC-LC),  64 -
+                                                88 (AAC-LD/ELD) kbps/channel */
+        {QCDATA_BR_MODE_VBR_5, FL2FXCONST_DBL(
+                                   0.070f)} /* Approx. 96 - 120 (AC-LC), 112 -
+                                               144 (AAC-LD/ELD) kbps/channel */
 };
 
 static INT isConstantBitrateMode(const QCDATA_BR_MODE bitrateMode) {
@@ -153,24 +154,24 @@ typedef enum {
 /* forward declarations */
 
 static INT FDKaacEnc_calcMaxValueInSfb(INT sfbCnt, INT maxSfbPerGroup,
-                                       INT sfbPerGroup, INT* RESTRICT sfbOffset,
-                                       SHORT* RESTRICT quantSpectrum,
-                                       UINT* RESTRICT maxValue);
+                                       INT sfbPerGroup, INT *RESTRICT sfbOffset,
+                                       SHORT *RESTRICT quantSpectrum,
+                                       UINT *RESTRICT maxValue);
 
 static void FDKaacEnc_crashRecovery(INT nChannels,
-                                    PSY_OUT_ELEMENT* psyOutElement,
-                                    QC_OUT* qcOut, QC_OUT_ELEMENT* qcElement,
+                                    PSY_OUT_ELEMENT *psyOutElement,
+                                    QC_OUT *qcOut, QC_OUT_ELEMENT *qcElement,
                                     INT bitsToSave, AUDIO_OBJECT_TYPE aot,
                                     UINT syntaxFlags, SCHAR epConfig);
 
 static AAC_ENCODER_ERROR FDKaacEnc_reduceBitConsumption(
-    int* iterations, const int maxIterations, int gainAdjustment,
-    int* chConstraintsFulfilled, int* calculateQuant, int nChannels,
-    PSY_OUT_ELEMENT* psyOutElement, QC_OUT* qcOut, QC_OUT_ELEMENT* qcOutElement,
-    ELEMENT_BITS* elBits, AUDIO_OBJECT_TYPE aot, UINT syntaxFlags,
+    int *iterations, const int maxIterations, int gainAdjustment,
+    int *chConstraintsFulfilled, int *calculateQuant, int nChannels,
+    PSY_OUT_ELEMENT *psyOutElement, QC_OUT *qcOut, QC_OUT_ELEMENT *qcOutElement,
+    ELEMENT_BITS *elBits, AUDIO_OBJECT_TYPE aot, UINT syntaxFlags,
     SCHAR epConfig);
 
-void FDKaacEnc_QCClose(QC_STATE** phQCstate, QC_OUT** phQC);
+void FDKaacEnc_QCClose(QC_STATE **phQCstate, QC_OUT **phQC);
 
 /*****************************************************************************
 
@@ -189,12 +190,12 @@ static INT FDKaacEnc_calcFrameLen(INT bitRate, INT sampleRate,
   result = ((granuleLength) >> 3) * (bitRate);
 
   switch (mode) {
-    case FRAME_LEN_BYTES_MODULO:
-      result %= sampleRate;
-      break;
-    case FRAME_LEN_BYTES_INT:
-      result /= sampleRate;
-      break;
+  case FRAME_LEN_BYTES_MODULO:
+    result %= sampleRate;
+    break;
+  case FRAME_LEN_BYTES_INT:
+    result /= sampleRate;
+    break;
   }
   return (result);
 }
@@ -209,7 +210,7 @@ static INT FDKaacEnc_calcFrameLen(INT bitRate, INT sampleRate,
 
 *****************************************************************************/
 static INT FDKaacEnc_framePadding(INT bitRate, INT sampleRate,
-                                  INT granuleLength, INT* paddingRest) {
+                                  INT granuleLength, INT *paddingRest) {
   INT paddingOn;
   INT difference;
 
@@ -234,9 +235,9 @@ static INT FDKaacEnc_framePadding(INT bitRate, INT sampleRate,
          return:
 
 **********************************************************************************/
-AAC_ENCODER_ERROR FDKaacEnc_QCOutNew(QC_OUT** phQC, const INT nElements,
+AAC_ENCODER_ERROR FDKaacEnc_QCOutNew(QC_OUT **phQC, const INT nElements,
                                      const INT nChannels, const INT nSubFrames,
-                                     UCHAR* dynamic_RAM) {
+                                     UCHAR *dynamic_RAM) {
   AAC_ENCODER_ERROR ErrorStatus;
   int n, i;
   int elInc = 0, chInc = 0;
@@ -291,8 +292,8 @@ QCOutNew_bail:
          return:
 
 **********************************************************************************/
-AAC_ENCODER_ERROR FDKaacEnc_QCOutInit(QC_OUT* phQC[(1)], const INT nSubFrames,
-                                      const CHANNEL_MAPPING* cm) {
+AAC_ENCODER_ERROR FDKaacEnc_QCOutInit(QC_OUT *phQC[(1)], const INT nSubFrames,
+                                      const CHANNEL_MAPPING *cm) {
   INT n, i, ch;
 
   for (n = 0; n < nSubFrames; n++) {
@@ -316,12 +317,12 @@ AAC_ENCODER_ERROR FDKaacEnc_QCOutInit(QC_OUT* phQC[(1)], const INT nSubFrames,
          return:
 
 **********************************************************************************/
-AAC_ENCODER_ERROR FDKaacEnc_QCNew(QC_STATE** phQC, INT nElements,
-                                  UCHAR* dynamic_RAM) {
+AAC_ENCODER_ERROR FDKaacEnc_QCNew(QC_STATE **phQC, INT nElements,
+                                  UCHAR *dynamic_RAM) {
   AAC_ENCODER_ERROR ErrorStatus;
   int i;
 
-  QC_STATE* hQC = GetRam_aacEnc_QCstate();
+  QC_STATE *hQC = GetRam_aacEnc_QCstate();
   *phQC = hQC;
   if (hQC == NULL) {
     ErrorStatus = AAC_ENC_NO_MEMORY;
@@ -360,7 +361,7 @@ QCNew_bail:
          return:
 
 **********************************************************************************/
-AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE* hQC, struct QC_INIT* init,
+AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE *hQC, struct QC_INIT *init,
                                    const ULONG initFlags) {
   AAC_ENCODER_ERROR err = AAC_ENC_OK;
 
@@ -394,7 +395,8 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE* hQC, struct QC_INIT* init,
       hQC, init->channelMapping, init->bitrate,
       (init->averageBits / init->nSubFrames) - hQC->globHdrBits,
       hQC->maxBitsPerFrame / init->channelMapping->nChannelsEff);
-  if (err != AAC_ENC_OK) goto bail;
+  if (err != AAC_ENC_OK)
+    goto bail;
 
   hQC->vbrQualFactor = FL2FXCONST_DBL(0.f);
   for (i = 0;
@@ -411,9 +413,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE* hQC, struct QC_INIT* init,
           AACENC_DZQ_BR_THR &&
       init->isLowDelay !=
           0) /* watch out here: init->bitrate is the bitrate "minus" the
-                standard SBR bitrate (=2500kbps) --> for the FDK the OFFSTE
-                tuning should start somewhere below 32000kbps-2500kbps ... so
-                everything is fine here */
+              standard SBR bitrate (=2500kbps) --> for the FDK the OFFSTE
+              tuning should start somewhere below 32000kbps-2500kbps ... so
+              everything is fine here */
   {
     hQC->dZoneQuantEnable = 1;
   } else {
@@ -425,9 +427,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE* hQC, struct QC_INIT* init,
       init->sampleRate, /* output sample rate */
       init->bitrate,    /* total bitrate */
       init->isLowDelay, /* if set, calc bits2PE factor
-                           depending on samplerate */
+                         depending on samplerate */
       init->bitResMode  /* for a small bitreservoir, the pe
-                           correction is calc'd differently */
+                         correction is calc'd differently */
       ,
       hQC->dZoneQuantEnable, init->bitDistributionMode, hQC->vbrQualFactor);
 
@@ -443,14 +445,14 @@ bail:
 
 **********************************************************************************/
 AAC_ENCODER_ERROR FDKaacEnc_QCMainPrepare(
-    ELEMENT_INFO* elInfo, ATS_ELEMENT* RESTRICT adjThrStateElement,
-    PSY_OUT_ELEMENT* RESTRICT psyOutElement,
-    QC_OUT_ELEMENT* RESTRICT qcOutElement, AUDIO_OBJECT_TYPE aot,
+    ELEMENT_INFO *elInfo, ATS_ELEMENT *RESTRICT adjThrStateElement,
+    PSY_OUT_ELEMENT *RESTRICT psyOutElement,
+    QC_OUT_ELEMENT *RESTRICT qcOutElement, AUDIO_OBJECT_TYPE aot,
     UINT syntaxFlags, SCHAR epConfig) {
   AAC_ENCODER_ERROR ErrorStatus = AAC_ENC_OK;
   INT nChannels = elInfo->nChannelsInEl;
 
-  PSY_OUT_CHANNEL** RESTRICT psyOutChannel =
+  PSY_OUT_CHANNEL **RESTRICT psyOutChannel =
       psyOutElement->psyOutChannel; /* may be modified in-place */
 
   FDKaacEnc_CalcFormFactor(qcOutElement->qcOutChannel, psyOutChannel,
@@ -476,11 +478,11 @@ basis, to achieve a bitrate that demands a non byte aligned framelength return:
 errorcode
 
 **********************************************************************************/
-AAC_ENCODER_ERROR FDKaacEnc_AdjustBitrate(
-    QC_STATE* RESTRICT hQC, CHANNEL_MAPPING* RESTRICT cm, INT* avgTotalBits,
-    INT bitRate,       /* total bitrate */
-    INT sampleRate,    /* output sampling rate */
-    INT granuleLength) /* frame length */
+AAC_ENCODER_ERROR
+FDKaacEnc_AdjustBitrate(QC_STATE *RESTRICT hQC, CHANNEL_MAPPING *RESTRICT cm,
+                        INT *avgTotalBits, INT bitRate, /* total bitrate */
+                        INT sampleRate,    /* output sampling rate */
+                        INT granuleLength) /* frame length */
 {
   INT paddingOn;
   INT frameLen;
@@ -498,7 +500,7 @@ AAC_ENCODER_ERROR FDKaacEnc_AdjustBitrate(
   return AAC_ENC_OK;
 }
 
-#define isAudioElement(elType) \
+#define isAudioElement(elType)                                                 \
   ((elType == ID_SCE) || (elType == ID_CPE) || (elType == ID_LFE))
 
 /*********************************************************************************
@@ -511,9 +513,10 @@ AAC_ENCODER_ERROR FDKaacEnc_AdjustBitrate(
          return:       errorcode
 
 **********************************************************************************/
-static AAC_ENCODER_ERROR FDKaacEnc_distributeElementDynBits(
-    QC_STATE* hQC, QC_OUT_ELEMENT* qcElement[((8))], CHANNEL_MAPPING* cm,
-    INT codeBits) {
+static AAC_ENCODER_ERROR
+FDKaacEnc_distributeElementDynBits(QC_STATE *hQC,
+                                   QC_OUT_ELEMENT *qcElement[((8))],
+                                   CHANNEL_MAPPING *cm, INT codeBits) {
   INT i;             /* counter variable */
   INT totalBits = 0; /* sum of bits over all elements */
 
@@ -578,7 +581,7 @@ static AAC_ENCODER_ERROR FDKaacEnc_distributeElementDynBits(
  *          - 1: all fine
  *          - 0: criterion not fulfilled
  */
-static int checkMinFrameBitsDemand(QC_OUT** qcOut, const INT minBitsPerFrame,
+static int checkMinFrameBitsDemand(QC_OUT **qcOut, const INT minBitsPerFrame,
                                    const INT nSubFrames) {
   int result = 1; /* all fine*/
   return result;
@@ -595,8 +598,8 @@ static int checkMinFrameBitsDemand(QC_OUT** qcOut, const INT minBitsPerFrame,
          return:       number of static bits
 
 **********************************************************************************/
-static int FDKaacEnc_getMinimalStaticBitdemand(CHANNEL_MAPPING* cm,
-                                               PSY_OUT** psyOut) {
+static int FDKaacEnc_getMinimalStaticBitdemand(CHANNEL_MAPPING *cm,
+                                               PSY_OUT **psyOut) {
   AUDIO_OBJECT_TYPE aot = AOT_AAC_LC;
   UINT syntaxFlags = 0;
   SCHAR epConfig = -1;
@@ -623,9 +626,9 @@ static int FDKaacEnc_getMinimalStaticBitdemand(CHANNEL_MAPPING* cm,
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static AAC_ENCODER_ERROR FDKaacEnc_prepareBitDistribution(
-    QC_STATE* hQC, PSY_OUT** psyOut, QC_OUT** qcOut, CHANNEL_MAPPING* cm,
-    QC_OUT_ELEMENT* qcElement[(1)][((8))], INT avgTotalBits,
-    INT* totalAvailableBits, INT* avgTotalDynBits) {
+    QC_STATE *hQC, PSY_OUT **psyOut, QC_OUT **qcOut, CHANNEL_MAPPING *cm,
+    QC_OUT_ELEMENT *qcElement[(1)][((8))], INT avgTotalBits,
+    INT *totalAvailableBits, INT *avgTotalDynBits) {
   int i;
   /* get maximal allowed dynamic bits */
   qcOut[0]->grantedDynBits =
@@ -684,9 +687,10 @@ static AAC_ENCODER_ERROR FDKaacEnc_prepareBitDistribution(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-static AAC_ENCODER_ERROR FDKaacEnc_updateUsedDynBits(
-    INT* sumDynBitsConsumed, QC_OUT_ELEMENT* qcElement[((8))],
-    CHANNEL_MAPPING* cm) {
+static AAC_ENCODER_ERROR
+FDKaacEnc_updateUsedDynBits(INT *sumDynBitsConsumed,
+                            QC_OUT_ELEMENT *qcElement[((8))],
+                            CHANNEL_MAPPING *cm) {
   INT i;
 
   *sumDynBitsConsumed = 0;
@@ -705,23 +709,24 @@ static AAC_ENCODER_ERROR FDKaacEnc_updateUsedDynBits(
   return AAC_ENC_OK;
 }
 
-static INT FDKaacEnc_getTotalConsumedDynBits(QC_OUT** qcOut, INT nSubFrames) {
+static INT FDKaacEnc_getTotalConsumedDynBits(QC_OUT **qcOut, INT nSubFrames) {
   INT c, totalBits = 0;
 
   /* sum up bit consumption for all sub frames */
   for (c = 0; c < nSubFrames; c++) {
     /* bit consumption not valid if dynamic bits
        not available in one sub frame */
-    if (qcOut[c]->usedDynBits == -1) return -1;
+    if (qcOut[c]->usedDynBits == -1)
+      return -1;
     totalBits += qcOut[c]->usedDynBits;
   }
 
   return totalBits;
 }
 
-static INT FDKaacEnc_getTotalConsumedBits(QC_OUT** qcOut,
-                                          QC_OUT_ELEMENT* qcElement[(1)][((8))],
-                                          CHANNEL_MAPPING* cm, INT globHdrBits,
+static INT FDKaacEnc_getTotalConsumedBits(QC_OUT **qcOut,
+                                          QC_OUT_ELEMENT *qcElement[(1)][((8))],
+                                          CHANNEL_MAPPING *cm, INT globHdrBits,
                                           INT nSubFrames) {
   int c, i;
   int totalUsedBits = 0;
@@ -745,9 +750,10 @@ static INT FDKaacEnc_getTotalConsumedBits(QC_OUT** qcOut,
   return totalUsedBits;
 }
 
-static AAC_ENCODER_ERROR FDKaacEnc_BitResRedistribution(
-    QC_STATE* const hQC, const CHANNEL_MAPPING* const cm,
-    const INT avgTotalBits) {
+static AAC_ENCODER_ERROR
+FDKaacEnc_BitResRedistribution(QC_STATE *const hQC,
+                               const CHANNEL_MAPPING *const cm,
+                               const INT avgTotalBits) {
   /* check bitreservoir fill level */
   if (hQC->bitResTot < 0) {
     return AAC_ENC_BITRES_TOO_LOW;
@@ -795,9 +801,9 @@ static AAC_ENCODER_ERROR FDKaacEnc_BitResRedistribution(
   return AAC_ENC_OK;
 }
 
-AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
-                                   QC_OUT** qcOut, INT avgTotalBits,
-                                   CHANNEL_MAPPING* cm,
+AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE *RESTRICT hQC, PSY_OUT **psyOut,
+                                   QC_OUT **qcOut, INT avgTotalBits,
+                                   CHANNEL_MAPPING *cm,
                                    const AUDIO_OBJECT_TYPE aot,
                                    UINT syntaxFlags, SCHAR epConfig) {
   int i, c;
@@ -819,7 +825,7 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
 
   /*-------------------------------------------- */
   /* helper pointer */
-  QC_OUT_ELEMENT* qcElement[(1)][((8))];
+  QC_OUT_ELEMENT *qcElement[(1)][((8))];
 
   /* work on a copy of qcChannel and qcElement */
   for (i = 0; i < cm->nElements; i++) {
@@ -829,7 +835,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
         (elInfo.elType == ID_LFE)) {
       /* for ( all sub frames ) ... */
       for (c = 0; c < nSubFrames; c++) {
-        { qcElement[c][i] = qcOut[c]->qcElement[i]; }
+        {
+          qcElement[c][i] = qcOut[c]->qcElement[i];
+        }
       }
     }
   }
@@ -956,8 +964,8 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
               /*-------------------------------------------- */
 
               if (calculateQuant[c][i][ch]) {
-                QC_OUT_CHANNEL* qcOutCh = qcElement[c][i]->qcOutChannel[ch];
-                PSY_OUT_CHANNEL* psyOutCh =
+                QC_OUT_CHANNEL *qcOutCh = qcElement[c][i]->qcOutChannel[ch];
+                PSY_OUT_CHANNEL *psyOutCh =
                     psyOut[c]->psyOutElement[i]->psyOutChannel[ch];
 
                 calculateQuant[c][i][ch] =
@@ -994,7 +1002,7 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
             /*-------------------------------------------- */
 
           } while (!constraintsFulfilled[c][i]); /* does not regard bit
-                                                    consumption */
+                                          consumption */
 
           /*-------------------------------------------- */
           /*-------------------------------------------- */
@@ -1002,8 +1010,8 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
 
           /* quantization valid in current channel! */
           for (ch = 0; ch < nChannels; ch++) {
-            QC_OUT_CHANNEL* qcOutCh = qcElement[c][i]->qcOutChannel[ch];
-            PSY_OUT_CHANNEL* psyOutCh =
+            QC_OUT_CHANNEL *qcOutCh = qcElement[c][i]->qcOutChannel[ch];
+            PSY_OUT_CHANNEL *psyOutCh =
                 psyOut[c]->psyOutElement[i]->psyOutChannel[ch];
 
             /* count dynamic bits */
@@ -1133,10 +1141,10 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE* RESTRICT hQC, PSY_OUT** psyOut,
 }
 
 static AAC_ENCODER_ERROR FDKaacEnc_reduceBitConsumption(
-    int* iterations, const int maxIterations, int gainAdjustment,
-    int* chConstraintsFulfilled, int* calculateQuant, int nChannels,
-    PSY_OUT_ELEMENT* psyOutElement, QC_OUT* qcOut, QC_OUT_ELEMENT* qcOutElement,
-    ELEMENT_BITS* elBits, AUDIO_OBJECT_TYPE aot, UINT syntaxFlags,
+    int *iterations, const int maxIterations, int gainAdjustment,
+    int *chConstraintsFulfilled, int *calculateQuant, int nChannels,
+    PSY_OUT_ELEMENT *psyOutElement, QC_OUT *qcOut, QC_OUT_ELEMENT *qcOutElement,
+    ELEMENT_BITS *elBits, AUDIO_OBJECT_TYPE aot, UINT syntaxFlags,
     SCHAR epConfig) {
   int ch;
 
@@ -1147,7 +1155,7 @@ static AAC_ENCODER_ERROR FDKaacEnc_reduceBitConsumption(
       if (!chConstraintsFulfilled[ch]) {
         qcOutElement->qcOutChannel[ch]->globalGain += gainAdjustment;
         calculateQuant[ch] = 1; /* global gain has changed, recalculate
-                                   quantization in next iteration! */
+                           quantization in next iteration! */
       }
     }
   } else if ((*iterations) == maxIterations) {
@@ -1181,44 +1189,43 @@ static AAC_ENCODER_ERROR FDKaacEnc_reduceBitConsumption(
   return AAC_ENC_OK;
 }
 
-AAC_ENCODER_ERROR FDKaacEnc_updateFillBits(CHANNEL_MAPPING* cm,
-                                           QC_STATE* qcKernel,
-                                           ELEMENT_BITS* RESTRICT elBits[((8))],
-                                           QC_OUT** qcOut) {
+AAC_ENCODER_ERROR FDKaacEnc_updateFillBits(CHANNEL_MAPPING *cm,
+                                           QC_STATE *qcKernel,
+                                           ELEMENT_BITS *RESTRICT elBits[((8))],
+                                           QC_OUT **qcOut) {
   switch (qcKernel->bitrateMode) {
-    case QCDATA_BR_MODE_SFR:
-      break;
+  case QCDATA_BR_MODE_SFR:
+    break;
 
-    case QCDATA_BR_MODE_FF:
-      break;
-    case QCDATA_BR_MODE_VBR_1:
-    case QCDATA_BR_MODE_VBR_2:
-    case QCDATA_BR_MODE_VBR_3:
-    case QCDATA_BR_MODE_VBR_4:
-    case QCDATA_BR_MODE_VBR_5:
-      qcOut[0]->totFillBits =
-          (qcOut[0]->grantedDynBits - qcOut[0]->usedDynBits) &
-          7; /* precalculate alignment bits */
-      qcOut[0]->totalBits = qcOut[0]->staticBits + qcOut[0]->usedDynBits +
-                            qcOut[0]->totFillBits + qcOut[0]->elementExtBits +
-                            qcOut[0]->globalExtBits;
-      qcOut[0]->totFillBits +=
-          (fixMax(0, qcKernel->minBitsPerFrame - qcOut[0]->totalBits) + 7) & ~7;
-      break;
-    case QCDATA_BR_MODE_CBR:
-    case QCDATA_BR_MODE_INVALID:
-    default:
-      INT bitResSpace = qcKernel->bitResTotMax - qcKernel->bitResTot;
-      /* processing fill-bits */
-      INT deltaBitRes = qcOut[0]->grantedDynBits - qcOut[0]->usedDynBits;
-      qcOut[0]->totFillBits = fixMax(
-          (deltaBitRes & 7), (deltaBitRes - (fixMax(0, bitResSpace - 7) & ~7)));
-      qcOut[0]->totalBits = qcOut[0]->staticBits + qcOut[0]->usedDynBits +
-                            qcOut[0]->totFillBits + qcOut[0]->elementExtBits +
-                            qcOut[0]->globalExtBits;
-      qcOut[0]->totFillBits +=
-          (fixMax(0, qcKernel->minBitsPerFrame - qcOut[0]->totalBits) + 7) & ~7;
-      break;
+  case QCDATA_BR_MODE_FF:
+    break;
+  case QCDATA_BR_MODE_VBR_1:
+  case QCDATA_BR_MODE_VBR_2:
+  case QCDATA_BR_MODE_VBR_3:
+  case QCDATA_BR_MODE_VBR_4:
+  case QCDATA_BR_MODE_VBR_5:
+    qcOut[0]->totFillBits = (qcOut[0]->grantedDynBits - qcOut[0]->usedDynBits) &
+                            7; /* precalculate alignment bits */
+    qcOut[0]->totalBits = qcOut[0]->staticBits + qcOut[0]->usedDynBits +
+                          qcOut[0]->totFillBits + qcOut[0]->elementExtBits +
+                          qcOut[0]->globalExtBits;
+    qcOut[0]->totFillBits +=
+        (fixMax(0, qcKernel->minBitsPerFrame - qcOut[0]->totalBits) + 7) & ~7;
+    break;
+  case QCDATA_BR_MODE_CBR:
+  case QCDATA_BR_MODE_INVALID:
+  default:
+    INT bitResSpace = qcKernel->bitResTotMax - qcKernel->bitResTot;
+    /* processing fill-bits */
+    INT deltaBitRes = qcOut[0]->grantedDynBits - qcOut[0]->usedDynBits;
+    qcOut[0]->totFillBits = fixMax(
+        (deltaBitRes & 7), (deltaBitRes - (fixMax(0, bitResSpace - 7) & ~7)));
+    qcOut[0]->totalBits = qcOut[0]->staticBits + qcOut[0]->usedDynBits +
+                          qcOut[0]->totFillBits + qcOut[0]->elementExtBits +
+                          qcOut[0]->globalExtBits;
+    qcOut[0]->totFillBits +=
+        (fixMax(0, qcKernel->minBitsPerFrame - qcOut[0]->totalBits) + 7) & ~7;
+    break;
   } /* switch (qcKernel->bitrateMode) */
 
   return AAC_ENC_OK;
@@ -1233,9 +1240,9 @@ AAC_ENCODER_ERROR FDKaacEnc_updateFillBits(CHANNEL_MAPPING* cm,
 **********************************************************************************/
 
 static INT FDKaacEnc_calcMaxValueInSfb(INT sfbCnt, INT maxSfbPerGroup,
-                                       INT sfbPerGroup, INT* RESTRICT sfbOffset,
-                                       SHORT* RESTRICT quantSpectrum,
-                                       UINT* RESTRICT maxValue) {
+                                       INT sfbPerGroup, INT *RESTRICT sfbOffset,
+                                       SHORT *RESTRICT quantSpectrum,
+                                       UINT *RESTRICT maxValue) {
   INT sfbOffs, sfb;
   INT maxValueAll = 0;
 
@@ -1262,30 +1269,30 @@ static INT FDKaacEnc_calcMaxValueInSfb(INT sfbCnt, INT maxSfbPerGroup,
          return:
 
 **********************************************************************************/
-void FDKaacEnc_updateBitres(CHANNEL_MAPPING* cm, QC_STATE* qcKernel,
-                            QC_OUT** qcOut) {
+void FDKaacEnc_updateBitres(CHANNEL_MAPPING *cm, QC_STATE *qcKernel,
+                            QC_OUT **qcOut) {
   switch (qcKernel->bitrateMode) {
-    case QCDATA_BR_MODE_VBR_1:
-    case QCDATA_BR_MODE_VBR_2:
-    case QCDATA_BR_MODE_VBR_3:
-    case QCDATA_BR_MODE_VBR_4:
-    case QCDATA_BR_MODE_VBR_5:
-      /* variable bitrate */
-      qcKernel->bitResTot =
-          fMin(qcKernel->maxBitsPerFrame, qcKernel->bitResTotMax);
-      break;
-    case QCDATA_BR_MODE_CBR:
-    case QCDATA_BR_MODE_SFR:
-    case QCDATA_BR_MODE_INVALID:
-    default:
-      int c = 0;
-      /* constant bitrate */
-      {
-        qcKernel->bitResTot += qcOut[c]->grantedDynBits -
-                               (qcOut[c]->usedDynBits + qcOut[c]->totFillBits +
-                                qcOut[c]->alignBits);
-      }
-      break;
+  case QCDATA_BR_MODE_VBR_1:
+  case QCDATA_BR_MODE_VBR_2:
+  case QCDATA_BR_MODE_VBR_3:
+  case QCDATA_BR_MODE_VBR_4:
+  case QCDATA_BR_MODE_VBR_5:
+    /* variable bitrate */
+    qcKernel->bitResTot =
+        fMin(qcKernel->maxBitsPerFrame, qcKernel->bitResTotMax);
+    break;
+  case QCDATA_BR_MODE_CBR:
+  case QCDATA_BR_MODE_SFR:
+  case QCDATA_BR_MODE_INVALID:
+  default:
+    int c = 0;
+    /* constant bitrate */
+    {
+      qcKernel->bitResTot +=
+          qcOut[c]->grantedDynBits -
+          (qcOut[c]->usedDynBits + qcOut[c]->totFillBits + qcOut[c]->alignBits);
+    }
+    break;
   }
 }
 
@@ -1297,8 +1304,8 @@ void FDKaacEnc_updateBitres(CHANNEL_MAPPING* cm, QC_STATE* qcKernel,
 
 **********************************************************************************/
 AAC_ENCODER_ERROR FDKaacEnc_FinalizeBitConsumption(
-    CHANNEL_MAPPING* cm, QC_STATE* qcKernel, QC_OUT* qcOut,
-    QC_OUT_ELEMENT** qcElement, HANDLE_TRANSPORTENC hTpEnc,
+    CHANNEL_MAPPING *cm, QC_STATE *qcKernel, QC_OUT *qcOut,
+    QC_OUT_ELEMENT **qcElement, HANDLE_TRANSPORTENC hTpEnc,
     AUDIO_OBJECT_TYPE aot, UINT syntaxFlags, SCHAR epConfig) {
   QC_OUT_EXTENSION fillExtPayload;
   INT totFillBits, alignBits;
@@ -1409,8 +1416,8 @@ AAC_ENCODER_ERROR FDKaacEnc_FinalizeBitConsumption(
 **********************************************************************************/
 
 static void FDKaacEnc_crashRecovery(INT nChannels,
-                                    PSY_OUT_ELEMENT* psyOutElement,
-                                    QC_OUT* qcOut, QC_OUT_ELEMENT* qcElement,
+                                    PSY_OUT_ELEMENT *psyOutElement,
+                                    QC_OUT *qcOut, QC_OUT_ELEMENT *qcElement,
                                     INT bitsToSave, AUDIO_OBJECT_TYPE aot,
                                     UINT syntaxFlags, SCHAR epConfig) {
   INT ch;
@@ -1418,10 +1425,10 @@ static void FDKaacEnc_crashRecovery(INT nChannels,
   INT sfb, sfbGrp;
   INT bitsPerScf[(2)][MAX_GROUPED_SFB];
   INT sectionToScf[(2)][MAX_GROUPED_SFB];
-  INT* sfbOffset;
+  INT *sfbOffset;
   INT sect, statBitsNew;
-  QC_OUT_CHANNEL** qcChannel = qcElement->qcOutChannel;
-  PSY_OUT_CHANNEL** psyChannel = psyOutElement->psyOutChannel;
+  QC_OUT_CHANNEL **qcChannel = qcElement->qcOutChannel;
+  PSY_OUT_CHANNEL **psyChannel = psyOutElement->psyOutChannel;
 
   /* create a table which converts frq-bins to bit-demand...    [bitsPerScf] */
   /* ...and another one which holds the corresponding sections [sectionToScf] */
@@ -1469,7 +1476,8 @@ static void FDKaacEnc_crashRecovery(INT nChannels,
     }
 
     /* ...have enough bits been saved? */
-    if (savedBits >= bitsToSave) break;
+    if (savedBits >= bitsToSave)
+      break;
 
   } /* sfb loop */
 
@@ -1513,18 +1521,19 @@ static void FDKaacEnc_crashRecovery(INT nChannels,
   qcOut->maxDynBits += savedBits;
 }
 
-void FDKaacEnc_QCClose(QC_STATE** phQCstate, QC_OUT** phQC) {
+void FDKaacEnc_QCClose(QC_STATE **phQCstate, QC_OUT **phQC) {
   int n, i;
 
   if (phQC != NULL) {
     for (n = 0; n < (1); n++) {
       if (phQC[n] != NULL) {
-        QC_OUT* hQC = phQC[n];
+        QC_OUT *hQC = phQC[n];
         for (i = 0; i < (8); i++) {
         }
 
         for (i = 0; i < ((8)); i++) {
-          if (hQC->qcElement[i]) FreeRam_aacEnc_QCelement(&hQC->qcElement[i]);
+          if (hQC->qcElement[i])
+            FreeRam_aacEnc_QCelement(&hQC->qcElement[i]);
         }
 
         FreeRam_aacEnc_QCout(&phQC[n]);
@@ -1534,9 +1543,10 @@ void FDKaacEnc_QCClose(QC_STATE** phQCstate, QC_OUT** phQC) {
 
   if (phQCstate != NULL) {
     if (*phQCstate != NULL) {
-      QC_STATE* hQCstate = *phQCstate;
+      QC_STATE *hQCstate = *phQCstate;
 
-      if (hQCstate->hAdjThr != NULL) FDKaacEnc_AdjThrClose(&hQCstate->hAdjThr);
+      if (hQCstate->hAdjThr != NULL)
+        FDKaacEnc_AdjThrClose(&hQCstate->hAdjThr);
 
       if (hQCstate->hBitCounter != NULL)
         FDKaacEnc_BCClose(&hQCstate->hBitCounter);

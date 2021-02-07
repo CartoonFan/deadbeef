@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TPENC_LATM_H
 #define TPENC_LATM_H
 
-#include "tpenc_lib.h"
 #include "FDK_bitstream.h"
+#include "tpenc_lib.h"
 
 #define DEFAULT_LATM_NR_OF_SUBFRAMES 1
 #define DEFAULT_LATM_SMC_REPEAT 8
@@ -116,8 +116,8 @@ amm-info@iis.fraunhofer.de
 
 #define LATM_MAX_LAYERS 1 /*MAX_AAC_LAYERS*/
 
-#define MAX_NR_OF_SUBFRAMES                         \
-  2 /* set this carefully to avoid buffer overflows \
+#define MAX_NR_OF_SUBFRAMES                                                    \
+  2 /* set this carefully to avoid buffer overflows                            \
      */
 
 typedef enum { LATMVAR_SIMPLE_SEQUENCE } LATM_VAR_MODE;
@@ -149,7 +149,7 @@ typedef struct {
 
   UCHAR
   audioMuxVersion; /* AMV1 supports transmission of taraBufferFullness and
-                      ASC lengths */
+                    ASC lengths */
   UCHAR audioMuxVersionA; /* for future extensions */
 
   UCHAR noProgram;
@@ -212,8 +212,9 @@ TRANSPORTENC_ERROR transportEnc_LatmAddOtherDataBits(HANDLE_LATM_STREAM hAss,
  *
  * \return the number of bits required by the LATM/LOAS headers
  */
-unsigned int transportEnc_LatmCountTotalBitDemandHeader(
-    HANDLE_LATM_STREAM hAss, unsigned int streamDataLength);
+unsigned int
+transportEnc_LatmCountTotalBitDemandHeader(HANDLE_LATM_STREAM hAss,
+                                           unsigned int streamDataLength);
 
 /**
  * \brief Write LATM/LOAS header into given bitstream handle

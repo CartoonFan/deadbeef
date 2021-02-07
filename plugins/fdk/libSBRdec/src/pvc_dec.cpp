@@ -402,28 +402,28 @@ int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
   pPvcDynamicData->RATE = RATE;
 
   switch (pvcMode) {
-    case 0:
-      /* legacy SBR, nothing to do */
-      return 0;
-    case 1:
-      pPvcDynamicData->nbHigh = 8;
-      pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode1;
-      pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode1;
-      pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode1;
-      pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode1;
-      hbw = 8 / RATE;
-      break;
-    case 2:
-      pPvcDynamicData->nbHigh = 6;
-      pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode2;
-      pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode2;
-      pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode2;
-      pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode2;
-      hbw = 12 / RATE;
-      break;
-    default:
-      /* invalid pvcMode */
-      return 1;
+  case 0:
+    /* legacy SBR, nothing to do */
+    return 0;
+  case 1:
+    pPvcDynamicData->nbHigh = 8;
+    pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode1;
+    pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode1;
+    pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode1;
+    pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode1;
+    hbw = 8 / RATE;
+    break;
+  case 2:
+    pPvcDynamicData->nbHigh = 6;
+    pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode2;
+    pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode2;
+    pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode2;
+    pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode2;
+    hbw = 12 / RATE;
+    break;
+  default:
+    /* invalid pvcMode */
+    return 1;
   }
 
   pPvcDynamicData->pvcBorder0 = pvcBorder0;
@@ -433,20 +433,20 @@ int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
 
   pPvcDynamicData->ns = ns;
   switch (ns) {
-    case 16:
-      pPvcDynamicData->pSCcoeffs = pvc_SC_16;
-      break;
-    case 12:
-      pPvcDynamicData->pSCcoeffs = pvc_SC_12;
-      break;
-    case 4:
-      pPvcDynamicData->pSCcoeffs = pvc_SC_4;
-      break;
-    case 3:
-      pPvcDynamicData->pSCcoeffs = pvc_SC_3;
-      break;
-    default:
-      return 1;
+  case 16:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_16;
+    break;
+  case 12:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_12;
+    break;
+  case 4:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_4;
+    break;
+  case 3:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_3;
+    break;
+  default:
+    return 1;
   }
 
   /* in the lower part of Esg-array there are previous values of Esg (from last
@@ -493,11 +493,11 @@ void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
     int *pPredEsg_exp = &pPvcDynamicData->predEsg_exp[t];
     predictedEsgSlot = pPvcDynamicData->predEsg[t];
 
-    pvcDecodeTimeSlot(
-        pPvcStaticData, pPvcDynamicData, &qmfBufferReal[t * RATE],
-        &qmfBufferImag[t * RATE],
-        (t * RATE < overlap) ? qmfExponentOverlap : qmfExponentCurrent,
-        pvcBorder0, t, predictedEsgSlot, pPredEsg_exp);
+    pvcDecodeTimeSlot(pPvcStaticData, pPvcDynamicData, &qmfBufferReal[t * RATE],
+                      &qmfBufferImag[t * RATE],
+                      (t * RATE < overlap) ? qmfExponentOverlap
+                                           : qmfExponentCurrent,
+                      pvcBorder0, t, predictedEsgSlot, pPredEsg_exp);
   }
 
   return;
@@ -647,7 +647,8 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
   pPvcStaticData->pvc_mode_last = pPvcDynamicData->pvc_mode;
   pPvcStaticData->kx_last = pPvcDynamicData->kx;
 
-  if (pPvcDynamicData->pvc_mode == 0) return;
+  if (pPvcDynamicData->pvc_mode == 0)
+    return;
 
   {
     int t, max = -100;

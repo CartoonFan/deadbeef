@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TPENC_ADIF_H
 #define TPENC_ADIF_H
 
-#include "machine_type.h"
 #include "FDK_bitstream.h"
+#include "machine_type.h"
 
 #include "tp_data.h"
 

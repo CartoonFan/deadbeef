@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef PULSEDATA_H
 #define PULSEDATA_H
 
-#include "common_fix.h"
 #include "FDK_bitstream.h"
+#include "common_fix.h"
 
 #define N_MAX_LINES 4
 

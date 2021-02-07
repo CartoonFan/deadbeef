@@ -100,8 +100,8 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "drcDec_types.h"
 #include "drcDec_rom.h"
+#include "drcDec_types.h"
 
 const SCHAR deltaGain_codingProfile_0_1_huffman[24][2] = {
     {1, 2},    {3, 4},     {-63, -65}, {5, -66},   {-64, 6},   {-80, 7},

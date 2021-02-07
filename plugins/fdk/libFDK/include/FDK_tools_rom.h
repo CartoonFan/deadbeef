@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_TOOLS_ROM_H
 #define FDK_TOOLS_ROM_H
 
-#include "common_fix.h"
 #include "FDK_audio.h"
+#include "common_fix.h"
 
 /* sinetables */
 
@@ -299,8 +299,8 @@ typedef enum {
   common_window, /* -> decision for link_sequence */
   global_gain,
   ics_info, /* ics_reserved_bit, window_sequence, window_shape, max_sfb,
-               scale_factor_grouping, predictor_data_present, ltp_data_present,
-               ltp_data */
+             scale_factor_grouping, predictor_data_present, ltp_data_present,
+             ltp_data */
   max_sfb,
   ms,                         /* ms_mask_present, ms_used */
   /*predictor_data_present,*/ /* part of ics_info */

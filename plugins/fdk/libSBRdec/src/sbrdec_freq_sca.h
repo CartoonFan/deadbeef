@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef SBRDEC_FREQ_SCA_H
 #define SBRDEC_FREQ_SCA_H
 
-#include "sbrdecoder.h"
 #include "env_extr.h"
+#include "sbrdecoder.h"
 
 typedef enum { DUAL, QUAD } SBR_RATE;
 

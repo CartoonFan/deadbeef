@@ -174,7 +174,7 @@ struct DRC_COMP {
   UINT channels;     /*!< Number of channels. */
   UINT fullChannels; /*!< Number of full range channels. */
   INT channelIdx[9]; /*!< Offsets of interleaved channel samples (L, R, C, LFE,
-                        Ls, Rs, S, Ls2, Rs2). */
+                      Ls, Rs, S, Ls2, Rs2). */
 
   FIXP_DBL smoothLevel[2]; /*!< level smoothing states */
   FIXP_DBL smoothGain[2];  /*!< gain smoothing states */
@@ -329,7 +329,7 @@ static UINT getShiftFactor(const UINT length) {
  * \return    void
  */
 static void fixpAdd(const FIXP_DBL value1, const int q1,
-                    FIXP_DBL* const pValue2, int* const pQ2) {
+                    FIXP_DBL *const pValue2, int *const pQ2) {
   const int headroom1 = fNormz(fixp_abs(value1)) - 1;
   const int headroom2 = fNormz(fixp_abs(*pValue2)) - 1;
   int resultScale = fixMax(q1 - headroom1, (*pQ2) - headroom2);
@@ -390,7 +390,7 @@ static FIXP_DBL tc2Coeff(const FIXP_DBL t, const INT sampleRate,
   return result;
 }
 
-static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
+static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM *const inSamples,
                            const FIXP_DBL clev, const FIXP_DBL slev,
                            const FIXP_DBL ext_leva, const FIXP_DBL ext_levb,
                            const FIXP_DBL lfe_lev, const FIXP_DBL dmxGain5,
@@ -402,7 +402,7 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
   /* find peak level */
   peak[0] = peak[1] = FL2FXCONST_DBL(0.f);
   for (i = 0; i < drcComp->blockLength; i++) {
-    const INT_PCM* pSamples = &inSamples[i * drcComp->channels];
+    const INT_PCM *pSamples = &inSamples[i * drcComp->channels];
 
     /* single channels */
     for (c = 0; c < (int)drcComp->channels; c++) {
@@ -414,106 +414,106 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
   /* 7.1/6.1 to 5.1 downmixes */
   if (drcComp->fullChannels > 5) {
     for (i = 0; i < drcComp->blockLength; i++) {
-      const INT_PCM* pSamples = &inSamples[i * drcComp->channels];
+      const INT_PCM *pSamples = &inSamples[i * drcComp->channels];
 
       /* channel 1 (L, Ls,...) */
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_6_1:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-              (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
-              (DOWNMIX_SHIFT - 1); /* Cs */
-          break;
-        case MODE_7_1_BACK:
-        case MODE_7_1_REAR_SURROUND:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-              (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lrs / Lss */
-          break;
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lc */
-          break;
-        case MODE_7_1_TOP_FRONT:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-              (DOWNMIX_SHIFT - 1); /* L */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lvh */
-          break;
-        default:
-          break;
+      case MODE_6_1:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+            (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
+            (DOWNMIX_SHIFT - 1); /* Cs */
+        break;
+      case MODE_7_1_BACK:
+      case MODE_7_1_REAR_SURROUND:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+            (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lrs / Lss */
+        break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lc */
+        break;
+      case MODE_7_1_TOP_FRONT:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+            (DOWNMIX_SHIFT - 1); /* L */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lvh */
+        break;
+      default:
+        break;
       }
       peak[0] = fixMax(peak[0], fixp_abs(tmp));
 
       /* channel 2 (R, Rs,...) */
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_6_1:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
-              (DOWNMIX_SHIFT - 1); /* Cs */
-          break;
-        case MODE_7_1_BACK:
-        case MODE_7_1_REAR_SURROUND:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rrs / Rss */
-          break;
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rc */
-          break;
-        case MODE_7_1_TOP_FRONT:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-              (DOWNMIX_SHIFT - 1); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rvh */
-          break;
-        default:
-          break;
+      case MODE_6_1:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
+            (DOWNMIX_SHIFT - 1); /* Cs */
+        break;
+      case MODE_7_1_BACK:
+      case MODE_7_1_REAR_SURROUND:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rrs / Rss */
+        break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rc */
+        break;
+      case MODE_7_1_TOP_FRONT:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+            (DOWNMIX_SHIFT - 1); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rvh */
+        break;
+      default:
+        break;
       }
       peak[0] = fixMax(peak[0], fixp_abs(tmp));
 
       /* channel 3 (C) */
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                  DOWNMIX_SHIFT); /* C */
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lc */
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rc */
-          break;
-        default:
-          break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+                DOWNMIX_SHIFT); /* C */
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lc */
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rc */
+        break;
+      default:
+        break;
       }
       peak[0] = fixMax(peak[0], fixp_abs(tmp));
 
@@ -528,7 +528,7 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
   if (drcComp->fullChannels > 2) {
     /* Lt/Rt downmix */
     for (i = 0; i < drcComp->blockLength; i++) {
-      const INT_PCM* pSamples = &inSamples[i * drcComp->channels];
+      const INT_PCM *pSamples = &inSamples[i * drcComp->channels];
 
       /* Lt */
       tmp = FL2FXCONST_DBL(0.f);
@@ -617,103 +617,96 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
 
     /* Lo/Ro downmix */
     for (i = 0; i < drcComp->blockLength; i++) {
-      const INT_PCM* pSamples = &inSamples[i * drcComp->channels];
+      const INT_PCM *pSamples = &inSamples[i * drcComp->channels];
 
       /* Lo */
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_6_1:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+      case MODE_6_1:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
+               (DOWNMIX_SHIFT - 1); /* Cs */
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_BACK:
+      case MODE_7_1_REAR_SURROUND:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+               (DOWNMIX_SHIFT - 1); /* Lrs / Lss*/
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lc */
+        tmp += fMultDiv2(fMult(ext_leva, clev),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+               (DOWNMIX_SHIFT - 1); /* Lc - second path*/
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_TOP_FRONT:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+            (DOWNMIX_SHIFT - 1); /* L */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lvh */
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      default:
+        if (drcComp->channelIdx[LS] >= 0)
+          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS]]) >>
                  (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Cs */
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+        if (drcComp->channelIdx[LS2] >= 0)
+          tmp +=
+              fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS2]]) >>
+              (DOWNMIX_SHIFT - 1); /* Ls2 */
+        if ((drcComp->channelIdx[LS] >= 0) && (drcComp->channelIdx[LS2] >= 0))
+          tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
+        if (drcComp->channelIdx[S] >= 0)
+          tmp += fMultDiv2(slev,
+                           fMult(FL2FXCONST_DBL(0.7f),
+                                 (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
+                 (DOWNMIX_SHIFT - 1); /* S */
+        if (drcComp->channelIdx[C] >= 0)
+          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
                  (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
+        if (drcComp->channelIdx[3] >= 0)
           tmp +=
               fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_BACK:
-        case MODE_7_1_REAR_SURROUND:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Lrs / Lss*/
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lc */
-          tmp += fMultDiv2(fMult(ext_leva, clev),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Lc - second path*/
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_TOP_FRONT:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-              (DOWNMIX_SHIFT - 1); /* L */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lvh */
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        default:
-          if (drcComp->channelIdx[LS] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS]]) >>
-                (DOWNMIX_SHIFT - 1); /* Ls */
-          if (drcComp->channelIdx[LS2] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS2]]) >>
-                (DOWNMIX_SHIFT - 1); /* Ls2 */
-          if ((drcComp->channelIdx[LS] >= 0) && (drcComp->channelIdx[LS2] >= 0))
-            tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
-          if (drcComp->channelIdx[S] >= 0)
-            tmp +=
-                fMultDiv2(slev,
-                          fMult(FL2FXCONST_DBL(0.7f),
-                                (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
-                (DOWNMIX_SHIFT - 1); /* S */
-          if (drcComp->channelIdx[C] >= 0)
-            tmp +=
-                fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
-                (DOWNMIX_SHIFT - 1); /* C */
-          if (drcComp->channelIdx[3] >= 0)
-            tmp += fMultDiv2(lfe_lev,
-                             (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                   (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[L]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          break;
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[L]]) >>
+                DOWNMIX_SHIFT); /* L */
+        break;
       }
 
       /* apply scaling of downmix gains */
@@ -730,97 +723,90 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
       /* Ro */
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_6_1:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+      case MODE_6_1:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
+               (DOWNMIX_SHIFT - 1); /* Cs */
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_BACK:
+      case MODE_7_1_REAR_SURROUND:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rrs / Rss*/
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rc */
+        tmp += fMultDiv2(fMult(ext_leva, clev),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rc - second path*/
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_TOP_FRONT:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+            (DOWNMIX_SHIFT - 1); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rvh */
+        tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      default:
+        if (drcComp->channelIdx[RS] >= 0)
+          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS]]) >>
                  (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Cs */
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+        if (drcComp->channelIdx[RS2] >= 0)
+          tmp +=
+              fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS2]]) >>
+              (DOWNMIX_SHIFT - 1); /* Rs2 */
+        if ((drcComp->channelIdx[RS] >= 0) && (drcComp->channelIdx[RS2] >= 0))
+          tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
+        if (drcComp->channelIdx[S] >= 0)
+          tmp += fMultDiv2(slev,
+                           fMult(FL2FXCONST_DBL(0.7f),
+                                 (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
+                 (DOWNMIX_SHIFT - 1); /* S */
+        if (drcComp->channelIdx[C] >= 0)
+          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
                  (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
+        if (drcComp->channelIdx[3] >= 0)
           tmp +=
               fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_BACK:
-        case MODE_7_1_REAR_SURROUND:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rrs / Rss*/
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rc */
-          tmp += fMultDiv2(fMult(ext_leva, clev),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rc - second path*/
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_TOP_FRONT:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-              (DOWNMIX_SHIFT - 1); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rvh */
-          tmp += fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp +=
-              fMultDiv2(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-              (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        default:
-          if (drcComp->channelIdx[RS] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS]]) >>
-                (DOWNMIX_SHIFT - 1); /* Rs */
-          if (drcComp->channelIdx[RS2] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS2]]) >>
-                (DOWNMIX_SHIFT - 1); /* Rs2 */
-          if ((drcComp->channelIdx[RS] >= 0) && (drcComp->channelIdx[RS2] >= 0))
-            tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
-          if (drcComp->channelIdx[S] >= 0)
-            tmp +=
-                fMultDiv2(slev,
-                          fMult(FL2FXCONST_DBL(0.7f),
-                                (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
-                (DOWNMIX_SHIFT - 1); /* S */
-          if (drcComp->channelIdx[C] >= 0)
-            tmp +=
-                fMultDiv2(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
-                (DOWNMIX_SHIFT - 1); /* C */
-          if (drcComp->channelIdx[3] >= 0)
-            tmp += fMultDiv2(lfe_lev,
-                             (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                   (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[R]]) >>
-                  DOWNMIX_SHIFT); /* R */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[R]]) >>
+                DOWNMIX_SHIFT); /* R */
       }
 
       /* apply scaling of downmix gains */
@@ -841,137 +827,135 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
   /* Mono Downmix - for comp_val only */
   if (drcComp->fullChannels > 1) {
     for (i = 0; i < drcComp->blockLength; i++) {
-      const INT_PCM* pSamples = &inSamples[i * drcComp->channels];
+      const INT_PCM *pSamples = &inSamples[i * drcComp->channels];
 
       tmp = FL2FXCONST_DBL(0.f);
       switch (drcComp->chanConfig) {
-        case MODE_6_1:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+      case MODE_6_1:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMult(fMult(slev, ext_levb),
+                     (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
+               (DOWNMIX_SHIFT - 1); /* Cs */
+        tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_BACK:
+      case MODE_7_1_REAR_SURROUND:
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(fMult(slev, ext_leva),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+               (DOWNMIX_SHIFT - 1); /* Lrs / Lss*/
+        tmp += fMultDiv2(fMult(slev, ext_levb),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rrs / Rss*/
+        tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_1_2_2_2_1:
+      case MODE_7_1_FRONT_CENTER:
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+                DOWNMIX_SHIFT); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lc */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rc */
+        tmp += fMultDiv2(fMult(ext_leva, clev),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+               (DOWNMIX_SHIFT - 1); /* Lc - second path*/
+        tmp += fMultDiv2(fMult(ext_leva, clev),
+                         (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rc - second path*/
+        tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      case MODE_7_1_TOP_FRONT:
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
+            (DOWNMIX_SHIFT - 1); /* L */
+        tmp +=
+            fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
+            (DOWNMIX_SHIFT - 1); /* R */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
+            (DOWNMIX_SHIFT - 1); /* Lvh */
+        tmp +=
+            fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
+            (DOWNMIX_SHIFT - 1); /* Rvh */
+        tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
+               (DOWNMIX_SHIFT - 1); /* C */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
+               (DOWNMIX_SHIFT - 1); /* Ls */
+        tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+               (DOWNMIX_SHIFT - 1); /* Rs */
+        tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
+               (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
+        break;
+      default:
+        if (drcComp->channelIdx[LS] >= 0)
+          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS]]) >>
                  (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
+        if (drcComp->channelIdx[LS2] >= 0)
+          tmp +=
+              fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS2]]) >>
+              (DOWNMIX_SHIFT - 1); /* Ls2 */
+        if (drcComp->channelIdx[RS] >= 0)
+          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS]]) >>
                  (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMult(fMult(slev, ext_levb),
-                       (FIXP_PCM)pSamples[drcComp->channelIdx[6]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Cs */
-          tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
+        if (drcComp->channelIdx[RS2] >= 0)
+          tmp +=
+              fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS2]]) >>
+              (DOWNMIX_SHIFT - 1); /* Rs2 */
+        if ((drcComp->channelIdx[LS] >= 0) && (drcComp->channelIdx[LS2] >= 0))
+          tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
+        /*if ((drcComp->channelIdx[RS] >= 0) && (drcComp->channelIdx[RS2] >= 0))
+         * tmp *=0.707f;*/ /* 7.1ch */
+        if (drcComp->channelIdx[S] >= 0)
+          tmp += fMultDiv2(slev,
+                           fMult(FL2FXCONST_DBL(0.7f),
+                                 (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
+                 (DOWNMIX_SHIFT - 1); /* S */
+        if (drcComp->channelIdx[C] >= 0)
+          tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
+                 (DOWNMIX_SHIFT - 1); /* C (2*clev) */
+        if (drcComp->channelIdx[3] >= 0)
           tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
                  (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_BACK:
-        case MODE_7_1_REAR_SURROUND:
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(fMult(slev, ext_leva),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Lrs / Lss*/
-          tmp += fMultDiv2(fMult(slev, ext_levb),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rrs / Rss*/
-          tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
-          tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                 (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_1_2_2_2_1:
-        case MODE_7_1_FRONT_CENTER:
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-                  DOWNMIX_SHIFT); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lc */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rc */
-          tmp += fMultDiv2(fMult(ext_leva, clev),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Lc - second path*/
-          tmp += fMultDiv2(fMult(ext_leva, clev),
-                           (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rc - second path*/
-          tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                 (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        case MODE_7_1_TOP_FRONT:
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[0]]) >>
-              (DOWNMIX_SHIFT - 1); /* L */
-          tmp +=
-              fMultDiv2(ext_leva, (FIXP_PCM)pSamples[drcComp->channelIdx[1]]) >>
-              (DOWNMIX_SHIFT - 1); /* R */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[7]]) >>
-              (DOWNMIX_SHIFT - 1); /* Lvh */
-          tmp +=
-              fMultDiv2(ext_levb, (FIXP_PCM)pSamples[drcComp->channelIdx[8]]) >>
-              (DOWNMIX_SHIFT - 1); /* Rvh */
-          tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[2]]) >>
-                 (DOWNMIX_SHIFT - 1); /* C */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[4]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Ls */
-          tmp += fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[5]]) >>
-                 (DOWNMIX_SHIFT - 1); /* Rs */
-          tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                 (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          break;
-        default:
-          if (drcComp->channelIdx[LS] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS]]) >>
-                (DOWNMIX_SHIFT - 1); /* Ls */
-          if (drcComp->channelIdx[LS2] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[LS2]]) >>
-                (DOWNMIX_SHIFT - 1); /* Ls2 */
-          if (drcComp->channelIdx[RS] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS]]) >>
-                (DOWNMIX_SHIFT - 1); /* Rs */
-          if (drcComp->channelIdx[RS2] >= 0)
-            tmp +=
-                fMultDiv2(slev, (FIXP_PCM)pSamples[drcComp->channelIdx[RS2]]) >>
-                (DOWNMIX_SHIFT - 1); /* Rs2 */
-          if ((drcComp->channelIdx[LS] >= 0) && (drcComp->channelIdx[LS2] >= 0))
-            tmp = fMult(FL2FXCONST_DBL(0.707f), tmp); /* 7.1ch */
-          /*if ((drcComp->channelIdx[RS] >= 0) && (drcComp->channelIdx[RS2] >= 0)) tmp *=0.707f;*/ /* 7.1ch */
-          if (drcComp->channelIdx[S] >= 0)
-            tmp +=
-                fMultDiv2(slev,
-                          fMult(FL2FXCONST_DBL(0.7f),
-                                (FIXP_PCM)pSamples[drcComp->channelIdx[S]])) >>
-                (DOWNMIX_SHIFT - 1); /* S */
-          if (drcComp->channelIdx[C] >= 0)
-            tmp += fMult(clev, (FIXP_PCM)pSamples[drcComp->channelIdx[C]]) >>
-                   (DOWNMIX_SHIFT - 1); /* C (2*clev) */
-          if (drcComp->channelIdx[3] >= 0)
-            tmp += fMult(lfe_lev, (FIXP_PCM)pSamples[drcComp->channelIdx[3]]) >>
-                   (DOWNMIX_SHIFT - 1 - LFE_LEV_SCALE); /* LFE */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[L]]) >>
-                  DOWNMIX_SHIFT); /* L */
-          tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[R]]) >>
-                  DOWNMIX_SHIFT); /* R */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[L]]) >>
+                DOWNMIX_SHIFT); /* L */
+        tmp += (FX_PCM2FX_DBL((FIXP_PCM)pSamples[drcComp->channelIdx[R]]) >>
+                DOWNMIX_SHIFT); /* R */
       }
 
       /* apply scaling of downmix gains */
@@ -988,7 +972,7 @@ static void findPeakLevels(HDRC_COMP drcComp, const INT_PCM* const inSamples,
   }
 }
 
-INT FDK_DRC_Generator_Open(HDRC_COMP* phDrcComp) {
+INT FDK_DRC_Generator_Open(HDRC_COMP *phDrcComp) {
   INT err = 0;
   HDRC_COMP hDcComp = NULL;
 
@@ -1015,7 +999,7 @@ bail:
   return err;
 }
 
-INT FDK_DRC_Generator_Close(HDRC_COMP* phDrcComp) {
+INT FDK_DRC_Generator_Close(HDRC_COMP *phDrcComp) {
   if (phDrcComp == NULL) {
     return -1;
   }
@@ -1056,103 +1040,98 @@ INT FDK_DRC_Generator_Initialize(HDRC_COMP drcComp,
     return (-2);
   }
 
-  for (i = 0; i < 9; i++) drcComp->channelIdx[i] = -1;
+  for (i = 0; i < 9; i++)
+    drcComp->channelIdx[i] = -1;
 
   switch (channelMode) {
-    case MODE_1: /* mono */
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
-      break;
-    case MODE_2: /* stereo */
-      drcComp->channelIdx[L] = channelMapping.elInfo[0].ChannelIndex[0];
-      drcComp->channelIdx[R] = channelMapping.elInfo[0].ChannelIndex[1];
-      break;
-    case MODE_1_2: /* 3ch */
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
-      break;
-    case MODE_1_2_1: /* 4ch */
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
-      drcComp->channelIdx[S] = channelMapping.elInfo[2].ChannelIndex[0];
-      break;
-    case MODE_1_2_2: /* 5ch */
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
-      drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0];
-      drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1];
-      break;
-    case MODE_1_2_2_1: /* 5.1 ch */
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
-      drcComp->channelIdx[LFE] = channelMapping.elInfo[3].ChannelIndex[0];
-      drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0];
-      drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1];
-      break;
-    case MODE_1_2_2_2_1: /* 7.1 ch */
-    case MODE_7_1_FRONT_CENTER:
-      drcComp->channelIdx[L] = channelMapping.elInfo[2].ChannelIndex[0]; /* l */
-      drcComp->channelIdx[R] = channelMapping.elInfo[2].ChannelIndex[1]; /* r */
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
-      drcComp->channelIdx[LFE] =
-          channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
-      drcComp->channelIdx[LS] =
-          channelMapping.elInfo[3].ChannelIndex[0]; /* ls */
-      drcComp->channelIdx[RS] =
-          channelMapping.elInfo[3].ChannelIndex[1]; /* rs */
-      drcComp->channelIdx[LS2] =
-          channelMapping.elInfo[1].ChannelIndex[0]; /* lc */
-      drcComp->channelIdx[RS2] =
-          channelMapping.elInfo[1].ChannelIndex[1]; /* rc */
-      break;
-    case MODE_7_1_BACK:
-    case MODE_7_1_REAR_SURROUND:
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
-      drcComp->channelIdx[LFE] =
-          channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
-      drcComp->channelIdx[LS] =
-          channelMapping.elInfo[3].ChannelIndex[0]; /* lrear */
-      drcComp->channelIdx[RS] =
-          channelMapping.elInfo[3].ChannelIndex[1]; /* rrear */
-      drcComp->channelIdx[LS2] =
-          channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
-      drcComp->channelIdx[RS2] =
-          channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
-      break;
-    case MODE_6_1:
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
-      drcComp->channelIdx[LFE] =
-          channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
-      drcComp->channelIdx[LS] =
-          channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
-      drcComp->channelIdx[RS] =
-          channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
-      drcComp->channelIdx[S] = channelMapping.elInfo[3].ChannelIndex[0]; /* s */
-      break;
-    case MODE_7_1_TOP_FRONT:
-      drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
-      drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
-      drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
-      drcComp->channelIdx[LFE] =
-          channelMapping.elInfo[3].ChannelIndex[0]; /* lfe */
-      drcComp->channelIdx[LS] =
-          channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
-      drcComp->channelIdx[RS] =
-          channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
-      drcComp->channelIdx[LS2] =
-          channelMapping.elInfo[4].ChannelIndex[0]; /* lvh2 */
-      drcComp->channelIdx[RS2] =
-          channelMapping.elInfo[4].ChannelIndex[1]; /* rvh2 */
-      break;
-    default:
-      return (-1);
+  case MODE_1: /* mono */
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
+    break;
+  case MODE_2: /* stereo */
+    drcComp->channelIdx[L] = channelMapping.elInfo[0].ChannelIndex[0];
+    drcComp->channelIdx[R] = channelMapping.elInfo[0].ChannelIndex[1];
+    break;
+  case MODE_1_2: /* 3ch */
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
+    break;
+  case MODE_1_2_1: /* 4ch */
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
+    drcComp->channelIdx[S] = channelMapping.elInfo[2].ChannelIndex[0];
+    break;
+  case MODE_1_2_2: /* 5ch */
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
+    drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0];
+    drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1];
+    break;
+  case MODE_1_2_2_1: /* 5.1 ch */
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0];
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1];
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0];
+    drcComp->channelIdx[LFE] = channelMapping.elInfo[3].ChannelIndex[0];
+    drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0];
+    drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1];
+    break;
+  case MODE_1_2_2_2_1: /* 7.1 ch */
+  case MODE_7_1_FRONT_CENTER:
+    drcComp->channelIdx[L] = channelMapping.elInfo[2].ChannelIndex[0]; /* l */
+    drcComp->channelIdx[R] = channelMapping.elInfo[2].ChannelIndex[1]; /* r */
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
+    drcComp->channelIdx[LFE] =
+        channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
+    drcComp->channelIdx[LS] = channelMapping.elInfo[3].ChannelIndex[0]; /* ls */
+    drcComp->channelIdx[RS] = channelMapping.elInfo[3].ChannelIndex[1]; /* rs */
+    drcComp->channelIdx[LS2] =
+        channelMapping.elInfo[1].ChannelIndex[0]; /* lc */
+    drcComp->channelIdx[RS2] =
+        channelMapping.elInfo[1].ChannelIndex[1]; /* rc */
+    break;
+  case MODE_7_1_BACK:
+  case MODE_7_1_REAR_SURROUND:
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
+    drcComp->channelIdx[LFE] =
+        channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
+    drcComp->channelIdx[LS] =
+        channelMapping.elInfo[3].ChannelIndex[0]; /* lrear */
+    drcComp->channelIdx[RS] =
+        channelMapping.elInfo[3].ChannelIndex[1]; /* rrear */
+    drcComp->channelIdx[LS2] =
+        channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
+    drcComp->channelIdx[RS2] =
+        channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
+    break;
+  case MODE_6_1:
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
+    drcComp->channelIdx[LFE] =
+        channelMapping.elInfo[4].ChannelIndex[0]; /* lfe */
+    drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
+    drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
+    drcComp->channelIdx[S] = channelMapping.elInfo[3].ChannelIndex[0];  /* s */
+    break;
+  case MODE_7_1_TOP_FRONT:
+    drcComp->channelIdx[L] = channelMapping.elInfo[1].ChannelIndex[0]; /* l */
+    drcComp->channelIdx[R] = channelMapping.elInfo[1].ChannelIndex[1]; /* r */
+    drcComp->channelIdx[C] = channelMapping.elInfo[0].ChannelIndex[0]; /* c */
+    drcComp->channelIdx[LFE] =
+        channelMapping.elInfo[3].ChannelIndex[0]; /* lfe */
+    drcComp->channelIdx[LS] = channelMapping.elInfo[2].ChannelIndex[0]; /* ls */
+    drcComp->channelIdx[RS] = channelMapping.elInfo[2].ChannelIndex[1]; /* rs */
+    drcComp->channelIdx[LS2] =
+        channelMapping.elInfo[4].ChannelIndex[0]; /* lvh2 */
+    drcComp->channelIdx[RS2] =
+        channelMapping.elInfo[4].ChannelIndex[1]; /* rvh2 */
+    break;
+  default:
+    return (-1);
   }
 
   drcComp->fullChannels = channelMapping.nChannelsEff;
@@ -1182,28 +1161,28 @@ INT FDK_DRC_Generator_setDrcProfile(HDRC_COMP drcComp,
   for (i = 0; i < 2; i++) {
     /* get profile index */
     switch (drcComp->profile[i]) {
-      case DRC_NONE:
-      case DRC_NOT_PRESENT:
-      case DRC_FILMSTANDARD:
-        profileIdx = 0;
-        break;
-      case DRC_FILMLIGHT:
-        profileIdx = 1;
-        break;
-      case DRC_MUSICSTANDARD:
-        profileIdx = 2;
-        break;
-      case DRC_MUSICLIGHT:
-        profileIdx = 3;
-        break;
-      case DRC_SPEECH:
-        profileIdx = 4;
-        break;
-      case DRC_DELAY_TEST:
-        profileIdx = 5;
-        break;
-      default:
-        return (-1);
+    case DRC_NONE:
+    case DRC_NOT_PRESENT:
+    case DRC_FILMSTANDARD:
+      profileIdx = 0;
+      break;
+    case DRC_FILMLIGHT:
+      profileIdx = 1;
+      break;
+    case DRC_MUSICSTANDARD:
+      profileIdx = 2;
+      break;
+    case DRC_MUSICLIGHT:
+      profileIdx = 3;
+      break;
+    case DRC_SPEECH:
+      profileIdx = 4;
+      break;
+    case DRC_DELAY_TEST:
+      profileIdx = 5;
+      break;
+    default:
+      return (-1);
     }
 
     /* get parameters for selected profile */
@@ -1223,7 +1202,7 @@ INT FDK_DRC_Generator_setDrcProfile(HDRC_COMP drcComp,
       drcComp->maxEarlyCut[i] =
           -fMult((drcComp->cutThr[i] - drcComp->earlyCutThr[i]),
                  drcComp->earlyCutFac[i]); /* no scaling after mult needed,
-                                              earlyCutFac is in FIXP_DBL */
+                                        earlyCutFac is in FIXP_DBL */
 
       drcComp->fastAttack[i] = tc2Coeff(
           tabFastAttack[profileIdx], drcComp->sampleRate, drcComp->blockLength);
@@ -1244,14 +1223,14 @@ INT FDK_DRC_Generator_setDrcProfile(HDRC_COMP drcComp,
   return (0);
 }
 
-INT FDK_DRC_Generator_Calc(HDRC_COMP drcComp, const INT_PCM* const inSamples,
+INT FDK_DRC_Generator_Calc(HDRC_COMP drcComp, const INT_PCM *const inSamples,
                            const UINT inSamplesBufSize, const INT dialnorm,
                            const INT drc_TargetRefLevel,
                            const INT comp_TargetRefLevel, const FIXP_DBL clev,
                            const FIXP_DBL slev, const FIXP_DBL ext_leva,
                            const FIXP_DBL ext_levb, const FIXP_DBL lfe_lev,
                            const INT dmxGain5, const INT dmxGain2,
-                           INT* const pDynrng, INT* const pCompr) {
+                           INT *const pDynrng, INT *const pCompr) {
   int i, c;
   FIXP_DBL peak[2];
 
@@ -1276,7 +1255,7 @@ INT FDK_DRC_Generator_Calc(HDRC_COMP drcComp, const INT_PCM* const inSamples,
       const int granuleShift = getShiftFactor(granuleLength) - 1;
 
       for (c = 0; c < (int)drcComp->channels; c++) {
-        const INT_PCM* pSamples = inSamples + c * inSamplesBufSize;
+        const INT_PCM *pSamples = inSamples + c * inSamplesBufSize;
 
         if (c == drcComp->channelIdx[LFE]) {
           continue; /* skip LFE */
@@ -1327,7 +1306,7 @@ INT FDK_DRC_Generator_Calc(HDRC_COMP drcComp, const INT_PCM* const inSamples,
       const int granuleShift = getShiftFactor(granuleLength);
 
       for (c = 0; c < (int)drcComp->channels; c++) {
-        const INT_PCM* pSamples = inSamples + c * inSamplesBufSize;
+        const INT_PCM *pSamples = inSamples + c * inSamplesBufSize;
 
         if ((int)c == drcComp->channelIdx[LFE]) {
           continue; /* skip LFE */
@@ -1445,10 +1424,9 @@ INT FDK_DRC_Generator_Calc(HDRC_COMP drcComp, const INT_PCM* const inSamples,
         }
 
         /* smooth gain & level */
-        if ((gain < drcComp->smoothGain[i]) ||
-            (drcComp->holdCnt[i] ==
-             0)) { /* hold gain unless we have an attack or hold
-                      period is over */
+        if ((gain < drcComp->smoothGain[i]) || (drcComp->holdCnt[i] == 0)) {
+          /* hold gain unless we have an attack or hold
+                   period is over */
           FIXP_DBL accu;
 
           /* drcComp->smoothLevel[i] = (1-alpha) * drcComp->smoothLevel[i] +

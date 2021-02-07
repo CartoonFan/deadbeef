@@ -102,10 +102,10 @@ amm-info@iis.fraunhofer.de
 
 #include "tp_data.h"
 
-#include "tpenc_lib.h"
-#include "tpenc_asc.h"
 #include "FDK_bitstream.h"
 #include "genericStds.h"
+#include "tpenc_asc.h"
+#include "tpenc_lib.h"
 
 #include "FDK_crc.h"
 
@@ -124,14 +124,14 @@ amm-info@iis.fraunhofer.de
 typedef struct {
   UCHAR
   num_front_height_channel_elements[2];      /*!< Number of front channel
-                                                elements in top [0] and bottom
-                                                [1] plane. */
+                                              elements in top [0] and bottom
+                                              [1] plane. */
   UCHAR num_side_height_channel_elements[2]; /*!< Number of side channel
-                                                elements in top [0] and bottom
-                                                [1] plane. */
+                                              elements in top [0] and bottom
+                                              [1] plane. */
   UCHAR num_back_height_channel_elements[2]; /*!< Number of back channel
-                                                elements in top [0] and bottom
-                                                [1] plane. */
+                                              elements in top [0] and bottom
+                                              [1] plane. */
 } PCE_HEIGHT_NUM;
 
 /**
@@ -144,7 +144,7 @@ typedef struct {
   UCHAR num_lfe_channel_elements;   /*!< Number of lfe channel elements. */
   const MP4_ELEMENT_ID
       *pEl_type; /*!< List contains sequence describing the elements
-                      in present channel mode. (MPEG order) */
+                        in present channel mode. (MPEG order) */
   const PCE_HEIGHT_NUM *pHeight_num;
 } PCE_CONFIGURATION;
 
@@ -294,38 +294,38 @@ int getChannelConfig(const CHANNEL_MODE channel_mode,
     chan_config = 0;
   } else {
     switch (channel_mode) {
-      case MODE_1:
-        chan_config = 1;
-        break;
-      case MODE_2:
-        chan_config = 2;
-        break;
-      case MODE_1_2:
-        chan_config = 3;
-        break;
-      case MODE_1_2_1:
-        chan_config = 4;
-        break;
-      case MODE_1_2_2:
-        chan_config = 5;
-        break;
-      case MODE_1_2_2_1:
-        chan_config = 6;
-        break;
-      case MODE_1_2_2_2_1:
-        chan_config = 7;
-        break;
-      case MODE_6_1:
-        chan_config = 11;
-        break;
-      case MODE_7_1_BACK:
-        chan_config = 12;
-        break;
-      case MODE_7_1_TOP_FRONT:
-        chan_config = 14;
-        break;
-      default:
-        chan_config = 0;
+    case MODE_1:
+      chan_config = 1;
+      break;
+    case MODE_2:
+      chan_config = 2;
+      break;
+    case MODE_1_2:
+      chan_config = 3;
+      break;
+    case MODE_1_2_1:
+      chan_config = 4;
+      break;
+    case MODE_1_2_2:
+      chan_config = 5;
+      break;
+    case MODE_1_2_2_1:
+      chan_config = 6;
+      break;
+    case MODE_1_2_2_2_1:
+      chan_config = 7;
+      break;
+    case MODE_6_1:
+      chan_config = 11;
+      break;
+    case MODE_7_1_BACK:
+      chan_config = 12;
+      break;
+    case MODE_7_1_TOP_FRONT:
+      chan_config = 14;
+      break;
+    default:
+      chan_config = 0;
     }
   }
 
@@ -426,10 +426,10 @@ int transportEnc_writePCE(HANDLE_FDK_BITSTREAM hBs, CHANNEL_MODE channelMode,
     topFrontEnd =
         normalBackEnd + config->num_lfe_channel_elements +
         config->pHeight_num->num_front_height_channel_elements[0]; /* only
-                                                                      normal
-                                                                      height
-                                                                      LFEs
-                                                                      assumed */
+                                                                  normal
+                                                                  height
+                                                                  LFEs
+                                                                  assumed */
     topSideEnd =
         topFrontEnd + config->pHeight_num->num_side_height_channel_elements[0];
     topBackEnd =
@@ -455,10 +455,10 @@ int transportEnc_writePCE(HANDLE_FDK_BITSTREAM hBs, CHANNEL_MODE channelMode,
 
   pEl_list = config->pEl_type;
 
-  for (i = 0; i < config->num_front_channel_elements +
-                      config->num_side_channel_elements +
-                      config->num_back_channel_elements +
-                      config->num_lfe_channel_elements;
+  for (i = 0;
+       i <
+       config->num_front_channel_elements + config->num_side_channel_elements +
+           config->num_back_channel_elements + config->num_lfe_channel_elements;
        i++) {
     if (*pEl_list == ID_LFE) {
       pEl_list++;
@@ -486,25 +486,25 @@ int transportEnc_writePCE(HANDLE_FDK_BITSTREAM hBs, CHANNEL_MODE channelMode,
     else {
       elDepth = BACK;
       FDK_ASSERT(i < bottomBackEnd); /* won't fail if implementation of pce
-                                        configuration table is correct */
+                                  configuration table is correct */
     }
 
     switch (elDepth) {
-      case FRONT:
-        FDK_ASSERT(frntCnt < config->num_front_channel_elements);
-        frontIsCpe[frntCnt] = isCpe;
-        frontTag[frntCnt++] = tag;
-        break;
-      case SIDE:
-        FDK_ASSERT(sdCnt < config->num_side_channel_elements);
-        sideIsCpe[sdCnt] = isCpe;
-        sideTag[sdCnt++] = tag;
-        break;
-      case BACK:
-        FDK_ASSERT(bckCnt < config->num_back_channel_elements);
-        backIsCpe[bckCnt] = isCpe;
-        backTag[bckCnt++] = tag;
-        break;
+    case FRONT:
+      FDK_ASSERT(frntCnt < config->num_front_channel_elements);
+      frontIsCpe[frntCnt] = isCpe;
+      frontTag[frntCnt++] = tag;
+      break;
+    case SIDE:
+      FDK_ASSERT(sdCnt < config->num_side_channel_elements);
+      sideIsCpe[sdCnt] = isCpe;
+      sideTag[sdCnt++] = tag;
+      break;
+    case BACK:
+      FDK_ASSERT(bckCnt < config->num_back_channel_elements);
+      backIsCpe[bckCnt] = isCpe;
+      backTag[bckCnt++] = tag;
+      break;
     }
   }
 
@@ -701,10 +701,9 @@ static int transportEnc_writeGASpecificConfig(HANDLE_FDK_BITSTREAM asc,
   FDKwriteBits(asc,
                ((samplesPerFrame == 960 || samplesPerFrame == 480) ? 1 : 0),
                1); /* frameLengthFlag: 1 for a 960/480 (I)MDCT, 0 for a 1024/512
-                      (I)MDCT*/
-  FDKwriteBits(asc, 0,
-               1); /* dependsOnCoreCoder: Sampling Rate Coder Specific, see in
-                      ISO/IEC 14496-3 Subpart 4, 4.4.1 */
+                    (I)MDCT*/
+  FDKwriteBits(asc, 0, 1); /* dependsOnCoreCoder: Sampling Rate Coder Specific,
+                            see in ISO/IEC 14496-3 Subpart 4, 4.4.1 */
   FDKwriteBits(asc, extFlg,
                1); /* Extension Flag: Shall be 1 for aot = 17,19,20,21,22,23 */
 
@@ -743,19 +742,19 @@ static int transportEnc_writeELDSpecificConfig(HANDLE_FDK_BITSTREAM hBs,
                                                CSTpCallBacks *cb) {
   UINT frameLengthFlag = 0;
   switch (config->samplesPerFrame) {
-    case 512:
-    case 256:
-    case 128:
-    case 64:
-      frameLengthFlag = 0;
-      break;
-    case 480:
-    case 240:
-    case 160:
-    case 120:
-    case 60:
-      frameLengthFlag = 1;
-      break;
+  case 512:
+  case 256:
+  case 128:
+  case 64:
+    frameLengthFlag = 0;
+    break;
+  case 480:
+  case 240:
+  case 160:
+  case 120:
+  case 60:
+    frameLengthFlag = 1;
+    break;
   }
 
   FDKwriteBits(hBs, frameLengthFlag, 1);
@@ -776,10 +775,10 @@ static int transportEnc_writeELDSpecificConfig(HANDLE_FDK_BITSTREAM hBs,
 
       pPce = getPceEntry(config->channelMode);
 
-      for (e = 0; e < pPce->num_front_channel_elements +
-                          pPce->num_side_channel_elements +
-                          pPce->num_back_channel_elements +
-                          pPce->num_lfe_channel_elements;
+      for (e = 0;
+           e <
+           pPce->num_front_channel_elements + pPce->num_side_channel_elements +
+               pPce->num_back_channel_elements + pPce->num_lfe_channel_elements;
            e++) {
         if ((pPce->pEl_type[e] == ID_SCE) || (pPce->pEl_type[e] == ID_CPE)) {
           cb->cbSbr(cb->cbSbrData, hBs, 0, 0, 0, config->aot, pPce->pEl_type[e],
@@ -840,7 +839,7 @@ static int transportEnc_writeELDSpecificConfig(HANDLE_FDK_BITSTREAM hBs,
         (downscaleSamplingRate != 11025) && (downscaleSamplingRate != 8000) &&
         (downscaleSamplingRate != 7350)) {
       eldExtLenDsc = 4; /* length extends to 4 if downscaleSamplingRate's value
-                           is not one of the listed values */
+                     is not one of the listed values */
     }
 
     FDKwriteBits(hBs, eldExtLenDsc, 4);
@@ -886,18 +885,18 @@ int transportEnc_writeASC(HANDLE_FDK_BITSTREAM asc, CODER_CONFIG *config,
 
   /* Extension Flag: Shall be 1 for aot = 17,19,20,21,22,23,39 */
   switch (config->aot) {
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LTP:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_TWIN_VQ:
-    case AOT_ER_BSAC:
-    case AOT_ER_AAC_LD:
-    case AOT_ER_AAC_ELD:
-    case AOT_USAC:
-      extFlag = 1;
-      break;
-    default:
-      break;
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LTP:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_TWIN_VQ:
+  case AOT_ER_BSAC:
+  case AOT_ER_AAC_LD:
+  case AOT_ER_AAC_ELD:
+  case AOT_USAC:
+    extFlag = 1;
+    break;
+  default:
+    break;
   }
 
   if (config->sbrSignaling == SIG_EXPLICIT_HIERARCHICAL && config->sbrPresent)
@@ -911,7 +910,8 @@ int transportEnc_writeASC(HANDLE_FDK_BITSTREAM asc, CODER_CONFIG *config,
   /* Try to guess a reasonable channel mode if not given */
   if (config->channelMode == MODE_INVALID) {
     config->channelMode = transportEnc_GetChannelMode(config->noChannels);
-    if (config->channelMode == MODE_INVALID) return -1;
+    if (config->channelMode == MODE_INVALID)
+      return -1;
   }
 
   FDKwriteBits(
@@ -923,52 +923,53 @@ int transportEnc_writeASC(HANDLE_FDK_BITSTREAM asc, CODER_CONFIG *config,
   }
 
   switch (config->aot) {
-    case AOT_AAC_MAIN:
-    case AOT_AAC_LC:
-    case AOT_AAC_SSR:
-    case AOT_AAC_LTP:
-    case AOT_AAC_SCAL:
-    case AOT_TWIN_VQ:
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LTP:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_TWIN_VQ:
-    case AOT_ER_BSAC:
-    case AOT_ER_AAC_LD:
-      err =
-          transportEnc_writeGASpecificConfig(asc, config, extFlag, alignAnchor);
-      if (err) return err;
-      break;
-    case AOT_ER_AAC_ELD:
-      err = transportEnc_writeELDSpecificConfig(asc, config, epConfig, cb);
-      if (err) return err;
-      break;
-    case AOT_USAC:
-      err = transportEnc_writeUsacSpecificConfig(asc, extFlag, config, cb);
-      if (err) {
-        return err;
-      }
-      break;
-    default:
-      return -1;
+  case AOT_AAC_MAIN:
+  case AOT_AAC_LC:
+  case AOT_AAC_SSR:
+  case AOT_AAC_LTP:
+  case AOT_AAC_SCAL:
+  case AOT_TWIN_VQ:
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LTP:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_TWIN_VQ:
+  case AOT_ER_BSAC:
+  case AOT_ER_AAC_LD:
+    err = transportEnc_writeGASpecificConfig(asc, config, extFlag, alignAnchor);
+    if (err)
+      return err;
+    break;
+  case AOT_ER_AAC_ELD:
+    err = transportEnc_writeELDSpecificConfig(asc, config, epConfig, cb);
+    if (err)
+      return err;
+    break;
+  case AOT_USAC:
+    err = transportEnc_writeUsacSpecificConfig(asc, extFlag, config, cb);
+    if (err) {
+      return err;
+    }
+    break;
+  default:
+    return -1;
   }
 
   switch (config->aot) {
-    case AOT_ER_AAC_LC:
-    case AOT_ER_AAC_LTP:
-    case AOT_ER_AAC_SCAL:
-    case AOT_ER_TWIN_VQ:
-    case AOT_ER_BSAC:
-    case AOT_ER_AAC_LD:
-    case AOT_ER_CELP:
-    case AOT_ER_HVXC:
-    case AOT_ER_HILN:
-    case AOT_ER_PARA:
-    case AOT_ER_AAC_ELD:
-      FDKwriteBits(asc, 0, 2); /* epconfig 0 */
-      break;
-    default:
-      break;
+  case AOT_ER_AAC_LC:
+  case AOT_ER_AAC_LTP:
+  case AOT_ER_AAC_SCAL:
+  case AOT_ER_TWIN_VQ:
+  case AOT_ER_BSAC:
+  case AOT_ER_AAC_LD:
+  case AOT_ER_CELP:
+  case AOT_ER_HVXC:
+  case AOT_ER_HILN:
+  case AOT_ER_PARA:
+  case AOT_ER_AAC_ELD:
+    FDKwriteBits(asc, 0, 2); /* epconfig 0 */
+    break;
+  default:
+    break;
   }
 
   /* backward compatible explicit signaling of extension AOT */

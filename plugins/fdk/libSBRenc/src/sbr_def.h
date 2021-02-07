@@ -132,11 +132,11 @@ amm-info@iis.fraunhofer.de
 #define ILOG2 1.442695041f  /* 1/LOG2 */
 #define RELAXATION_FLOAT (1e-6f)
 #define RELAXATION (FL2FXCONST_DBL(RELAXATION_FLOAT))
-#define RELAXATION_FRACT \
+#define RELAXATION_FRACT                                                       \
   (FL2FXCONST_DBL(0.524288f)) /* 0.524288f is fractional part of RELAXATION */
 #define RELAXATION_SHIFT (19)
-#define RELAXATION_LD64                                 \
-  (FL2FXCONST_DBL(0.31143075889f)) /* (ld64(RELAXATION) \
+#define RELAXATION_LD64                                                        \
+  (FL2FXCONST_DBL(0.31143075889f)) /* (ld64(RELAXATION)                        \
                                     */
 
 /************  Definitions ***************/

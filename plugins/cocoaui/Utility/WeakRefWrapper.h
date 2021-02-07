@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WeakRefWrapper : NSObject
 
-@property (nonatomic,weak,readonly) id object;
+@property(nonatomic, weak, readonly) id object;
 - (instancetype)initWithObject:(id)object;
 
 @end

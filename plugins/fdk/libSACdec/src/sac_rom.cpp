@@ -699,11 +699,11 @@ const SCHAR row2residual[][MAX_M2_INPUT] = {{-1, 0},  {-1, 0},  {-1, -1},
  Return: nothing
 
 *******************************************************************************/
-void SpatialDequantGetCLDValues(int index, FIXP_DBL* cu, FIXP_DBL* cl) {
+void SpatialDequantGetCLDValues(int index, FIXP_DBL *cu, FIXP_DBL *cl) {
   *cu = FX_CFG2FX_DBL(dequantCLD_c_l[index]);
   *cl = FX_CFG2FX_DBL(dequantCLD_c_l[31 - 1 - index]);
 }
 
-void SpatialDequantGetCLD2Values(int idx, FIXP_DBL* x) {
+void SpatialDequantGetCLD2Values(int idx, FIXP_DBL *x) {
   *x = FX_CFG2FX_DBL(dequantCLD__FDK[idx]);
 }

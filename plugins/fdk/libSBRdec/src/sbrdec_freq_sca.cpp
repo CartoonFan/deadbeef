@@ -107,9 +107,9 @@ amm-info@iis.fraunhofer.de
 
 #include "sbrdec_freq_sca.h"
 
-#include "transcendent.h"
-#include "sbr_rom.h"
 #include "env_extr.h"
+#include "sbr_rom.h"
+#include "transcendent.h"
 
 #include "genericStds.h" /* need log() for debug-code only */
 
@@ -130,10 +130,10 @@ static void cumSum(UCHAR start_value, UCHAR *diff, UCHAR length,
 
   \return  Number of start band
 */
-static UCHAR getStartBand(
-    UINT fs,              /*!< Output sampling frequency */
-    UCHAR startFreq,      /*!< Index to table of possible start bands */
-    UINT headerDataFlags) /*!< Info to SBR mode */
+static UCHAR
+getStartBand(UINT fs,         /*!< Output sampling frequency */
+             UCHAR startFreq, /*!< Index to table of possible start bands */
+             UINT headerDataFlags) /*!< Info to SBR mode */
 {
   INT band;
   UINT fsMapped = fs;
@@ -149,45 +149,45 @@ static UCHAR getStartBand(
   FDK_ASSERT(2 * (rate + 1) <= (4));
 
   switch (fsMapped) {
-    case 192000:
-      band = FDK_sbrDecoder_sbr_start_freq_192[startFreq];
-      break;
-    case 176400:
-      band = FDK_sbrDecoder_sbr_start_freq_176[startFreq];
-      break;
-    case 128000:
-      band = FDK_sbrDecoder_sbr_start_freq_128[startFreq];
-      break;
-    case 96000:
-    case 88200:
-      band = FDK_sbrDecoder_sbr_start_freq_88[rate][startFreq];
-      break;
-    case 64000:
-      band = FDK_sbrDecoder_sbr_start_freq_64[rate][startFreq];
-      break;
-    case 48000:
-      band = FDK_sbrDecoder_sbr_start_freq_48[rate][startFreq];
-      break;
-    case 44100:
-      band = FDK_sbrDecoder_sbr_start_freq_44[rate][startFreq];
-      break;
-    case 40000:
-      band = FDK_sbrDecoder_sbr_start_freq_40[rate][startFreq];
-      break;
-    case 32000:
-      band = FDK_sbrDecoder_sbr_start_freq_32[rate][startFreq];
-      break;
-    case 24000:
-      band = FDK_sbrDecoder_sbr_start_freq_24[rate][startFreq];
-      break;
-    case 22050:
-      band = FDK_sbrDecoder_sbr_start_freq_22[rate][startFreq];
-      break;
-    case 16000:
-      band = FDK_sbrDecoder_sbr_start_freq_16[rate][startFreq];
-      break;
-    default:
-      band = 255;
+  case 192000:
+    band = FDK_sbrDecoder_sbr_start_freq_192[startFreq];
+    break;
+  case 176400:
+    band = FDK_sbrDecoder_sbr_start_freq_176[startFreq];
+    break;
+  case 128000:
+    band = FDK_sbrDecoder_sbr_start_freq_128[startFreq];
+    break;
+  case 96000:
+  case 88200:
+    band = FDK_sbrDecoder_sbr_start_freq_88[rate][startFreq];
+    break;
+  case 64000:
+    band = FDK_sbrDecoder_sbr_start_freq_64[rate][startFreq];
+    break;
+  case 48000:
+    band = FDK_sbrDecoder_sbr_start_freq_48[rate][startFreq];
+    break;
+  case 44100:
+    band = FDK_sbrDecoder_sbr_start_freq_44[rate][startFreq];
+    break;
+  case 40000:
+    band = FDK_sbrDecoder_sbr_start_freq_40[rate][startFreq];
+    break;
+  case 32000:
+    band = FDK_sbrDecoder_sbr_start_freq_32[rate][startFreq];
+    break;
+  case 24000:
+    band = FDK_sbrDecoder_sbr_start_freq_24[rate][startFreq];
+    break;
+  case 22050:
+    band = FDK_sbrDecoder_sbr_start_freq_22[rate][startFreq];
+    break;
+  case 16000:
+    band = FDK_sbrDecoder_sbr_start_freq_16[rate][startFreq];
+    break;
+  default:
+    band = 255;
   }
 
   return band;
@@ -201,11 +201,11 @@ static UCHAR getStartBand(
 
   \return  Number of start band
 */
-static UCHAR getStopBand(
-    UINT fs,              /*!< Output sampling frequency */
-    UCHAR stopFreq,       /*!< Index to table of possible start bands */
-    UINT headerDataFlags, /*!< Info to SBR mode */
-    UCHAR k0)             /*!< Start freq index */
+static UCHAR
+getStopBand(UINT fs,              /*!< Output sampling frequency */
+            UCHAR stopFreq,       /*!< Index to table of possible start bands */
+            UINT headerDataFlags, /*!< Info to SBR mode */
+            UCHAR k0)             /*!< Start freq index */
 {
   UCHAR k2;
 
@@ -245,7 +245,8 @@ static UCHAR getStopBand(
     k2 = 3 * k0;
 
   /* Limit to Nyquist */
-  if (k2 > (64)) k2 = (64);
+  if (k2 > (64))
+    k2 = (64);
 
   /* Range checks */
   /* 1 <= difference <= 48; 1 <= fs <= 96000 */
@@ -260,7 +261,7 @@ static UCHAR getStopBand(
 
   if (headerDataFlags & SBRDEC_QUAD_RATE) {
     return k2; /* skip other checks: (k2 - k0) must be <=
-                  MAX_FREQ_COEFFS_QUAD_RATE for all fs */
+              MAX_FREQ_COEFFS_QUAD_RATE for all fs */
   }
   if (headerDataFlags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
     /* 1 <= difference <= 35; 42000 <= fs <= 96000 */
@@ -382,7 +383,8 @@ sbrdecUpdateFreqScale(
         SBR_ERROR err;
 
         err = modifyBands(diff0[num_bands0 - 1], diff1, num_bands1);
-        if (err) return SBRDEC_UNSUPPORTED_CONFIG;
+        if (err)
+          return SBRDEC_UNSUPPORTED_CONFIG;
       }
 
       /* Add 2nd region */
@@ -423,7 +425,8 @@ sbrdecUpdateFreqScale(
     k2_achived = k0 + num_bands0 * dk;
     k2_diff = k2 - k2_achived;
 
-    for (i = 0; i < num_bands0; i++) diff_tot[i] = dk;
+    for (i = 0; i < num_bands0; i++)
+      diff_tot[i] = dk;
 
     /* If linear scale wasn't achieved */
     /* and we got too wide SBR area */
@@ -514,7 +517,8 @@ static FIXP_SGL calcFactorPerBand(int k_start, int k_stop, int num_bands) {
       direction = 1;
       bandfactor = bandfactor + step;
     } else { /* Factor is too weak: make it stronger */
-      if (direction == 1) step = (FIXP_DBL)((LONG)step >> 1);
+      if (direction == 1)
+        step = (FIXP_DBL)((LONG)step >> 1);
       direction = 0;
       bandfactor = bandfactor - step;
     }
@@ -665,7 +669,8 @@ static void sbrdecUpdateLoRes(UCHAR *h_lores, UCHAR *num_lores, UCHAR *h_hires,
     /* If even number of hires bands */
     *num_lores = num_hires >> 1;
     /* Use every second lores=hires[0,2,4...] */
-    for (i = 0; i <= *num_lores; i++) h_lores[i] = h_hires[i * 2];
+    for (i = 0; i <= *num_lores; i++)
+      h_lores[i] = h_hires[i * 2];
   } else {
     /* Odd number of hires, which means xover is odd */
     *num_lores = (num_hires + 1) >> 1;
@@ -728,7 +733,8 @@ void shellsort(UCHAR *in, UCHAR n) {
       while ((w = in[j - inc]) > v) {
         in[j] = w;
         j -= inc;
-        if (j < inc) break;
+        if (j < inc)
+          break;
       }
       in[j] = v;
     }
@@ -809,7 +815,8 @@ resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const UINT flags) {
     /* Convert to right-aligned integer: */
     intTemp = intTemp >> (FRACT_BITS - 1 /*sign*/ - 5 /* rescale */);
 
-    if (intTemp == 0) intTemp = 1;
+    if (intTemp == 0)
+      intTemp = 1;
 
     hFreq->nNfb = intTemp;
   }

@@ -236,18 +236,18 @@ static INT getNoBands(const INT mode) {
   INT noBands = 0;
 
   switch (mode) {
-    case 0:
-    case 3: /* coarse */
-      noBands = PS_BANDS_COARSE;
-      break;
-    case 1:
-    case 4: /* mid */
-      noBands = PS_BANDS_MID;
-      break;
-    case 2:
-    case 5:  /* fine not supported */
-    default: /* coarse as default */
-      noBands = PS_BANDS_COARSE;
+  case 0:
+  case 3: /* coarse */
+    noBands = PS_BANDS_COARSE;
+    break;
+  case 1:
+  case 4: /* mid */
+    noBands = PS_BANDS_MID;
+    break;
+  case 2:
+  case 5:  /* fine not supported */
+  default: /* coarse as default */
+    noBands = PS_BANDS_COARSE;
   }
 
   return noBands;
@@ -314,50 +314,50 @@ INT FDKsbrEnc_EncodeIid(HANDLE_FDK_BITSTREAM hBitBuf, const INT *iidVal,
   bitCnt = 0;
 
   switch (mode) {
-    case PS_DELTA_FREQ:
-      switch (res) {
-        case PS_IID_RES_COARSE:
-          codeTable = iidDeltaFreqCoarse_Code;
-          lengthTable = iidDeltaFreqCoarse_Length;
-          bitCnt += encodeDeltaFreq(hBitBuf, iidVal, nBands, codeTable,
-                                    lengthTable, iidDeltaCoarse_Offset,
-                                    iidDeltaCoarse_MaxVal, error);
-          break;
-        case PS_IID_RES_FINE:
-          codeTable = iidDeltaFreqFine_Code;
-          lengthTable = iidDeltaFreqFine_Length;
-          bitCnt +=
-              encodeDeltaFreq(hBitBuf, iidVal, nBands, codeTable, lengthTable,
-                              iidDeltaFine_Offset, iidDeltaFine_MaxVal, error);
-          break;
-        default:
-          *error = 1;
-      }
+  case PS_DELTA_FREQ:
+    switch (res) {
+    case PS_IID_RES_COARSE:
+      codeTable = iidDeltaFreqCoarse_Code;
+      lengthTable = iidDeltaFreqCoarse_Length;
+      bitCnt +=
+          encodeDeltaFreq(hBitBuf, iidVal, nBands, codeTable, lengthTable,
+                          iidDeltaCoarse_Offset, iidDeltaCoarse_MaxVal, error);
       break;
-
-    case PS_DELTA_TIME:
-      switch (res) {
-        case PS_IID_RES_COARSE:
-          codeTable = iidDeltaTimeCoarse_Code;
-          lengthTable = iidDeltaTimeCoarse_Length;
-          bitCnt += encodeDeltaTime(
-              hBitBuf, iidVal, iidValLast, nBands, codeTable, lengthTable,
-              iidDeltaCoarse_Offset, iidDeltaCoarse_MaxVal, error);
-          break;
-        case PS_IID_RES_FINE:
-          codeTable = iidDeltaTimeFine_Code;
-          lengthTable = iidDeltaTimeFine_Length;
-          bitCnt += encodeDeltaTime(hBitBuf, iidVal, iidValLast, nBands,
-                                    codeTable, lengthTable, iidDeltaFine_Offset,
-                                    iidDeltaFine_MaxVal, error);
-          break;
-        default:
-          *error = 1;
-      }
+    case PS_IID_RES_FINE:
+      codeTable = iidDeltaFreqFine_Code;
+      lengthTable = iidDeltaFreqFine_Length;
+      bitCnt +=
+          encodeDeltaFreq(hBitBuf, iidVal, nBands, codeTable, lengthTable,
+                          iidDeltaFine_Offset, iidDeltaFine_MaxVal, error);
       break;
-
     default:
       *error = 1;
+    }
+    break;
+
+  case PS_DELTA_TIME:
+    switch (res) {
+    case PS_IID_RES_COARSE:
+      codeTable = iidDeltaTimeCoarse_Code;
+      lengthTable = iidDeltaTimeCoarse_Length;
+      bitCnt += encodeDeltaTime(hBitBuf, iidVal, iidValLast, nBands, codeTable,
+                                lengthTable, iidDeltaCoarse_Offset,
+                                iidDeltaCoarse_MaxVal, error);
+      break;
+    case PS_IID_RES_FINE:
+      codeTable = iidDeltaTimeFine_Code;
+      lengthTable = iidDeltaTimeFine_Length;
+      bitCnt += encodeDeltaTime(hBitBuf, iidVal, iidValLast, nBands, codeTable,
+                                lengthTable, iidDeltaFine_Offset,
+                                iidDeltaFine_MaxVal, error);
+      break;
+    default:
+      *error = 1;
+    }
+    break;
+
+  default:
+    *error = 1;
   }
 
   return bitCnt;
@@ -371,24 +371,24 @@ INT FDKsbrEnc_EncodeIcc(HANDLE_FDK_BITSTREAM hBitBuf, const INT *iccVal,
   INT bitCnt = 0;
 
   switch (mode) {
-    case PS_DELTA_FREQ:
-      codeTable = iccDeltaFreq_Code;
-      lengthTable = iccDeltaFreq_Length;
-      bitCnt += encodeDeltaFreq(hBitBuf, iccVal, nBands, codeTable, lengthTable,
-                                iccDelta_Offset, iccDelta_MaxVal, error);
-      break;
+  case PS_DELTA_FREQ:
+    codeTable = iccDeltaFreq_Code;
+    lengthTable = iccDeltaFreq_Length;
+    bitCnt += encodeDeltaFreq(hBitBuf, iccVal, nBands, codeTable, lengthTable,
+                              iccDelta_Offset, iccDelta_MaxVal, error);
+    break;
 
-    case PS_DELTA_TIME:
-      codeTable = iccDeltaTime_Code;
-      lengthTable = iccDeltaTime_Length;
+  case PS_DELTA_TIME:
+    codeTable = iccDeltaTime_Code;
+    lengthTable = iccDeltaTime_Length;
 
-      bitCnt +=
-          encodeDeltaTime(hBitBuf, iccVal, iccValLast, nBands, codeTable,
-                          lengthTable, iccDelta_Offset, iccDelta_MaxVal, error);
-      break;
+    bitCnt +=
+        encodeDeltaTime(hBitBuf, iccVal, iccValLast, nBands, codeTable,
+                        lengthTable, iccDelta_Offset, iccDelta_MaxVal, error);
+    break;
 
-    default:
-      *error = 1;
+  default:
+    *error = 1;
   }
 
   return bitCnt;
@@ -402,24 +402,24 @@ INT FDKsbrEnc_EncodeIpd(HANDLE_FDK_BITSTREAM hBitBuf, const INT *ipdVal,
   INT bitCnt = 0;
 
   switch (mode) {
-    case PS_DELTA_FREQ:
-      codeTable = ipdDeltaFreq_Code;
-      lengthTable = ipdDeltaFreq_Length;
-      bitCnt += encodeDeltaFreq(hBitBuf, ipdVal, nBands, codeTable, lengthTable,
-                                ipdDelta_Offset, ipdDelta_MaxVal, error);
-      break;
+  case PS_DELTA_FREQ:
+    codeTable = ipdDeltaFreq_Code;
+    lengthTable = ipdDeltaFreq_Length;
+    bitCnt += encodeDeltaFreq(hBitBuf, ipdVal, nBands, codeTable, lengthTable,
+                              ipdDelta_Offset, ipdDelta_MaxVal, error);
+    break;
 
-    case PS_DELTA_TIME:
-      codeTable = ipdDeltaTime_Code;
-      lengthTable = ipdDeltaTime_Length;
+  case PS_DELTA_TIME:
+    codeTable = ipdDeltaTime_Code;
+    lengthTable = ipdDeltaTime_Length;
 
-      bitCnt +=
-          encodeDeltaTime(hBitBuf, ipdVal, ipdValLast, nBands, codeTable,
-                          lengthTable, ipdDelta_Offset, ipdDelta_MaxVal, error);
-      break;
+    bitCnt +=
+        encodeDeltaTime(hBitBuf, ipdVal, ipdValLast, nBands, codeTable,
+                        lengthTable, ipdDelta_Offset, ipdDelta_MaxVal, error);
+    break;
 
-    default:
-      *error = 1;
+  default:
+    *error = 1;
   }
 
   return bitCnt;
@@ -433,24 +433,24 @@ INT FDKsbrEnc_EncodeOpd(HANDLE_FDK_BITSTREAM hBitBuf, const INT *opdVal,
   INT bitCnt = 0;
 
   switch (mode) {
-    case PS_DELTA_FREQ:
-      codeTable = opdDeltaFreq_Code;
-      lengthTable = opdDeltaFreq_Length;
-      bitCnt += encodeDeltaFreq(hBitBuf, opdVal, nBands, codeTable, lengthTable,
-                                opdDelta_Offset, opdDelta_MaxVal, error);
-      break;
+  case PS_DELTA_FREQ:
+    codeTable = opdDeltaFreq_Code;
+    lengthTable = opdDeltaFreq_Length;
+    bitCnt += encodeDeltaFreq(hBitBuf, opdVal, nBands, codeTable, lengthTable,
+                              opdDelta_Offset, opdDelta_MaxVal, error);
+    break;
 
-    case PS_DELTA_TIME:
-      codeTable = opdDeltaTime_Code;
-      lengthTable = opdDeltaTime_Length;
+  case PS_DELTA_TIME:
+    codeTable = opdDeltaTime_Code;
+    lengthTable = opdDeltaTime_Length;
 
-      bitCnt +=
-          encodeDeltaTime(hBitBuf, opdVal, opdValLast, nBands, codeTable,
-                          lengthTable, opdDelta_Offset, opdDelta_MaxVal, error);
-      break;
+    bitCnt +=
+        encodeDeltaTime(hBitBuf, opdVal, opdValLast, nBands, codeTable,
+                        lengthTable, opdDelta_Offset, opdDelta_MaxVal, error);
+    break;
 
-    default:
-      *error = 1;
+  default:
+    *error = 1;
   }
 
   return bitCnt;
@@ -489,35 +489,35 @@ static INT getEnvIdx(const INT nEnvelopes, const INT frameClass) {
   INT envIdx = 0;
 
   switch (nEnvelopes) {
-    case 0:
+  case 0:
+    envIdx = 0;
+    break;
+
+  case 1:
+    if (frameClass == 0)
+      envIdx = 1;
+    else
       envIdx = 0;
-      break;
+    break;
 
-    case 1:
-      if (frameClass == 0)
-        envIdx = 1;
-      else
-        envIdx = 0;
-      break;
-
-    case 2:
-      if (frameClass == 0)
-        envIdx = 2;
-      else
-        envIdx = 1;
-      break;
-
-    case 3:
+  case 2:
+    if (frameClass == 0)
       envIdx = 2;
-      break;
+    else
+      envIdx = 1;
+    break;
 
-    case 4:
-      envIdx = 3;
-      break;
+  case 3:
+    envIdx = 2;
+    break;
 
-    default:
-      /* unsupported number of envelopes */
-      envIdx = 0;
+  case 4:
+    envIdx = 3;
+    break;
+
+  default:
+    /* unsupported number of envelopes */
+    envIdx = 0;
   }
 
   return envIdx;

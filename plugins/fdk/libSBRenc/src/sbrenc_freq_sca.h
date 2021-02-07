@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #ifndef SBRENC_FREQ_SCA_H
 #define SBRENC_FREQ_SCA_H
 
-#include "sbr_encoder.h"
 #include "sbr_def.h"
+#include "sbr_encoder.h"
 
 #define MAX_OCTAVE 29
 #define MAX_SECOND_REGION 50

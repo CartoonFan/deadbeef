@@ -100,9 +100,9 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "sac_dec.h"
-#include "sac_bitdec.h"
 #include "sac_smoothing.h"
+#include "sac_bitdec.h"
+#include "sac_dec.h"
 #include "sac_rom.h"
 
 /*******************************************************************************
@@ -254,10 +254,14 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       tmpL = self->PhaseLeft__FDK[pb];
       tmpR = self->PhaseRight__FDK[pb];
 
-      while (tmpL > phaseLeftSmooth__FDK[pb] + PI__IPD) tmpL -= PI__IPD << 1;
-      while (tmpL < phaseLeftSmooth__FDK[pb] - PI__IPD) tmpL += PI__IPD << 1;
-      while (tmpR > phaseRightSmooth__FDK[pb] + PI__IPD) tmpR -= PI__IPD << 1;
-      while (tmpR < phaseRightSmooth__FDK[pb] - PI__IPD) tmpR += PI__IPD << 1;
+      while (tmpL > phaseLeftSmooth__FDK[pb] + PI__IPD)
+        tmpL -= PI__IPD << 1;
+      while (tmpL < phaseLeftSmooth__FDK[pb] - PI__IPD)
+        tmpL += PI__IPD << 1;
+      while (tmpR > phaseRightSmooth__FDK[pb] + PI__IPD)
+        tmpR -= PI__IPD << 1;
+      while (tmpR < phaseRightSmooth__FDK[pb] - PI__IPD)
+        tmpR += PI__IPD << 1;
 
       phaseLeftSmooth__FDK[pb] =
           fMult(delta__FDK, tmpL) +
@@ -269,8 +273,10 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       tmp = (((tmpL >> 1) - (tmpR >> 1)) - ((phaseLeftSmooth__FDK[pb] >> 1) -
                                             (phaseRightSmooth__FDK[pb] >> 1)))
             << 1;
-      while (tmp > PI__IPD) tmp -= PI__IPD << 1;
-      while (tmp < -PI__IPD) tmp += PI__IPD << 1;
+      while (tmp > PI__IPD)
+        tmp -= PI__IPD << 1;
+      while (tmp < -PI__IPD)
+        tmp += PI__IPD << 1;
       if (fixp_abs(tmp) > fMult((quantCoarse ? FL2FXCONST_DBL(50.f / 180.f)
                                              : FL2FXCONST_DBL(25.f / 180.f)),
                                 PI__IPD)) {

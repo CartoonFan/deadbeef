@@ -246,7 +246,7 @@ const UINT exp2x_tab_long[32] = {
 LD_INT_TAB_LEN)
 *****************************************************************************/
 #ifndef LD_INT_TAB_LEN
-#define LD_INT_TAB_LEN \
+#define LD_INT_TAB_LEN                                                         \
   193 /* Default tab length. Lower value should be set in fix.h */
 #endif
 
@@ -772,18 +772,18 @@ FIXP_DBL fixp_floor(FIXP_DBL f_inp, INT sf) {
   return f_floor;
 }
 
-INT fixp_ceilToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left of dot
+INT fixp_ceilToInt(FIXP_DBL f_inp, INT sf) // sf  mantissaBits left of dot
 {
   FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
+  INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
   INT inpINT = (INT)f_inp;
 
   INT mask = (0x1 << sx) - 1;
   INT ceilInt = (INT)(f_inp >> sx);
 
   if (inpINT & mask) {
-    ceilInt++;  // increment only, if there is at least one set mantissaBit
-                // right of dot [in inpINT]
+    ceilInt++; // increment only, if there is at least one set mantissaBit
+               // right of dot [in inpINT]
   }
 
   return ceilInt;
@@ -793,9 +793,9 @@ FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT sx = (DFRACT_BITS - 1) - sf;
   INT ceilInt = fixp_ceilToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
+  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
   ceilInt = ceilInt
-            << sx;  // no fract warn bec. shift into saturation done on int side
+            << sx; // no fract warn bec. shift into saturation done on int side
 
   if ((f_inp > FL2FXCONST_DBL(0.0f)) && (ceilInt & mask)) {
     --ceilInt;
@@ -813,15 +813,15 @@ FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
 
    returns INT
 *****************************************************************************/
-INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left  of dot
-                                                // (without sign)  e.g. at width
-                                                // 32 this would be [sign]7.
-                                                // supposed sf equals 8.
+INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf) // sf  mantissaBits left  of dot
+// (without sign)  e.g. at width
+// 32 this would be [sign]7.
+// supposed sf equals 8.
 {
   FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
-                                    // at width 32 this would be        .24
-                                    // supposed sf equals 8.
+  INT sx = (DFRACT_BITS - 1) - sf; // sx  mantissaBits right of dot
+  // at width 32 this would be        .24
+  // supposed sf equals 8.
   INT fbaccu = (INT)f_inp;
   INT mask = (0x1 << sx);
 
@@ -872,7 +872,8 @@ INT fixp_roundToInt(FIXP_DBL f_inp, INT sf) {
 
   rnd = rnd >> sx;
 
-  if (inp == mask3) rnd++;
+  if (inp == mask3)
+    rnd++;
 
   return rnd;
 }
@@ -888,7 +889,7 @@ FIXP_DBL fixp_round(FIXP_DBL f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT sx = DFRACT_BITS - 1 - sf;
   INT r = fixp_roundToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
+  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1); // 0x80000000
   r = r << sx;
 
   if ((f_inp > FL2FXCONST_DBL(0.0f)) && (r & mask)) {

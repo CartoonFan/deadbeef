@@ -18,8 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MediaLibrarySearchCellView : NSTableCellView
 
-@property (nonatomic) IBOutlet NSSearchField *searchField;
-@property (weak,nonatomic,nullable) id<MediaLibrarySearchCellViewDelegate> delegate;
+@property(nonatomic) IBOutlet NSSearchField *searchField;
+@property(weak, nonatomic, nullable) id<MediaLibrarySearchCellViewDelegate>
+    delegate;
 
 @end
 

@@ -105,9 +105,9 @@ amm-info@iis.fraunhofer.de
 
 /* Includes ******************************************************************/
 #include "common_fix.h"
-#include "sacenc_lib.h"
-#include "sacenc_const.h"
 #include "sacenc_bitstream.h"
+#include "sacenc_const.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_CLD_QUANT_FINE (31)
@@ -177,13 +177,14 @@ FDK_SACENC_ERROR fdk_sacenc_initTtoBox(HANDLE_TTO_BOX hTtoBox,
 
 FDK_SACENC_ERROR fdk_sacenc_destroyTtoBox(HANDLE_TTO_BOX *hTtoBox);
 
-FDK_SACENC_ERROR fdk_sacenc_applyTtoBox(
-    HANDLE_TTO_BOX hTtoBox, const INT nTimeSlots, const INT startTimeSlot,
-    const INT nHybridBands, const FIXP_DPK *const *const ppHybridData1__FDK,
-    const FIXP_DPK *const *const ppHybridData2__FDK, SCHAR *const pIccIdx,
-    UCHAR *const pbIccQuantCoarse, SCHAR *const pCldIdx,
-    UCHAR *const pbCldQuantCoarse, const INT bUseBBCues, INT *scaleCh0,
-    INT *scaleCh1);
+FDK_SACENC_ERROR
+fdk_sacenc_applyTtoBox(HANDLE_TTO_BOX hTtoBox, const INT nTimeSlots,
+                       const INT startTimeSlot, const INT nHybridBands,
+                       const FIXP_DPK *const *const ppHybridData1__FDK,
+                       const FIXP_DPK *const *const ppHybridData2__FDK,
+                       SCHAR *const pIccIdx, UCHAR *const pbIccQuantCoarse,
+                       SCHAR *const pCldIdx, UCHAR *const pbCldQuantCoarse,
+                       const INT bUseBBCues, INT *scaleCh0, INT *scaleCh1);
 
 INT fdk_sacenc_subband2ParamBand(const BOX_SUBBAND_CONFIG boxSubbandConfig,
                                  const INT nSubband);
@@ -202,12 +203,12 @@ static inline UCHAR fdk_sacenc_getIccQuantOffset(const INT bUseCoarseQuant) {
   return ((bUseCoarseQuant) ? OFFSET_ICC_QUANT_COARSE : OFFSET_ICC_QUANT_FINE);
 }
 
-static inline UCHAR fdk_sacenc_getNumberCldQuantLevels(
-    const INT bUseCoarseQuant) {
+static inline UCHAR
+fdk_sacenc_getNumberCldQuantLevels(const INT bUseCoarseQuant) {
   return ((bUseCoarseQuant) ? MAX_CLD_QUANT_COARSE : MAX_CLD_QUANT_FINE);
 }
-static inline UCHAR fdk_sacenc_getNumberIccQuantLevels(
-    const INT bUseCoarseQuant) {
+static inline UCHAR
+fdk_sacenc_getNumberIccQuantLevels(const INT bUseCoarseQuant) {
   return ((bUseCoarseQuant) ? MAX_ICC_QUANT_COARSE : MAX_ICC_QUANT_FINE);
 }
 

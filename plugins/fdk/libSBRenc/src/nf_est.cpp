@@ -139,9 +139,11 @@ static void smoothingOfNoiseLevels(
     INT nEnvelopes,        /*!< Number of noise floor envelopes.*/
     INT noNoiseBands, /*!< Number of noise bands for every noise floor envelope.
                        */
-    FIXP_DBL prevNoiseLevels[NF_SMOOTHING_LENGTH]
-                            [MAX_NUM_NOISE_VALUES], /*!< Previous noise floor
-                                                       envelopes. */
+    FIXP_DBL
+        prevNoiseLevels[NF_SMOOTHING_LENGTH]
+                       [MAX_NUM_NOISE_VALUES], /*!< Previous noise floor
+                                                                          envelopes.
+                                                */
     const FIXP_DBL *
         pSmoothFilter, /*!< filter used for smoothing the noise floor levels. */
     INT transientFlag) /*!< flag indicating if a transient is present*/
@@ -489,19 +491,19 @@ INT FDKsbrEnc_InitSbrNoiseFloorEstimate(
 
   /* h_sbrNoiseFloorEstimate->ana_max_level is scaled by 0.25  */
   switch (ana_max_level) {
-    case 6:
-      h_sbrNoiseFloorEstimate->ana_max_level = (FIXP_DBL)MAXVAL_DBL;
-      break;
-    case 3:
-      h_sbrNoiseFloorEstimate->ana_max_level = FL2FXCONST_DBL(0.5);
-      break;
-    case -3:
-      h_sbrNoiseFloorEstimate->ana_max_level = FL2FXCONST_DBL(0.125);
-      break;
-    default:
-      /* Should not enter here */
-      h_sbrNoiseFloorEstimate->ana_max_level = (FIXP_DBL)MAXVAL_DBL;
-      break;
+  case 6:
+    h_sbrNoiseFloorEstimate->ana_max_level = (FIXP_DBL)MAXVAL_DBL;
+    break;
+  case 3:
+    h_sbrNoiseFloorEstimate->ana_max_level = FL2FXCONST_DBL(0.5);
+    break;
+  case -3:
+    h_sbrNoiseFloorEstimate->ana_max_level = FL2FXCONST_DBL(0.125);
+    break;
+  default:
+    /* Should not enter here */
+    h_sbrNoiseFloorEstimate->ana_max_level = (FIXP_DBL)MAXVAL_DBL;
+    break;
   }
 
   /*

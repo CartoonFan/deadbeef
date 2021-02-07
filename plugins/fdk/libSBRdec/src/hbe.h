@@ -120,15 +120,15 @@ amm-info@iis.fraunhofer.de
 typedef enum {
   KEEP_STATES_SYNCED_OFF = 0,    /*!< normal QMF transposer behaviour */
   KEEP_STATES_SYNCED_NORMAL = 1, /*!< QMF transposer called for syncing of
-                                    states the last 8/14 slots are calculated in
-                                    case next frame is HBE */
+                                  states the last 8/14 slots are calculated in
+                                  case next frame is HBE */
   KEEP_STATES_SYNCED_OUTDIFF =
       2, /*!< QMF transposer behaviour as in normal case, but the calculated
-              slots are directly written to overlap area of buffer; only used in
-              resetSbrDec function */
+            slots are directly written to overlap area of buffer; only used in
+            resetSbrDec function */
   KEEP_STATES_SYNCED_NOOUT =
       3 /*!< QMF transposer is called for syncing of states only, not output
-             is generated at all; only used in resetSbrDec function */
+           is generated at all; only used in resetSbrDec function */
 } KEEP_STATES_SYNCED_MODE;
 
 struct hbeTransposer {

@@ -102,13 +102,13 @@ amm-info@iis.fraunhofer.de
 
 #include "ton_corr.h"
 
-#include "sbrenc_ram.h"
-#include "sbr_misc.h"
-#include "genericStds.h"
 #include "autocorr2nd.h"
+#include "genericStds.h"
+#include "sbr_misc.h"
+#include "sbrenc_ram.h"
 
 #define BAND_V_SIZE 32
-#define NUM_V_COMBINE \
+#define NUM_V_COMBINE                                                          \
   8 /* Must be a divisor of 64 and fulfill the ASSERTs below */
 
 /**************************************************************************/
@@ -377,7 +377,7 @@ void FDKsbrEnc_TonCorrParamExtr(
     UINT sbrSyntaxFlags) {
   INT band;
   INT transientFlag = transientInfo[1]; /*!< Flag indicating if a transient is
-                                           present in the current frame. */
+                                         present in the current frame. */
   INT transientPos = transientInfo[0];  /*!< Position of the transient.*/
   INT transientFrame, transientFrameInvfEst;
   INVF_MODE *infVecPtr;
@@ -389,8 +389,9 @@ void FDKsbrEnc_TonCorrParamExtr(
   transient in the present frame as well as in the next.
   */
   transientFrame = 0;
-  if (hTonCorr->transientNextFrame) { /* The transient was detected in the
-                                         previous frame, but is actually */
+  if (hTonCorr->transientNextFrame) {
+    /* The transient was detected in the
+                                           previous frame, but is actually */
     transientFrame = 1;
     hTonCorr->transientNextFrame = 0;
 
@@ -469,9 +470,11 @@ static INT findClosestEntry(INT goalSb, UCHAR *v_k_master, INT numMaster,
                             INT direction) {
   INT index;
 
-  if (goalSb <= v_k_master[0]) return v_k_master[0];
+  if (goalSb <= v_k_master[0])
+    return v_k_master[0];
 
-  if (goalSb >= v_k_master[numMaster]) return v_k_master[numMaster];
+  if (goalSb >= v_k_master[numMaster])
+    return v_k_master[numMaster];
 
   if (direction) {
     index = 0;
@@ -521,7 +524,7 @@ static INT resetPatch(
   INT lsb =
       v_k_master[0]; /* Lowest subband related to the synthesis filterbank */
   INT usb = v_k_master[numMaster]; /* Stop subband related to the synthesis
-                                      filterbank */
+                                    filterbank */
   INT xoverOffset =
       highBandStartSb -
       v_k_master[0]; /* Calculate distance in subbands between k0 and kx */
@@ -550,7 +553,8 @@ static INT resetPatch(
   patch = 0;
   while (targetStopBand < usb) {
     /* To many patches */
-    if (patch >= MAX_NUM_PATCHES) return (1); /*Number of patches to high */
+    if (patch >= MAX_NUM_PATCHES)
+      return (1); /*Number of patches to high */
 
     patchParam[patch].guardStartBand = targetStopBand;
     targetStopBand += sbGuard;
@@ -719,43 +723,43 @@ INT FDKsbrEnc_InitTonCorrParamExtr(
   */
   if (sbrCfg->sbrSyntaxFlags & SBR_SYNTAX_LOW_DELAY) {
     switch (timeSlots) {
-      case NUMBER_TIME_SLOTS_1920:
-        hTonCorr->lpcLength[0] = 8 - LPC_ORDER;
-        hTonCorr->lpcLength[1] = 7 - LPC_ORDER;
-        hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LD;
-        hTonCorr->numberOfEstimatesPerFrame = 2; /* sbrCfg->noQmfSlots / 7 */
-        hTonCorr->frameStartIndexInvfEst = 0;
-        hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
-        break;
-      case NUMBER_TIME_SLOTS_2048:
-        hTonCorr->lpcLength[0] = 8 - LPC_ORDER;
-        hTonCorr->lpcLength[1] = 8 - LPC_ORDER;
-        hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LD;
-        hTonCorr->numberOfEstimatesPerFrame = 2; /* sbrCfg->noQmfSlots / 8 */
-        hTonCorr->frameStartIndexInvfEst = 0;
-        hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
-        break;
+    case NUMBER_TIME_SLOTS_1920:
+      hTonCorr->lpcLength[0] = 8 - LPC_ORDER;
+      hTonCorr->lpcLength[1] = 7 - LPC_ORDER;
+      hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LD;
+      hTonCorr->numberOfEstimatesPerFrame = 2; /* sbrCfg->noQmfSlots / 7 */
+      hTonCorr->frameStartIndexInvfEst = 0;
+      hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
+      break;
+    case NUMBER_TIME_SLOTS_2048:
+      hTonCorr->lpcLength[0] = 8 - LPC_ORDER;
+      hTonCorr->lpcLength[1] = 8 - LPC_ORDER;
+      hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LD;
+      hTonCorr->numberOfEstimatesPerFrame = 2; /* sbrCfg->noQmfSlots / 8 */
+      hTonCorr->frameStartIndexInvfEst = 0;
+      hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_512LD;
+      break;
     }
   } else
     switch (timeSlots) {
-      case NUMBER_TIME_SLOTS_2048:
-        hTonCorr->lpcLength[0] = 16 - LPC_ORDER; /* blockLength[0] */
-        hTonCorr->lpcLength[1] = 16 - LPC_ORDER; /* blockLength[0] */
-        hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LC;
-        hTonCorr->numberOfEstimatesPerFrame = sbrCfg->noQmfSlots / 16;
-        hTonCorr->frameStartIndexInvfEst = 0;
-        hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_2048;
-        break;
-      case NUMBER_TIME_SLOTS_1920:
-        hTonCorr->lpcLength[0] = 15 - LPC_ORDER; /* blockLength[0] */
-        hTonCorr->lpcLength[1] = 15 - LPC_ORDER; /* blockLength[0] */
-        hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LC;
-        hTonCorr->numberOfEstimatesPerFrame = sbrCfg->noQmfSlots / 15;
-        hTonCorr->frameStartIndexInvfEst = 0;
-        hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_1920;
-        break;
-      default:
-        return -1;
+    case NUMBER_TIME_SLOTS_2048:
+      hTonCorr->lpcLength[0] = 16 - LPC_ORDER; /* blockLength[0] */
+      hTonCorr->lpcLength[1] = 16 - LPC_ORDER; /* blockLength[0] */
+      hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LC;
+      hTonCorr->numberOfEstimatesPerFrame = sbrCfg->noQmfSlots / 16;
+      hTonCorr->frameStartIndexInvfEst = 0;
+      hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_2048;
+      break;
+    case NUMBER_TIME_SLOTS_1920:
+      hTonCorr->lpcLength[0] = 15 - LPC_ORDER; /* blockLength[0] */
+      hTonCorr->lpcLength[1] = 15 - LPC_ORDER; /* blockLength[0] */
+      hTonCorr->numberOfEstimates = NO_OF_ESTIMATES_LC;
+      hTonCorr->numberOfEstimatesPerFrame = sbrCfg->noQmfSlots / 15;
+      hTonCorr->frameStartIndexInvfEst = 0;
+      hTonCorr->transientPosOffset = FRAME_MIDDLE_SLOT_1920;
+      break;
+    default:
+      return -1;
     }
 
   hTonCorr->bufferLength = nCols;
@@ -765,18 +769,18 @@ INT FDKsbrEnc_InitTonCorrParamExtr(
   hTonCorr->nextSample = LPC_ORDER; /* firstSample */
   hTonCorr->move = hTonCorr->numberOfEstimates -
                    hTonCorr->numberOfEstimatesPerFrame; /* Number of estimates
-                                                           to move when
-                                                           buffering.*/
+                                                         to move when
+                                                         buffering.*/
   if (hTonCorr->move < 0) {
     return -1;
   }
   hTonCorr->startIndexMatrix =
       hTonCorr->numberOfEstimates -
       hTonCorr->numberOfEstimatesPerFrame; /* Where to store the latest
-                                              estimations in the tonality
-                                              Matrix.*/
+                                            estimations in the tonality
+                                            Matrix.*/
   hTonCorr->frameStartIndex = 0; /* Where in the tonality matrix the current
-                                    frame (to be sent to the decoder) starts. */
+                                  frame (to be sent to the decoder) starts. */
   hTonCorr->prevTransientFlag = 0;
   hTonCorr->transientNextFrame = 0;
 

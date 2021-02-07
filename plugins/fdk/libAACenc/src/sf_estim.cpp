@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "sf_estim.h"
 #include "aacEnc_rom.h"
-#include "quantize.h"
 #include "bit_cnt.h"
+#include "quantize.h"
 
 #ifdef __arm__
 #endif
@@ -180,12 +180,13 @@ void FDKaacEnc_CalcFormFactor(QC_OUT_CHANNEL *qcOutChannel[(2)],
 
   sfbNRelevantLines is scaled with the factor 1/((2^FORM_FAC_SHIFT) * 2.0)
 */
-static void FDKaacEnc_calcSfbRelevantLines(
-    const FIXP_DBL *const sfbFormFactorLdData,
-    const FIXP_DBL *const sfbEnergyLdData,
-    const FIXP_DBL *const sfbThresholdLdData, const INT *const sfbOffsets,
-    const INT sfbCnt, const INT sfbPerGroup, const INT maxSfbPerGroup,
-    FIXP_DBL *sfbNRelevantLines) {
+static void
+FDKaacEnc_calcSfbRelevantLines(const FIXP_DBL *const sfbFormFactorLdData,
+                               const FIXP_DBL *const sfbEnergyLdData,
+                               const FIXP_DBL *const sfbThresholdLdData,
+                               const INT *const sfbOffsets, const INT sfbCnt,
+                               const INT sfbPerGroup, const INT maxSfbPerGroup,
+                               FIXP_DBL *sfbNRelevantLines) {
   INT sfbOffs, sfb;
   FIXP_DBL sfbWidthLdData;
   FIXP_DBL asPeFacLdData =
@@ -281,10 +282,12 @@ static FIXP_DBL FDKaacEnc_countScfBitsDiff(INT *scfOld, INT *scfNew, INT sfbCnt,
 
   /* search for first relevant sfb */
   sfbLast = startSfb;
-  while ((sfbLast < stopSfb) && (scfOld[sfbLast] == FDK_INT_MIN)) sfbLast++;
+  while ((sfbLast < stopSfb) && (scfOld[sfbLast] == FDK_INT_MIN))
+    sfbLast++;
   /* search for previous relevant sfb and count diff */
   sfbPrev = startSfb - 1;
-  while ((sfbPrev >= 0) && (scfOld[sfbPrev] == FDK_INT_MIN)) sfbPrev--;
+  while ((sfbPrev >= 0) && (scfOld[sfbPrev] == FDK_INT_MIN))
+    sfbPrev--;
   if (sfbPrev >= 0)
     scfBitsDiff +=
         FDKaacEnc_bitCountScalefactorDelta(scfNew[sfbPrev] - scfNew[sfbLast]) -
@@ -300,7 +303,8 @@ static FIXP_DBL FDKaacEnc_countScfBitsDiff(INT *scfOld, INT *scfNew, INT sfbCnt,
   }
   /* search for next relevant sfb and count diff */
   sfbNext = stopSfb;
-  while ((sfbNext < sfbCnt) && (scfOld[sfbNext] == FDK_INT_MIN)) sfbNext++;
+  while ((sfbNext < sfbCnt) && (scfOld[sfbNext] == FDK_INT_MIN))
+    sfbNext++;
   if (sfbNext < sfbCnt)
     scfBitsDiff +=
         FDKaacEnc_bitCountScalefactorDelta(scfNew[sfbLast] - scfNew[sfbNext]) -
@@ -406,7 +410,8 @@ static INT FDKaacEnc_improveScf(const FIXP_DBL *spec, SHORT *quantSpec,
       if (sfbDistLdData < sfbDistBestLdData) {
         scfBest = scf;
         sfbDistBestLdData = sfbDistLdData;
-        for (k = 0; k < sfbWidth; k++) quantSpec[k] = quantSpecTmp[k];
+        for (k = 0; k < sfbWidth; k++)
+          quantSpec[k] = quantSpecTmp[k];
       }
     }
     /* improve by smaller scf ? */
@@ -422,7 +427,8 @@ static INT FDKaacEnc_improveScf(const FIXP_DBL *spec, SHORT *quantSpec,
       if (sfbDistLdData < sfbDistBestLdData) {
         scfBest = scf;
         sfbDistBestLdData = sfbDistLdData;
-        for (k = 0; k < sfbWidth; k++) quantSpec[k] = quantSpecTmp[k];
+        for (k = 0; k < sfbWidth; k++)
+          quantSpec[k] = quantSpecTmp[k];
       }
       *minScfCalculated = scf;
     }
@@ -441,7 +447,8 @@ static INT FDKaacEnc_improveScf(const FIXP_DBL *spec, SHORT *quantSpec,
         *minScfCalculated = scfBest + 1;
         scfBest = scf;
         sfbDistBestLdData = sfbDistLdData;
-        for (k = 0; k < sfbWidth; k++) quantSpec[k] = quantSpecTmp[k];
+        for (k = 0; k < sfbWidth; k++)
+          quantSpec[k] = quantSpecTmp[k];
       }
     }
     *distLdData = sfbDistBestLdData;
@@ -517,7 +524,8 @@ static void FDKaacEnc_assimilateSingleScf(
       scfMin = *scfLast;
       scfMax = *scfLast;
     }
-    if (sfbAct >= 0) scfMin = fixMax(scfMin, minScf[sfbAct]);
+    if (sfbAct >= 0)
+      scfMin = fixMax(scfMin, minScf[sfbAct]);
 
     if ((sfbAct >= 0) && (sfbLast >= 0 || sfbNext < psyOutChan->sfbCnt) &&
         (scfAct > scfMin) && (scfAct <= scfMin + MAX_SCF_DELTA) &&
@@ -588,7 +596,8 @@ static void FDKaacEnc_assimilateSingleScf(
               success = 1;
             }
             /* mark as already checked */
-            if (updateMinScfCalculated) minScfCalculated[sfbAct] = scfAct;
+            if (updateMinScfCalculated)
+              minScfCalculated[sfbAct] = scfAct;
           } else {
             /* from this scf value on not all new values have been checked */
             updateMinScfCalculated = 0;
@@ -658,7 +667,8 @@ static void FDKaacEnc_assimilateMultipleScf(
     do {
       /* try smaller scf */
       scfAct--;
-      for (i = 0; i < MAX_GROUPED_SFB; i++) scfTmp[i] = scf[i];
+      for (i = 0; i < MAX_GROUPED_SFB; i++)
+        scfTmp[i] = scf[i];
       stopSfb = 0;
       do {
         /* search for region where all scfs are bigger than scfAct */
@@ -688,7 +698,8 @@ static void FDKaacEnc_assimilateMultipleScf(
 
           /* replace scfs in region by scfAct */
           for (sfb = startSfb; sfb < stopSfb; sfb++) {
-            if (scfTmp[sfb] != FDK_INT_MIN) scfTmp[sfb] = scfAct;
+            if (scfTmp[sfb] != FDK_INT_MIN)
+              scfTmp[sfb] = scfAct;
           }
 
           /* estimate change in bit demand for new scfs */
@@ -792,7 +803,8 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
     scfPrev = scfAct;
 
     sfb = stopSfb;
-    while (sfb < sfbCnt && (scf[sfb] == FDK_INT_MIN)) sfb++;
+    while (sfb < sfbCnt && (scf[sfb] == FDK_INT_MIN))
+      sfb++;
     startSfb = sfb;
     scfAct = scf[startSfb];
     sfb++;
@@ -806,7 +818,8 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
     else
       scfNext = scfAct;
 
-    if (scfPrev == FDK_INT_MIN) scfPrev = scfAct;
+    if (scfPrev == FDK_INT_MIN)
+      scfPrev = scfAct;
 
     scfPrevNextMax = fixMax(scfPrev, scfNext);
     scfPrevNextMin = fixMin(scfPrev, scfNext);
@@ -850,11 +863,13 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
         /* loop over all possible scf values for this region */
         bCheckScf = 1;
         for (scfNew = scf[startSfb] + 1; scfNew <= scfHi; scfNew++) {
-          for (k = 0; k < MAX_GROUPED_SFB; k++) scfTmp[k] = scf[k];
+          for (k = 0; k < MAX_GROUPED_SFB; k++)
+            scfTmp[k] = scf[k];
 
           /* replace scfs in region by scfNew */
           for (sfb = startSfb; sfb < stopSfb; sfb++) {
-            if (scfTmp[sfb] != FDK_INT_MIN) scfTmp[sfb] = scfNew;
+            if (scfTmp[sfb] != FDK_INT_MIN)
+              scfTmp[sfb] = scfNew;
           }
 
           /* estimate change in bit demand for new scfs */
@@ -918,7 +933,8 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
           scfMax - scfMin <= MAX_SCF_DELTA) {
         int bminScfViolation = 0;
 
-        for (k = 0; k < MAX_GROUPED_SFB; k++) scfTmp[k] = scf[k];
+        for (k = 0; k < MAX_GROUPED_SFB; k++)
+          scfTmp[k] = scf[k];
 
         scfNew = scfLo;
 
@@ -927,7 +943,8 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
         for (sfb = startSfb; sfb < stopSfb; sfb++) {
           if (scfTmp[sfb] != FDK_INT_MIN) {
             scfTmp[sfb] = scfNew;
-            if (scfNew < minScf[sfb]) bminScfViolation = 1;
+            if (scfNew < minScf[sfb])
+              bminScfViolation = 1;
           }
         }
 
@@ -982,17 +999,19 @@ static void FDKaacEnc_FDKaacEnc_assimilateMultipleScf2(
 
       /* 3. try to find a better solution (save bits) by only reducing the
          scalefactor without new quantization */
-      if (scfMax - scfMin <=
-          MAX_SCF_DELTA - 3) { /* 3 bec. scf is reduced 3 times,
-                                  see for loop below */
+      if (scfMax - scfMin <= MAX_SCF_DELTA - 3) {
+        /* 3 bec. scf is reduced 3 times,
+                                see for loop below */
 
-        for (k = 0; k < sfbCnt; k++) scfTmp[k] = scf[k];
+        for (k = 0; k < sfbCnt; k++)
+          scfTmp[k] = scf[k];
 
         for (i = 0; i < 3; i++) {
           scfNew = scfTmp[startSfb] - 1;
           /* replace scfs in region by scfNew */
           for (sfb = startSfb; sfb < stopSfb; sfb++) {
-            if (scfTmp[sfb] != FDK_INT_MIN) scfTmp[sfb] = scfNew;
+            if (scfTmp[sfb] != FDK_INT_MIN)
+              scfTmp[sfb] = scfNew;
           }
           /* estimate change in bit demand for new scfs */
           deltaScfBits = FDKaacEnc_countScfBitsDiff(scf, scfTmp, sfbCnt,

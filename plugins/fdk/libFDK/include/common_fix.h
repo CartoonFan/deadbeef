@@ -136,9 +136,9 @@ amm-info@iis.fraunhofer.de
 
 #define SGL_MASK ((1UL << FRACT_BITS) - 1) /* 16bit: (2^16)-1 = 0xFFFF */
 
-#define MAX_SHIFT_SGL \
+#define MAX_SHIFT_SGL                                                          \
   (FRACT_BITS - 1) /* maximum possible shift for FIXP_SGL values */
-#define MAX_SHIFT_DBL \
+#define MAX_SHIFT_DBL                                                          \
   (DFRACT_BITS - 1) /* maximum possible shift for FIXP_DBL values */
 
 /* Scale factor from/to float/fixpoint values. DO NOT USE THESE VALUES AS
@@ -148,21 +148,21 @@ amm-info@iis.fraunhofer.de
 
 /* Max and Min values for saturation purposes. DO NOT USE THESE VALUES AS SCALE
  * VALUES !! */
-#define MAXVAL_SGL \
+#define MAXVAL_SGL                                                             \
   ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
-#define MINVAL_SGL \
+#define MINVAL_SGL                                                             \
   ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
-#define MAXVAL_DBL \
+#define MAXVAL_DBL                                                             \
   ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
-#define MINVAL_DBL \
+#define MINVAL_DBL                                                             \
   ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
-#define FX_DBL2FXCONST_SGL(val)                                               \
-  ((((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >                        \
-     (((LONG)1 << FRACT_BITS) - 1)) &&                                        \
-    ((LONG)(val) > 0))                                                        \
-       ? (FIXP_SGL)(SHORT)(((LONG)1 << (FRACT_BITS - 1)) - 1)                 \
-       : (FIXP_SGL)(SHORT)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
+#define FX_DBL2FXCONST_SGL(val)                                                \
+  ((((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >                         \
+     (((LONG)1 << FRACT_BITS) - 1)) &&                                         \
+    ((LONG)(val) > 0))                                                         \
+       ? (FIXP_SGL)(SHORT)(((LONG)1 << (FRACT_BITS - 1)) - 1)                  \
+       : (FIXP_SGL)(SHORT)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >>  \
                            1))
 
 #define shouldBeUnion union /* unions are possible */
@@ -176,38 +176,38 @@ typedef LONG FIXP_DBL;
 #define MINVAL_DBL_CONST MINVAL_DBL
 #define MINVAL_SGL_CONST MINVAL_SGL
 
-#define FL2FXCONST_SGL(val)                                                  \
-  (FIXP_SGL)(                                                                \
-      ((val) >= 0)                                                           \
-          ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >=                   \
-              (double)(MAXVAL_SGL))                                          \
-                 ? (SHORT)(MAXVAL_SGL)                                       \
-                 : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5)) \
-          : ((((double)(val) * (FRACT_FIX_SCALE)-0.5) <=                     \
-              (double)(MINVAL_SGL_CONST))                                    \
-                 ? (SHORT)(MINVAL_SGL_CONST)                                 \
+#define FL2FXCONST_SGL(val)                                                    \
+  (FIXP_SGL)(                                                                  \
+      ((val) >= 0)                                                             \
+          ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >=                     \
+              (double)(MAXVAL_SGL))                                            \
+                 ? (SHORT)(MAXVAL_SGL)                                         \
+                 : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5))   \
+          : ((((double)(val) * (FRACT_FIX_SCALE)-0.5) <=                       \
+              (double)(MINVAL_SGL_CONST))                                      \
+                 ? (SHORT)(MINVAL_SGL_CONST)                                   \
                  : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
 
-#define FL2FXCONST_DBL(val)                                                  \
-  (FIXP_DBL)(                                                                \
-      ((val) >= 0)                                                           \
-          ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >=                  \
-              (double)(MAXVAL_DBL))                                          \
-                 ? (LONG)(MAXVAL_DBL)                                        \
-                 : (LONG)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5)) \
-          : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <=                    \
-              (double)(MINVAL_DBL_CONST))                                    \
-                 ? (LONG)(MINVAL_DBL_CONST)                                  \
+#define FL2FXCONST_DBL(val)                                                    \
+  (FIXP_DBL)(                                                                  \
+      ((val) >= 0)                                                             \
+          ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >=                    \
+              (double)(MAXVAL_DBL))                                            \
+                 ? (LONG)(MAXVAL_DBL)                                          \
+                 : (LONG)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5))   \
+          : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <=                      \
+              (double)(MINVAL_DBL_CONST))                                      \
+                 ? (LONG)(MINVAL_DBL_CONST)                                    \
                  : (LONG)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
 
 /* macros for runtime conversion of float values to integer fixedpoint. NO
  * OVERFLOW CHECK!!! */
 #define FL2FX_SPC FL2FX_DBL
-#define FL2FX_SGL(val)                                             \
-  ((val) > 0.0f ? (SHORT)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) \
+#define FL2FX_SGL(val)                                                         \
+  ((val) > 0.0f ? (SHORT)((val) * (float)(FRACT_FIX_SCALE) + 0.5f)             \
                 : (SHORT)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
-#define FL2FX_DBL(val)                                             \
-  ((val) > 0.0f ? (LONG)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) \
+#define FL2FX_DBL(val)                                                         \
+  ((val) > 0.0f ? (LONG)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f)             \
                 : (LONG)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
 
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
@@ -215,7 +215,7 @@ typedef LONG FIXP_DBL;
 #define FX_ACC2FX_SGL(val) ((FIXP_SGL)((val) >> (ACCU_BITS - FRACT_BITS)))
 #define FX_ACC2FX_DBL(val) ((FIXP_DBL)((val) >> (ACCU_BITS - DFRACT_BITS)))
 #define FX_SGL2FX_ACC(val) ((FIXP_ACC)((LONG)(val) << (ACCU_BITS - FRACT_BITS)))
-#define FX_SGL2FX_DBL(val) \
+#define FX_SGL2FX_DBL(val)                                                     \
   ((FIXP_DBL)((LONG)(val) << (DFRACT_BITS - FRACT_BITS)))
 #define FX_DBL2FX_SGL(val) ((FIXP_SGL)((val) >> (DFRACT_BITS - FRACT_BITS)))
 
@@ -225,10 +225,10 @@ typedef LONG FIXP_DBL;
 
 /* #define FX_DBL2FL(val)  ((float)(pow(2.,-31.)*(float)val)) */ /* version #1
                                                                   */
-#define FX_DBL2FL(val)                                                      \
-  ((float)((double)(val) / (double)DFRACT_FIX_SCALE)) /* version #2 -       \
-                                                         identical to class \
-                                                         dfract cast from   \
+#define FX_DBL2FL(val)                                                         \
+  ((float)((double)(val) / (double)DFRACT_FIX_SCALE)) /* version #2 -          \
+                                                         identical to class    \
+                                                         dfract cast from      \
                                                          dfract to float */
 #define FX_DBL2DOUBLE(val) (((double)(val) / (double)DFRACT_FIX_SCALE))
 
@@ -279,14 +279,15 @@ FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
 FDK_INLINE INT fAbs(INT x) { return fixabs_I(x); }
 #endif
 
-  /* ********************************************************************************
-   */
+/* ********************************************************************************
+ */
 
 #include "clz.h"
 
 FDK_INLINE INT fNormz(INT64 x) {
   INT clz = fixnormz_D((INT)(x >> 32));
-  if (clz == 32) clz += fixnormz_D((INT)x);
+  if (clz == 32)
+    clz += fixnormz_D((INT)x);
   return clz;
 }
 FDK_INLINE INT fNormz(FIXP_DBL x) { return fixnormz_D(x); }
@@ -294,12 +295,12 @@ FDK_INLINE INT fNormz(FIXP_SGL x) { return fixnormz_S(x); }
 FDK_INLINE INT fNorm(FIXP_DBL x) { return fixnorm_D(x); }
 FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 
-  /* ********************************************************************************
-   */
-  /* ********************************************************************************
-   */
-  /* ********************************************************************************
-   */
+/* ********************************************************************************
+ */
+/* ********************************************************************************
+ */
+/* ********************************************************************************
+ */
 
 #include "clz.h"
 #define fixp_abs(x) fAbs(x)
@@ -441,9 +442,9 @@ typedef shouldBeUnion {
 }
 FIXP_DPK;
 
-#include "fixmul.h"
-#include "fixmadd.h"
 #include "cplx_mul.h"
+#include "fixmadd.h"
+#include "fixmul.h"
 #include "fixpoint_math.h"
 
 #endif

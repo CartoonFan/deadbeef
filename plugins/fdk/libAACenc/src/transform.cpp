@@ -106,10 +106,10 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "transform.h"
+#include "FDK_tools_rom.h"
+#include "aacEnc_rom.h"
 #include "dct.h"
 #include "psy_const.h"
-#include "aacEnc_rom.h"
-#include "FDK_tools_rom.h"
 
 #if defined(__arm__)
 #endif
@@ -139,17 +139,17 @@ INT FDKaacEnc_Transform_Real(const INT_PCM *pTimeData,
 
   offset = (windowShape == LOL_WINDOW) ? ((frameLength * 3) >> 2) : 0;
   switch (blockType) {
-    case LONG_WINDOW:
-    case STOP_WINDOW:
-      fr = frameLength - offset;
-      break;
-    case START_WINDOW: /* or StopStartSequence */
-    case SHORT_WINDOW:
-      fr = frameLength >> 3;
-      break;
-    default:
-      FDK_ASSERT(0);
-      return -1;
+  case LONG_WINDOW:
+  case STOP_WINDOW:
+    fr = frameLength - offset;
+    break;
+  case START_WINDOW: /* or StopStartSequence */
+  case SHORT_WINDOW:
+    fr = frameLength >> 3;
+    break;
+  default:
+    FDK_ASSERT(0);
+    return -1;
   }
 
   mdct_block(mdctPers, timeData, frameLength, mdctData, numSpec, numMdctLines,
@@ -202,31 +202,31 @@ INT FDKaacEnc_Transform_Real_Eld(const INT_PCM *pTimeData,
   *mdctData_e = 1 + 1;
 
   switch (frameLength) {
-    case 512:
-      pWindowELD = ELDAnalysis512;
-      break;
-    case 480:
-      pWindowELD = ELDAnalysis480;
-      break;
-    case 256:
-      pWindowELD = ELDAnalysis256;
-      *mdctData_e += 1;
-      break;
-    case 240:
-      pWindowELD = ELDAnalysis240;
-      *mdctData_e += 1;
-      break;
-    case 128:
-      pWindowELD = ELDAnalysis128;
-      *mdctData_e += 2;
-      break;
-    case 120:
-      pWindowELD = ELDAnalysis120;
-      *mdctData_e += 2;
-      break;
-    default:
-      FDK_ASSERT(0);
-      return -1;
+  case 512:
+    pWindowELD = ELDAnalysis512;
+    break;
+  case 480:
+    pWindowELD = ELDAnalysis480;
+    break;
+  case 256:
+    pWindowELD = ELDAnalysis256;
+    *mdctData_e += 1;
+    break;
+  case 240:
+    pWindowELD = ELDAnalysis240;
+    *mdctData_e += 1;
+    break;
+  case 128:
+    pWindowELD = ELDAnalysis128;
+    *mdctData_e += 2;
+    break;
+  case 120:
+    pWindowELD = ELDAnalysis120;
+    *mdctData_e += 2;
+    break;
+  default:
+    FDK_ASSERT(0);
+    return -1;
   }
 
   for (i = 0; i < N / 4; i++) {

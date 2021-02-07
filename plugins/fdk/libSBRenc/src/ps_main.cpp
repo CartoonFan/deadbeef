@@ -107,10 +107,10 @@ amm-info@iis.fraunhofer.de
 #include "sbrenc_ram.h"
 
 /*--------------- function declarations --------------------*/
-static void psFindBestScaling(
-    HANDLE_PARAMETRIC_STEREO hParametricStereo,
-    FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
-    UCHAR *dynBandScale, FIXP_DBL *maxBandValue, SCHAR *dmxScale);
+static void
+psFindBestScaling(HANDLE_PARAMETRIC_STEREO hParametricStereo,
+                  FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
+                  UCHAR *dynBandScale, FIXP_DBL *maxBandValue, SCHAR *dmxScale);
 
 /*------------- function definitions ----------------*/
 FDK_PSENC_ERROR PSEnc_Create(HANDLE_PARAMETRIC_STEREO *phParametricStereo) {
@@ -541,10 +541,11 @@ bail:
   return error;
 }
 
-static void psFindBestScaling(
-    HANDLE_PARAMETRIC_STEREO hParametricStereo,
-    FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
-    UCHAR *dynBandScale, FIXP_DBL *maxBandValue, SCHAR *dmxScale) {
+static void
+psFindBestScaling(HANDLE_PARAMETRIC_STEREO hParametricStereo,
+                  FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
+                  UCHAR *dynBandScale, FIXP_DBL *maxBandValue,
+                  SCHAR *dmxScale) {
   HANDLE_PS_ENCODE hPsEncode = hParametricStereo->hPsEncode;
 
   INT group, bin, col, band;
@@ -597,7 +598,7 @@ static void psFindBestScaling(
     maxBandValue[band] = fixMax(maxVal[0][band], maxVal[1][band]);
   }
 
-    /* calculate maximal scaling for QMF downmix */
+  /* calculate maximal scaling for QMF downmix */
 #ifndef MULT_16x16
   *dmxScale = fixMin(DFRACT_BITS, CountLeadingBits(maxValue));
 #else

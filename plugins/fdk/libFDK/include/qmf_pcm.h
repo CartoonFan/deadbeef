@@ -181,10 +181,8 @@ void qmfSynPrototypeFirSlot_fallback(
         Are = fMult(Are, gain);
       }
       if (scale >= 0) {
-        FDK_ASSERT(
-            Are <=
-            (Are + rnd_val)); /* Round-addition must not overflow, might be
-                                 equal for rnd_val=0 */
+        FDK_ASSERT(Are <= (Are + rnd_val)); /* Round-addition must not overflow,
+                                       might be equal for rnd_val=0 */
         tmp = (INT_PCM_QMFOUT)(
             SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
       } else {
@@ -210,7 +208,7 @@ void qmfSynPrototypeFirSlot_fallback(
     sta[8] = FX_DBL2FX_QSS(fMultDiv2(p_flt[0], imag));
     p_flt += (p_stride * QMF_NO_POLY);
     p_fltm -= (p_stride * QMF_NO_POLY);
-    sta += 9;  // = (2*QMF_NO_POLY-1);
+    sta += 9; // = (2*QMF_NO_POLY-1);
   }
 }
 
@@ -297,7 +295,7 @@ static void qmfSynPrototypeFirSlot_NonSymmetric(
 
     p_flt += (p_stride * QMF_NO_POLY);
     p_fltm += (p_stride * QMF_NO_POLY);
-    sta += 9;  // = (2*QMF_NO_POLY-1);
+    sta += 9; // = (2*QMF_NO_POLY-1);
   }
 }
 #endif /* FUNCTION_qmfSynPrototypeFirSlot_NonSymmetric */
@@ -395,7 +393,8 @@ void qmfSynthesisFiltering(
     int scaleFactorLowBand =
         (i < ov_len) ? scaleFactorLowBand_ov : scaleFactorLowBand_no_ov;
 
-    if (!(synQmf->flags & QMF_FLAG_LP)) QmfBufferImagSlot = QmfBufferImag[i];
+    if (!(synQmf->flags & QMF_FLAG_LP))
+      QmfBufferImagSlot = QmfBufferImag[i];
 
     qmfSynthesisFilteringSlot(synQmf, QmfBufferReal[i], QmfBufferImagSlot,
                               scaleFactorLowBand, scaleFactorHighBand,

@@ -102,11 +102,11 @@ amm-info@iis.fraunhofer.de
 
 #include "aacenc_pns.h"
 
-#include "psy_data.h"
-#include "pnsparam.h"
-#include "noisedet.h"
 #include "bit_cnt.h"
 #include "interface.h"
+#include "noisedet.h"
+#include "pnsparam.h"
+#include "psy_data.h"
 
 /* minCorrelationEnergy = (1.0e-10f)^2 ~ 2^-67 = 2^-47 * 2^-20 */
 static const FIXP_DBL minCorrelationEnergy =
@@ -134,15 +134,17 @@ static void FDKaacEnc_CalcNoiseNrgs(const INT sfbActive, INT *pnsFlag,
 
 *****************************************************************************/
 
-AAC_ENCODER_ERROR FDKaacEnc_InitPnsConfiguration(
-    PNS_CONFIG *pnsConf, INT bitRate, INT sampleRate, INT usePns, INT sfbCnt,
-    const INT *sfbOffset, const INT numChan, const INT isLC) {
+AAC_ENCODER_ERROR
+FDKaacEnc_InitPnsConfiguration(PNS_CONFIG *pnsConf, INT bitRate, INT sampleRate,
+                               INT usePns, INT sfbCnt, const INT *sfbOffset,
+                               const INT numChan, const INT isLC) {
   AAC_ENCODER_ERROR ErrorStatus;
 
   /* init noise detection */
   ErrorStatus = FDKaacEnc_GetPnsParam(&pnsConf->np, bitRate, sampleRate, sfbCnt,
                                       sfbOffset, &usePns, numChan, isLC);
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+  if (ErrorStatus != AAC_ENC_OK)
+    return ErrorStatus;
 
   pnsConf->minCorrelationEnergy = minCorrelationEnergy;
   pnsConf->noiseCorrelationThresh = noiseCorrelationThresh;
@@ -447,7 +449,8 @@ void FDKaacEnc_PreProcessPnsChannelPair(
   INT sfb;
   FIXP_DBL ccf;
 
-  if (!pnsConf->usePns) return;
+  if (!pnsConf->usePns)
+    return;
 
   FIXP_DBL *RESTRICT pNoiseEnergyCorrelationL =
       pnsDataLeft->noiseEnergyCorrelation;
@@ -502,7 +505,8 @@ void FDKaacEnc_PostProcessPnsChannelPair(const INT sfbActive,
                                          INT *RESTRICT msMask, INT *msDigest) {
   INT sfb;
 
-  if (!pnsConf->usePns) return;
+  if (!pnsConf->usePns)
+    return;
 
   for (sfb = 0; sfb < sfbActive; sfb++) {
     /*

@@ -126,7 +126,7 @@ struct MPS_ENCODER {
   UINT pOutBufferType[2];
 
   UCHAR sacOutBuffer[1024]; /* Worst case memory consumption for ELDv2: 768
-                               bytes => 6144 bits (Core + SBR + MPS) */
+                             bytes => 6144 bits (Core + SBR + MPS) */
 };
 
 struct MPS_CONFIG_TAB {
@@ -230,20 +230,20 @@ MPS_ENCODER_ERROR FDK_MpegsEnc_Init(HANDLE_MPS_ENCODER hMpsEnc,
 
   /* Combine MPS with SBR only if the number of QMF band fits together.*/
   switch (sbrRatio) {
-    case 1: /* downsampled sbr - 32 QMF bands required */
-      if (!(samplingrate < fs_low)) {
-        error = MPS_ENCODER_INIT_ERROR;
-        goto bail;
-      }
-      break;
-    case 2: /* dualrate - 64 QMF bands required */
-      if (!((samplingrate >= fs_low) && (samplingrate < fs_high))) {
-        error = MPS_ENCODER_INIT_ERROR;
-        goto bail;
-      }
-      break;
-    case 0:
-    default:; /* time interface - no samplingrate restriction */
+  case 1: /* downsampled sbr - 32 QMF bands required */
+    if (!(samplingrate < fs_low)) {
+      error = MPS_ENCODER_INIT_ERROR;
+      goto bail;
+    }
+    break;
+  case 2: /* dualrate - 64 QMF bands required */
+    if (!((samplingrate >= fs_low) && (samplingrate < fs_high))) {
+      error = MPS_ENCODER_INIT_ERROR;
+      goto bail;
+    }
+    break;
+  case 0:
+  default:; /* time interface - no samplingrate restriction */
   }
 
   /* 32  QMF-Bands  ( fs < 27713 )
@@ -270,41 +270,40 @@ MPS_ENCODER_ERROR FDK_MpegsEnc_Init(HANDLE_MPS_ENCODER hMpsEnc,
 
   /* init SAC library */
   switch (audioObjectType) {
-    case AOT_ER_AAC_ELD: {
-      const UINT noInterFrameCoding = 0;
+  case AOT_ER_AAC_ELD: {
+    const UINT noInterFrameCoding = 0;
 
-      if ((SACENC_OK !=
-           FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_LOWDELAY,
-                               (noInterFrameCoding == 1) ? 1 : 2)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_ENC_MODE, SACENC_212)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_SAMPLERATE, samplingrate)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_FRAME_TIME_SLOTS,
-                                            nTimeSlots)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_PARAM_BANDS,
-                                            SACENC_BANDS_15)) ||
-          (SACENC_OK !=
-           FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_TIME_DOM_DMX, 2)) ||
-          (SACENC_OK !=
-           FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_COARSE_QUANT, 0)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_QUANT_MODE,
-                                            SACENC_QUANTMODE_FINE)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_TIME_ALIGNMENT, 0)) ||
-          (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
-                                            SACENC_INDEPENDENCY_FACTOR, 20))) {
-        error = MPS_ENCODER_INIT_ERROR;
-        goto bail;
-      }
-      break;
-    }
-    default:
+    if ((SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_LOWDELAY,
+                                          (noInterFrameCoding == 1) ? 1 : 2)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_ENC_MODE,
+                                          SACENC_212)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
+                                          SACENC_SAMPLERATE, samplingrate)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
+                                          SACENC_FRAME_TIME_SLOTS,
+                                          nTimeSlots)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
+                                          SACENC_PARAM_BANDS,
+                                          SACENC_BANDS_15)) ||
+        (SACENC_OK !=
+         FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_TIME_DOM_DMX, 2)) ||
+        (SACENC_OK !=
+         FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_COARSE_QUANT, 0)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
+                                          SACENC_QUANT_MODE,
+                                          SACENC_QUANTMODE_FINE)) ||
+        (SACENC_OK !=
+         FDK_sacenc_setParam(hMpsEnc->hSacEncoder, SACENC_TIME_ALIGNMENT, 0)) ||
+        (SACENC_OK != FDK_sacenc_setParam(hMpsEnc->hSacEncoder,
+                                          SACENC_INDEPENDENCY_FACTOR, 20))) {
       error = MPS_ENCODER_INIT_ERROR;
       goto bail;
+    }
+    break;
+  }
+  default:
+    error = MPS_ENCODER_INIT_ERROR;
+    goto bail;
   }
 
   if (SACENC_OK != FDK_sacenc_init(hMpsEnc->hSacEncoder, coreCoderDelay)) {
@@ -417,7 +416,7 @@ INT FDK_MpegsEnc_WriteSpatialSpecificConfig(HANDLE_MPS_ENCODER hMpsEnc,
     if (hBs != NULL) {
       int i;
       int writtenBits = 0;
-      for (i = 0; i<mp4SpaceEncoderInfo.pSscBuf->nSscSizeBits>> 3; i++) {
+      for (i = 0; i<mp4SpaceEncoderInfo.pSscBuf->nSscSizeBits> > 3; i++) {
         FDKwriteBits(hBs, mp4SpaceEncoderInfo.pSscBuf->pSsc[i], 8);
         writtenBits += 8;
       }

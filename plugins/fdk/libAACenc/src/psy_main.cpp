@@ -102,22 +102,22 @@ amm-info@iis.fraunhofer.de
 
 #include "psy_const.h"
 
-#include "block_switch.h"
-#include "transform.h"
-#include "spreading.h"
-#include "pre_echo_control.h"
+#include "aacEnc_ram.h"
 #include "band_nrg.h"
+#include "block_switch.h"
+#include "grp_data.h"
+#include "intensity.h"
+#include "interface.h"
+#include "ms_stereo.h"
+#include "pns_func.h"
+#include "pre_echo_control.h"
 #include "psy_configuration.h"
 #include "psy_data.h"
-#include "ms_stereo.h"
-#include "interface.h"
 #include "psy_main.h"
-#include "grp_data.h"
+#include "spreading.h"
 #include "tns_func.h"
-#include "pns_func.h"
 #include "tonality.h"
-#include "aacEnc_ram.h"
-#include "intensity.h"
+#include "transform.h"
 
 /* blending to reduce gibbs artifacts */
 #define FADE_OUT_LEN 6
@@ -297,10 +297,11 @@ AAC_ENCODER_ERROR FDKaacEnc_psyInit(PSY_INTERNAL *hPsy, PSY_OUT **phpsyOut,
 
 *****************************************************************************/
 
-AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
-    PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType, CHANNEL_MAPPING *cm,
-    INT sampleRate, INT granuleLength, INT bitRate, INT tnsMask, INT bandwidth,
-    INT usePns, INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags) {
+AAC_ENCODER_ERROR
+FDKaacEnc_psyMainInit(PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType,
+                      CHANNEL_MAPPING *cm, INT sampleRate, INT granuleLength,
+                      INT bitRate, INT tnsMask, INT bandwidth, INT usePns,
+                      INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags) {
   AAC_ENCODER_ERROR ErrorStatus;
   int i, ch;
   int channelsEff = cm->nChannelsEff;
@@ -308,27 +309,27 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
   FB_TYPE filterBank;
 
   switch (FDKaacEnc_GetMonoStereoMode(cm->encMode)) {
-    /* ... and map to tnsChannels */
-    case EL_MODE_MONO:
-      tnsChannels = 1;
-      break;
-    case EL_MODE_STEREO:
-      tnsChannels = 2;
-      break;
-    default:
-      tnsChannels = 0;
+  /* ... and map to tnsChannels */
+  case EL_MODE_MONO:
+    tnsChannels = 1;
+    break;
+  case EL_MODE_STEREO:
+    tnsChannels = 2;
+    break;
+  default:
+    tnsChannels = 0;
   }
 
   switch (audioObjectType) {
-    default:
-      filterBank = FB_LC;
-      break;
-    case AOT_ER_AAC_LD:
-      filterBank = FB_LD;
-      break;
-    case AOT_ER_AAC_ELD:
-      filterBank = FB_ELD;
-      break;
+  default:
+    filterBank = FB_LC;
+    break;
+  case AOT_ER_AAC_LD:
+    filterBank = FB_LD;
+    break;
+  case AOT_ER_AAC_ELD:
+    filterBank = FB_ELD;
+    break;
   }
 
   hPsy->granuleLength = granuleLength;
@@ -336,7 +337,8 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
   ErrorStatus = FDKaacEnc_InitPsyConfiguration(
       bitRate / channelsEff, sampleRate, bandwidth, LONG_WINDOW,
       hPsy->granuleLength, useIS, useMS, &(hPsy->psyConf[0]), filterBank);
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+  if (ErrorStatus != AAC_ENC_OK)
+    return ErrorStatus;
 
   ErrorStatus = FDKaacEnc_InitTnsConfiguration(
       (bitRate * tnsChannels) / channelsEff, sampleRate, tnsChannels,
@@ -344,14 +346,16 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
       (syntaxFlags & AC_SBR_PRESENT) ? 1 : 0, &(hPsy->psyConf[0].tnsConf),
       &hPsy->psyConf[0], (INT)(tnsMask & 2), (INT)(tnsMask & 8));
 
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+  if (ErrorStatus != AAC_ENC_OK)
+    return ErrorStatus;
 
   if (granuleLength > 512) {
     ErrorStatus = FDKaacEnc_InitPsyConfiguration(
         bitRate / channelsEff, sampleRate, bandwidth, SHORT_WINDOW,
         hPsy->granuleLength, useIS, useMS, &hPsy->psyConf[1], filterBank);
 
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
 
     ErrorStatus = FDKaacEnc_InitTnsConfiguration(
         (bitRate * tnsChannels) / channelsEff, sampleRate, tnsChannels,
@@ -359,7 +363,8 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
         (syntaxFlags & AC_SBR_PRESENT) ? 1 : 0, &hPsy->psyConf[1].tnsConf,
         &hPsy->psyConf[1], (INT)(tnsMask & 1), (INT)(tnsMask & 4));
 
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
   }
 
   for (i = 0; i < cm->nElements; i++) {
@@ -382,14 +387,16 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
       &hPsy->psyConf[0].pnsConf, bitRate / channelsEff, sampleRate, usePns,
       hPsy->psyConf[0].sfbCnt, hPsy->psyConf[0].sfbOffset,
       cm->elInfo[0].nChannelsInEl, (hPsy->psyConf[0].filterbank == FB_LC));
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+  if (ErrorStatus != AAC_ENC_OK)
+    return ErrorStatus;
 
   if (granuleLength > 512) {
     ErrorStatus = FDKaacEnc_InitPnsConfiguration(
         &hPsy->psyConf[1].pnsConf, bitRate / channelsEff, sampleRate, usePns,
         hPsy->psyConf[1].sfbCnt, hPsy->psyConf[1].sfbOffset,
         cm->elInfo[1].nChannelsInEl, (hPsy->psyConf[1].filterbank == FB_LC));
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
   }
 
   return ErrorStatus;
@@ -452,16 +459,15 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
   const INT nTimeSamples = psyConf->granuleLength;
 
   switch (hPsyConfLong->filterbank) {
-    case FB_LC:
-      blockSwitchingOffset =
-          nTimeSamples + (9 * nTimeSamples / (2 * TRANS_FAC));
-      break;
-    case FB_LD:
-    case FB_ELD:
-      blockSwitchingOffset = nTimeSamples;
-      break;
-    default:
-      return AAC_ENC_UNSUPPORTED_FILTERBANK;
+  case FB_LC:
+    blockSwitchingOffset = nTimeSamples + (9 * nTimeSamples / (2 * TRANS_FAC));
+    break;
+  case FB_LD:
+  case FB_ELD:
+    blockSwitchingOffset = nTimeSamples;
+    break;
+  default:
+    return AAC_ENC_UNSUPPORTED_FILTERBANK;
   }
 
   for (ch = 0; ch < channels; ch++) {
@@ -673,7 +679,8 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
     /* 2check: Hasn't this decision to be made for both channels? */
     /* For short windows 1 additional bit headroom is necessary to prevent
      * overflows when summing up energies in FDKaacEnc_groupShortData() */
-    if (isShortWindow[0]) nrgShift--;
+    if (isShortWindow[0])
+      nrgShift--;
 
     /* both spectrum and energies mustn't overflow */
     finalShift = fixMin(minSpecShift, nrgShift);
@@ -792,7 +799,7 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
 
       if (channels >= 1) {
         FDK_ASSERT(1 == commonWindow); /* all checks for TNS do only work for
-                                          common windows (which is always set)*/
+                                  common windows (which is always set)*/
         for (w = 0; w < nWindows[0]; w++) {
           if (isShortWindow[0])
             tnsActive[w] =
@@ -876,15 +883,14 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
                   pSfbEnergy[ch] + w * maxSfb[ch]);
             } else {
               nrgScaling[ch] = /* with tns, energy calculation can overflow; ->
-                                  scaling */
+                    scaling */
                   FDKaacEnc_CalcBandEnergyOptimLong(
                       psyData[ch]->mdctSpectrum, pSfbMaxScaleSpec[ch],
                       hThisPsyConf[ch]->sfbOffset, psyData[ch]->sfbActive,
                       pSfbEnergy[ch], pSfbEnergyLdData[ch]);
-              tnsSpecShift =
-                  fixMax(tnsSpecShift, nrgScaling[ch]); /* nrgScaling is set
-                                                           only if nrg would
-                                                           have an overflow */
+              tnsSpecShift = fixMax(tnsSpecShift, nrgScaling[ch]); /* nrgScaling
+                                                        is set only if nrg would
+                                                        have an overflow */
             }
           } /* if tnsActive */
         }
@@ -906,8 +912,8 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
             pSfbThreshold[ch][sfb] >>= (tnsSpecShift << 1);
           }
           psyData[ch]->mdctScale += tnsSpecShift; /* update mdctScale; not
-                                                     necessary to update
-                                                     sfbMaxScaleSpec */
+                                           necessary to update
+                                           sfbMaxScaleSpec */
         }
       } /* end channel loop */
 
@@ -1092,9 +1098,11 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
       for (sfb = psyData[ch]->sfbActive - 1; sfb >= 0; sfb--) {
         for (line = hPsyConfLong->sfbOffset[sfb + 1] - 1;
              line >= hPsyConfLong->sfbOffset[sfb]; line--) {
-          if (psyData[ch]->mdctSpectrum[line] != FL2FXCONST_SGL(0.0f)) break;
+          if (psyData[ch]->mdctSpectrum[line] != FL2FXCONST_SGL(0.0f))
+            break;
         }
-        if (line > hPsyConfLong->sfbOffset[sfb]) break;
+        if (line > hPsyConfLong->sfbOffset[sfb])
+          break;
       }
       maxSfbPerGroup[ch] = sfb + 1;
       maxSfbPerGroup[ch] =
@@ -1240,7 +1248,7 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
           psyData[ch]->sfbActive, &(hThisPsyConf[ch]->pnsConf),
           pnsData[ch]->pnsFlag, psyData[ch]->sfbEnergyLdData.Long,
           psyOutChannel[ch]->noiseNrg, /* this is the energy that will be
-                                          written to the bitstream */
+                                    written to the bitstream */
           psyOutChannel[ch]->sfbThresholdLdData);
     }
   }

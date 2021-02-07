@@ -123,12 +123,13 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
 
   /* alloc limiter struct */
   limiter = (TDLimiterPtr)FDKcalloc(1, sizeof(struct TDLimiter));
-  if (!limiter) return NULL;
+  if (!limiter)
+    return NULL;
 
   /* alloc max and delay buffers */
-  limiter->maxBuf = (FIXP_DBL*)FDKcalloc(attack + 1, sizeof(FIXP_DBL));
+  limiter->maxBuf = (FIXP_DBL *)FDKcalloc(attack + 1, sizeof(FIXP_DBL));
   limiter->delayBuf =
-      (FIXP_DBL*)FDKcalloc(attack * maxChannels, sizeof(FIXP_DBL));
+      (FIXP_DBL *)FDKcalloc(attack * maxChannels, sizeof(FIXP_DBL));
 
   if (!limiter->maxBuf || !limiter->delayBuf) {
     pcmLimiter_Destroy(limiter);
@@ -164,9 +165,9 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
 }
 
 /* apply limiter */
-TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, FIXP_DBL* RESTRICT pGain,
-                                 const INT* RESTRICT gain_scale,
+TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM *samplesIn,
+                                 INT_PCM *samplesOut, FIXP_DBL *RESTRICT pGain,
+                                 const INT *RESTRICT gain_scale,
                                  const UINT gain_size, const UINT gain_delay,
                                  const UINT nSamples) {
   unsigned int i, j;
@@ -178,7 +179,8 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
   FDK_ASSERT(gain_size == 1);
   FDK_ASSERT(gain_delay <= nSamples);
 
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
   {
     unsigned int channels = limiter->channels;
@@ -188,10 +190,10 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
     FIXP_DBL threshold = limiter->threshold;
 
     FIXP_DBL max = limiter->max;
-    FIXP_DBL* maxBuf = limiter->maxBuf;
+    FIXP_DBL *maxBuf = limiter->maxBuf;
     unsigned int maxBufIdx = limiter->maxBufIdx;
     FIXP_DBL cor = limiter->cor;
-    FIXP_DBL* delayBuf = limiter->delayBuf;
+    FIXP_DBL *delayBuf = limiter->delayBuf;
     unsigned int delayBufIdx = limiter->delayBufIdx;
 
     FIXP_DBL smoothState0 = limiter->smoothState0;
@@ -268,7 +270,8 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
         }
       }
       maxBufIdx++;
-      if (maxBufIdx >= attack + 1) maxBufIdx = 0;
+      if (maxBufIdx >= attack + 1)
+        maxBufIdx = 0;
 
       /* calc gain */
       /* gain is downscaled by one, so that gain = 1.0 can be represented */
@@ -308,7 +311,7 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
 
       gain = smoothState0;
 
-      FIXP_DBL* p_delayBuf = &delayBuf[delayBufIdx * channels + 0];
+      FIXP_DBL *p_delayBuf = &delayBuf[delayBufIdx * channels + 0];
       if (gain < FL2FXCONST_DBL(1.0f / (1 << 1))) {
         gain <<= 1;
         /* lookahead delay, apply gain */
@@ -368,7 +371,8 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
 /* set limiter threshold */
 TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
                                         FIXP_DBL threshold) {
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
   limiter->threshold = threshold >> TDL_GAIN_SCALING;
 
@@ -440,9 +444,11 @@ INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
 /* set number of channels */
 TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
                                         unsigned int nChannels) {
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
-  if (nChannels > limiter->maxChannels) return TDLIMIT_INVALID_PARAMETER;
+  if (nChannels > limiter->maxChannels)
+    return TDLIMIT_INVALID_PARAMETER;
 
   limiter->channels = nChannels;
   // pcmLimiter_Reset(limiter);
@@ -457,9 +463,11 @@ TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter,
   FIXP_DBL attackConst, releaseConst, exponent;
   INT e_ans;
 
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
-  if (sampleRate > limiter->maxSampleRate) return TDLIMIT_INVALID_PARAMETER;
+  if (sampleRate > limiter->maxSampleRate)
+    return TDLIMIT_INVALID_PARAMETER;
 
   /* update attack and release time in samples */
   attack = (unsigned int)(limiter->attackMs * sampleRate / 1000);
@@ -493,9 +501,11 @@ TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
   FIXP_DBL attackConst, exponent;
   INT e_ans;
 
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
-  if (attackMs > limiter->maxAttackMs) return TDLIMIT_INVALID_PARAMETER;
+  if (attackMs > limiter->maxAttackMs)
+    return TDLIMIT_INVALID_PARAMETER;
 
   /* calculate attack time in samples */
   attack = (unsigned int)(attackMs * limiter->sampleRate / 1000);
@@ -519,7 +529,8 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
   FIXP_DBL releaseConst, exponent;
   INT e_ans;
 
-  if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
+  if (limiter == NULL)
+    return TDLIMIT_INVALID_HANDLE;
 
   /* calculate  release time in samples */
   release = (unsigned int)(releaseMs * limiter->sampleRate / 1000);
@@ -536,7 +547,7 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
 }
 
 /* Get library info for this module. */
-TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info) {
+TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO *info) {
   int i;
 
   if (info == NULL) {
@@ -545,7 +556,8 @@ TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info) {
 
   /* Search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return TDLIMIT_UNKNOWN;

@@ -111,10 +111,10 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#include "psy_const.h"
-#include "psy_configuration.h"
-#include "FDK_tools_rom.h"
 #include "FDK_lpc.h"
+#include "FDK_tools_rom.h"
+#include "psy_configuration.h"
+#include "psy_const.h"
 
 /*
   Huffman Tables

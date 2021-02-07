@@ -100,21 +100,21 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "sac_dec_errorcodes.h"
 #include "sac_dec.h"
+#include "sac_dec_errorcodes.h"
 
-#include "sac_process.h"
 #include "sac_bitdec.h"
-#include "sac_smoothing.h"
 #include "sac_calcM1andM2.h"
+#include "sac_process.h"
 #include "sac_reshapeBBEnv.h"
-#include "sac_stp.h"
 #include "sac_rom.h"
+#include "sac_smoothing.h"
+#include "sac_stp.h"
 
 #include "FDK_decorrelate.h"
 
-#include "FDK_trigFcts.h"
 #include "FDK_matrixCalloc.h"
+#include "FDK_trigFcts.h"
 
 /* static int pbStrideTable[] = {1, 2, 5, 28}; see sac_rom.cpp */
 
@@ -176,9 +176,10 @@ int FDK_SpatialDecCompareSpatialSpecificConfigHeader(
  Output:      No return value.
 
 *******************************************************************************/
-static void SpatialDecClearFrameData(
-    spatialDec *self, /* Shall be removed */
-    SPATIAL_BS_FRAME *bsFrame, const SACDEC_CREATION_PARAMS *const setup) {
+static void
+SpatialDecClearFrameData(spatialDec *self, /* Shall be removed */
+                         SPATIAL_BS_FRAME *bsFrame,
+                         const SACDEC_CREATION_PARAMS *const setup) {
   int i;
 
   FDK_ASSERT(self != NULL);
@@ -243,47 +244,47 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
   SACDEC_CREATION_PARAMS setup;
 
   switch (config->decoderLevel) {
-    case DECODER_LEVEL_0: /* 212 maxNumOutputChannels== 2 */
-      setup.maxNumInputChannels = 1;
-      setup.maxNumOutputChannels = 2;
-      setup.maxNumQmfBands = 64;
-      setup.maxNumXChannels = 2;
-      setup.maxNumVChannels = 2;
-      setup.maxNumDecorChannels = 1;
-      setup.bProcResidual = 1;
-      setup.maxNumResidualChannels = 0;
-      setup.maxNumOttBoxes = 1;
-      setup.maxNumParams = setup.maxNumInputChannels + setup.maxNumOttBoxes;
-      break;
-    default:
-      return NULL;
+  case DECODER_LEVEL_0: /* 212 maxNumOutputChannels== 2 */
+    setup.maxNumInputChannels = 1;
+    setup.maxNumOutputChannels = 2;
+    setup.maxNumQmfBands = 64;
+    setup.maxNumXChannels = 2;
+    setup.maxNumVChannels = 2;
+    setup.maxNumDecorChannels = 1;
+    setup.bProcResidual = 1;
+    setup.maxNumResidualChannels = 0;
+    setup.maxNumOttBoxes = 1;
+    setup.maxNumParams = setup.maxNumInputChannels + setup.maxNumOttBoxes;
+    break;
+  default:
+    return NULL;
   }
 
   setup.maxNumResChannels = 1;
 
   {
     switch (config->maxNumOutputChannels) {
-      case OUTPUT_CHANNELS_2_0:
-        setup.maxNumOutputChannels = fMin(setup.maxNumOutputChannels, 2);
-        break;
-      case OUTPUT_CHANNELS_DEFAULT:
-      default:
-        break;
+    case OUTPUT_CHANNELS_2_0:
+      setup.maxNumOutputChannels = fMin(setup.maxNumOutputChannels, 2);
+      break;
+    case OUTPUT_CHANNELS_DEFAULT:
+    default:
+      break;
     }
   }
 
   setup.maxNumHybridBands = SacGetHybridSubbands(setup.maxNumQmfBands);
 
   switch (config->decoderMode) {
-    case EXT_HQ_ONLY:
-      setup.maxNumCmplxQmfBands = setup.maxNumQmfBands;
-      setup.maxNumCmplxHybBands = setup.maxNumHybridBands;
-      break;
-    default:
-      setup.maxNumCmplxQmfBands = fixMax(PC_NUM_BANDS, setup.maxNumQmfBands);
-      setup.maxNumCmplxHybBands =
-          fixMax(PC_NUM_HYB_BANDS, setup.maxNumHybridBands);
-      break;
+  case EXT_HQ_ONLY:
+    setup.maxNumCmplxQmfBands = setup.maxNumQmfBands;
+    setup.maxNumCmplxHybBands = setup.maxNumHybridBands;
+    break;
+  default:
+    setup.maxNumCmplxQmfBands = fixMax(PC_NUM_BANDS, setup.maxNumQmfBands);
+    setup.maxNumCmplxHybBands =
+        fixMax(PC_NUM_HYB_BANDS, setup.maxNumHybridBands);
+    break;
   } /* switch config->decoderMode */
 
   FDK_ALLOCATE_MEMORY_1D_INT(self, 1, spatialDec, SECT_DATA_L2)
@@ -415,11 +416,11 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
   FDK_ALLOCATE_MEMORY_1D(self->hybridSynthesis, setup.maxNumOutputChannels,
                          FDK_SYN_HYB_FILTER)
 
-  FDK_ALLOCATE_MEMORY_1D(
-      self->hybridAnalysis,
-      setup.bProcResidual ? setup.maxNumInputChannels + setup.maxNumResChannels
-                          : setup.maxNumInputChannels,
-      FDK_ANA_HYB_FILTER)
+  FDK_ALLOCATE_MEMORY_1D(self->hybridAnalysis,
+                         setup.bProcResidual ? setup.maxNumInputChannels +
+                                                   setup.maxNumResChannels
+                                             : setup.maxNumInputChannels,
+                         FDK_ANA_HYB_FILTER)
 
   lfSize = 2 * BUFFER_LEN_LF * MAX_QMF_BANDS_TO_HYBRID;
   {
@@ -533,21 +534,21 @@ static int isValidConfig(spatialDec const *const self,
   nUpmixType = (UPMIXTYPE)upmixType;
 
   switch (nUpmixType) {
-    case UPMIXTYPE_BYPASS: /* UPMIX_TYPE_BYPASS */
-      break;
-    case UPMIXTYPE_NORMAL: /* UPMIX_TYPE_NORMAL */
-      break;
-    default:
-      return 0; /* unsupported upmixType */
+  case UPMIXTYPE_BYPASS: /* UPMIX_TYPE_BYPASS */
+    break;
+  case UPMIXTYPE_NORMAL: /* UPMIX_TYPE_NORMAL */
+    break;
+  default:
+    return 0; /* unsupported upmixType */
   }
 
   return 1; /* upmixType supported */
 }
 
-static SACDEC_ERROR CheckLevelTreeUpmixType(
-    const SACDEC_CREATION_PARAMS *const pCreateParams,
-    const SPATIAL_SPECIFIC_CONFIG *const pSsc, const int decoderLevel,
-    const UPMIXTYPE upmixType) {
+static SACDEC_ERROR
+CheckLevelTreeUpmixType(const SACDEC_CREATION_PARAMS *const pCreateParams,
+                        const SPATIAL_SPECIFIC_CONFIG *const pSsc,
+                        const int decoderLevel, const UPMIXTYPE upmixType) {
   SACDEC_ERROR err = MPS_OK;
   int nOutputChannels, treeConfig;
 
@@ -557,25 +558,25 @@ static SACDEC_ERROR CheckLevelTreeUpmixType(
   treeConfig = pSsc->treeConfig;
 
   switch (decoderLevel) {
-    case 0: {
-      if (treeConfig != SPATIALDEC_MODE_RSVD7) {
-        err = MPS_INVALID_TREECONFIG;
-        goto bail;
-      }
-      break;
-    }
-    default:
-      err = MPS_INVALID_PARAMETER /* MPS_UNIMPLEMENTED */;
+  case 0: {
+    if (treeConfig != SPATIALDEC_MODE_RSVD7) {
+      err = MPS_INVALID_TREECONFIG;
       goto bail;
+    }
+    break;
+  }
+  default:
+    err = MPS_INVALID_PARAMETER /* MPS_UNIMPLEMENTED */;
+    goto bail;
   }
 
   switch (upmixType) {
-    case UPMIXTYPE_BYPASS:
-      nOutputChannels = pSsc->nInputChannels;
-      break;
-    default:
-      nOutputChannels = pSsc->nOutputChannels;
-      break;
+  case UPMIXTYPE_BYPASS:
+    nOutputChannels = pSsc->nInputChannels;
+    break;
+  default:
+    nOutputChannels = pSsc->nOutputChannels;
+    break;
   }
 
   /* Is sufficient memory allocated. */
@@ -648,9 +649,11 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
   /* Store and update instance after all checks passed successfully: */
   self->upmixType = (UPMIXTYPE)upmixType;
 
-  if (initFlags & MPEGS_INIT_PARAMS_ERROR_CONCEALMENT) { /* At least one error
-                                                            concealment
-                                                            parameter changed */
+  if (initFlags & MPEGS_INIT_PARAMS_ERROR_CONCEALMENT) {
+    /* At least one error
+                                                              concealment
+                                                              parameter changed
+     */
     err = SpatialDecConcealment_SetParam(
         &self->concealInfo, SAC_DEC_CONCEAL_METHOD, pUserParams->concealMethod);
     if (err != MPS_OK) {
@@ -693,16 +696,16 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
 
   /* static decoder scale depends on number of qmf bands */
   switch (nQmfBands) {
-    case 16:
-    case 24:
-    case 32:
-      self->staticDecScale = 21;
-      break;
-    case 64:
-      self->staticDecScale = 22;
-      break;
-    default:
-      return MPS_INVALID_PARAMETER;
+  case 16:
+  case 24:
+  case 32:
+    self->staticDecScale = 21;
+    break;
+  case 64:
+    self->staticDecScale = 22;
+    break;
+  default:
+    return MPS_INVALID_PARAMETER;
   }
 
   self->numParameterSetsPrev = 1;
@@ -769,9 +772,8 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
       FIXP_DBL outputGain_m = getChGain(self, nCh, &outputGain_e);
 
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
-        outputScale +=
-            self->clipProtectGainSF__FDK; /* consider clip protection scaling at
-                                             synthesis qmf */
+        outputScale += self->clipProtectGainSF__FDK; /* consider clip protection
+                                                scaling at synthesis qmf */
       }
 
       scale = outputScale;
@@ -827,13 +829,15 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
           self->decorrConfig, idec, 0, /* self->partiallyComplex */
           0, 0,                        /* isLegacyPS */
           (initFlags & MPEGS_INIT_STATES_DECORRELATOR) ? 1 : 0);
-      if (errCode) return MPS_NOTOK;
+      if (errCode)
+        return MPS_NOTOK;
     }
   } /* !self->partiallyComplex */
 
   err = initM1andM2(self, (initFlags & MPEGS_INIT_STATES_M1M2) ? 1 : 0,
                     (initFlags & MPEGS_INIT_CONFIG) ? 1 : 0);
-  if (err != MPS_OK) return err;
+  if (err != MPS_OK)
+    return err;
 
   /* Initialization of previous frame data */
   if (initFlags & MPEGS_INIT_STATES_PARAM) {
@@ -860,7 +864,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
   self->prevTimeSlot = -1;
   self->curTimeSlot =
       MAX_TIME_SLOTS + 1; /* Initialize with a invalid value to trigger
-                             concealment if first frame has no valid data. */
+                           concealment if first frame has no valid data. */
   self->curPs = 0;
 
   subbandTPInit(self->hStpDec);
@@ -889,13 +893,13 @@ void SpatialDecChannelProperties(spatialDec *self,
   } else {
     /* ISO/IEC FDIS 23003-1:2006(E), page 46, Table 40 bsTreeConfig */
     switch (self->treeConfig) {
-      case TREE_212:
-        channelType[0] = ACT_FRONT;
-        channelIndices[0] = 0;
-        channelType[1] = ACT_FRONT;
-        channelIndices[1] = 1;
-        break;
-      default:;
+    case TREE_212:
+      channelType[0] = ACT_FRONT;
+      channelIndices[0] = 0;
+      channelType[1] = ACT_FRONT;
+      channelIndices[1] = 1;
+      break;
+    default:;
     }
   }
 }
@@ -1048,44 +1052,44 @@ static void SpatialDecApplyBypass(spatialDec *self, FIXP_DBL **hybInputReal,
 
     /* Determine output channel indices according to tree config */
     switch (self->treeConfig) {
-      case TREE_212: /* 212  */
-        lf = 0;
-        rf = 1;
-        break;
-      default:;
+    case TREE_212: /* 212  */
+      lf = 0;
+      rf = 1;
+      break;
+    default:;
     }
 
     /* Note: numInputChannels might not match the tree config ! */
     switch (numInputChannels) {
-      case 1:
-        if (cf > 0) {
-          FDKmemcpy(hybOutputReal[cf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
-          FDKmemcpy(hybOutputImag[cf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
-        } else {
-          FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
-          FDKmemcpy(hybOutputReal[rf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
-          FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
-          FDKmemcpy(hybOutputImag[rf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
-        }
-        break;
-      case 2:
-        FDK_ASSERT(lf != -1);
-        FDK_ASSERT(rf != -1);
+    case 1:
+      if (cf > 0) {
+        FDKmemcpy(hybOutputReal[cf], hybInputReal[0],
+                  self->hybridBands * sizeof(FIXP_DBL));
+        FDKmemcpy(hybOutputImag[cf], hybInputImag[0],
+                  complexHybBands * sizeof(FIXP_DBL));
+      } else {
         FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
                   self->hybridBands * sizeof(FIXP_DBL));
-        FDKmemcpy(hybOutputReal[rf], hybInputReal[1],
+        FDKmemcpy(hybOutputReal[rf], hybInputReal[0],
                   self->hybridBands * sizeof(FIXP_DBL));
         FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
                   complexHybBands * sizeof(FIXP_DBL));
-        FDKmemcpy(hybOutputImag[rf], hybInputImag[1],
+        FDKmemcpy(hybOutputImag[rf], hybInputImag[0],
                   complexHybBands * sizeof(FIXP_DBL));
-        break;
+      }
+      break;
+    case 2:
+      FDK_ASSERT(lf != -1);
+      FDK_ASSERT(rf != -1);
+      FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
+                self->hybridBands * sizeof(FIXP_DBL));
+      FDKmemcpy(hybOutputReal[rf], hybInputReal[1],
+                self->hybridBands * sizeof(FIXP_DBL));
+      FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
+                complexHybBands * sizeof(FIXP_DBL));
+      FDKmemcpy(hybOutputImag[rf], hybInputImag[1],
+                complexHybBands * sizeof(FIXP_DBL));
+      break;
     }
     for (ch = 0; ch < self->numOutputChannelsAT; ch++) {
       if (ch == lf || ch == rf || ch == cf) {
@@ -1163,7 +1167,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
            calculated differently compared to non-residual bands.
          */
         SpatialDecBufferMatrices(self); /* input: M(1/2)param(Real/Imag) */
-                                        /* output: M(1/2)param(Real/Imag)Prev */
+        /* output: M(1/2)param(Real/Imag)Prev */
         self->bOverwriteM1M2prev = 0;
       }
 
@@ -1176,23 +1180,23 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
     alpha = FX_DBL2FX_SGL(fDivNorm(ts - prevSlot, currSlot - prevSlot));
 
     switch (mode) {
-      case INPUTMODE_QMF_SBR:
-        if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD)
-          self->bShareDelayWithSBR = 0; /* We got no hybrid delay */
-        else
-          self->bShareDelayWithSBR = 1;
-        SpatialDecFeedQMF(self, qmfInDataReal, qmfInDataImag, ts_io, bypassMode,
-                          self->qmfInputReal__FDK, self->qmfInputImag__FDK,
-                          self->numInputChannels);
-        break;
-      case INPUTMODE_TIME:
-        self->bShareDelayWithSBR = 0;
-        SpatialDecQMFAnalysis(self, inData, ts_io, bypassMode,
-                              self->qmfInputReal__FDK, self->qmfInputImag__FDK,
-                              self->numInputChannels);
-        break;
-      default:
-        break;
+    case INPUTMODE_QMF_SBR:
+      if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD)
+        self->bShareDelayWithSBR = 0; /* We got no hybrid delay */
+      else
+        self->bShareDelayWithSBR = 1;
+      SpatialDecFeedQMF(self, qmfInDataReal, qmfInDataImag, ts_io, bypassMode,
+                        self->qmfInputReal__FDK, self->qmfInputImag__FDK,
+                        self->numInputChannels);
+      break;
+    case INPUTMODE_TIME:
+      self->bShareDelayWithSBR = 0;
+      SpatialDecQMFAnalysis(self, inData, ts_io, bypassMode,
+                            self->qmfInputReal__FDK, self->qmfInputImag__FDK,
+                            self->numInputChannels);
+      break;
+    default:
+      break;
     }
 
     if ((self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_USAC) &&
@@ -1258,7 +1262,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
       SpatialDecCreateX(self,
                         self->hybInputReal__FDK, /* input: hybInput(Real/Imag),
-                                                    hybResidual(Real/Imag) */
+                                              hybResidual(Real/Imag) */
                         self->hybInputImag__FDK, pxReal, pxImag);
 
       {
@@ -1267,7 +1271,8 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
             self->wReal__FDK, /* output: w(Real/Imag) */
             self->wImag__FDK);
       }
-      if (err != MPS_OK) goto bail;
+      if (err != MPS_OK)
+        goto bail;
 
       int applyM2Config = APPLY_M2_NONE;
 
@@ -1282,35 +1287,35 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
       }
 
       switch (applyM2Config) {
-        case APPLY_M2_MODE212: {
-          err = SpatialDecApplyM2_Mode212(
-              self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
-              self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK);
-        } break;
-        case APPLY_M2_MODE212_Res_PhaseCoding:
-          err = SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-              self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
-              self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK);
-          break;
-        case APPLY_M2:
-          err = SpatialDecApplyM2(
-              self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
-              self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK,
-              self->hybOutputRealWet__FDK, self->hybOutputImagWet__FDK);
-          break;
-        default:
-          err = MPS_APPLY_M2_ERROR;
-          goto bail;
+      case APPLY_M2_MODE212: {
+        err = SpatialDecApplyM2_Mode212(
+            self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
+            self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK);
+      } break;
+      case APPLY_M2_MODE212_Res_PhaseCoding:
+        err = SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
+            self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
+            self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK);
+        break;
+      case APPLY_M2:
+        err = SpatialDecApplyM2(
+            self, ps, alpha, self->wReal__FDK, self->wImag__FDK,
+            self->hybOutputRealDry__FDK, self->hybOutputImagDry__FDK,
+            self->hybOutputRealWet__FDK, self->hybOutputImagWet__FDK);
+        break;
+      default:
+        err = MPS_APPLY_M2_ERROR;
+        goto bail;
       }
 
-      if (err != MPS_OK) goto bail;
+      if (err != MPS_OK)
+        goto bail;
 
       if ((self->tempShapeConfig == 2) && (!isTwoChMode(self->upmixType))) {
-        SpatialDecReshapeBBEnv(self, frame,
-                               ts); /* input: reshapeBBEnvState,
-                                       hybOutput(Real/Imag)(Dry/Wet),
-                                       hybInput(Real/Imag) */
-      }                             /* output: hybOutput(Real/Imag)Dry */
+        SpatialDecReshapeBBEnv(self, frame, ts); /* input: reshapeBBEnvState,
+                                            hybOutput(Real/Imag)(Dry/Wet),
+                                            hybInput(Real/Imag) */
+      } /* output: hybOutput(Real/Imag)Dry */
 
       /* Merge parts of the dry and wet QMF buffers. */
       if ((self->tempShapeConfig == 1) && (!isTwoChMode(self->upmixType))) {
@@ -1324,8 +1329,9 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
         }   /* loop ch */
         err = subbandTPApply(
             self, frame); /* input: hStpDec, hybOutput(Real/Imag)Dry/Wet */
-                          /* output: hStpDec, hybOutput(Real/Imag)Dry */
-        if (err != MPS_OK) goto bail;
+        /* output: hStpDec, hybOutput(Real/Imag)Dry */
+        if (err != MPS_OK)
+          goto bail;
       } /* (self->tempShapeConfig == 1) */
       else {
         /* The wet signal is added to the dry signal in applyM2 if GES and STP
@@ -1369,14 +1375,15 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
         self->hybOutputImagDry__FDK, self->timeOut__FDK, /* output: timeOut */
         numInputChannels, mapDescr);
 
-    if (err != MPS_OK) goto bail;
+    if (err != MPS_OK)
+      goto bail;
 
     /*
      * Update parameter buffer
      */
     if (ts == currSlot) {
       SpatialDecBufferMatrices(self); /* input: M(1/2)param(Real/Imag) */
-                                      /* output: M(1/2)param(Real/Imag)Prev */
+      /* output: M(1/2)param(Real/Imag)Prev */
 
       prevSlot = currSlot;
       ps++;
@@ -1420,9 +1427,8 @@ SACDEC_ERROR SpatialDecApplyFrame(
 
   if ((self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_USAC) &&
       (self->stereoConfigIndex > 1)) {
-    numInputChannels =
-        1; /* Do not count residual channel as input channel. It is handled
-              seperately. */
+    numInputChannels = 1; /* Do not count residual channel as input channel. It
+                         is handled seperately. */
   }
 
   /* Check if input amount of channels is consistent */
@@ -1451,9 +1457,9 @@ SACDEC_ERROR SpatialDecApplyFrame(
   if ((fDecAndMapFrameData == 0) &&
       (frame->paramSlot[fMax(0, frame->numParameterSets - 1)] !=
            (self->timeSlots - 1) ||
-       self->curTimeSlot >
-           frame->paramSlot[self->curPs])) { /* Detected faulty parameter slot
-                                                data. */
+       self->curTimeSlot > frame->paramSlot[self->curPs])) {
+    /* Detected faulty parameter slot
+                                         data. */
     fDecAndMapFrameData = 1;
     controlFlags |= MPEGS_CONCEAL;
   }

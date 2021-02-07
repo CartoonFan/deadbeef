@@ -145,10 +145,10 @@ typedef struct {
   SCHAR BufferFullnessAchieved;
   UCHAR
   usacExplicitCfgChanged;      /* explicit config in case of USAC and LOAS/LATM
-                                  must be compared to IPF cfg */
+                                must be compared to IPF cfg */
   UCHAR applyAsc;              /* apply ASC immediate without flushing */
   UCHAR newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
-                                  AudioPreRoll */
+                                AudioPreRoll */
 } CLatmDemux;
 
 int CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
@@ -173,10 +173,11 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
  * \param configChanged Indicates a config change
  * \return error code
  */
-TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
-    HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
-    CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int *pfConfigFound, UCHAR configMode, UCHAR configChanged);
+TRANSPORTDEC_ERROR
+CLatmDemux_ReadStreamMuxConfig(HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
+                               CSTpCallBacks *pTpDecCallbacks,
+                               CSAudioSpecificConfig *pAsc, int *pfConfigFound,
+                               UCHAR configMode, UCHAR configChanged);
 
 TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
                                                     CLatmDemux *pLatmDemux);

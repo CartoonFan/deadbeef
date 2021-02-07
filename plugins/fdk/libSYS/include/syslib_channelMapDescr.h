@@ -101,7 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 /** \file   syslib_channelMapDescr.h
- *  \brief  Function and structure declarations for the channel map descriptor implementation.
+ *  \brief  Function and structure declarations for the channel map descriptor
+ * implementation.
  */
 
 #ifndef SYSLIB_CHANNELMAPDESCR_H
@@ -113,10 +114,10 @@ amm-info@iis.fraunhofer.de
  * \brief  Contains information needed for a single channel map.
  */
 typedef struct {
-  const UCHAR*
-      pChannelMap; /*!< Actual channel mapping for one single configuration. */
+  const UCHAR
+      *pChannelMap; /*!< Actual channel mapping for one single configuration. */
   UCHAR numChannels; /*!< The number of channels for the channel map which is
-                        the maximum used channel index+1. */
+                      the maximum used channel index+1. */
 } CHANNEL_MAP_INFO;
 
 /**
@@ -127,11 +128,11 @@ typedef struct {
  * library. Always use one of the API access functions below!
  */
 typedef struct {
-  const CHANNEL_MAP_INFO* pMapInfoTab; /*!< Table of channel maps. */
+  const CHANNEL_MAP_INFO *pMapInfoTab; /*!< Table of channel maps. */
   UINT mapInfoTabLen; /*!< Length of the channel map table array. */
   UINT fPassThrough;  /*!< Flag that defines whether the specified mapping shall
-                         be applied  (value: 0) or the input just gets passed
-                         through (MPEG mapping). */
+                       be applied  (value: 0) or the input just gets passed
+                       through (MPEG mapping). */
 } FDK_channelMapDescr;
 
 #ifdef __cplusplus
@@ -151,8 +152,8 @@ extern "C" {
  * \param  fPassThrough   If the flag is set the reordering (given by
  pMapInfoTab) will be bypassed.
  */
-void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
-                         const CHANNEL_MAP_INFO* const pMapInfoTab,
+void FDK_chMapDescr_init(FDK_channelMapDescr *const pMapDescr,
+                         const CHANNEL_MAP_INFO *const pMapInfoTab,
                          const UINT mapInfoTabLen, const UINT fPassThrough);
 
 /**
@@ -165,7 +166,7 @@ void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
  * \return               Value unequal to zero if set operation was not
  * successful. And zero on success.
  */
-int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
+int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr *const pMapDescr,
                                   UINT fPassThrough);
 
 /**
@@ -177,7 +178,7 @@ int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
  * index).
  * \return            Mapping value.
  */
-UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
+UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr *const pMapDescr,
                                  const UCHAR chIdx, const UINT mapIdx);
 
 /**
@@ -187,7 +188,7 @@ UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
  * \return           Value unequal to zero if descriptor is valid, otherwise
  * zero.
  */
-int FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr);
+int FDK_chMapDescr_isValid(const FDK_channelMapDescr *const pMapDescr);
 
 /**
  * Extra variables for setting up Wg4 channel mapping.

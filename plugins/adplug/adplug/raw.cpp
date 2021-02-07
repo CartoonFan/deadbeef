@@ -1,20 +1,20 @@
 /*
  * Adplug - Replayer for many OPL2/OPL3 audio file formats.
  * Copyright (C) 1999 - 2005 Simon Peter, <dn.tlp@gmx.net>, et al.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  *
  * raw.c - RAW Player by Simon Peter <dn.tlp@gmx.net>
  */
@@ -27,32 +27,32 @@
  * - Finalized Tag support. (2017)
  */
 
-#include <cstring>
 #include "raw.h"
+#include <cstring>
 
 /*** public methods *************************************/
 
-CPlayer *CrawPlayer::factory(Copl *newopl)
-{
-  return new CrawPlayer(newopl);
-}
+CPlayer *CrawPlayer::factory(Copl *newopl) { return new CrawPlayer(newopl); }
 
-bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp)
-{
+bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp) {
   binistream *f = fp.open(filename);
-  if (!f) return false;
+  if (!f)
+    return false;
 
   char id[8];
   unsigned long i = 0;
 
   // file validation section
   f->readString(id, 8);
-  if (strncmp(id,"RAWADATA",8)) { fp.close (f); return false; }
+  if (strncmp(id, "RAWADATA", 8)) {
+    fp.close(f);
+    return false;
+  }
 
   // load section
-  this->clock = f->readInt(2); // clock speed
+  this->clock = f->readInt(2);              // clock speed
   this->length = (fp.filesize(f) - 10) / 2; // Wraithverge: total data-size.
-  this->data = new Tdata [this->length];
+  this->data = new Tdata[this->length];
   bool tagdata = false;
   title[0] = 0;
   author[0] = 0;
@@ -64,7 +64,8 @@ bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp)
     this->data[i].command = (tagdata ? 0xFF : f->readInt(1));
 
     // Continue trying to stop at the RAW EOF data marker.
-    if (!tagdata && this->data[i].param == 0xFF && this->data[i].command == 0xFF) {
+    if (!tagdata && this->data[i].param == 0xFF &&
+        this->data[i].command == 0xFF) {
       unsigned char tagCode = f->readInt(1);
       if (tagCode == 0x1A) {
         // Tag marker found.
@@ -79,8 +80,7 @@ bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp)
     }
   }
 
-  if (tagdata)
-  {
+  if (tagdata) {
     // The arbitrary Tag Data section begins here.
 
     // "title" is maximum 40 characters long.
@@ -95,8 +95,7 @@ bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp)
         f->readString(author, 60, 0);
         f->readString(desc, 1023, 0);
         goto end_section;
-      }
-      else
+      } else
         f->seek(-1, binio::Add);
       goto desc_section;
     }
@@ -104,7 +103,7 @@ bool CrawPlayer::load(const std::string &filename, const CFileProvider &fp)
     // "author" is maximum 40 characters long.
     f->readString(author, 40, 0);
 
-desc_section:
+  desc_section:
     // Skip "desc" if Tag marker byte is missing.
     if (f->readInt(1) != 0x1C) {
       goto end_section;
@@ -120,11 +119,11 @@ end_section:
   return true;
 }
 
-bool CrawPlayer::update()
-{
+bool CrawPlayer::update() {
   bool setspeed = 0;
 
-  if (this->pos >= this->length) return false;
+  if (this->pos >= this->length)
+    return false;
 
   if (this->del) {
     del--;
@@ -134,9 +133,10 @@ bool CrawPlayer::update()
   do {
     setspeed = false;
 
-    if (this->pos >= this->length) return false;
+    if (this->pos >= this->length)
+      return false;
 
-    switch(this->data[this->pos].command) {
+    switch (this->data[this->pos].command) {
     case 0:
       this->del = this->data[this->pos].param - 1;
       break;
@@ -144,7 +144,8 @@ bool CrawPlayer::update()
     case 2:
       if (!this->data[this->pos].param) {
         pos++;
-        this->speed = this->data[this->pos].param + (this->data[this->pos].command << 8);
+        this->speed =
+            this->data[this->pos].param + (this->data[this->pos].command << 8);
         setspeed = true;
       } else
         opl->setchip(this->data[this->pos].param - 1);
@@ -167,14 +168,15 @@ bool CrawPlayer::update()
   return !songend;
 }
 
-void CrawPlayer::rewind(int subsong)
-{
-  pos = del = 0; speed = clock; songend = false;
-  opl->init(); opl->write(1, 32);	// go to 9 channel mode
+void CrawPlayer::rewind(int subsong) {
+  pos = del = 0;
+  speed = clock;
+  songend = false;
+  opl->init();
+  opl->write(1, 32); // go to 9 channel mode
 }
 
-float CrawPlayer::getrefresh()
-{
+float CrawPlayer::getrefresh() {
   // timer oscillator speed / wait register = clock frequency
   return 1193180.0 / (speed ? speed : 0xffff);
 }

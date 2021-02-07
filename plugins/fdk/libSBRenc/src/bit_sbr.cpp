@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 
 #include "bit_sbr.h"
 
-#include "code_env.h"
 #include "cmondata.h"
+#include "code_env.h"
 #include "sbr.h"
 
 #include "ps_main.h"
@@ -364,19 +364,19 @@ static INT encodeSbrData(HANDLE_SBR_ENV_DATA sbrEnvDataLeft,
   INT payloadBits = 0;
 
   switch (sbrElem) {
-    case SBR_ID_SCE:
-      payloadBits +=
-          encodeSbrSingleChannelElement(sbrEnvDataLeft, &cmonData->sbrBitbuf,
-                                        hParametricStereo, sbrSyntaxFlags);
-      break;
-    case SBR_ID_CPE:
-      payloadBits += encodeSbrChannelPairElement(
-          sbrEnvDataLeft, sbrEnvDataRight, hParametricStereo,
-          &cmonData->sbrBitbuf, coupling, sbrSyntaxFlags);
-      break;
-    default:
-      /* we never should apply SBR to any other element type */
-      FDK_ASSERT(0);
+  case SBR_ID_SCE:
+    payloadBits +=
+        encodeSbrSingleChannelElement(sbrEnvDataLeft, &cmonData->sbrBitbuf,
+                                      hParametricStereo, sbrSyntaxFlags);
+    break;
+  case SBR_ID_CPE:
+    payloadBits += encodeSbrChannelPairElement(
+        sbrEnvDataLeft, sbrEnvDataRight, hParametricStereo,
+        &cmonData->sbrBitbuf, coupling, sbrSyntaxFlags);
+    break;
+  default:
+    /* we never should apply SBR to any other element type */
+    FDK_ASSERT(0);
   }
 
   cmonData->sbrDataBits = payloadBits;
@@ -586,80 +586,80 @@ static INT encodeSbrGrid(HANDLE_SBR_ENV_DATA sbrEnvData,
                                 SBR_CLA_BITS);
 
   switch (sbrEnvData->hSbrBSGrid->frameClass) {
-    case FIXFIXonly:
-      FDK_ASSERT(0 /* Fatal error in encodeSbrGrid! */);
-      break;
-    case FIXFIX:
-      temp = ceil_ln2(sbrEnvData->hSbrBSGrid->bs_num_env);
-      payloadBits += FDKwriteBits(hBitStream, temp, SBR_ENV_BITS);
-      if ((sbrEnvData->ldGrid) && (sbrEnvData->hSbrBSGrid->bs_num_env == 1))
-        payloadBits += FDKwriteBits(hBitStream, sbrEnvData->currentAmpResFF,
-                                    SI_SBR_AMP_RES_BITS);
-      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->v_f[0],
-                                  SBR_RES_BITS);
+  case FIXFIXonly:
+    FDK_ASSERT(0 /* Fatal error in encodeSbrGrid! */);
+    break;
+  case FIXFIX:
+    temp = ceil_ln2(sbrEnvData->hSbrBSGrid->bs_num_env);
+    payloadBits += FDKwriteBits(hBitStream, temp, SBR_ENV_BITS);
+    if ((sbrEnvData->ldGrid) && (sbrEnvData->hSbrBSGrid->bs_num_env == 1))
+      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->currentAmpResFF,
+                                  SI_SBR_AMP_RES_BITS);
+    payloadBits +=
+        FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->v_f[0], SBR_RES_BITS);
 
-      break;
+    break;
 
-    case FIXVAR:
-    case VARFIX:
-      if (sbrEnvData->hSbrBSGrid->frameClass == FIXVAR)
-        temp = sbrEnvData->hSbrBSGrid->bs_abs_bord -
-               (bufferFrameStart + numberTimeSlots);
-      else
-        temp = sbrEnvData->hSbrBSGrid->bs_abs_bord - bufferFrameStart;
-
-      payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
-      payloadBits +=
-          FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->n, SBR_NUM_BITS);
-
-      for (i = 0; i < sbrEnvData->hSbrBSGrid->n; i++) {
-        temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord[i] - 2) >> 1;
-        payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
-      }
-
-      temp = ceil_ln2(sbrEnvData->hSbrBSGrid->n + 2);
-      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->p, temp);
-
-      for (i = 0; i < sbrEnvData->hSbrBSGrid->n + 1; i++) {
-        payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->v_f[i],
-                                    SBR_RES_BITS);
-      }
-      break;
-
-    case VARVAR:
-      temp = sbrEnvData->hSbrBSGrid->bs_abs_bord_0 - bufferFrameStart;
-      payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
-      temp = sbrEnvData->hSbrBSGrid->bs_abs_bord_1 -
+  case FIXVAR:
+  case VARFIX:
+    if (sbrEnvData->hSbrBSGrid->frameClass == FIXVAR)
+      temp = sbrEnvData->hSbrBSGrid->bs_abs_bord -
              (bufferFrameStart + numberTimeSlots);
-      payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
+    else
+      temp = sbrEnvData->hSbrBSGrid->bs_abs_bord - bufferFrameStart;
 
-      payloadBits += FDKwriteBits(
-          hBitStream, sbrEnvData->hSbrBSGrid->bs_num_rel_0, SBR_NUM_BITS);
-      payloadBits += FDKwriteBits(
-          hBitStream, sbrEnvData->hSbrBSGrid->bs_num_rel_1, SBR_NUM_BITS);
+    payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
+    payloadBits +=
+        FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->n, SBR_NUM_BITS);
 
-      for (i = 0; i < sbrEnvData->hSbrBSGrid->bs_num_rel_0; i++) {
-        temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord_0[i] - 2) >> 1;
-        payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
-      }
+    for (i = 0; i < sbrEnvData->hSbrBSGrid->n; i++) {
+      temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord[i] - 2) >> 1;
+      payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
+    }
 
-      for (i = 0; i < sbrEnvData->hSbrBSGrid->bs_num_rel_1; i++) {
-        temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord_1[i] - 2) >> 1;
-        payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
-      }
+    temp = ceil_ln2(sbrEnvData->hSbrBSGrid->n + 2);
+    payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->p, temp);
 
-      temp = ceil_ln2(sbrEnvData->hSbrBSGrid->bs_num_rel_0 +
-                      sbrEnvData->hSbrBSGrid->bs_num_rel_1 + 2);
-      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->p, temp);
+    for (i = 0; i < sbrEnvData->hSbrBSGrid->n + 1; i++) {
+      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->v_f[i],
+                                  SBR_RES_BITS);
+    }
+    break;
 
-      temp = sbrEnvData->hSbrBSGrid->bs_num_rel_0 +
-             sbrEnvData->hSbrBSGrid->bs_num_rel_1 + 1;
+  case VARVAR:
+    temp = sbrEnvData->hSbrBSGrid->bs_abs_bord_0 - bufferFrameStart;
+    payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
+    temp = sbrEnvData->hSbrBSGrid->bs_abs_bord_1 -
+           (bufferFrameStart + numberTimeSlots);
+    payloadBits += FDKwriteBits(hBitStream, temp, SBR_ABS_BITS);
 
-      for (i = 0; i < temp; i++) {
-        payloadBits += FDKwriteBits(
-            hBitStream, sbrEnvData->hSbrBSGrid->v_fLR[i], SBR_RES_BITS);
-      }
-      break;
+    payloadBits += FDKwriteBits(
+        hBitStream, sbrEnvData->hSbrBSGrid->bs_num_rel_0, SBR_NUM_BITS);
+    payloadBits += FDKwriteBits(
+        hBitStream, sbrEnvData->hSbrBSGrid->bs_num_rel_1, SBR_NUM_BITS);
+
+    for (i = 0; i < sbrEnvData->hSbrBSGrid->bs_num_rel_0; i++) {
+      temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord_0[i] - 2) >> 1;
+      payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
+    }
+
+    for (i = 0; i < sbrEnvData->hSbrBSGrid->bs_num_rel_1; i++) {
+      temp = (sbrEnvData->hSbrBSGrid->bs_rel_bord_1[i] - 2) >> 1;
+      payloadBits += FDKwriteBits(hBitStream, temp, SBR_REL_BITS);
+    }
+
+    temp = ceil_ln2(sbrEnvData->hSbrBSGrid->bs_num_rel_0 +
+                    sbrEnvData->hSbrBSGrid->bs_num_rel_1 + 2);
+    payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->p, temp);
+
+    temp = sbrEnvData->hSbrBSGrid->bs_num_rel_0 +
+           sbrEnvData->hSbrBSGrid->bs_num_rel_1 + 1;
+
+    for (i = 0; i < temp; i++) {
+      payloadBits += FDKwriteBits(hBitStream, sbrEnvData->hSbrBSGrid->v_fLR[i],
+                                  SBR_RES_BITS);
+    }
+    break;
   }
 
   return payloadBits;
@@ -755,78 +755,69 @@ static INT writeNoiseLevelData(HANDLE_SBR_ENV_DATA sbrEnvData,
 
   for (i = 0; i < nNoiseEnvelopes; i++) {
     switch (sbrEnvData->domain_vec_noise[i]) {
-      case FREQ:
-        if (coupling && sbrEnvData->balance) {
-          payloadBits += FDKwriteBits(
-              hBitStream,
-              sbrEnvData->sbr_noise_levels[i * sbrEnvData->noOfnoisebands],
-              sbrEnvData->si_sbr_start_noise_bits_balance);
-        } else {
-          payloadBits += FDKwriteBits(
-              hBitStream,
-              sbrEnvData->sbr_noise_levels[i * sbrEnvData->noOfnoisebands],
-              sbrEnvData->si_sbr_start_noise_bits);
-        }
+    case FREQ:
+      if (coupling && sbrEnvData->balance) {
+        payloadBits += FDKwriteBits(
+            hBitStream,
+            sbrEnvData->sbr_noise_levels[i * sbrEnvData->noOfnoisebands],
+            sbrEnvData->si_sbr_start_noise_bits_balance);
+      } else {
+        payloadBits += FDKwriteBits(
+            hBitStream,
+            sbrEnvData->sbr_noise_levels[i * sbrEnvData->noOfnoisebands],
+            sbrEnvData->si_sbr_start_noise_bits);
+      }
 
-        for (j = 1 + i * sbrEnvData->noOfnoisebands;
-             j < (sbrEnvData->noOfnoisebands * (1 + i)); j++) {
-          if (coupling) {
-            if (sbrEnvData->balance) {
-              /* coupling && balance */
-              payloadBits += FDKwriteBits(hBitStream,
-                                          sbrEnvData->hufftableNoiseBalanceFreqC
-                                              [sbrEnvData->sbr_noise_levels[j] +
-                                               CODE_BOOK_SCF_LAV_BALANCE11],
-                                          sbrEnvData->hufftableNoiseBalanceFreqL
-                                              [sbrEnvData->sbr_noise_levels[j] +
-                                               CODE_BOOK_SCF_LAV_BALANCE11]);
-            } else {
-              /* coupling && !balance */
-              payloadBits += FDKwriteBits(
-                  hBitStream,
-                  sbrEnvData->hufftableNoiseLevelFreqC
-                      [sbrEnvData->sbr_noise_levels[j] + CODE_BOOK_SCF_LAV11],
-                  sbrEnvData->hufftableNoiseLevelFreqL
-                      [sbrEnvData->sbr_noise_levels[j] + CODE_BOOK_SCF_LAV11]);
-            }
+      for (j = 1 + i * sbrEnvData->noOfnoisebands;
+           j < (sbrEnvData->noOfnoisebands * (1 + i)); j++) {
+        if (coupling) {
+          if (sbrEnvData->balance) {
+            /* coupling && balance */
+            payloadBits += FDKwriteBits(hBitStream,
+                                        sbrEnvData->hufftableNoiseBalanceFreqC
+                                            [sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV_BALANCE11],
+                                        sbrEnvData->hufftableNoiseBalanceFreqL
+                                            [sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV_BALANCE11]);
           } else {
-            /* !coupling */
+            /* coupling && !balance */
             payloadBits += FDKwriteBits(
                 hBitStream,
                 sbrEnvData
-                    ->hufftableNoiseFreqC[sbrEnvData->sbr_noise_levels[j] +
-                                          CODE_BOOK_SCF_LAV11],
+                    ->hufftableNoiseLevelFreqC[sbrEnvData->sbr_noise_levels[j] +
+                                               CODE_BOOK_SCF_LAV11],
                 sbrEnvData
-                    ->hufftableNoiseFreqL[sbrEnvData->sbr_noise_levels[j] +
-                                          CODE_BOOK_SCF_LAV11]);
+                    ->hufftableNoiseLevelFreqL[sbrEnvData->sbr_noise_levels[j] +
+                                               CODE_BOOK_SCF_LAV11]);
           }
+        } else {
+          /* !coupling */
+          payloadBits += FDKwriteBits(
+              hBitStream,
+              sbrEnvData->hufftableNoiseFreqC[sbrEnvData->sbr_noise_levels[j] +
+                                              CODE_BOOK_SCF_LAV11],
+              sbrEnvData->hufftableNoiseFreqL[sbrEnvData->sbr_noise_levels[j] +
+                                              CODE_BOOK_SCF_LAV11]);
         }
-        break;
+      }
+      break;
 
-      case TIME:
-        for (j = i * sbrEnvData->noOfnoisebands;
-             j < (sbrEnvData->noOfnoisebands * (1 + i)); j++) {
-          if (coupling) {
-            if (sbrEnvData->balance) {
-              /* coupling && balance */
-              payloadBits += FDKwriteBits(hBitStream,
-                                          sbrEnvData->hufftableNoiseBalanceTimeC
-                                              [sbrEnvData->sbr_noise_levels[j] +
-                                               CODE_BOOK_SCF_LAV_BALANCE11],
-                                          sbrEnvData->hufftableNoiseBalanceTimeL
-                                              [sbrEnvData->sbr_noise_levels[j] +
-                                               CODE_BOOK_SCF_LAV_BALANCE11]);
-            } else {
-              /* coupling && !balance */
-              payloadBits += FDKwriteBits(
-                  hBitStream,
-                  sbrEnvData->hufftableNoiseLevelTimeC
-                      [sbrEnvData->sbr_noise_levels[j] + CODE_BOOK_SCF_LAV11],
-                  sbrEnvData->hufftableNoiseLevelTimeL
-                      [sbrEnvData->sbr_noise_levels[j] + CODE_BOOK_SCF_LAV11]);
-            }
+    case TIME:
+      for (j = i * sbrEnvData->noOfnoisebands;
+           j < (sbrEnvData->noOfnoisebands * (1 + i)); j++) {
+        if (coupling) {
+          if (sbrEnvData->balance) {
+            /* coupling && balance */
+            payloadBits += FDKwriteBits(hBitStream,
+                                        sbrEnvData->hufftableNoiseBalanceTimeC
+                                            [sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV_BALANCE11],
+                                        sbrEnvData->hufftableNoiseBalanceTimeL
+                                            [sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV_BALANCE11]);
           } else {
-            /* !coupling */
+            /* coupling && !balance */
             payloadBits += FDKwriteBits(
                 hBitStream,
                 sbrEnvData
@@ -836,8 +827,19 @@ static INT writeNoiseLevelData(HANDLE_SBR_ENV_DATA sbrEnvData,
                     ->hufftableNoiseLevelTimeL[sbrEnvData->sbr_noise_levels[j] +
                                                CODE_BOOK_SCF_LAV11]);
           }
+        } else {
+          /* !coupling */
+          payloadBits += FDKwriteBits(
+              hBitStream,
+              sbrEnvData
+                  ->hufftableNoiseLevelTimeC[sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV11],
+              sbrEnvData
+                  ->hufftableNoiseLevelTimeL[sbrEnvData->sbr_noise_levels[j] +
+                                             CODE_BOOK_SCF_LAV11]);
         }
-        break;
+      }
+      break;
     }
   }
   return payloadBits;

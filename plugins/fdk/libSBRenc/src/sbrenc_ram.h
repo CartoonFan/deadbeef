@@ -108,25 +108,25 @@ $Revision: 92790 $
 #ifndef SBRENC_RAM_H
 #define SBRENC_RAM_H
 
-#include "sbr_def.h"
 #include "env_est.h"
-#include "sbr_encoder.h"
 #include "sbr.h"
+#include "sbr_def.h"
+#include "sbr_encoder.h"
 
-#include "ps_main.h"
 #include "ps_encode.h"
+#include "ps_main.h"
 
 #define ENV_TRANSIENTS_BYTE ((sizeof(FIXP_DBL) * (MAX_NUM_CHANNELS * 3 * 32)))
 
 #define ENV_R_BUFF_BYTE ((sizeof(FIXP_DBL) * ((32) * MAX_HYBRID_BANDS)))
 #define ENV_I_BUFF_BYTE ((sizeof(FIXP_DBL) * ((32) * MAX_HYBRID_BANDS)))
-#define Y_BUF_CH_BYTE \
+#define Y_BUF_CH_BYTE                                                          \
   ((2 * sizeof(FIXP_DBL) * (((32) - (32 / 2)) * MAX_HYBRID_BANDS)))
 
 #define ENV_R_BUF_PS_BYTE ((sizeof(FIXP_DBL) * 32 * 64 / 2))
 #define ENV_I_BUF_PS_BYTE ((sizeof(FIXP_DBL) * 32 * 64 / 2))
 
-#define TON_BUF_CH_BYTE \
+#define TON_BUF_CH_BYTE                                                        \
   ((sizeof(FIXP_DBL) * (MAX_NO_OF_ESTIMATES * MAX_FREQ_COEFFS)))
 
 #define Y_2_BUF_BYTE (Y_BUF_CH_BYTE)
@@ -179,9 +179,9 @@ H_ALLOC_MEM(Ram_Sbr_guideVectorDetected, UCHAR)
 /* Dynamic Memory Allocation */
 
 H_ALLOC_MEM(Ram_Sbr_envYBuffer, FIXP_DBL)
-FIXP_DBL* GetRam_Sbr_envYBuffer(int n, UCHAR* dynamic_RAM);
-FIXP_DBL* GetRam_Sbr_envRBuffer(int n, UCHAR* dynamic_RAM);
-FIXP_DBL* GetRam_Sbr_envIBuffer(int n, UCHAR* dynamic_RAM);
+FIXP_DBL *GetRam_Sbr_envYBuffer(int n, UCHAR *dynamic_RAM);
+FIXP_DBL *GetRam_Sbr_envRBuffer(int n, UCHAR *dynamic_RAM);
+FIXP_DBL *GetRam_Sbr_envIBuffer(int n, UCHAR *dynamic_RAM);
 
 H_ALLOC_MEM(Ram_Sbr_guideVectorDiff, FIXP_DBL)
 H_ALLOC_MEM(Ram_Sbr_guideVectorOrig, FIXP_DBL)
@@ -190,9 +190,9 @@ H_ALLOC_MEM(Ram_PsQmfStatesSynthesis, FIXP_DBL)
 
 H_ALLOC_MEM(Ram_PsEncode, PS_ENCODE)
 
-FIXP_DBL* FDKsbrEnc_SliceRam_PsRqmf(FIXP_DBL* rQmfData, UCHAR* dynamic_RAM,
+FIXP_DBL *FDKsbrEnc_SliceRam_PsRqmf(FIXP_DBL *rQmfData, UCHAR *dynamic_RAM,
                                     int n, int i, int qmfSlots);
-FIXP_DBL* FDKsbrEnc_SliceRam_PsIqmf(FIXP_DBL* iQmfData, UCHAR* dynamic_RAM,
+FIXP_DBL *FDKsbrEnc_SliceRam_PsIqmf(FIXP_DBL *iQmfData, UCHAR *dynamic_RAM,
                                     int n, int i, int qmfSlots);
 
 H_ALLOC_MEM(Ram_ParamStereo, PARAMETRIC_STEREO)

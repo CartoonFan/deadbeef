@@ -250,9 +250,10 @@ bail:
   return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
 }
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_Init(
-    HANDLE_STATIC_GAIN hStaticGain,
-    const HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig, INT *const scale) {
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_Init(HANDLE_STATIC_GAIN hStaticGain,
+                           const HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig,
+                           INT *const scale) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((hStaticGain == NULL) || (hStaticGainConfig == NULL)) {
@@ -331,9 +332,10 @@ functionname: fdk_sacenc_staticPostGain_Apply
 description:  multiply the Output samples with the PostGain
 returns:      noError on success, an apropriate error code else
 -----------------------------------------------------------------------------*/
-FDK_SACENC_ERROR fdk_sacenc_staticPostGain_ApplyFDK(
-    const HANDLE_STATIC_GAIN hStaticGain, INT_PCM *const pOutputSamples,
-    const INT nOutputSamples, const INT scale) {
+FDK_SACENC_ERROR
+fdk_sacenc_staticPostGain_ApplyFDK(const HANDLE_STATIC_GAIN hStaticGain,
+                                   INT_PCM *const pOutputSamples,
+                                   const INT nOutputSamples, const INT scale) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == hStaticGain) {
@@ -385,44 +387,44 @@ FIXP_GAIN fdk_sacenc_getPostGainFDK(HANDLE_STATIC_GAIN hStaticGain) {
 }
 
 /* get fixed downmix gain and map it to bitstream enum */
-FIXEDGAINDMXCONFIG fdk_sacenc_staticGain_GetDmxGain(
-    const HANDLE_STATIC_GAIN hStaticGain) {
+FIXEDGAINDMXCONFIG
+fdk_sacenc_staticGain_GetDmxGain(const HANDLE_STATIC_GAIN hStaticGain) {
   FIXEDGAINDMXCONFIG dmxGain = FIXEDGAINDMX_INVALID;
 
   switch (hStaticGain->fixedGainDMX) {
-    case 0:
-      dmxGain = FIXEDGAINDMX_0;
-      break;
-    case 1:
-      dmxGain = FIXEDGAINDMX_1;
-      break;
-    case 2:
-      dmxGain = FIXEDGAINDMX_2;
-      break;
-    case 3:
-      dmxGain = FIXEDGAINDMX_3;
-      break;
-    case 4:
-      dmxGain = FIXEDGAINDMX_4;
-      break;
-    case 5:
-      dmxGain = FIXEDGAINDMX_5;
-      break;
-    case 6:
-      dmxGain = FIXEDGAINDMX_6;
-      break;
-    case 7:
-      dmxGain = FIXEDGAINDMX_7;
-      break;
-    default:
-      dmxGain = FIXEDGAINDMX_INVALID;
+  case 0:
+    dmxGain = FIXEDGAINDMX_0;
+    break;
+  case 1:
+    dmxGain = FIXEDGAINDMX_1;
+    break;
+  case 2:
+    dmxGain = FIXEDGAINDMX_2;
+    break;
+  case 3:
+    dmxGain = FIXEDGAINDMX_3;
+    break;
+  case 4:
+    dmxGain = FIXEDGAINDMX_4;
+    break;
+  case 5:
+    dmxGain = FIXEDGAINDMX_5;
+    break;
+  case 6:
+    dmxGain = FIXEDGAINDMX_6;
+    break;
+  case 7:
+    dmxGain = FIXEDGAINDMX_7;
+    break;
+  default:
+    dmxGain = FIXEDGAINDMX_INVALID;
   }
   return dmxGain;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_SetDmxGain(
-    HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
-    const MP4SPACEENC_DMX_GAIN dmxGain) {
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_SetDmxGain(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
+                                 const MP4SPACEENC_DMX_GAIN dmxGain) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == hStaticGainCfg) {
@@ -433,8 +435,9 @@ FDK_SACENC_ERROR fdk_sacenc_staticGain_SetDmxGain(
   return error;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_SetEncMode(
-    HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg, const MP4SPACEENC_MODE encMode) {
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_SetEncMode(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
+                                 const MP4SPACEENC_MODE encMode) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == hStaticGainCfg) {

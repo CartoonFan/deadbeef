@@ -157,30 +157,30 @@ static void calcRefValFwd(CErRvlcInfo *pRvlc,
     for (band = startBand; band >= 0; band--) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          break;
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          if (idIs) {
-            *refIsFwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-            idIs = 0; /* reference value has been set */
-          }
-          break;
-        case NOISE_HCB:
-          if (idNrg) {
-            *refNrgFwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-            idNrg = 0; /* reference value has been set */
-          }
-          break;
-        default:
-          if (idScf) {
-            *refScfFwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-            idScf = 0; /* reference value has been set */
-          }
-          break;
+      case ZERO_HCB:
+        break;
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        if (idIs) {
+          *refIsFwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+          idIs = 0; /* reference value has been set */
+        }
+        break;
+      case NOISE_HCB:
+        if (idNrg) {
+          *refNrgFwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+          idNrg = 0; /* reference value has been set */
+        }
+        break;
+      default:
+        if (idScf) {
+          *refScfFwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+          idScf = 0; /* reference value has been set */
+        }
+        break;
       }
     }
     startBand = pRvlc->maxSfbTransmitted - 1;
@@ -234,30 +234,30 @@ static void calcRefValBwd(CErRvlcInfo *pRvlc,
     for (band = startBand; band < pRvlc->maxSfbTransmitted; band++) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          break;
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          if (idIs) {
-            *refIsBwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-            idIs = 0; /* reference value has been set */
-          }
-          break;
-        case NOISE_HCB:
-          if (idNrg) {
-            *refNrgBwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-            idNrg = 0; /* reference value has been set */
-          }
-          break;
-        default:
-          if (idScf) {
-            *refScfBwd =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-            idScf = 0; /* reference value has been set */
-          }
-          break;
+      case ZERO_HCB:
+        break;
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        if (idIs) {
+          *refIsBwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+          idIs = 0; /* reference value has been set */
+        }
+        break;
+      case NOISE_HCB:
+        if (idNrg) {
+          *refNrgBwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+          idNrg = 0; /* reference value has been set */
+        }
+        break;
+      default:
+        if (idScf) {
+          *refScfBwd =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+          idScf = 0; /* reference value has been set */
+        }
+        break;
       }
     }
     startBand = 0;
@@ -303,7 +303,8 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
      border is set to first or last sfb respectively, because the error will
      possibly not follow directly after the corrupt bit but just after decoding
      some more (wrong) scalefactors. */
-  if (pRvlc->conceal_min == CONCEAL_MIN_INIT) pRvlc->conceal_min = 0;
+  if (pRvlc->conceal_min == CONCEAL_MIN_INIT)
+    pRvlc->conceal_min = 0;
 
   if (pRvlc->conceal_max == CONCEAL_MAX_INIT)
     pRvlc->conceal_max =
@@ -325,27 +326,27 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
                   &refScfBwd);
 
     switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-      case ZERO_HCB:
-        break;
-      case INTENSITY_HCB:
-      case INTENSITY_HCB2:
-        if (refIsFwd < refIsBwd)
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refIsFwd;
-        else
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refIsBwd;
-        break;
-      case NOISE_HCB:
-        if (refNrgFwd < refNrgBwd)
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refNrgFwd;
-        else
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refNrgBwd;
-        break;
-      default:
-        if (refScfFwd < refScfBwd)
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refScfFwd;
-        else
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refScfBwd;
-        break;
+    case ZERO_HCB:
+      break;
+    case INTENSITY_HCB:
+    case INTENSITY_HCB2:
+      if (refIsFwd < refIsBwd)
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refIsFwd;
+      else
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refIsBwd;
+      break;
+    case NOISE_HCB:
+      if (refNrgFwd < refNrgBwd)
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refNrgFwd;
+      else
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refNrgBwd;
+      break;
+    default:
+      if (refScfFwd < refScfBwd)
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refScfFwd;
+      else
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = refScfBwd;
+      break;
     }
   } else {
     pAacDecoderChannelInfo->pComData->overlay.aac
@@ -377,7 +378,8 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
               pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
       }
       startBand = 0;
-      if ((group + 1) == conceal_group_max) endBand = conceal_max;
+      if ((group + 1) == conceal_group_max)
+        endBand = conceal_max;
     }
   }
 
@@ -392,7 +394,8 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
       pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
           pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
     }
-    if ((group + 1) == conceal_group_min) endBand = conceal_min;
+    if ((group + 1) == conceal_group_min)
+      endBand = conceal_min;
   }
 
   startBand = conceal_max + 1;
@@ -451,7 +454,8 @@ void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
      border is set to first or last sfb respectively, because the error will
      possibly not follow directly after the corrupt bit but just after decoding
      some more (wrong) scalefactors. */
-  if (pRvlc->conceal_min == CONCEAL_MIN_INIT) pRvlc->conceal_min = 0;
+  if (pRvlc->conceal_min == CONCEAL_MIN_INIT)
+    pRvlc->conceal_min = 0;
 
   if (pRvlc->conceal_max == CONCEAL_MAX_INIT)
     pRvlc->conceal_max =
@@ -483,76 +487,71 @@ void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
     for (band = startBand; band <= endBand; band++) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = 0;
-          break;
+      case ZERO_HCB:
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = 0;
+        break;
 
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          if ((pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB) ||
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB2)) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-          }
-          break;
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        if ((pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB) ||
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB2)) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+        }
+        break;
 
-        case NOISE_HCB:
-          if (pAacDecoderStaticChannelInfo->concealmentInfo
-                  .aRvlcPreviousCodebook[bnds] == NOISE_HCB) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-          }
-          break;
+      case NOISE_HCB:
+        if (pAacDecoderStaticChannelInfo->concealmentInfo
+                .aRvlcPreviousCodebook[bnds] == NOISE_HCB) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+        }
+        break;
 
-        default:
-          if ((pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != ZERO_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != NOISE_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB2)) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-          }
-          break;
+      default:
+        if ((pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != ZERO_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != NOISE_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB2)) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+        }
+        break;
       }
     }
     startBand = 0;
-    if ((group + 1) == conceal_group_max) endBand = conceal_max;
+    if ((group + 1) == conceal_group_max)
+      endBand = conceal_max;
   }
 
   /* now copy all data to the output buffer which needs not to be concealed */
@@ -566,7 +565,8 @@ void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
       pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
           pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
     }
-    if ((group + 1) == conceal_group_min) endBand = conceal_min;
+    if ((group + 1) == conceal_group_min)
+      endBand = conceal_min;
   }
 
   startBand = conceal_max + 1;
@@ -609,7 +609,7 @@ void StatisticalEstimation(CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   int sumNrgFwd, sumNrgBwd; /* sum of noise energy data forward/backward */
   int sumScfFwd, sumScfBwd; /* sum of scalefactor data forward/backward */
   int useIsFwd, useNrgFwd, useScfFwd; /* the flags signals the elements which
-                                         are used for the final result */
+                                       are used for the final result */
 
   sumIsFwd = sumIsBwd = sumNrgFwd = sumNrgBwd = sumScfFwd = sumScfBwd = 0;
   useIsFwd = useNrgFwd = useScfFwd = 0;
@@ -620,76 +620,79 @@ void StatisticalEstimation(CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
     for (band = 0; band < pRvlc->maxSfbTransmitted; band++) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          break;
+      case ZERO_HCB:
+        break;
 
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          sumIsFwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          sumIsBwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        sumIsFwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        sumIsBwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
 
-        case NOISE_HCB:
-          sumNrgFwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          sumNrgBwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      case NOISE_HCB:
+        sumNrgFwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        sumNrgBwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
 
-        default:
-          sumScfFwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          sumScfBwd +=
-              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      default:
+        sumScfFwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        sumScfBwd +=
+            pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
       }
     }
   }
 
   /* find for each group (scf,nrg,is) the correct direction */
-  if (sumIsFwd < sumIsBwd) useIsFwd = 1;
+  if (sumIsFwd < sumIsBwd)
+    useIsFwd = 1;
 
-  if (sumNrgFwd < sumNrgBwd) useNrgFwd = 1;
+  if (sumNrgFwd < sumNrgBwd)
+    useNrgFwd = 1;
 
-  if (sumScfFwd < sumScfBwd) useScfFwd = 1;
+  if (sumScfFwd < sumScfBwd)
+    useScfFwd = 1;
 
   /* conceal each group (scf,nrg,is) */
   for (group = 0; group < pRvlc->numWindowGroups; group++) {
     for (band = 0; band < pRvlc->maxSfbTransmitted; band++) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
-          break;
+      case ZERO_HCB:
+        break;
 
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          if (useIsFwd)
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          else
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        if (useIsFwd)
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        else
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
 
-        case NOISE_HCB:
-          if (useNrgFwd)
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          else
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      case NOISE_HCB:
+        if (useNrgFwd)
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        else
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
 
-        default:
-          if (useScfFwd)
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
-          else
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
-          break;
+      default:
+        if (useScfFwd)
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds];
+        else
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds];
+        break;
       }
     }
   }
@@ -724,63 +727,60 @@ void PredictiveInterpolation(
     for (band = 0; band < pRvlc->maxSfbTransmitted; band++) {
       bnds = 16 * group + band;
       switch (pAacDecoderChannelInfo->pDynData->aCodeBook[bnds]) {
-        case ZERO_HCB:
+      case ZERO_HCB:
+        pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = 0;
+        break;
+
+      case INTENSITY_HCB:
+      case INTENSITY_HCB2:
+        if ((pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB) ||
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB2)) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = -110;
+        }
+        break;
+
+      case NOISE_HCB:
+        if (pAacDecoderStaticChannelInfo->concealmentInfo
+                .aRvlcPreviousCodebook[bnds] == NOISE_HCB) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = -110;
+        }
+        break;
+
+      default:
+        if ((pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != ZERO_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != NOISE_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB) &&
+            (pAacDecoderStaticChannelInfo->concealmentInfo
+                 .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB2)) {
+          commonMin = fMin(
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
+              pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd[bnds]);
+          pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
+              fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
+                                  .aRvlcPreviousScaleFactor[bnds]);
+        } else {
           pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = 0;
-          break;
-
-        case INTENSITY_HCB:
-        case INTENSITY_HCB2:
-          if ((pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB) ||
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] == INTENSITY_HCB2)) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = -110;
-          }
-          break;
-
-        case NOISE_HCB:
-          if (pAacDecoderStaticChannelInfo->concealmentInfo
-                  .aRvlcPreviousCodebook[bnds] == NOISE_HCB) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = -110;
-          }
-          break;
-
-        default:
-          if ((pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != ZERO_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != NOISE_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB) &&
-              (pAacDecoderStaticChannelInfo->concealmentInfo
-                   .aRvlcPreviousCodebook[bnds] != INTENSITY_HCB2)) {
-            commonMin = fMin(
-                pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd[bnds],
-                pAacDecoderChannelInfo->pComData->overlay.aac
-                    .aRvlcScfBwd[bnds]);
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] =
-                fMin(commonMin, pAacDecoderStaticChannelInfo->concealmentInfo
-                                    .aRvlcPreviousScaleFactor[bnds]);
-          } else {
-            pAacDecoderChannelInfo->pDynData->aScaleFactor[bnds] = 0;
-          }
-          break;
+        }
+        break;
       }
     }
   }

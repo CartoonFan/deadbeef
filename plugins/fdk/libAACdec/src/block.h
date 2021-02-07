@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#include "channelinfo.h"
 #include "FDK_bitstream.h"
+#include "channelinfo.h"
 
 /* PNS (of block) */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
@@ -161,9 +161,9 @@ LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const LONG q);
  * stored into.
  * \param flags the decoder flags.
  */
-AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
-    const UINT flags);
+AAC_DECODER_ERROR
+CBlock_ReadScaleFactorData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                           HANDLE_FDK_BITSTREAM bs, const UINT flags);
 
 /**
  * \brief Read Huffman encoded spectral data.
@@ -286,7 +286,7 @@ FDK_INLINE int GetScaleFromValue(FIXP_DBL value, unsigned int lsb) {
     return CntLeadingZeros(value) - scale - 2;
   } else
     return 0; /* Return zero, because its useless to scale a zero value, saves
-                 workload and avoids scaling overshifts. */
+             workload and avoids scaling overshifts. */
 }
 
 /*!
@@ -333,7 +333,8 @@ inline int CBlock_DecodeHuffmanWordCB(
 
   while (1) {
     index = CodeBook[index][FDKread2Bits(bs)]; /* Expensive memory access */
-    if (index & 1) break;
+    if (index & 1)
+      break;
     index >>= 2;
   }
   if (index & 2) {

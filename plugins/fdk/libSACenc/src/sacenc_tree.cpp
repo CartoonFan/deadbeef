@@ -103,11 +103,11 @@ amm-info@iis.fraunhofer.de
 
 /* Includes ******************************************************************/
 #include "sacenc_tree.h"
+#include "FDK_matrixCalloc.h"
 #include "genericStds.h"
 #include "sacenc_const.h"
-#include "sacenc_paramextract.h"
 #include "sacenc_framewindowing.h"
-#include "FDK_matrixCalloc.h"
+#include "sacenc_paramextract.h"
 
 /* Defines *******************************************************************/
 enum { BOX_0 = 0, BOX_1 = 1 };
@@ -181,8 +181,9 @@ static const TREE_SETUP treeSetupTable[] = {
 /* Function / Class Declarations *********************************************/
 
 /* Function / Class Definition ***********************************************/
-static FDK_SACENC_ERROR getTreeConfig(
-    const SPACETREE_MODE mode, SPACE_TREE_DESCRIPTION *pTreeDescription) {
+static FDK_SACENC_ERROR
+getTreeConfig(const SPACETREE_MODE mode,
+              SPACE_TREE_DESCRIPTION *pTreeDescription) {
   FDK_SACENC_ERROR error = SACENC_INIT_ERROR;
 
   if (pTreeDescription == NULL) {
@@ -270,13 +271,13 @@ FDK_SACENC_ERROR fdk_sacenc_spaceTree_Init(
     }
 
     switch (hST->mode) {
-      case SPACETREE_212:
-        bTtoBoxFrontBackCombin[BOX_0] = 0;
-        break;
-      case SPACETREE_INVALID_MODE:
-      default:
-        error = SACENC_INIT_ERROR;
-        goto bail;
+    case SPACETREE_212:
+      bTtoBoxFrontBackCombin[BOX_0] = 0;
+      break;
+    case SPACETREE_INVALID_MODE:
+    default:
+      error = SACENC_INIT_ERROR;
+      goto bail;
     } /* switch (hST->mode) */
 
     if (hST->descr.nOttBoxes > SACENC_MAX_NUM_BOXES) {
@@ -342,13 +343,13 @@ static FDK_SACENC_ERROR SpaceTree_FrameKeep(const HANDLE_SPACE_TREE hST,
   FDK_SACENC_ERROR error = SACENC_OK;
 
   switch (hST->mode) {
-    case SPACETREE_212:
-      SpaceTree_FrameKeep212(hST, hSTOut, avoid_keep);
-      break;
-    case SPACETREE_INVALID_MODE:
-    default:
-      error = SACENC_INVALID_CONFIG;
-      break;
+  case SPACETREE_212:
+    SpaceTree_FrameKeep212(hST, hSTOut, avoid_keep);
+    break;
+  case SPACETREE_INVALID_MODE:
+  default:
+    error = SACENC_INVALID_CONFIG;
+    break;
   }
   return error;
 }

@@ -132,8 +132,8 @@ int SpatialDecConcealment_Apply(
     const SCHAR (*cmpIdxData)[MAX_PARAMETER_BANDS], SCHAR **diffIdxData,
     SCHAR *
         idxPrev, /* char
-                    idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
-                  */
+                        idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
+                      */
     SCHAR *bsXXXDataMode, const int startBand, const int stopBand,
     const SCHAR defaultValue, const int paramType, const int numParamSets) {
   int appliedProcessing = 0;
@@ -146,57 +146,56 @@ int SpatialDecConcealment_Apply(
 
   /* Processing depends only on the internal state */
   switch (info->concealState) {
-    case SpatialDecConcealState_Init:
-      dataMode = 0; /* default */
-      break;
+  case SpatialDecConcealState_Init:
+    dataMode = 0; /* default */
+    break;
 
-    case SpatialDecConcealState_Ok:
-      /* Nothing to do */
-      break;
+  case SpatialDecConcealState_Ok:
+    /* Nothing to do */
+    break;
 
-    case SpatialDecConcealState_Keep:
-      dataMode = 1; /* keep */
-      break;
+  case SpatialDecConcealState_Keep:
+    dataMode = 1; /* keep */
+    break;
 
-    case SpatialDecConcealState_FadeToDefault: {
-      /* Start simple fade out */
-      FIXP_DBL fac = fDivNorm(info->cntStateFrames + 1,
-                              info->concealParams.numFadeOutFrames + 1);
+  case SpatialDecConcealState_FadeToDefault: {
+    /* Start simple fade out */
+    FIXP_DBL fac = fDivNorm(info->cntStateFrames + 1,
+                            info->concealParams.numFadeOutFrames + 1);
 
-      for (band = startBand; band < stopBand; band += 1) {
-        /*            idxPrev = fac * defaultValue + (1-fac) * idxPrev; */
-        idxPrev[band] =
-            fMultI(fac, defaultValue - idxPrev[band]) + idxPrev[band];
-      }
-      dataMode = 1; /* keep */
-      appliedProcessing = 1;
-    } break;
+    for (band = startBand; band < stopBand; band += 1) {
+      /*            idxPrev = fac * defaultValue + (1-fac) * idxPrev; */
+      idxPrev[band] = fMultI(fac, defaultValue - idxPrev[band]) + idxPrev[band];
+    }
+    dataMode = 1; /* keep */
+    appliedProcessing = 1;
+  } break;
 
-    case SpatialDecConcealState_Default:
-      for (band = startBand; band < stopBand; band += 1) {
-        idxPrev[band] = defaultValue;
-      }
-      dataMode = 1; /* keep */
-      appliedProcessing = 1;
-      break;
+  case SpatialDecConcealState_Default:
+    for (band = startBand; band < stopBand; band += 1) {
+      idxPrev[band] = defaultValue;
+    }
+    dataMode = 1; /* keep */
+    appliedProcessing = 1;
+    break;
 
-    case SpatialDecConcealState_FadeFromDefault: {
-      FIXP_DBL fac = fDivNorm(info->cntValidFrames + 1,
-                              info->concealParams.numFadeInFrames + 1);
+  case SpatialDecConcealState_FadeFromDefault: {
+    FIXP_DBL fac = fDivNorm(info->cntValidFrames + 1,
+                            info->concealParams.numFadeInFrames + 1);
 
-      for (band = startBand; band < stopBand; band += 1) {
-        /*            idxPrev = fac * cmpIdxData + (1-fac) * defaultValue; */
-        idxPrev[band] =
-            fMultI(fac, cmpIdxData[numParamSets - 1][band] - defaultValue) +
-            defaultValue;
-      }
-      dataMode = 1; /* keep */
-      appliedProcessing = 1;
-    } break;
+    for (band = startBand; band < stopBand; band += 1) {
+      /*            idxPrev = fac * cmpIdxData + (1-fac) * defaultValue; */
+      idxPrev[band] =
+          fMultI(fac, cmpIdxData[numParamSets - 1][band] - defaultValue) +
+          defaultValue;
+    }
+    dataMode = 1; /* keep */
+    appliedProcessing = 1;
+  } break;
 
-    default:
-      FDK_ASSERT(0); /* All valid states shall be handled above. */
-      break;
+  default:
+    FDK_ASSERT(0); /* All valid states shall be handled above. */
+    break;
   }
 
   if (dataMode >= 0) {
@@ -225,85 +224,85 @@ void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
   }
 
   switch (info->concealState) {
-    case SpatialDecConcealState_Init:
-      if (frameOk) {
-        /* NEXT STATE: Ok */
-        info->concealState = SpatialDecConcealState_Ok;
-        info->cntStateFrames = 0;
-      }
-      break;
+  case SpatialDecConcealState_Init:
+    if (frameOk) {
+      /* NEXT STATE: Ok */
+      info->concealState = SpatialDecConcealState_Ok;
+      info->cntStateFrames = 0;
+    }
+    break;
 
-    case SpatialDecConcealState_Ok:
-      if (!frameOk) {
-        /* NEXT STATE: Keep */
-        info->concealState = SpatialDecConcealState_Keep;
-        info->cntStateFrames = 0;
-      }
-      break;
+  case SpatialDecConcealState_Ok:
+    if (!frameOk) {
+      /* NEXT STATE: Keep */
+      info->concealState = SpatialDecConcealState_Keep;
+      info->cntStateFrames = 0;
+    }
+    break;
 
-    case SpatialDecConcealState_Keep:
-      info->cntStateFrames += 1;
-      if (frameOk) {
-        /* NEXT STATE: Ok */
-        info->concealState = SpatialDecConcealState_Ok;
-      } else {
-        if (info->cntStateFrames >= info->concealParams.numKeepFrames) {
-          if (info->concealParams.numFadeOutFrames == 0) {
-            /* NEXT STATE: Default */
-            info->concealState = SpatialDecConcealState_Default;
-          } else {
-            /* NEXT STATE: Fade to default */
-            info->concealState = SpatialDecConcealState_FadeToDefault;
-            info->cntStateFrames = 0;
-          }
-        }
-      }
-      break;
-
-    case SpatialDecConcealState_FadeToDefault:
-      info->cntStateFrames += 1;
-      if (info->cntValidFrames > 0) {
-        /* NEXT STATE: Fade in from default */
-        info->concealState = SpatialDecConcealState_FadeFromDefault;
-        info->cntStateFrames = 0;
-      } else {
-        if (info->cntStateFrames >= info->concealParams.numFadeOutFrames) {
+  case SpatialDecConcealState_Keep:
+    info->cntStateFrames += 1;
+    if (frameOk) {
+      /* NEXT STATE: Ok */
+      info->concealState = SpatialDecConcealState_Ok;
+    } else {
+      if (info->cntStateFrames >= info->concealParams.numKeepFrames) {
+        if (info->concealParams.numFadeOutFrames == 0) {
           /* NEXT STATE: Default */
           info->concealState = SpatialDecConcealState_Default;
-        }
-      }
-      break;
-
-    case SpatialDecConcealState_Default:
-      if (info->cntValidFrames > 0) {
-        if (info->concealParams.numFadeInFrames == 0) {
-          /* NEXT STATE: Ok */
-          info->concealState = SpatialDecConcealState_Ok;
         } else {
-          /* NEXT STATE: Fade in from default */
-          info->concealState = SpatialDecConcealState_FadeFromDefault;
-          info->cntValidFrames = 0;
+          /* NEXT STATE: Fade to default */
+          info->concealState = SpatialDecConcealState_FadeToDefault;
+          info->cntStateFrames = 0;
         }
       }
-      break;
+    }
+    break;
 
-    case SpatialDecConcealState_FadeFromDefault:
-      info->cntValidFrames += 1;
-      if (frameOk) {
-        if (info->cntValidFrames >= info->concealParams.numFadeInFrames) {
-          /* NEXT STATE: Ok */
-          info->concealState = SpatialDecConcealState_Ok;
-        }
+  case SpatialDecConcealState_FadeToDefault:
+    info->cntStateFrames += 1;
+    if (info->cntValidFrames > 0) {
+      /* NEXT STATE: Fade in from default */
+      info->concealState = SpatialDecConcealState_FadeFromDefault;
+      info->cntStateFrames = 0;
+    } else {
+      if (info->cntStateFrames >= info->concealParams.numFadeOutFrames) {
+        /* NEXT STATE: Default */
+        info->concealState = SpatialDecConcealState_Default;
+      }
+    }
+    break;
+
+  case SpatialDecConcealState_Default:
+    if (info->cntValidFrames > 0) {
+      if (info->concealParams.numFadeInFrames == 0) {
+        /* NEXT STATE: Ok */
+        info->concealState = SpatialDecConcealState_Ok;
       } else {
-        /* NEXT STATE: Fade to default */
-        info->concealState = SpatialDecConcealState_FadeToDefault;
-        info->cntStateFrames = 0;
+        /* NEXT STATE: Fade in from default */
+        info->concealState = SpatialDecConcealState_FadeFromDefault;
+        info->cntValidFrames = 0;
       }
-      break;
+    }
+    break;
 
-    default:
-      FDK_ASSERT(0); /* All valid states should be handled above! */
-      break;
+  case SpatialDecConcealState_FadeFromDefault:
+    info->cntValidFrames += 1;
+    if (frameOk) {
+      if (info->cntValidFrames >= info->concealParams.numFadeInFrames) {
+        /* NEXT STATE: Ok */
+        info->concealState = SpatialDecConcealState_Ok;
+      }
+    } else {
+      /* NEXT STATE: Fade to default */
+      info->concealState = SpatialDecConcealState_FadeToDefault;
+      info->cntStateFrames = 0;
+    }
+    break;
+
+  default:
+    FDK_ASSERT(0); /* All valid states should be handled above! */
+    break;
   }
 }
 
@@ -313,78 +312,78 @@ SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
   SACDEC_ERROR err = MPS_OK;
 
   switch (param) {
-    case SAC_DEC_CONCEAL_METHOD:
-      switch ((SpatialDecConcealmentMethod)value) {
-        case SAC_DEC_CONCEAL_WITH_ZERO_VALUED_OUTPUT:
-        case SAC_DEC_CONCEAL_BY_FADING_PARAMETERS:
-          break;
-        default:
-          err = MPS_INVALID_PARAMETER;
-          goto bail;
-      }
-      if (self != NULL) {
-        /* store parameter value */
-        self->concealParams.method = (SpatialDecConcealmentMethod)value;
-      } else {
-        err = MPS_INVALID_HANDLE;
-        goto bail;
-      }
-      break;
-    case SAC_DEC_CONCEAL_NUM_KEEP_FRAMES:
-      if (value < 0) {
-        err = MPS_INVALID_PARAMETER;
-        goto bail;
-      }
-      if (self != NULL) {
-        /* store parameter value */
-        self->concealParams.numKeepFrames = (UINT)value;
-      } else {
-        err = MPS_INVALID_HANDLE;
-        goto bail;
-      }
-      break;
-    case SAC_DEC_CONCEAL_FADE_OUT_SLOPE_LENGTH:
-      if (value < 0) {
-        err = MPS_INVALID_PARAMETER;
-        goto bail;
-      }
-      if (self != NULL) {
-        /* store parameter value */
-        self->concealParams.numFadeOutFrames = (UINT)value;
-      } else {
-        err = MPS_INVALID_HANDLE;
-        goto bail;
-      }
-      break;
-    case SAC_DEC_CONCEAL_FADE_IN_SLOPE_LENGTH:
-      if (value < 0) {
-        err = MPS_INVALID_PARAMETER;
-        goto bail;
-      }
-      if (self != NULL) {
-        /* store parameter value */
-        self->concealParams.numFadeInFrames = (UINT)value;
-      } else {
-        err = MPS_INVALID_HANDLE;
-        goto bail;
-      }
-      break;
-    case SAC_DEC_CONCEAL_NUM_RELEASE_FRAMES:
-      if (value < 0) {
-        err = MPS_INVALID_PARAMETER;
-        goto bail;
-      }
-      if (self != NULL) {
-        /* store parameter value */
-        self->concealParams.numReleaseFrames = (UINT)value;
-      } else {
-        err = MPS_INVALID_HANDLE;
-        goto bail;
-      }
+  case SAC_DEC_CONCEAL_METHOD:
+    switch ((SpatialDecConcealmentMethod)value) {
+    case SAC_DEC_CONCEAL_WITH_ZERO_VALUED_OUTPUT:
+    case SAC_DEC_CONCEAL_BY_FADING_PARAMETERS:
       break;
     default:
       err = MPS_INVALID_PARAMETER;
       goto bail;
+    }
+    if (self != NULL) {
+      /* store parameter value */
+      self->concealParams.method = (SpatialDecConcealmentMethod)value;
+    } else {
+      err = MPS_INVALID_HANDLE;
+      goto bail;
+    }
+    break;
+  case SAC_DEC_CONCEAL_NUM_KEEP_FRAMES:
+    if (value < 0) {
+      err = MPS_INVALID_PARAMETER;
+      goto bail;
+    }
+    if (self != NULL) {
+      /* store parameter value */
+      self->concealParams.numKeepFrames = (UINT)value;
+    } else {
+      err = MPS_INVALID_HANDLE;
+      goto bail;
+    }
+    break;
+  case SAC_DEC_CONCEAL_FADE_OUT_SLOPE_LENGTH:
+    if (value < 0) {
+      err = MPS_INVALID_PARAMETER;
+      goto bail;
+    }
+    if (self != NULL) {
+      /* store parameter value */
+      self->concealParams.numFadeOutFrames = (UINT)value;
+    } else {
+      err = MPS_INVALID_HANDLE;
+      goto bail;
+    }
+    break;
+  case SAC_DEC_CONCEAL_FADE_IN_SLOPE_LENGTH:
+    if (value < 0) {
+      err = MPS_INVALID_PARAMETER;
+      goto bail;
+    }
+    if (self != NULL) {
+      /* store parameter value */
+      self->concealParams.numFadeInFrames = (UINT)value;
+    } else {
+      err = MPS_INVALID_HANDLE;
+      goto bail;
+    }
+    break;
+  case SAC_DEC_CONCEAL_NUM_RELEASE_FRAMES:
+    if (value < 0) {
+      err = MPS_INVALID_PARAMETER;
+      goto bail;
+    }
+    if (self != NULL) {
+      /* store parameter value */
+      self->concealParams.numReleaseFrames = (UINT)value;
+    } else {
+      err = MPS_INVALID_HANDLE;
+      goto bail;
+    }
+    break;
+  default:
+    err = MPS_INVALID_PARAMETER;
+    goto bail;
   }
 
 bail:

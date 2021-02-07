@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #ifndef AC_ARITH_CODER_H
 #define AC_ARITH_CODER_H
 
-#include "common_fix.h"
 #include "FDK_bitstream.h"
+#include "common_fix.h"
 
 #include "FDK_audio.h"
 

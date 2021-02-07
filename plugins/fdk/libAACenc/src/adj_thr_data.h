@@ -167,7 +167,7 @@ typedef struct {
 
 typedef struct {
   BRES_PARAM bresParamLong, bresParamShort;
-  ATS_ELEMENT* adjThrStateElem[((8))];
+  ATS_ELEMENT *adjThrStateElem[((8))];
   AACENC_BIT_DISTRIBUTION_MODE bitDistributionMode;
   INT maxIter2ndGuess;
 } ADJ_THR_STATE;

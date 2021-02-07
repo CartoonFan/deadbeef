@@ -105,9 +105,9 @@ amm-info@iis.fraunhofer.de
 
 #include "qmf.h"
 
-#include "fram_gen.h"
 #include "bit_sbr.h"
 #include "cmondata.h"
+#include "fram_gen.h"
 #include "sbrenc_ram.h"
 
 #include "genericStds.h"
@@ -325,7 +325,7 @@ static void FDKsbrEnc_getEnergyFromCplxQmfData(
   scale = CountLeadingBits(max_val);
   {
     FIXP_DBL *nrgValues = tmpNrg;
-    for (k = 0; k<numberCols>> 1; k++) {
+    for (k = 0; k<numberCols> > 1; k++) {
       scaleValues(energyValues[k], nrgValues, numberBands, scale);
       nrgValues += numberBands;
     }
@@ -497,7 +497,8 @@ static void sbrNoiseFloorLevelsQuantisation(
        * adding '1' and then shifting the final bit */
       tmp = ((((INT)NoiseLevels[i]) >>
               (DFRACT_BITS - 1 - LD_DATA_SHIFT))); /* conversion to integer */
-      if (tmp != 0) tmp += 1;
+      if (tmp != 0)
+        tmp += 1;
     }
 
     if (coupling) {
@@ -539,7 +540,7 @@ static void coupleNoiseFloor(
       temp1 = CalcInvLdData(NOISE_FLOOR_OFFSET_64 - noise_level_right[i]);
       temp1 = temp1 << (DFRACT_BITS - 1 - LD_DATA_SHIFT -
                         1); /* INT to fract conversion of result, if input of
-                               CalcInvLdData is positiv */
+                         CalcInvLdData is positiv */
     }
 
     if (cmpValLeft < FL2FXCONST_DBL(0.0f)) {
@@ -548,7 +549,7 @@ static void coupleNoiseFloor(
       temp2 = CalcInvLdData(NOISE_FLOOR_OFFSET_64 - noise_level_left[i]);
       temp2 = temp2 << (DFRACT_BITS - 1 - LD_DATA_SHIFT -
                         1); /* INT to fract conversion of result, if input of
-                               CalcInvLdData is positiv */
+                         CalcInvLdData is positiv */
     }
 
     if ((cmpValLeft < FL2FXCONST_DBL(0.0f)) &&
@@ -600,16 +601,16 @@ static void coupleNoiseFloor(
 
 ****************************************************************************/
 
-static FIXP_DBL getEnvSfbEnergy(
-    INT li,             /*! lower band */
-    INT ui,             /*! upper band */
-    INT start_pos,      /*! start slot */
-    INT stop_pos,       /*! stop slot */
-    INT border_pos,     /*! slots scaling border */
-    FIXP_DBL **YBuffer, /*! sfb energy buffer */
-    INT YBufferSzShift, /*! Energy buffer index scale */
-    INT scaleNrg0,      /*! scaling of lower slots */
-    INT scaleNrg1)      /*! scaling of upper slots */
+static FIXP_DBL
+getEnvSfbEnergy(INT li,             /*! lower band */
+                INT ui,             /*! upper band */
+                INT start_pos,      /*! start slot */
+                INT stop_pos,       /*! stop slot */
+                INT border_pos,     /*! slots scaling border */
+                FIXP_DBL **YBuffer, /*! sfb energy buffer */
+                INT YBufferSzShift, /*! Energy buffer index scale */
+                INT scaleNrg0,      /*! scaling of lower slots */
+                INT scaleNrg1)      /*! scaling of upper slots */
 {
   /* use dynamic scaling for outer energy loop;
      energies are critical and every bit is important */
@@ -672,11 +673,11 @@ static FIXP_DBL mhLoweringEnergy(FIXP_DBL nrg, INT M) {
     tmpScale = CountLeadingBits(nrg);
     nrg <<= tmpScale;
     nrg = fMult(nrg, FL2FXCONST_DBL(0.398107267f)); /* The maximum boost
-                                                       is 1.584893, so the
-                                                       maximum attenuation
-                                                       should be
-                                                       square(1/1.584893) =
-                                                       0.398107267 */
+                                                   is 1.584893, so the
+                                                   maximum attenuation
+                                                   should be
+                                                   square(1/1.584893) =
+                                                   0.398107267 */
     nrg >>= tmpScale;
   } else {
     if (M > 1) {
@@ -788,7 +789,7 @@ static void calculateSbrEnvelope(
     envNrg_scale = DFRACT_BITS - fNormz((FIXP_DBL)no_of_bands);
     if (env == short_env) {
       j = fMax(2, timeStep); /* consider at least 2 QMF slots less for short
-                                envelopes (envelopes just before transients) */
+                          envelopes (envelopes just before transients) */
       if ((stop_pos - start_pos - j) > 0) {
         stop_pos = stop_pos - j;
       }
@@ -1204,55 +1205,55 @@ void FDKsbrEnc_extractSbrEnvelope2(
   }
 
   switch (stereoMode) {
-    case SBR_LEFT_RIGHT:
-    case SBR_SWITCH_LRC:
-      eData[1].frame_info = FDKsbrEnc_frameInfoGenerator(
-          &h_envChan[1]->SbrEnvFrame, eData[1].transient_info,
-          sbrBitstreamData->rightBorderFIX,
-          h_envChan[1]->sbrExtractEnvelope.pre_transient_info,
-          h_envChan[1]->encEnvData.ldGrid, v_tuning);
+  case SBR_LEFT_RIGHT:
+  case SBR_SWITCH_LRC:
+    eData[1].frame_info = FDKsbrEnc_frameInfoGenerator(
+        &h_envChan[1]->SbrEnvFrame, eData[1].transient_info,
+        sbrBitstreamData->rightBorderFIX,
+        h_envChan[1]->sbrExtractEnvelope.pre_transient_info,
+        h_envChan[1]->encEnvData.ldGrid, v_tuning);
 
-      h_envChan[1]->encEnvData.hSbrBSGrid = &h_envChan[1]->SbrEnvFrame.SbrGrid;
+    h_envChan[1]->encEnvData.hSbrBSGrid = &h_envChan[1]->SbrEnvFrame.SbrGrid;
 
-      if (h_envChan[1]->encEnvData.ldGrid && eData[1].transient_info[2]) {
-        /* if next frame will start with transient, set shortEnv to
-         * numEnvelopes(shortend Envelope = shortEnv-1)*/
-        h_envChan[1]->SbrEnvFrame.SbrFrameInfo.shortEnv =
-            h_envChan[1]->SbrEnvFrame.SbrFrameInfo.nEnvelopes;
-      }
+    if (h_envChan[1]->encEnvData.ldGrid && eData[1].transient_info[2]) {
+      /* if next frame will start with transient, set shortEnv to
+       * numEnvelopes(shortend Envelope = shortEnv-1)*/
+      h_envChan[1]->SbrEnvFrame.SbrFrameInfo.shortEnv =
+          h_envChan[1]->SbrEnvFrame.SbrFrameInfo.nEnvelopes;
+    }
 
-      /* compare left and right frame_infos */
-      if (eData[0].frame_info->nEnvelopes != eData[1].frame_info->nEnvelopes) {
-        stereoMode = SBR_LEFT_RIGHT;
-      } else {
-        for (i = 0; i < eData[0].frame_info->nEnvelopes + 1; i++) {
-          if (eData[0].frame_info->borders[i] !=
-              eData[1].frame_info->borders[i]) {
-            stereoMode = SBR_LEFT_RIGHT;
-            break;
-          }
-        }
-        for (i = 0; i < eData[0].frame_info->nEnvelopes; i++) {
-          if (eData[0].frame_info->freqRes[i] !=
-              eData[1].frame_info->freqRes[i]) {
-            stereoMode = SBR_LEFT_RIGHT;
-            break;
-          }
-        }
-        if (eData[0].frame_info->shortEnv != eData[1].frame_info->shortEnv) {
+    /* compare left and right frame_infos */
+    if (eData[0].frame_info->nEnvelopes != eData[1].frame_info->nEnvelopes) {
+      stereoMode = SBR_LEFT_RIGHT;
+    } else {
+      for (i = 0; i < eData[0].frame_info->nEnvelopes + 1; i++) {
+        if (eData[0].frame_info->borders[i] !=
+            eData[1].frame_info->borders[i]) {
           stereoMode = SBR_LEFT_RIGHT;
+          break;
         }
       }
-      break;
-    case SBR_COUPLING:
-      eData[1].frame_info = eData[0].frame_info;
-      h_envChan[1]->encEnvData.hSbrBSGrid = &h_envChan[0]->SbrEnvFrame.SbrGrid;
-      break;
-    case SBR_MONO:
-      /* nothing to do */
-      break;
-    default:
-      FDK_ASSERT(0);
+      for (i = 0; i < eData[0].frame_info->nEnvelopes; i++) {
+        if (eData[0].frame_info->freqRes[i] !=
+            eData[1].frame_info->freqRes[i]) {
+          stereoMode = SBR_LEFT_RIGHT;
+          break;
+        }
+      }
+      if (eData[0].frame_info->shortEnv != eData[1].frame_info->shortEnv) {
+        stereoMode = SBR_LEFT_RIGHT;
+      }
+    }
+    break;
+  case SBR_COUPLING:
+    eData[1].frame_info = eData[0].frame_info;
+    h_envChan[1]->encEnvData.hSbrBSGrid = &h_envChan[0]->SbrEnvFrame.SbrGrid;
+    break;
+  case SBR_MONO:
+    /* nothing to do */
+    break;
+  default:
+    FDK_ASSERT(0);
   }
 
   for (ch = 0; ch < nChannels; ch++) {
@@ -1359,48 +1360,48 @@ void FDKsbrEnc_extractSbrEnvelope2(
     Extract envelope of current frame.
   */
   switch (stereoMode) {
-    case SBR_MONO:
-      calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
-                           h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
-                           eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
-                           h_envChan[0], SBR_MONO, NULL, YSzShift);
-      break;
-    case SBR_LEFT_RIGHT:
-      calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
-                           h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
-                           eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
-                           h_envChan[0], SBR_MONO, NULL, YSzShift);
-      calculateSbrEnvelope(h_envChan[1]->sbrExtractEnvelope.YBuffer, NULL,
-                           h_envChan[1]->sbrExtractEnvelope.YBufferScale, NULL,
-                           eData[1].frame_info, eData[1].sfb_nrg, NULL, h_con,
-                           h_envChan[1], SBR_MONO, NULL, YSzShift);
-      break;
-    case SBR_COUPLING:
-      calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer,
-                           h_envChan[1]->sbrExtractEnvelope.YBuffer,
-                           h_envChan[0]->sbrExtractEnvelope.YBufferScale,
-                           h_envChan[1]->sbrExtractEnvelope.YBufferScale,
-                           eData[0].frame_info, eData[0].sfb_nrg,
-                           eData[1].sfb_nrg, h_con, h_envChan[0], SBR_COUPLING,
-                           &fData->maxQuantError, YSzShift);
-      break;
-    case SBR_SWITCH_LRC:
-      calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
-                           h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
-                           eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
-                           h_envChan[0], SBR_MONO, NULL, YSzShift);
-      calculateSbrEnvelope(h_envChan[1]->sbrExtractEnvelope.YBuffer, NULL,
-                           h_envChan[1]->sbrExtractEnvelope.YBufferScale, NULL,
-                           eData[1].frame_info, eData[1].sfb_nrg, NULL, h_con,
-                           h_envChan[1], SBR_MONO, NULL, YSzShift);
-      calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer,
-                           h_envChan[1]->sbrExtractEnvelope.YBuffer,
-                           h_envChan[0]->sbrExtractEnvelope.YBufferScale,
-                           h_envChan[1]->sbrExtractEnvelope.YBufferScale,
-                           eData[0].frame_info, eData[0].sfb_nrg_coupling,
-                           eData[1].sfb_nrg_coupling, h_con, h_envChan[0],
-                           SBR_COUPLING, &fData->maxQuantError, YSzShift);
-      break;
+  case SBR_MONO:
+    calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
+                         h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
+                         eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
+                         h_envChan[0], SBR_MONO, NULL, YSzShift);
+    break;
+  case SBR_LEFT_RIGHT:
+    calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
+                         h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
+                         eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
+                         h_envChan[0], SBR_MONO, NULL, YSzShift);
+    calculateSbrEnvelope(h_envChan[1]->sbrExtractEnvelope.YBuffer, NULL,
+                         h_envChan[1]->sbrExtractEnvelope.YBufferScale, NULL,
+                         eData[1].frame_info, eData[1].sfb_nrg, NULL, h_con,
+                         h_envChan[1], SBR_MONO, NULL, YSzShift);
+    break;
+  case SBR_COUPLING:
+    calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer,
+                         h_envChan[1]->sbrExtractEnvelope.YBuffer,
+                         h_envChan[0]->sbrExtractEnvelope.YBufferScale,
+                         h_envChan[1]->sbrExtractEnvelope.YBufferScale,
+                         eData[0].frame_info, eData[0].sfb_nrg,
+                         eData[1].sfb_nrg, h_con, h_envChan[0], SBR_COUPLING,
+                         &fData->maxQuantError, YSzShift);
+    break;
+  case SBR_SWITCH_LRC:
+    calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer, NULL,
+                         h_envChan[0]->sbrExtractEnvelope.YBufferScale, NULL,
+                         eData[0].frame_info, eData[0].sfb_nrg, NULL, h_con,
+                         h_envChan[0], SBR_MONO, NULL, YSzShift);
+    calculateSbrEnvelope(h_envChan[1]->sbrExtractEnvelope.YBuffer, NULL,
+                         h_envChan[1]->sbrExtractEnvelope.YBufferScale, NULL,
+                         eData[1].frame_info, eData[1].sfb_nrg, NULL, h_con,
+                         h_envChan[1], SBR_MONO, NULL, YSzShift);
+    calculateSbrEnvelope(h_envChan[0]->sbrExtractEnvelope.YBuffer,
+                         h_envChan[1]->sbrExtractEnvelope.YBuffer,
+                         h_envChan[0]->sbrExtractEnvelope.YBufferScale,
+                         h_envChan[1]->sbrExtractEnvelope.YBufferScale,
+                         eData[0].frame_info, eData[0].sfb_nrg_coupling,
+                         eData[1].sfb_nrg_coupling, h_con, h_envChan[0],
+                         SBR_COUPLING, &fData->maxQuantError, YSzShift);
+    break;
   }
 
   /*
@@ -1408,366 +1409,357 @@ void FDKsbrEnc_extractSbrEnvelope2(
   */
 
   switch (stereoMode) {
-    case SBR_MONO:
-      sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
-                                      0);
+  case SBR_MONO:
+    sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
+                                    0);
 
-      FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
-                             &h_envChan[0]->sbrCodeNoiseFloor,
-                             h_envChan[0]->encEnvData.domain_vec_noise, 0,
-                             (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
+                           &h_envChan[0]->sbrCodeNoiseFloor,
+                           h_envChan[0]->encEnvData.domain_vec_noise, 0,
+                           (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
 
-      break;
-    case SBR_LEFT_RIGHT:
-      sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
-                                      0);
+    break;
+  case SBR_LEFT_RIGHT:
+    sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
+                                    0);
 
-      FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
-                             &h_envChan[0]->sbrCodeNoiseFloor,
-                             h_envChan[0]->encEnvData.domain_vec_noise, 0,
-                             (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
+                           &h_envChan[0]->sbrCodeNoiseFloor,
+                           h_envChan[0]->encEnvData.domain_vec_noise, 0,
+                           (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
 
-      sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
-                                      0);
+    sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
+                                    0);
 
-      FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
-                             &h_envChan[1]->sbrCodeNoiseFloor,
-                             h_envChan[1]->encEnvData.domain_vec_noise, 0,
-                             (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
+                           &h_envChan[1]->sbrCodeNoiseFloor,
+                           h_envChan[1]->encEnvData.domain_vec_noise, 0,
+                           (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
 
-      break;
+    break;
 
-    case SBR_COUPLING:
-      coupleNoiseFloor(eData[0].noiseFloor, eData[1].noiseFloor);
+  case SBR_COUPLING:
+    coupleNoiseFloor(eData[0].noiseFloor, eData[1].noiseFloor);
 
-      sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
-                                      0);
+    sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
+                                    0);
 
-      FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
-                             &h_envChan[0]->sbrCodeNoiseFloor,
-                             h_envChan[0]->encEnvData.domain_vec_noise, 1,
-                             (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
+                           &h_envChan[0]->sbrCodeNoiseFloor,
+                           h_envChan[0]->encEnvData.domain_vec_noise, 1,
+                           (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
 
-      sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
-                                      1);
+    sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
+                                    1);
 
-      FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
-                             &h_envChan[1]->sbrCodeNoiseFloor,
-                             h_envChan[1]->encEnvData.domain_vec_noise, 1,
-                             (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 1,
-                             sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
+                           &h_envChan[1]->sbrCodeNoiseFloor,
+                           h_envChan[1]->encEnvData.domain_vec_noise, 1,
+                           (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 1,
+                           sbrBitstreamData->HeaderActive);
 
-      break;
-    case SBR_SWITCH_LRC:
-      sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
-                                      0);
-      sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
-                                      0);
-      coupleNoiseFloor(eData[0].noiseFloor, eData[1].noiseFloor);
-      sbrNoiseFloorLevelsQuantisation(eData[0].noise_level_coupling,
-                                      eData[0].noiseFloor, 0);
-      sbrNoiseFloorLevelsQuantisation(eData[1].noise_level_coupling,
-                                      eData[1].noiseFloor, 1);
-      break;
+    break;
+  case SBR_SWITCH_LRC:
+    sbrNoiseFloorLevelsQuantisation(eData[0].noise_level, eData[0].noiseFloor,
+                                    0);
+    sbrNoiseFloorLevelsQuantisation(eData[1].noise_level, eData[1].noiseFloor,
+                                    0);
+    coupleNoiseFloor(eData[0].noiseFloor, eData[1].noiseFloor);
+    sbrNoiseFloorLevelsQuantisation(eData[0].noise_level_coupling,
+                                    eData[0].noiseFloor, 0);
+    sbrNoiseFloorLevelsQuantisation(eData[1].noise_level_coupling,
+                                    eData[1].noiseFloor, 1);
+    break;
   }
 
   /*
     Encode envelope of current frame.
   */
   switch (stereoMode) {
-    case SBR_MONO:
-      sbrHeaderData->coupling = 0;
-      h_envChan[0]->encEnvData.balance = 0;
-      FDKsbrEnc_codeEnvelope(
-          eData[0].sfb_nrg, eData[0].frame_info->freqRes,
-          &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
-          sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
-          sbrBitstreamData->HeaderActive);
-      break;
-    case SBR_LEFT_RIGHT:
-      sbrHeaderData->coupling = 0;
+  case SBR_MONO:
+    sbrHeaderData->coupling = 0;
+    h_envChan[0]->encEnvData.balance = 0;
+    FDKsbrEnc_codeEnvelope(
+        eData[0].sfb_nrg, eData[0].frame_info->freqRes,
+        &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
+        sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
+        sbrBitstreamData->HeaderActive);
+    break;
+  case SBR_LEFT_RIGHT:
+    sbrHeaderData->coupling = 0;
 
-      h_envChan[0]->encEnvData.balance = 0;
-      h_envChan[1]->encEnvData.balance = 0;
+    h_envChan[0]->encEnvData.balance = 0;
+    h_envChan[1]->encEnvData.balance = 0;
 
-      FDKsbrEnc_codeEnvelope(
-          eData[0].sfb_nrg, eData[0].frame_info->freqRes,
-          &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
-          sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
-          sbrBitstreamData->HeaderActive);
-      FDKsbrEnc_codeEnvelope(
-          eData[1].sfb_nrg, eData[1].frame_info->freqRes,
-          &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec,
-          sbrHeaderData->coupling, eData[1].frame_info->nEnvelopes, 0,
-          sbrBitstreamData->HeaderActive);
-      break;
-    case SBR_COUPLING:
+    FDKsbrEnc_codeEnvelope(
+        eData[0].sfb_nrg, eData[0].frame_info->freqRes,
+        &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
+        sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
+        sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(
+        eData[1].sfb_nrg, eData[1].frame_info->freqRes,
+        &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec,
+        sbrHeaderData->coupling, eData[1].frame_info->nEnvelopes, 0,
+        sbrBitstreamData->HeaderActive);
+    break;
+  case SBR_COUPLING:
+    sbrHeaderData->coupling = 1;
+    h_envChan[0]->encEnvData.balance = 0;
+    h_envChan[1]->encEnvData.balance = 1;
+
+    FDKsbrEnc_codeEnvelope(
+        eData[0].sfb_nrg, eData[0].frame_info->freqRes,
+        &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
+        sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
+        sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(
+        eData[1].sfb_nrg, eData[1].frame_info->freqRes,
+        &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec,
+        sbrHeaderData->coupling, eData[1].frame_info->nEnvelopes, 1,
+        sbrBitstreamData->HeaderActive);
+    break;
+  case SBR_SWITCH_LRC: {
+    INT payloadbitsLR;
+    INT payloadbitsCOUPLING;
+
+    SCHAR sfbNrgPrevTemp[MAX_NUM_CHANNELS][MAX_FREQ_COEFFS];
+    SCHAR noisePrevTemp[MAX_NUM_CHANNELS][MAX_NUM_NOISE_COEFFS];
+    INT upDateNrgTemp[MAX_NUM_CHANNELS];
+    INT upDateNoiseTemp[MAX_NUM_CHANNELS];
+    INT domainVecTemp[MAX_NUM_CHANNELS][MAX_ENVELOPES];
+    INT domainVecNoiseTemp[MAX_NUM_CHANNELS][MAX_ENVELOPES];
+
+    INT tempFlagRight = 0;
+    INT tempFlagLeft = 0;
+
+    /*
+       Store previous values, in order to be able to "undo" what is being
+       done.
+    */
+
+    for (ch = 0; ch < nChannels; ch++) {
+      FDKmemcpy(sfbNrgPrevTemp[ch], h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev,
+                MAX_FREQ_COEFFS * sizeof(SCHAR));
+
+      FDKmemcpy(noisePrevTemp[ch],
+                h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev,
+                MAX_NUM_NOISE_COEFFS * sizeof(SCHAR));
+
+      upDateNrgTemp[ch] = h_envChan[ch]->sbrCodeEnvelope.upDate;
+      upDateNoiseTemp[ch] = h_envChan[ch]->sbrCodeNoiseFloor.upDate;
+
+      /*
+        forbid time coding in the first envelope in case of a different
+        previous stereomode
+      */
+      if (sbrHeaderData->prev_coupling) {
+        h_envChan[ch]->sbrCodeEnvelope.upDate = 0;
+        h_envChan[ch]->sbrCodeNoiseFloor.upDate = 0;
+      }
+    } /* ch */
+
+    /*
+       Code ordinary Left/Right stereo
+    */
+    FDKsbrEnc_codeEnvelope(
+        eData[0].sfb_nrg, eData[0].frame_info->freqRes,
+        &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec, 0,
+        eData[0].frame_info->nEnvelopes, 0, sbrBitstreamData->HeaderActive);
+    FDKsbrEnc_codeEnvelope(
+        eData[1].sfb_nrg, eData[1].frame_info->freqRes,
+        &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec, 0,
+        eData[1].frame_info->nEnvelopes, 0, sbrBitstreamData->HeaderActive);
+
+    c = 0;
+    for (i = 0; i < eData[0].nEnvelopes; i++) {
+      for (j = 0; j < h_envChan[0]->encEnvData.noScfBands[i]; j++) {
+        h_envChan[0]->encEnvData.ienvelope[i][j] = eData[0].sfb_nrg[c];
+        h_envChan[1]->encEnvData.ienvelope[i][j] = eData[1].sfb_nrg[c];
+        c++;
+      }
+    }
+
+    FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
+                           &h_envChan[0]->sbrCodeNoiseFloor,
+                           h_envChan[0]->encEnvData.domain_vec_noise, 0,
+                           (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
+
+    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
+      h_envChan[0]->encEnvData.sbr_noise_levels[i] = eData[0].noise_level[i];
+
+    FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
+                           &h_envChan[1]->sbrCodeNoiseFloor,
+                           h_envChan[1]->encEnvData.domain_vec_noise, 0,
+                           (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
+
+    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
+      h_envChan[1]->encEnvData.sbr_noise_levels[i] = eData[1].noise_level[i];
+
+    sbrHeaderData->coupling = 0;
+    h_envChan[0]->encEnvData.balance = 0;
+    h_envChan[1]->encEnvData.balance = 0;
+
+    payloadbitsLR = FDKsbrEnc_CountSbrChannelPairElement(
+        sbrHeaderData, hParametricStereo, sbrBitstreamData,
+        &h_envChan[0]->encEnvData, &h_envChan[1]->encEnvData, hCmonData,
+        h_con->sbrSyntaxFlags);
+
+    /*
+      swap saved stored with current values
+    */
+    for (ch = 0; ch < nChannels; ch++) {
+      INT itmp;
+      for (i = 0; i < MAX_FREQ_COEFFS; i++) {
+        /*
+          swap sfb energies
+        */
+        itmp = h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev[i];
+        h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev[i] = sfbNrgPrevTemp[ch][i];
+        sfbNrgPrevTemp[ch][i] = itmp;
+      }
+      for (i = 0; i < MAX_NUM_NOISE_COEFFS; i++) {
+        /*
+          swap noise energies
+        */
+        itmp = h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev[i];
+        h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev[i] = noisePrevTemp[ch][i];
+        noisePrevTemp[ch][i] = itmp;
+      }
+      /* swap update flags */
+      itmp = h_envChan[ch]->sbrCodeEnvelope.upDate;
+      h_envChan[ch]->sbrCodeEnvelope.upDate = upDateNrgTemp[ch];
+      upDateNrgTemp[ch] = itmp;
+
+      itmp = h_envChan[ch]->sbrCodeNoiseFloor.upDate;
+      h_envChan[ch]->sbrCodeNoiseFloor.upDate = upDateNoiseTemp[ch];
+      upDateNoiseTemp[ch] = itmp;
+
+      /*
+          save domain vecs
+      */
+      FDKmemcpy(domainVecTemp[ch], h_envChan[ch]->encEnvData.domain_vec,
+                sizeof(INT) * MAX_ENVELOPES);
+      FDKmemcpy(domainVecNoiseTemp[ch],
+                h_envChan[ch]->encEnvData.domain_vec_noise,
+                sizeof(INT) * MAX_ENVELOPES);
+
+      /*
+        forbid time coding in the first envelope in case of a different
+        previous stereomode
+      */
+
+      if (!sbrHeaderData->prev_coupling) {
+        h_envChan[ch]->sbrCodeEnvelope.upDate = 0;
+        h_envChan[ch]->sbrCodeNoiseFloor.upDate = 0;
+      }
+    } /* ch */
+
+    /*
+       Coupling
+     */
+
+    FDKsbrEnc_codeEnvelope(
+        eData[0].sfb_nrg_coupling, eData[0].frame_info->freqRes,
+        &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec, 1,
+        eData[0].frame_info->nEnvelopes, 0, sbrBitstreamData->HeaderActive);
+
+    FDKsbrEnc_codeEnvelope(
+        eData[1].sfb_nrg_coupling, eData[1].frame_info->freqRes,
+        &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec, 1,
+        eData[1].frame_info->nEnvelopes, 1, sbrBitstreamData->HeaderActive);
+
+    c = 0;
+    for (i = 0; i < eData[0].nEnvelopes; i++) {
+      for (j = 0; j < h_envChan[0]->encEnvData.noScfBands[i]; j++) {
+        h_envChan[0]->encEnvData.ienvelope[i][j] = eData[0].sfb_nrg_coupling[c];
+        h_envChan[1]->encEnvData.ienvelope[i][j] = eData[1].sfb_nrg_coupling[c];
+        c++;
+      }
+    }
+
+    FDKsbrEnc_codeEnvelope(eData[0].noise_level_coupling, fData->res,
+                           &h_envChan[0]->sbrCodeNoiseFloor,
+                           h_envChan[0]->encEnvData.domain_vec_noise, 1,
+                           (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
+                           sbrBitstreamData->HeaderActive);
+
+    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
+      h_envChan[0]->encEnvData.sbr_noise_levels[i] =
+          eData[0].noise_level_coupling[i];
+
+    FDKsbrEnc_codeEnvelope(eData[1].noise_level_coupling, fData->res,
+                           &h_envChan[1]->sbrCodeNoiseFloor,
+                           h_envChan[1]->encEnvData.domain_vec_noise, 1,
+                           (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 1,
+                           sbrBitstreamData->HeaderActive);
+
+    for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
+      h_envChan[1]->encEnvData.sbr_noise_levels[i] =
+          eData[1].noise_level_coupling[i];
+
+    sbrHeaderData->coupling = 1;
+
+    h_envChan[0]->encEnvData.balance = 0;
+    h_envChan[1]->encEnvData.balance = 1;
+
+    tempFlagLeft = h_envChan[0]->encEnvData.addHarmonicFlag;
+    tempFlagRight = h_envChan[1]->encEnvData.addHarmonicFlag;
+
+    payloadbitsCOUPLING = FDKsbrEnc_CountSbrChannelPairElement(
+        sbrHeaderData, hParametricStereo, sbrBitstreamData,
+        &h_envChan[0]->encEnvData, &h_envChan[1]->encEnvData, hCmonData,
+        h_con->sbrSyntaxFlags);
+
+    h_envChan[0]->encEnvData.addHarmonicFlag = tempFlagLeft;
+    h_envChan[1]->encEnvData.addHarmonicFlag = tempFlagRight;
+
+    if (payloadbitsCOUPLING < payloadbitsLR) {
+      /*
+        copy coded coupling envelope and noise data to l/r
+      */
+      for (ch = 0; ch < nChannels; ch++) {
+        SBR_ENV_TEMP_DATA *ed = &eData[ch];
+        FDKmemcpy(ed->sfb_nrg, ed->sfb_nrg_coupling,
+                  MAX_NUM_ENVELOPE_VALUES * sizeof(SCHAR));
+        FDKmemcpy(ed->noise_level, ed->noise_level_coupling,
+                  MAX_NUM_NOISE_VALUES * sizeof(SCHAR));
+      }
+
       sbrHeaderData->coupling = 1;
       h_envChan[0]->encEnvData.balance = 0;
       h_envChan[1]->encEnvData.balance = 1;
-
-      FDKsbrEnc_codeEnvelope(
-          eData[0].sfb_nrg, eData[0].frame_info->freqRes,
-          &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
-          sbrHeaderData->coupling, eData[0].frame_info->nEnvelopes, 0,
-          sbrBitstreamData->HeaderActive);
-      FDKsbrEnc_codeEnvelope(
-          eData[1].sfb_nrg, eData[1].frame_info->freqRes,
-          &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec,
-          sbrHeaderData->coupling, eData[1].frame_info->nEnvelopes, 1,
-          sbrBitstreamData->HeaderActive);
-      break;
-    case SBR_SWITCH_LRC: {
-      INT payloadbitsLR;
-      INT payloadbitsCOUPLING;
-
-      SCHAR sfbNrgPrevTemp[MAX_NUM_CHANNELS][MAX_FREQ_COEFFS];
-      SCHAR noisePrevTemp[MAX_NUM_CHANNELS][MAX_NUM_NOISE_COEFFS];
-      INT upDateNrgTemp[MAX_NUM_CHANNELS];
-      INT upDateNoiseTemp[MAX_NUM_CHANNELS];
-      INT domainVecTemp[MAX_NUM_CHANNELS][MAX_ENVELOPES];
-      INT domainVecNoiseTemp[MAX_NUM_CHANNELS][MAX_ENVELOPES];
-
-      INT tempFlagRight = 0;
-      INT tempFlagLeft = 0;
-
+    } else {
       /*
-         Store previous values, in order to be able to "undo" what is being
-         done.
-      */
-
-      for (ch = 0; ch < nChannels; ch++) {
-        FDKmemcpy(sfbNrgPrevTemp[ch],
-                  h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev,
-                  MAX_FREQ_COEFFS * sizeof(SCHAR));
-
-        FDKmemcpy(noisePrevTemp[ch],
-                  h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev,
-                  MAX_NUM_NOISE_COEFFS * sizeof(SCHAR));
-
-        upDateNrgTemp[ch] = h_envChan[ch]->sbrCodeEnvelope.upDate;
-        upDateNoiseTemp[ch] = h_envChan[ch]->sbrCodeNoiseFloor.upDate;
-
-        /*
-          forbid time coding in the first envelope in case of a different
-          previous stereomode
-        */
-        if (sbrHeaderData->prev_coupling) {
-          h_envChan[ch]->sbrCodeEnvelope.upDate = 0;
-          h_envChan[ch]->sbrCodeNoiseFloor.upDate = 0;
-        }
-      } /* ch */
-
-      /*
-         Code ordinary Left/Right stereo
-      */
-      FDKsbrEnc_codeEnvelope(eData[0].sfb_nrg, eData[0].frame_info->freqRes,
-                             &h_envChan[0]->sbrCodeEnvelope,
-                             h_envChan[0]->encEnvData.domain_vec, 0,
-                             eData[0].frame_info->nEnvelopes, 0,
-                             sbrBitstreamData->HeaderActive);
-      FDKsbrEnc_codeEnvelope(eData[1].sfb_nrg, eData[1].frame_info->freqRes,
-                             &h_envChan[1]->sbrCodeEnvelope,
-                             h_envChan[1]->encEnvData.domain_vec, 0,
-                             eData[1].frame_info->nEnvelopes, 0,
-                             sbrBitstreamData->HeaderActive);
-
-      c = 0;
-      for (i = 0; i < eData[0].nEnvelopes; i++) {
-        for (j = 0; j < h_envChan[0]->encEnvData.noScfBands[i]; j++) {
-          h_envChan[0]->encEnvData.ienvelope[i][j] = eData[0].sfb_nrg[c];
-          h_envChan[1]->encEnvData.ienvelope[i][j] = eData[1].sfb_nrg[c];
-          c++;
-        }
-      }
-
-      FDKsbrEnc_codeEnvelope(eData[0].noise_level, fData->res,
-                             &h_envChan[0]->sbrCodeNoiseFloor,
-                             h_envChan[0]->encEnvData.domain_vec_noise, 0,
-                             (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
-
-      for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
-        h_envChan[0]->encEnvData.sbr_noise_levels[i] = eData[0].noise_level[i];
-
-      FDKsbrEnc_codeEnvelope(eData[1].noise_level, fData->res,
-                             &h_envChan[1]->sbrCodeNoiseFloor,
-                             h_envChan[1]->encEnvData.domain_vec_noise, 0,
-                             (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
-
-      for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
-        h_envChan[1]->encEnvData.sbr_noise_levels[i] = eData[1].noise_level[i];
-
-      sbrHeaderData->coupling = 0;
-      h_envChan[0]->encEnvData.balance = 0;
-      h_envChan[1]->encEnvData.balance = 0;
-
-      payloadbitsLR = FDKsbrEnc_CountSbrChannelPairElement(
-          sbrHeaderData, hParametricStereo, sbrBitstreamData,
-          &h_envChan[0]->encEnvData, &h_envChan[1]->encEnvData, hCmonData,
-          h_con->sbrSyntaxFlags);
-
-      /*
-        swap saved stored with current values
+        restore saved l/r items
       */
       for (ch = 0; ch < nChannels; ch++) {
-        INT itmp;
-        for (i = 0; i < MAX_FREQ_COEFFS; i++) {
-          /*
-            swap sfb energies
-          */
-          itmp = h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev[i];
-          h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev[i] =
-              sfbNrgPrevTemp[ch][i];
-          sfbNrgPrevTemp[ch][i] = itmp;
-        }
-        for (i = 0; i < MAX_NUM_NOISE_COEFFS; i++) {
-          /*
-            swap noise energies
-          */
-          itmp = h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev[i];
-          h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev[i] =
-              noisePrevTemp[ch][i];
-          noisePrevTemp[ch][i] = itmp;
-        }
-        /* swap update flags */
-        itmp = h_envChan[ch]->sbrCodeEnvelope.upDate;
+        FDKmemcpy(h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev,
+                  sfbNrgPrevTemp[ch], MAX_FREQ_COEFFS * sizeof(SCHAR));
+
         h_envChan[ch]->sbrCodeEnvelope.upDate = upDateNrgTemp[ch];
-        upDateNrgTemp[ch] = itmp;
 
-        itmp = h_envChan[ch]->sbrCodeNoiseFloor.upDate;
+        FDKmemcpy(h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev,
+                  noisePrevTemp[ch], MAX_NUM_NOISE_COEFFS * sizeof(SCHAR));
+
+        FDKmemcpy(h_envChan[ch]->encEnvData.domain_vec, domainVecTemp[ch],
+                  sizeof(INT) * MAX_ENVELOPES);
+        FDKmemcpy(h_envChan[ch]->encEnvData.domain_vec_noise,
+                  domainVecNoiseTemp[ch], sizeof(INT) * MAX_ENVELOPES);
+
         h_envChan[ch]->sbrCodeNoiseFloor.upDate = upDateNoiseTemp[ch];
-        upDateNoiseTemp[ch] = itmp;
-
-        /*
-            save domain vecs
-        */
-        FDKmemcpy(domainVecTemp[ch], h_envChan[ch]->encEnvData.domain_vec,
-                  sizeof(INT) * MAX_ENVELOPES);
-        FDKmemcpy(domainVecNoiseTemp[ch],
-                  h_envChan[ch]->encEnvData.domain_vec_noise,
-                  sizeof(INT) * MAX_ENVELOPES);
-
-        /*
-          forbid time coding in the first envelope in case of a different
-          previous stereomode
-        */
-
-        if (!sbrHeaderData->prev_coupling) {
-          h_envChan[ch]->sbrCodeEnvelope.upDate = 0;
-          h_envChan[ch]->sbrCodeNoiseFloor.upDate = 0;
-        }
-      } /* ch */
-
-      /*
-         Coupling
-       */
-
-      FDKsbrEnc_codeEnvelope(
-          eData[0].sfb_nrg_coupling, eData[0].frame_info->freqRes,
-          &h_envChan[0]->sbrCodeEnvelope, h_envChan[0]->encEnvData.domain_vec,
-          1, eData[0].frame_info->nEnvelopes, 0,
-          sbrBitstreamData->HeaderActive);
-
-      FDKsbrEnc_codeEnvelope(
-          eData[1].sfb_nrg_coupling, eData[1].frame_info->freqRes,
-          &h_envChan[1]->sbrCodeEnvelope, h_envChan[1]->encEnvData.domain_vec,
-          1, eData[1].frame_info->nEnvelopes, 1,
-          sbrBitstreamData->HeaderActive);
-
-      c = 0;
-      for (i = 0; i < eData[0].nEnvelopes; i++) {
-        for (j = 0; j < h_envChan[0]->encEnvData.noScfBands[i]; j++) {
-          h_envChan[0]->encEnvData.ienvelope[i][j] =
-              eData[0].sfb_nrg_coupling[c];
-          h_envChan[1]->encEnvData.ienvelope[i][j] =
-              eData[1].sfb_nrg_coupling[c];
-          c++;
-        }
       }
 
-      FDKsbrEnc_codeEnvelope(eData[0].noise_level_coupling, fData->res,
-                             &h_envChan[0]->sbrCodeNoiseFloor,
-                             h_envChan[0]->encEnvData.domain_vec_noise, 1,
-                             (eData[0].frame_info->nEnvelopes > 1 ? 2 : 1), 0,
-                             sbrBitstreamData->HeaderActive);
-
-      for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
-        h_envChan[0]->encEnvData.sbr_noise_levels[i] =
-            eData[0].noise_level_coupling[i];
-
-      FDKsbrEnc_codeEnvelope(eData[1].noise_level_coupling, fData->res,
-                             &h_envChan[1]->sbrCodeNoiseFloor,
-                             h_envChan[1]->encEnvData.domain_vec_noise, 1,
-                             (eData[1].frame_info->nEnvelopes > 1 ? 2 : 1), 1,
-                             sbrBitstreamData->HeaderActive);
-
-      for (i = 0; i < MAX_NUM_NOISE_VALUES; i++)
-        h_envChan[1]->encEnvData.sbr_noise_levels[i] =
-            eData[1].noise_level_coupling[i];
-
-      sbrHeaderData->coupling = 1;
-
+      sbrHeaderData->coupling = 0;
       h_envChan[0]->encEnvData.balance = 0;
-      h_envChan[1]->encEnvData.balance = 1;
-
-      tempFlagLeft = h_envChan[0]->encEnvData.addHarmonicFlag;
-      tempFlagRight = h_envChan[1]->encEnvData.addHarmonicFlag;
-
-      payloadbitsCOUPLING = FDKsbrEnc_CountSbrChannelPairElement(
-          sbrHeaderData, hParametricStereo, sbrBitstreamData,
-          &h_envChan[0]->encEnvData, &h_envChan[1]->encEnvData, hCmonData,
-          h_con->sbrSyntaxFlags);
-
-      h_envChan[0]->encEnvData.addHarmonicFlag = tempFlagLeft;
-      h_envChan[1]->encEnvData.addHarmonicFlag = tempFlagRight;
-
-      if (payloadbitsCOUPLING < payloadbitsLR) {
-        /*
-          copy coded coupling envelope and noise data to l/r
-        */
-        for (ch = 0; ch < nChannels; ch++) {
-          SBR_ENV_TEMP_DATA *ed = &eData[ch];
-          FDKmemcpy(ed->sfb_nrg, ed->sfb_nrg_coupling,
-                    MAX_NUM_ENVELOPE_VALUES * sizeof(SCHAR));
-          FDKmemcpy(ed->noise_level, ed->noise_level_coupling,
-                    MAX_NUM_NOISE_VALUES * sizeof(SCHAR));
-        }
-
-        sbrHeaderData->coupling = 1;
-        h_envChan[0]->encEnvData.balance = 0;
-        h_envChan[1]->encEnvData.balance = 1;
-      } else {
-        /*
-          restore saved l/r items
-        */
-        for (ch = 0; ch < nChannels; ch++) {
-          FDKmemcpy(h_envChan[ch]->sbrCodeEnvelope.sfb_nrg_prev,
-                    sfbNrgPrevTemp[ch], MAX_FREQ_COEFFS * sizeof(SCHAR));
-
-          h_envChan[ch]->sbrCodeEnvelope.upDate = upDateNrgTemp[ch];
-
-          FDKmemcpy(h_envChan[ch]->sbrCodeNoiseFloor.sfb_nrg_prev,
-                    noisePrevTemp[ch], MAX_NUM_NOISE_COEFFS * sizeof(SCHAR));
-
-          FDKmemcpy(h_envChan[ch]->encEnvData.domain_vec, domainVecTemp[ch],
-                    sizeof(INT) * MAX_ENVELOPES);
-          FDKmemcpy(h_envChan[ch]->encEnvData.domain_vec_noise,
-                    domainVecNoiseTemp[ch], sizeof(INT) * MAX_ENVELOPES);
-
-          h_envChan[ch]->sbrCodeNoiseFloor.upDate = upDateNoiseTemp[ch];
-        }
-
-        sbrHeaderData->coupling = 0;
-        h_envChan[0]->encEnvData.balance = 0;
-        h_envChan[1]->encEnvData.balance = 0;
-      }
-    } break;
+      h_envChan[1]->encEnvData.balance = 0;
+    }
+  } break;
   } /* switch */
 
   /* tell the envelope encoders how long it has been, since we last sent
@@ -1981,5 +1973,5 @@ INT FDKsbrEnc_GetEnvEstDelay(HANDLE_SBR_EXTRACT_ENVELOPE hSbr) {
          ((hSbr->YBufferWriteOffset) *
               2 /* mult 2 because nrg's are grouped half */
           - hSbr->rBufferReadOffset); /* in reference hold half spec and calc
-                                         nrg's on overlapped spec */
+                                       nrg's on overlapped spec */
 }

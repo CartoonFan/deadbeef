@@ -105,11 +105,11 @@ amm-info@iis.fraunhofer.de
 
 #include "tp_data.h" /* for program config element support */
 
+#include "FDK_bitstream.h"
 #include "aacdec_drc_types.h"
 #include "channel.h"
-#include "FDK_bitstream.h"
 
-#define AACDEC_DRC_DFLT_EXPIRY_FRAMES \
+#define AACDEC_DRC_DFLT_EXPIRY_FRAMES                                          \
   (0) /* Default DRC data expiry time in AAC frames   */
 
 /* #define AACDEC_DRC_IGNORE_FRAMES_WITH_MULTIPLE_CH_THREADS */ /* The name says

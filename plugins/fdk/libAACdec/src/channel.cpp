@@ -101,10 +101,10 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "channel.h"
+#include "FDK_bitstream.h"
+#include "aacdec_tns.h"
 #include "aacdecoder.h"
 #include "block.h"
-#include "aacdec_tns.h"
-#include "FDK_bitstream.h"
 
 #include "conceal.h"
 
@@ -112,8 +112,8 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdec_hcr.h"
 
-#include "usacdec_lpd.h"
 #include "usacdec_fac.h"
+#include "usacdec_lpd.h"
 
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2]) {
@@ -467,414 +467,409 @@ AAC_DECODER_ERROR CChannelElement_Read(
   decision_bit = 0;
   do {
     switch (list->id[i]) {
-      case element_instance_tag:
-        pAacDecoderChannelInfo[0]->ElementInstanceTag = FDKreadBits(hBs, 4);
-        if (numberOfChannels == 2) {
-          pAacDecoderChannelInfo[1]->ElementInstanceTag =
-              pAacDecoderChannelInfo[0]->ElementInstanceTag;
+    case element_instance_tag:
+      pAacDecoderChannelInfo[0]->ElementInstanceTag = FDKreadBits(hBs, 4);
+      if (numberOfChannels == 2) {
+        pAacDecoderChannelInfo[1]->ElementInstanceTag =
+            pAacDecoderChannelInfo[0]->ElementInstanceTag;
+      }
+      break;
+    case common_window:
+      decision_bit =
+          pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.CommonWindow =
+              FDKreadBits(hBs, 1);
+      if (numberOfChannels == 2) {
+        pAacDecoderChannelInfo[1]->pDynData->RawDataInfo.CommonWindow =
+            pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow;
+      }
+      break;
+    case ics_info:
+      /* store last window sequence (utilized in complex stereo prediction)
+       * before reading new channel-info */
+      if (cplxPred) {
+        if (pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow) {
+          pAacDecoderStaticChannelInfo[0]
+              ->pCpeStaticData->jointStereoPersistentData.winSeqPrev =
+              pAacDecoderChannelInfo[0]->icsInfo.WindowSequence;
+          pAacDecoderStaticChannelInfo[0]
+              ->pCpeStaticData->jointStereoPersistentData.winShapePrev =
+              pAacDecoderChannelInfo[0]->icsInfo.WindowShape;
         }
-        break;
-      case common_window:
-        decision_bit =
-            pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.CommonWindow =
-                FDKreadBits(hBs, 1);
-        if (numberOfChannels == 2) {
-          pAacDecoderChannelInfo[1]->pDynData->RawDataInfo.CommonWindow =
-              pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow;
-        }
-        break;
-      case ics_info:
-        /* store last window sequence (utilized in complex stereo prediction)
-         * before reading new channel-info */
-        if (cplxPred) {
-          if (pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow) {
-            pAacDecoderStaticChannelInfo[0]
-                ->pCpeStaticData->jointStereoPersistentData.winSeqPrev =
-                pAacDecoderChannelInfo[0]->icsInfo.WindowSequence;
-            pAacDecoderStaticChannelInfo[0]
-                ->pCpeStaticData->jointStereoPersistentData.winShapePrev =
-                pAacDecoderChannelInfo[0]->icsInfo.WindowShape;
-          }
-        }
-        /* Read individual channel info */
-        error = IcsRead(hBs, &pAacDecoderChannelInfo[ch]->icsInfo,
-                        pSamplingRateInfo, flags);
+      }
+      /* Read individual channel info */
+      error = IcsRead(hBs, &pAacDecoderChannelInfo[ch]->icsInfo,
+                      pSamplingRateInfo, flags);
 
-        if (elFlags & AC_EL_LFE &&
-            GetWindowSequence(&pAacDecoderChannelInfo[ch]->icsInfo) !=
-                BLOCK_LONG) {
+      if (elFlags & AC_EL_LFE &&
+          GetWindowSequence(&pAacDecoderChannelInfo[ch]->icsInfo) !=
+              BLOCK_LONG) {
+        error = AAC_DEC_PARSE_ERROR;
+        break;
+      }
+
+      if (numberOfChannels == 2 &&
+          pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow) {
+        pAacDecoderChannelInfo[1]->icsInfo = pAacDecoderChannelInfo[0]->icsInfo;
+      }
+      break;
+
+    case common_max_sfb:
+      if (FDKreadBit(hBs) == 0) {
+        error = IcsReadMaxSfb(hBs, &pAacDecoderChannelInfo[1]->icsInfo,
+                              pSamplingRateInfo);
+      }
+      break;
+
+    case ltp_data_present:
+      if (FDKreadBits(hBs, 1) != 0) {
+        error = AAC_DEC_UNSUPPORTED_PREDICTION;
+      }
+      break;
+
+    case ms:
+
+      INT max_sfb_ste;
+      INT max_sfb_ste_clear;
+
+      max_sfb_ste = GetScaleMaxFactorBandsTransmitted(
+          &pAacDecoderChannelInfo[0]->icsInfo,
+          &pAacDecoderChannelInfo[1]->icsInfo);
+
+      max_sfb_ste_clear = 64;
+
+      pAacDecoderChannelInfo[0]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
+      pAacDecoderChannelInfo[1]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
+
+      if (flags & (AC_USAC | AC_RSV603DA) &&
+          pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.CommonWindow == 0) {
+        Clean_Complex_Prediction_coefficients(
+            &pAacDecoderStaticChannelInfo[0]
+                 ->pCpeStaticData->jointStereoPersistentData,
+            GetWindowGroups(&pAacDecoderChannelInfo[0]->icsInfo), 0, 64);
+      }
+
+      if (CJointStereo_Read(
+              hBs, &pAacDecoderChannelInfo[0]->pComData->jointStereoData,
+              GetWindowGroups(&pAacDecoderChannelInfo[0]->icsInfo), max_sfb_ste,
+              max_sfb_ste_clear,
+              /* jointStereoPersistentData and cplxPredictionData are only
+                 available/allocated if cplxPred is active. */
+              ((cplxPred == 0) || (pAacDecoderStaticChannelInfo == NULL))
+                  ? NULL
+                  : &pAacDecoderStaticChannelInfo[0]
+                         ->pCpeStaticData->jointStereoPersistentData,
+              ((cplxPred == 0) || (pAacDecoderChannelInfo[0] == NULL))
+                  ? NULL
+                  : pAacDecoderChannelInfo[0]
+                        ->pComStaticData->cplxPredictionData,
+              cplxPred,
+              GetScaleFactorBandsTotal(&pAacDecoderChannelInfo[0]->icsInfo),
+              GetWindowSequence(&pAacDecoderChannelInfo[0]->icsInfo), flags)) {
+        error = AAC_DEC_PARSE_ERROR;
+      }
+
+      break;
+
+    case global_gain:
+      pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.GlobalGain =
+          (UCHAR)FDKreadBits(hBs, 8);
+      break;
+
+    case section_data:
+      error = CBlock_ReadSectionData(hBs, pAacDecoderChannelInfo[ch],
+                                     pSamplingRateInfo, flags);
+      break;
+
+    case scale_factor_data_usac:
+      pAacDecoderChannelInfo[ch]->currAliasingSymmetry = 0;
+      /* Set active sfb codebook indexes to HCB_ESC to make them "active" */
+      CChannel_CodebookTableInit(
+          pAacDecoderChannelInfo[ch]); /*  equals ReadSectionData(self,
+                                      bs) in float soft. block.c
+                                      line: ~599 */
+      /* Note: The missing "break" is intentional here, since we need to call
+       * CBlock_ReadScaleFactorData(). */
+      FDK_FALLTHROUGH;
+
+    case scale_factor_data:
+      if (flags & AC_ER_RVLC) {
+        /* read RVLC data from bitstream (error sens. cat. 1) */
+        CRvlc_Read(pAacDecoderChannelInfo[ch], hBs);
+      } else {
+        error =
+            CBlock_ReadScaleFactorData(pAacDecoderChannelInfo[ch], hBs, flags);
+      }
+      break;
+
+    case pulse:
+      if (CPulseData_Read(
+              hBs,
+              &pAacDecoderChannelInfo[ch]->pDynData->specificTo.aac.PulseData,
+              pSamplingRateInfo->ScaleFactorBands_Long, /* pulse data is only
+                                                   allowed to be
+                                                   present in long
+                                                   blocks! */
+              (void *)&pAacDecoderChannelInfo[ch]->icsInfo,
+              frame_length) != 0) {
+        error = AAC_DEC_DECODE_FRAME_ERROR;
+      }
+      break;
+    case tns_data_present:
+      CTns_ReadDataPresentFlag(hBs,
+                               &pAacDecoderChannelInfo[ch]->pDynData->TnsData);
+      if (elFlags & AC_EL_LFE &&
+          pAacDecoderChannelInfo[ch]->pDynData->TnsData.DataPresent) {
+        error = AAC_DEC_PARSE_ERROR;
+      }
+      break;
+    case tns_data:
+      /* tns_data_present is checked inside CTns_Read(). */
+      error = CTns_Read(hBs, &pAacDecoderChannelInfo[ch]->pDynData->TnsData,
+                        &pAacDecoderChannelInfo[ch]->icsInfo, flags);
+
+      break;
+
+    case gain_control_data:
+      break;
+
+    case gain_control_data_present:
+      if (FDKreadBits(hBs, 1)) {
+        error = AAC_DEC_UNSUPPORTED_GAIN_CONTROL_DATA;
+      }
+      break;
+
+    case tw_data:
+      break;
+    case common_tw:
+      break;
+    case tns_data_present_usac:
+      if (pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_active) {
+        CTns_ReadDataPresentUsac(
+            hBs, &pAacDecoderChannelInfo[0]->pDynData->TnsData,
+            &pAacDecoderChannelInfo[1]->pDynData->TnsData,
+            &pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_on_lr,
+            &pAacDecoderChannelInfo[0]->icsInfo, flags, elFlags,
+            pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow);
+      } else {
+        pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_on_lr =
+            (UCHAR)1;
+      }
+      break;
+    case core_mode:
+      decision_bit = FDKreadBits(hBs, 1);
+      pAacDecoderChannelInfo[ch]->data.usac.core_mode = decision_bit;
+      if ((ch == 1) && (pAacDecoderChannelInfo[0]->data.usac.core_mode !=
+                        pAacDecoderChannelInfo[1]->data.usac.core_mode)) {
+        /* StereoCoreToolInfo(core_mode[ch] ) */
+        pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow = 0;
+        pAacDecoderChannelInfo[1]->pDynData->RawDataInfo.CommonWindow = 0;
+      }
+      break;
+    case tns_active:
+      pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_active =
+          FDKreadBit(hBs);
+      break;
+    case noise:
+      if (elFlags & AC_EL_USAC_NOISE) {
+        pAacDecoderChannelInfo[ch]
+            ->pDynData->specificTo.usac.fd_noise_level_and_offset =
+            FDKreadBits(hBs, 3 + 5); /* Noise level */
+      }
+      break;
+    case lpd_channel_stream:
+
+    {
+      error = CLpdChannelStream_Read(/* = lpd_channel_stream() */
+                                     hBs, pAacDecoderChannelInfo[ch],
+                                     pAacDecoderStaticChannelInfo[ch],
+                                     pSamplingRateInfo, flags);
+    }
+
+      pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_LPD;
+      break;
+    case fac_data: {
+      int fFacDatPresent = FDKreadBit(hBs);
+
+      /* Wee need a valid fac_data[0] even if no FAC data is present (as
+       * temporal buffer) */
+      pAacDecoderChannelInfo[ch]->data.usac.fac_data[0] =
+          pAacDecoderChannelInfo[ch]->data.usac.fac_data0;
+
+      if (fFacDatPresent) {
+        if (elFlags & AC_EL_LFE) {
           error = AAC_DEC_PARSE_ERROR;
           break;
         }
-
-        if (numberOfChannels == 2 &&
-            pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow) {
-          pAacDecoderChannelInfo[1]->icsInfo =
-              pAacDecoderChannelInfo[0]->icsInfo;
+        /* FAC data present, this frame is FD, so the last mode had to be
+         * ACELP. */
+        if (pAacDecoderStaticChannelInfo[ch]->last_core_mode != LPD ||
+            pAacDecoderStaticChannelInfo[ch]->last_lpd_mode != 0) {
+          pAacDecoderChannelInfo[ch]->data.usac.core_mode_last = LPD;
+          pAacDecoderChannelInfo[ch]->data.usac.lpd_mode_last = 0;
+          /* We can't change the past! So look to the future and go ahead! */
         }
-        break;
-
-      case common_max_sfb:
-        if (FDKreadBit(hBs) == 0) {
-          error = IcsReadMaxSfb(hBs, &pAacDecoderChannelInfo[1]->icsInfo,
-                                pSamplingRateInfo);
+        CLpd_FAC_Read(hBs, pAacDecoderChannelInfo[ch]->data.usac.fac_data[0],
+                      pAacDecoderChannelInfo[ch]->data.usac.fac_data_e,
+                      CLpd_FAC_getLength(
+                          IsLongBlock(&pAacDecoderChannelInfo[ch]->icsInfo),
+                          pAacDecoderChannelInfo[ch]->granuleLength),
+                      1, 0);
+      } else {
+        if (pAacDecoderStaticChannelInfo[ch]->last_core_mode == LPD &&
+            pAacDecoderStaticChannelInfo[ch]->last_lpd_mode == 0) {
+          /* ACELP to FD transitons without FAC are possible. That is why we
+          zero it out (i.e FAC will not be considered in the subsequent
+          calculations */
+          FDKmemclear(pAacDecoderChannelInfo[ch]->data.usac.fac_data0,
+                      LFAC * sizeof(FIXP_DBL));
         }
-        break;
-
-      case ltp_data_present:
-        if (FDKreadBits(hBs, 1) != 0) {
-          error = AAC_DEC_UNSUPPORTED_PREDICTION;
-        }
-        break;
-
-      case ms:
-
-        INT max_sfb_ste;
-        INT max_sfb_ste_clear;
-
-        max_sfb_ste = GetScaleMaxFactorBandsTransmitted(
-            &pAacDecoderChannelInfo[0]->icsInfo,
-            &pAacDecoderChannelInfo[1]->icsInfo);
-
-        max_sfb_ste_clear = 64;
-
-        pAacDecoderChannelInfo[0]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
-        pAacDecoderChannelInfo[1]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
-
-        if (flags & (AC_USAC | AC_RSV603DA) &&
-            pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.CommonWindow ==
-                0) {
-          Clean_Complex_Prediction_coefficients(
-              &pAacDecoderStaticChannelInfo[0]
-                   ->pCpeStaticData->jointStereoPersistentData,
-              GetWindowGroups(&pAacDecoderChannelInfo[0]->icsInfo), 0, 64);
-        }
-
-        if (CJointStereo_Read(
-                hBs, &pAacDecoderChannelInfo[0]->pComData->jointStereoData,
-                GetWindowGroups(&pAacDecoderChannelInfo[0]->icsInfo),
-                max_sfb_ste, max_sfb_ste_clear,
-                /* jointStereoPersistentData and cplxPredictionData are only
-                   available/allocated if cplxPred is active. */
-                ((cplxPred == 0) || (pAacDecoderStaticChannelInfo == NULL))
-                    ? NULL
-                    : &pAacDecoderStaticChannelInfo[0]
-                           ->pCpeStaticData->jointStereoPersistentData,
-                ((cplxPred == 0) || (pAacDecoderChannelInfo[0] == NULL))
-                    ? NULL
-                    : pAacDecoderChannelInfo[0]
-                          ->pComStaticData->cplxPredictionData,
-                cplxPred,
-                GetScaleFactorBandsTotal(&pAacDecoderChannelInfo[0]->icsInfo),
-                GetWindowSequence(&pAacDecoderChannelInfo[0]->icsInfo),
-                flags)) {
-          error = AAC_DEC_PARSE_ERROR;
-        }
-
-        break;
-
-      case global_gain:
-        pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.GlobalGain =
-            (UCHAR)FDKreadBits(hBs, 8);
-        break;
-
-      case section_data:
-        error = CBlock_ReadSectionData(hBs, pAacDecoderChannelInfo[ch],
-                                       pSamplingRateInfo, flags);
-        break;
-
-      case scale_factor_data_usac:
-        pAacDecoderChannelInfo[ch]->currAliasingSymmetry = 0;
-        /* Set active sfb codebook indexes to HCB_ESC to make them "active" */
-        CChannel_CodebookTableInit(
-            pAacDecoderChannelInfo[ch]); /*  equals ReadSectionData(self,
-                                            bs) in float soft. block.c
-                                            line: ~599 */
-        /* Note: The missing "break" is intentional here, since we need to call
-         * CBlock_ReadScaleFactorData(). */
-        FDK_FALLTHROUGH;
-
-      case scale_factor_data:
-        if (flags & AC_ER_RVLC) {
-          /* read RVLC data from bitstream (error sens. cat. 1) */
-          CRvlc_Read(pAacDecoderChannelInfo[ch], hBs);
-        } else {
-          error = CBlock_ReadScaleFactorData(pAacDecoderChannelInfo[ch], hBs,
-                                             flags);
-        }
-        break;
-
-      case pulse:
-        if (CPulseData_Read(
-                hBs,
-                &pAacDecoderChannelInfo[ch]->pDynData->specificTo.aac.PulseData,
-                pSamplingRateInfo->ScaleFactorBands_Long, /* pulse data is only
-                                                             allowed to be
-                                                             present in long
-                                                             blocks! */
-                (void *)&pAacDecoderChannelInfo[ch]->icsInfo,
-                frame_length) != 0) {
-          error = AAC_DEC_DECODE_FRAME_ERROR;
-        }
-        break;
-      case tns_data_present:
-        CTns_ReadDataPresentFlag(
-            hBs, &pAacDecoderChannelInfo[ch]->pDynData->TnsData);
-        if (elFlags & AC_EL_LFE &&
-            pAacDecoderChannelInfo[ch]->pDynData->TnsData.DataPresent) {
-          error = AAC_DEC_PARSE_ERROR;
-        }
-        break;
-      case tns_data:
-        /* tns_data_present is checked inside CTns_Read(). */
-        error = CTns_Read(hBs, &pAacDecoderChannelInfo[ch]->pDynData->TnsData,
-                          &pAacDecoderChannelInfo[ch]->icsInfo, flags);
-
-        break;
-
-      case gain_control_data:
-        break;
-
-      case gain_control_data_present:
-        if (FDKreadBits(hBs, 1)) {
-          error = AAC_DEC_UNSUPPORTED_GAIN_CONTROL_DATA;
-        }
-        break;
-
-      case tw_data:
-        break;
-      case common_tw:
-        break;
-      case tns_data_present_usac:
-        if (pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_active) {
-          CTns_ReadDataPresentUsac(
-              hBs, &pAacDecoderChannelInfo[0]->pDynData->TnsData,
-              &pAacDecoderChannelInfo[1]->pDynData->TnsData,
-              &pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_on_lr,
-              &pAacDecoderChannelInfo[0]->icsInfo, flags, elFlags,
-              pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow);
-        } else {
-          pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_on_lr =
-              (UCHAR)1;
-        }
-        break;
-      case core_mode:
-        decision_bit = FDKreadBits(hBs, 1);
-        pAacDecoderChannelInfo[ch]->data.usac.core_mode = decision_bit;
-        if ((ch == 1) && (pAacDecoderChannelInfo[0]->data.usac.core_mode !=
-                          pAacDecoderChannelInfo[1]->data.usac.core_mode)) {
-          /* StereoCoreToolInfo(core_mode[ch] ) */
-          pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow = 0;
-          pAacDecoderChannelInfo[1]->pDynData->RawDataInfo.CommonWindow = 0;
-        }
-        break;
-      case tns_active:
-        pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_active =
-            FDKreadBit(hBs);
-        break;
-      case noise:
-        if (elFlags & AC_EL_USAC_NOISE) {
-          pAacDecoderChannelInfo[ch]
-              ->pDynData->specificTo.usac.fd_noise_level_and_offset =
-              FDKreadBits(hBs, 3 + 5); /* Noise level */
-        }
-        break;
-      case lpd_channel_stream:
-
-      {
-        error = CLpdChannelStream_Read(/* = lpd_channel_stream() */
-                                       hBs, pAacDecoderChannelInfo[ch],
-                                       pAacDecoderStaticChannelInfo[ch],
-                                       pSamplingRateInfo, flags);
       }
+    } break;
+    case esc2_rvlc:
+      if (flags & AC_ER_RVLC) {
+        CRvlc_Decode(pAacDecoderChannelInfo[ch],
+                     pAacDecoderStaticChannelInfo[ch], hBs);
+      }
+      break;
 
-        pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_LPD;
-        break;
-      case fac_data: {
-        int fFacDatPresent = FDKreadBit(hBs);
+    case esc1_hcr:
+      if (flags & AC_ER_HCR) {
+        CHcr_Read(hBs, pAacDecoderChannelInfo[ch],
+                  numberOfChannels == 2 ? ID_CPE : ID_SCE);
+      }
+      break;
 
-        /* Wee need a valid fac_data[0] even if no FAC data is present (as
-         * temporal buffer) */
-        pAacDecoderChannelInfo[ch]->data.usac.fac_data[0] =
-            pAacDecoderChannelInfo[ch]->data.usac.fac_data0;
-
-        if (fFacDatPresent) {
-          if (elFlags & AC_EL_LFE) {
-            error = AAC_DEC_PARSE_ERROR;
-            break;
-          }
-          /* FAC data present, this frame is FD, so the last mode had to be
-           * ACELP. */
-          if (pAacDecoderStaticChannelInfo[ch]->last_core_mode != LPD ||
-              pAacDecoderStaticChannelInfo[ch]->last_lpd_mode != 0) {
-            pAacDecoderChannelInfo[ch]->data.usac.core_mode_last = LPD;
-            pAacDecoderChannelInfo[ch]->data.usac.lpd_mode_last = 0;
-            /* We can't change the past! So look to the future and go ahead! */
-          }
-          CLpd_FAC_Read(hBs, pAacDecoderChannelInfo[ch]->data.usac.fac_data[0],
-                        pAacDecoderChannelInfo[ch]->data.usac.fac_data_e,
-                        CLpd_FAC_getLength(
-                            IsLongBlock(&pAacDecoderChannelInfo[ch]->icsInfo),
-                            pAacDecoderChannelInfo[ch]->granuleLength),
-                        1, 0);
+    case spectral_data:
+      error = CBlock_ReadSpectralData(hBs, pAacDecoderChannelInfo[ch],
+                                      pSamplingRateInfo, flags);
+      if (flags & AC_ELD) {
+        pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_ELDFB;
+      } else {
+        if (flags & AC_HDAAC) {
+          pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_INTIMDCT;
         } else {
-          if (pAacDecoderStaticChannelInfo[ch]->last_core_mode == LPD &&
-              pAacDecoderStaticChannelInfo[ch]->last_lpd_mode == 0) {
-            /* ACELP to FD transitons without FAC are possible. That is why we
-            zero it out (i.e FAC will not be considered in the subsequent
-            calculations */
-            FDKmemclear(pAacDecoderChannelInfo[ch]->data.usac.fac_data0,
-                        LFAC * sizeof(FIXP_DBL));
+          pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_IMDCT;
+        }
+      }
+      break;
+
+    case ac_spectral_data:
+      error = CBlock_ReadAcSpectralData(hBs, pAacDecoderChannelInfo[ch],
+                                        pAacDecoderStaticChannelInfo[ch],
+                                        pSamplingRateInfo, frame_length, flags);
+      pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_IMDCT;
+      break;
+
+    case coupled_elements: {
+      int num_coupled_elements, c;
+
+      ind_sw_cce_flag = FDKreadBit(hBs);
+      num_coupled_elements = FDKreadBits(hBs, 3);
+
+      for (c = 0; c < (num_coupled_elements + 1); c++) {
+        int cc_target_is_cpe;
+
+        num_gain_element_lists++;
+        cc_target_is_cpe = FDKreadBit(hBs); /* cc_target_is_cpe[c] */
+        FDKreadBits(hBs, 4);                /* cc_target_tag_select[c] */
+
+        if (cc_target_is_cpe) {
+          int cc_l, cc_r;
+
+          cc_l = FDKreadBit(hBs); /* cc_l[c] */
+          cc_r = FDKreadBit(hBs); /* cc_r[c] */
+
+          if (cc_l && cc_r) {
+            num_gain_element_lists++;
           }
         }
-      } break;
-      case esc2_rvlc:
-        if (flags & AC_ER_RVLC) {
-          CRvlc_Decode(pAacDecoderChannelInfo[ch],
-                       pAacDecoderStaticChannelInfo[ch], hBs);
-        }
-        break;
+      }
+      FDKreadBit(hBs);     /* cc_domain */
+      FDKreadBit(hBs);     /* gain_element_sign  */
+      FDKreadBits(hBs, 2); /* gain_element_scale */
+    } break;
 
-      case esc1_hcr:
-        if (flags & AC_ER_HCR) {
-          CHcr_Read(hBs, pAacDecoderChannelInfo[ch],
-                    numberOfChannels == 2 ? ID_CPE : ID_SCE);
-        }
-        break;
+    case gain_element_lists: {
+      const CodeBookDescription *hcb;
+      UCHAR *pCodeBook;
+      int c;
 
-      case spectral_data:
-        error = CBlock_ReadSpectralData(hBs, pAacDecoderChannelInfo[ch],
-                                        pSamplingRateInfo, flags);
-        if (flags & AC_ELD) {
-          pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_ELDFB;
+      hcb = &AACcodeBookDescriptionTable[BOOKSCL];
+      pCodeBook = pAacDecoderChannelInfo[ch]->pDynData->aCodeBook;
+
+      for (c = 1; c < num_gain_element_lists; c++) {
+        int cge;
+        if (ind_sw_cce_flag) {
+          cge = 1;
         } else {
-          if (flags & AC_HDAAC) {
-            pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_INTIMDCT;
-          } else {
-            pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_IMDCT;
-          }
+          cge = FDKreadBits(hBs, 1); /* common_gain_element_present[c] */
         }
-        break;
-
-      case ac_spectral_data:
-        error = CBlock_ReadAcSpectralData(
-            hBs, pAacDecoderChannelInfo[ch], pAacDecoderStaticChannelInfo[ch],
-            pSamplingRateInfo, frame_length, flags);
-        pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_IMDCT;
-        break;
-
-      case coupled_elements: {
-        int num_coupled_elements, c;
-
-        ind_sw_cce_flag = FDKreadBit(hBs);
-        num_coupled_elements = FDKreadBits(hBs, 3);
-
-        for (c = 0; c < (num_coupled_elements + 1); c++) {
-          int cc_target_is_cpe;
-
-          num_gain_element_lists++;
-          cc_target_is_cpe = FDKreadBit(hBs); /* cc_target_is_cpe[c] */
-          FDKreadBits(hBs, 4);                /* cc_target_tag_select[c] */
-
-          if (cc_target_is_cpe) {
-            int cc_l, cc_r;
-
-            cc_l = FDKreadBit(hBs); /* cc_l[c] */
-            cc_r = FDKreadBit(hBs); /* cc_r[c] */
-
-            if (cc_l && cc_r) {
-              num_gain_element_lists++;
-            }
-          }
-        }
-        FDKreadBit(hBs);     /* cc_domain */
-        FDKreadBit(hBs);     /* gain_element_sign  */
-        FDKreadBits(hBs, 2); /* gain_element_scale */
-      } break;
-
-      case gain_element_lists: {
-        const CodeBookDescription *hcb;
-        UCHAR *pCodeBook;
-        int c;
-
-        hcb = &AACcodeBookDescriptionTable[BOOKSCL];
-        pCodeBook = pAacDecoderChannelInfo[ch]->pDynData->aCodeBook;
-
-        for (c = 1; c < num_gain_element_lists; c++) {
-          int cge;
-          if (ind_sw_cce_flag) {
-            cge = 1;
-          } else {
-            cge = FDKreadBits(hBs, 1); /* common_gain_element_present[c] */
-          }
-          if (cge) {
-            /* Huffman */
-            CBlock_DecodeHuffmanWord(
-                hBs, hcb); /* hcod_sf[common_gain_element[c]] 1..19 */
-          } else {
-            int g, sfb;
-            for (g = 0;
-                 g < GetWindowGroups(&pAacDecoderChannelInfo[ch]->icsInfo);
-                 g++) {
-              for (sfb = 0; sfb < GetScaleFactorBandsTransmitted(
-                                      &pAacDecoderChannelInfo[ch]->icsInfo);
-                   sfb++) {
-                if (pCodeBook[sfb] != ZERO_HCB) {
-                  /* Huffman */
-                  CBlock_DecodeHuffmanWord(
-                      hBs,
-                      hcb); /* hcod_sf[dpcm_gain_element[c][g][sfb]] 1..19 */
-                }
+        if (cge) {
+          /* Huffman */
+          CBlock_DecodeHuffmanWord(
+              hBs, hcb); /* hcod_sf[common_gain_element[c]] 1..19 */
+        } else {
+          int g, sfb;
+          for (g = 0; g < GetWindowGroups(&pAacDecoderChannelInfo[ch]->icsInfo);
+               g++) {
+            for (sfb = 0; sfb < GetScaleFactorBandsTransmitted(
+                                    &pAacDecoderChannelInfo[ch]->icsInfo);
+                 sfb++) {
+              if (pCodeBook[sfb] != ZERO_HCB) {
+                /* Huffman */
+                CBlock_DecodeHuffmanWord(
+                    hBs, hcb); /* hcod_sf[dpcm_gain_element[c][g][sfb]] 1..19 */
               }
             }
           }
         }
-      } break;
+      }
+    } break;
 
-        /* CRC handling */
-      case adtscrc_start_reg1:
-        if (pTpDec != NULL) {
-          crcReg1 = transportDec_CrcStartReg(pTpDec, 192);
-        }
-        break;
-      case adtscrc_start_reg2:
-        if (pTpDec != NULL) {
-          crcReg2 = transportDec_CrcStartReg(pTpDec, 128);
-        }
-        break;
-      case adtscrc_end_reg1:
-      case drmcrc_end_reg:
-        if (pTpDec != NULL) {
-          transportDec_CrcEndReg(pTpDec, crcReg1);
-          crcReg1 = -1;
-        }
-        break;
-      case adtscrc_end_reg2:
-        if (crcReg1 != -1) {
-          error = AAC_DEC_DECODE_FRAME_ERROR;
-        } else if (pTpDec != NULL) {
-          transportDec_CrcEndReg(pTpDec, crcReg2);
-          crcReg2 = -1;
-        }
-        break;
-      case drmcrc_start_reg:
-        if (pTpDec != NULL) {
-          crcReg1 = transportDec_CrcStartReg(pTpDec, 0);
-        }
-        break;
+    /* CRC handling */
+    case adtscrc_start_reg1:
+      if (pTpDec != NULL) {
+        crcReg1 = transportDec_CrcStartReg(pTpDec, 192);
+      }
+      break;
+    case adtscrc_start_reg2:
+      if (pTpDec != NULL) {
+        crcReg2 = transportDec_CrcStartReg(pTpDec, 128);
+      }
+      break;
+    case adtscrc_end_reg1:
+    case drmcrc_end_reg:
+      if (pTpDec != NULL) {
+        transportDec_CrcEndReg(pTpDec, crcReg1);
+        crcReg1 = -1;
+      }
+      break;
+    case adtscrc_end_reg2:
+      if (crcReg1 != -1) {
+        error = AAC_DEC_DECODE_FRAME_ERROR;
+      } else if (pTpDec != NULL) {
+        transportDec_CrcEndReg(pTpDec, crcReg2);
+        crcReg2 = -1;
+      }
+      break;
+    case drmcrc_start_reg:
+      if (pTpDec != NULL) {
+        crcReg1 = transportDec_CrcStartReg(pTpDec, 0);
+      }
+      break;
 
-        /* Non data cases */
-      case next_channel:
-        ch = (ch + 1) % numberOfChannels;
-        break;
-      case link_sequence:
-        list = list->next[decision_bit];
-        i = -1;
-        break;
+    /* Non data cases */
+    case next_channel:
+      ch = (ch + 1) % numberOfChannels;
+      break;
+    case link_sequence:
+      list = list->next[decision_bit];
+      i = -1;
+      break;
 
-      default:
-        error = AAC_DEC_UNSUPPORTED_FORMAT;
-        break;
+    default:
+      error = AAC_DEC_UNSUPPORTED_FORMAT;
+      break;
     }
 
     if (error != AAC_DEC_OK) {

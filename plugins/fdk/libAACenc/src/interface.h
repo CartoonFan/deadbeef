@@ -103,11 +103,11 @@ amm-info@iis.fraunhofer.de
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "common_fix.h"
 #include "FDK_audio.h"
+#include "common_fix.h"
 
-#include "psy_data.h"
 #include "aacenc_tns.h"
+#include "psy_data.h"
 
 enum { MS_NONE = 0, MS_SOME = 1, MS_ALL = 2 };
 

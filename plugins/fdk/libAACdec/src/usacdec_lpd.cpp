@@ -102,14 +102,14 @@ amm-info@iis.fraunhofer.de
 
 #include "usacdec_lpd.h"
 
-#include "usacdec_rom.h"
-#include "usacdec_fac.h"
-#include "usacdec_lpc.h"
 #include "FDK_tools_rom.h"
 #include "fft.h"
 #include "mdct.h"
-#include "usacdec_acelp.h"
 #include "overlapadd.h"
+#include "usacdec_acelp.h"
+#include "usacdec_fac.h"
+#include "usacdec_lpc.h"
+#include "usacdec_rom.h"
 
 #include "conceal.h"
 
@@ -128,7 +128,7 @@ void filtLP(const FIXP_DBL *syn, FIXP_PCM *syn_out, FIXP_DBL *noise,
   FIXP_DBL tmp;
 
   for (i = 0; i < stop; i++) {
-    tmp = fMultDiv2(noise[i], filt[0]);  // Filt in Q-1.16
+    tmp = fMultDiv2(noise[i], filt[0]); // Filt in Q-1.16
     for (j = 1; j <= len; j++) {
       tmp += fMultDiv2((noise[i - j] + noise[i + j]), filt[j]);
     }
@@ -151,11 +151,11 @@ void bass_pf_1sf_delay(
   FIXP_DBL tmp, ener, corr, gain;
   FIXP_DBL *noise, *noise_in;
   FIXP_DBL
-  noise_buf[L_FILT + (2 * L_SUBFR)];  // L_FILT = 12, L_SUBFR = 64 => 140
+  noise_buf[L_FILT + (2 * L_SUBFR)]; // L_FILT = 12, L_SUBFR = 64 => 140
   const FIXP_DBL *x, *y;
 
   {
-    noise = noise_buf + L_FILT;  // L_FILT = 12 delay of upsampling filter
+    noise = noise_buf + L_FILT; // L_FILT = 12 delay of upsampling filter
     noise_in = noise_buf + L_FILT + L_SUBFR;
     /* Input scaling of the BPF memory */
     scaleValues(mem_bpf, (L_FILT + L_SUBFR), 1);
@@ -170,10 +170,12 @@ void bass_pf_1sf_delay(
 
     /* Gain is in Q17.14 */
     /* If gain > 1 set to 1 */
-    if (gain > (FIXP_DBL)(1 << 14)) gain = (FIXP_DBL)(1 << 14);
+    if (gain > (FIXP_DBL)(1 << 14))
+      gain = (FIXP_DBL)(1 << 14);
 
     /* If gain < 0 set to 0 */
-    if (gain < (FIXP_DBL)0) gain = (FIXP_DBL)0;
+    if (gain < (FIXP_DBL)0)
+      gain = (FIXP_DBL)0;
 
     if (gain > (FIXP_DBL)0) {
       /* pitch tracker: test pitch/2 to avoid continuous pitch doubling */
@@ -242,7 +244,8 @@ void bass_pf_1sf_delay(
         tmp_result >>= (-diff);
       }
 
-      if (tmp_result > point95) T = T2;
+      if (tmp_result > point95)
+        T = T2;
 
       /* prevent that noise calculation below reaches into not defined signal
          parts at the end of the synth_buf or in other words restrict the below
@@ -552,19 +555,19 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
     /* needed values: sin(phi), cos(phi); phi = i*PI/(2*fdns_npts), i = 0 ...
      * M_LP_FILTER_ORDER */
     switch (fdns_npts) {
-      case 64:
-        SinTab = SineTable512;
-        k_step = (512 / 64);
-        FDK_ASSERT(512 >= 64);
-        break;
-      case 48:
-        SinTab = SineTable384;
-        k_step = 384 / 48;
-        FDK_ASSERT(384 >= 48);
-        break;
-      default:
-        FDK_ASSERT(0);
-        return;
+    case 64:
+      SinTab = SineTable512;
+      k_step = (512 / 64);
+      FDK_ASSERT(512 >= 64);
+      break;
+    case 48:
+      SinTab = SineTable384;
+      k_step = 384 / 48;
+      FDK_ASSERT(384 >= 48);
+      break;
+    default:
+      FDK_ASSERT(0);
+      return;
     }
 
     for (i = 0, k = k_step; i < M_LP_FILTER_ORDER; i++, k += k_step) {
@@ -597,12 +600,12 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
     tmp1[1] = tmp2[1] = (FIXP_DBL)0;
 
     /* Clear the resto of the array */
-    FDKmemclear(
-        tmp1 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(FIXP_DBL));
-    FDKmemclear(
-        tmp2 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(FIXP_DBL));
+    FDKmemclear(tmp1 + 2 * (M_LP_FILTER_ORDER + 1),
+                2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) *
+                    sizeof(FIXP_DBL));
+    FDKmemclear(tmp2 + 2 * (M_LP_FILTER_ORDER + 1),
+                2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) *
+                    sizeof(FIXP_DBL));
 
     /* Guarantee 2 bits of headroom for FFT */
     scaleValues(&tmp1[2], (2 * M_LP_FILTER_ORDER), (A1_exp - A1_exp_fix));
@@ -931,10 +934,10 @@ static const int lg_table_ccfl[2][4] = {
  * \param lg the frame length in audio samples.
  * \param frame the frame index of the LPD super frame.
  */
-static void CLpd_TcxDecode(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, UINT flags,
-    int mod, int last_mod, int frame, int frameOk) {
+static void
+CLpd_TcxDecode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+               CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+               UINT flags, int mod, int last_mod, int frame, int frameOk) {
   FIXP_DBL *pAlfd_gains = pAacDecoderStaticChannelInfo->last_alfd_gains;
   ULONG *pSeed = &pAacDecoderStaticChannelInfo->nfRandomSeed;
   int lg = (pAacDecoderChannelInfo->granuleLength == 128)
@@ -1047,10 +1050,11 @@ static void CLpd_TcxDecode(
  * \param first_tcx_flag flag indicating that this is the first TCX frame.
  * \param frame the frame index of the LPD super frame.
  */
-static AAC_DECODER_ERROR CLpd_TCX_Read(
-    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, int lg,
-    int first_tcx_flag, int frame, UINT flags) {
+static AAC_DECODER_ERROR
+CLpd_TCX_Read(HANDLE_FDK_BITSTREAM hBs,
+              CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+              CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+              int lg, int first_tcx_flag, int frame, UINT flags) {
   AAC_DECODER_ERROR errorAAC = AAC_DEC_OK;
   ARITH_CODING_ERROR error = ARITH_CODER_OK;
   FIXP_DBL *pSpec;
@@ -1094,7 +1098,8 @@ static AAC_DECODER_ERROR CLpd_TCX_Read(
     pAacDecoderChannelInfo->specScale[frame] = scale;
   }
 
-  if (error == ARITH_CODER_ERROR) errorAAC = AAC_DEC_UNKNOWN;
+  if (error == ARITH_CODER_ERROR)
+    errorAAC = AAC_DEC_UNKNOWN;
 
   return errorAAC;
 }
@@ -1106,8 +1111,9 @@ static AAC_DECODER_ERROR CLpd_TCX_Read(
  * inidividual frames.
  * \param lpd_mode the lpd_mode field read from the lpd_channel_stream
  */
-static AAC_DECODER_ERROR CLpd_ReadAndMapLpdModeToModArray(
-    UCHAR mod[4], HANDLE_FDK_BITSTREAM hBs, UINT elFlags) {
+static AAC_DECODER_ERROR
+CLpd_ReadAndMapLpdModeToModArray(UCHAR mod[4], HANDLE_FDK_BITSTREAM hBs,
+                                 UINT elFlags) {
   int lpd_mode;
 
   {
@@ -1118,46 +1124,46 @@ static AAC_DECODER_ERROR CLpd_ReadAndMapLpdModeToModArray(
     }
 
     switch (lpd_mode) {
-      case 25:
-        /* 1 80MS frame */
-        mod[0] = mod[1] = mod[2] = mod[3] = 3;
+    case 25:
+      /* 1 80MS frame */
+      mod[0] = mod[1] = mod[2] = mod[3] = 3;
+      break;
+    case 24:
+      /* 2 40MS frames */
+      mod[0] = mod[1] = mod[2] = mod[3] = 2;
+      break;
+    default:
+      switch (lpd_mode >> 2) {
+      case 4:
+        /* lpd_mode 19 - 16  => 1 40MS and 2 20MS frames */
+        mod[0] = mod[1] = 2;
+        mod[2] = (lpd_mode & 1) ? 1 : 0;
+        mod[3] = (lpd_mode & 2) ? 1 : 0;
         break;
-      case 24:
-        /* 2 40MS frames */
-        mod[0] = mod[1] = mod[2] = mod[3] = 2;
+      case 5:
+        /* lpd_mode 23 - 20 => 2 20MS and 1 40MS frames */
+        mod[2] = mod[3] = 2;
+        mod[0] = (lpd_mode & 1) ? 1 : 0;
+        mod[1] = (lpd_mode & 2) ? 1 : 0;
         break;
       default:
-        switch (lpd_mode >> 2) {
-          case 4:
-            /* lpd_mode 19 - 16  => 1 40MS and 2 20MS frames */
-            mod[0] = mod[1] = 2;
-            mod[2] = (lpd_mode & 1) ? 1 : 0;
-            mod[3] = (lpd_mode & 2) ? 1 : 0;
-            break;
-          case 5:
-            /* lpd_mode 23 - 20 => 2 20MS and 1 40MS frames */
-            mod[2] = mod[3] = 2;
-            mod[0] = (lpd_mode & 1) ? 1 : 0;
-            mod[1] = (lpd_mode & 2) ? 1 : 0;
-            break;
-          default:
-            /* lpd_mode < 16 => 4 20MS frames */
-            mod[0] = (lpd_mode & 1) ? 1 : 0;
-            mod[1] = (lpd_mode & 2) ? 1 : 0;
-            mod[2] = (lpd_mode & 4) ? 1 : 0;
-            mod[3] = (lpd_mode & 8) ? 1 : 0;
-            break;
-        }
+        /* lpd_mode < 16 => 4 20MS frames */
+        mod[0] = (lpd_mode & 1) ? 1 : 0;
+        mod[1] = (lpd_mode & 2) ? 1 : 0;
+        mod[2] = (lpd_mode & 4) ? 1 : 0;
+        mod[3] = (lpd_mode & 8) ? 1 : 0;
         break;
+      }
+      break;
     }
   }
   return AAC_DEC_OK;
 }
 
-static void CLpd_Reset(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    int keep_past_signal) {
+static void
+CLpd_Reset(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+           CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+           int keep_past_signal) {
   int i;
 
   /* Reset TCX / ACELP common memory */
@@ -1593,15 +1599,15 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   }
 
   switch (lFrame) {
-    case 1024:
-      lg_table = &lg_table_ccfl[0][lg_table_offset];
-      break;
-    case 768:
-      lg_table = &lg_table_ccfl[1][lg_table_offset];
-      break;
-    default:
-      FDK_ASSERT(0);
-      return AAC_DEC_UNKNOWN;
+  case 1024:
+    lg_table = &lg_table_ccfl[0][lg_table_offset];
+    break;
+  case 768:
+    lg_table = &lg_table_ccfl[1][lg_table_offset];
+    break;
+  default:
+    FDK_ASSERT(0);
+    return AAC_DEC_UNKNOWN;
   }
 
   last_frame_lost = !CConcealment_GetLastFrameOk(
@@ -1637,19 +1643,19 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
        - TCX-40 is not allowed in the mode repetition to keep the logic simple
      */
     switch (last_lpd_mode) {
-      case 0:
-        mod[0] = mod[1] = mod[2] = mod[3] = 0; /* -> ACELP concealment */
-        break;
-      case 3:
-        mod[0] = mod[1] = mod[2] = mod[3] = 3; /* -> TCX FD concealment */
-        break;
-      case 2:
-        mod[0] = mod[1] = mod[2] = mod[3] = 2; /* -> TCX FD concealment */
-        break;
-      case 1:
-      default:
-        mod[0] = mod[1] = mod[2] = mod[3] = 4; /* -> TCX TD concealment */
-        break;
+    case 0:
+      mod[0] = mod[1] = mod[2] = mod[3] = 0; /* -> ACELP concealment */
+      break;
+    case 3:
+      mod[0] = mod[1] = mod[2] = mod[3] = 3; /* -> TCX FD concealment */
+      break;
+    case 2:
+      mod[0] = mod[1] = mod[2] = mod[3] = 2; /* -> TCX FD concealment */
+      break;
+    case 1:
+    default:
+      mod[0] = mod[1] = mod[2] = mod[3] = 4; /* -> TCX TD concealment */
+      break;
     }
 
     /* LPC extrapolation */
@@ -1889,10 +1895,9 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
             (last_frame_lost || !frameOk), 0 /* is not FD FAC */
             ,
             last_lpd_mode, k,
-            pAacDecoderChannelInfo
-                ->currAliasingSymmetry /* Note: The current aliasing
-                                          symmetry for a TCX (i.e. LPD)
-                                          frame must always be 0 */
+            pAacDecoderChannelInfo->currAliasingSymmetry /* Note: The current
+                                           aliasing symmetry for a TCX (i.e.
+                                           LPD) frame must always be 0 */
         );
 
         pitch[(k * nbSubfr) + synSfd + 1] = pitch[(k * nbSubfr) + synSfd] =

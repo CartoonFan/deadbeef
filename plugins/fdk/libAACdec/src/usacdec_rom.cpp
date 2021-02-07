@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 #define NB_LDQ4 28
 
 /* For bass post filter */
-#define FL2FXCONST_SGL_FILT(a) FL2FXCONST_SGL(a*(1 << SF_FILT_LP))
+#define FL2FXCONST_SGL_FILT(a) FL2FXCONST_SGL(a *(1 << SF_FILT_LP))
 #define SF_FILT_LP 1
 
 /* table of factorial */

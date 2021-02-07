@@ -112,16 +112,16 @@ amm-info@iis.fraunhofer.de
 #include "common_fix.h"
 
 #include "aacenc.h"
-#include "psy_data.h"
-#include "interface.h"
-#include "psy_main.h"
-#include "bitenc.h"
 #include "bit_cnt.h"
+#include "bitenc.h"
+#include "interface.h"
 #include "psy_const.h"
+#include "psy_data.h"
+#include "psy_main.h"
 
-#define OUTPUTBUFFER_SIZE                                                 \
-  (8192) /*!< Output buffer size has to be at least 6144 bits per channel \
-            (768 bytes). FDK bitbuffer implementation expects buffer of   \
+#define OUTPUTBUFFER_SIZE                                                      \
+  (8192) /*!< Output buffer size has to be at least 6144 bits per channel      \
+            (768 bytes). FDK bitbuffer implementation expects buffer of        \
             size 2^n. */
 
 /*
@@ -139,7 +139,7 @@ struct AAC_ENC {
   AACENC_CONFIG *config;
 
   INT ancillaryBitsPerFrame; /* ancillary bits per frame calculated from
-                                ancillary rate */
+                              ancillary rate */
 
   CHANNEL_MAPPING channelMapping;
 
@@ -168,7 +168,7 @@ struct AAC_ENC {
 
 #define maxSize(a, b) (((a) > (b)) ? (a) : (b))
 
-#define BIT_LOOK_UP_SIZE \
+#define BIT_LOOK_UP_SIZE                                                       \
   (sizeof(INT) * (MAX_SFB_LONG * (CODE_BOOK_ESC_NDX + 1)))
 #define MERGE_GAIN_LOOK_UP_SIZE (sizeof(INT) * MAX_SFB_LONG)
 
@@ -177,10 +177,10 @@ struct AAC_ENC {
 /* Size of ThrExp buffer in function FDKaacEnc_adaptThresholdsToPe() */
 #define ADJ_THR_THR_EXP_SIZE (sizeof(FIXP_DBL) * ((8)) * (2) * MAX_GROUPED_SFB)
 /* Size of sfbNActiveLinesLdData buffer in function FDKaacEnc_correctThresh() */
-#define ADJ_THR_ACT_LIN_LD_DATA_SIZE \
+#define ADJ_THR_ACT_LIN_LD_DATA_SIZE                                           \
   (sizeof(FIXP_DBL) * ((8)) * (2) * MAX_GROUPED_SFB)
 /* Total amount of dynamic buffer needed in adjust thresholds functionality */
-#define ADJ_THR_SIZE \
+#define ADJ_THR_SIZE                                                           \
   (ADJ_THR_AH_FLAG_SIZE + ADJ_THR_THR_EXP_SIZE + ADJ_THR_ACT_LIN_LD_DATA_SIZE)
 
 /* Dynamic RAM - Allocation */
@@ -199,9 +199,9 @@ struct AAC_ENC {
 */
 
 #define BUF_SIZE_0 (ALIGN_SIZE(sizeof(QC_OUT_CHANNEL) * (8)))
-#define BUF_SIZE_1                                                           \
-  (ALIGN_SIZE(maxSize(maxSize(sizeof(PSY_DYNAMIC),                           \
-                              (BIT_LOOK_UP_SIZE + MERGE_GAIN_LOOK_UP_SIZE)), \
+#define BUF_SIZE_1                                                             \
+  (ALIGN_SIZE(maxSize(maxSize(sizeof(PSY_DYNAMIC),                             \
+                              (BIT_LOOK_UP_SIZE + MERGE_GAIN_LOOK_UP_SIZE)),   \
                       ADJ_THR_SIZE)))
 
 #define P_BUF_0 (0)

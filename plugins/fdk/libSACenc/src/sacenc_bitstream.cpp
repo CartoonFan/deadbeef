@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 #include "sacenc_bitstream.h"
 #include "sacenc_const.h"
 
-#include "genericStds.h"
 #include "common_fix.h"
+#include "genericStds.h"
 
 #include "FDK_matrixCalloc.h"
 #include "sacenc_nlc_enc.h"
@@ -149,10 +149,11 @@ static const UCHAR FreqResStrideTable_LD[] = {1, 2, 5, 23};
 /* Function / Class Declarations *********************************************/
 
 /* Function / Class Definition ***********************************************/
-static FDK_SACENC_ERROR DuplicateLosslessData(
-    const INT startBox, const INT stopBox,
-    const LOSSLESSDATA *const hLosslessDataFrom, const INT setFrom,
-    LOSSLESSDATA *const hLosslessDataTo, const INT setTo) {
+static FDK_SACENC_ERROR
+DuplicateLosslessData(const INT startBox, const INT stopBox,
+                      const LOSSLESSDATA *const hLosslessDataFrom,
+                      const INT setFrom, LOSSLESSDATA *const hLosslessDataTo,
+                      const INT setTo) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((NULL == hLosslessDataFrom) || (NULL == hLosslessDataTo)) {
@@ -174,9 +175,10 @@ static FDK_SACENC_ERROR DuplicateLosslessData(
   return error;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_duplicateParameterSet(
-    const SPATIALFRAME *const hFrom, const INT setFrom, SPATIALFRAME *const hTo,
-    const INT setTo) {
+FDK_SACENC_ERROR
+fdk_sacenc_duplicateParameterSet(const SPATIALFRAME *const hFrom,
+                                 const INT setFrom, SPATIALFRAME *const hTo,
+                                 const INT setTo) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((NULL == hFrom) || (NULL == hTo)) {
@@ -260,14 +262,12 @@ static UCHAR getBsFreqResStride(const INT index) {
 }
 
 /* write data to bitstream */
-static void ecData(HANDLE_FDK_BITSTREAM bitstream,
-                   SCHAR data[MAX_NUM_PARAMS][MAX_NUM_BINS],
-                   SCHAR oldData[MAX_NUM_BINS],
-                   UCHAR quantCoarseXXXprev[MAX_NUM_PARAMS],
-                   LOSSLESSDATA *const losslessData, const DATA_TYPE dataType,
-                   const INT paramIdx, const INT numParamSets,
-                   const INT independencyFlag, const INT startBand,
-                   const INT stopBand, const INT defaultValue) {
+static void
+ecData(HANDLE_FDK_BITSTREAM bitstream, SCHAR data[MAX_NUM_PARAMS][MAX_NUM_BINS],
+       SCHAR oldData[MAX_NUM_BINS], UCHAR quantCoarseXXXprev[MAX_NUM_PARAMS],
+       LOSSLESSDATA *const losslessData, const DATA_TYPE dataType,
+       const INT paramIdx, const INT numParamSets, const INT independencyFlag,
+       const INT startBand, const INT stopBand, const INT defaultValue) {
   int ps, pb, strOffset, pbStride, dataBands, i;
   int aStrides[MAX_NUM_BINS + 1] = {0};
   SHORT cmpIdxData[2][MAX_NUM_BINS] = {{0}};
@@ -457,8 +457,9 @@ static FDK_SACENC_ERROR getBsFreqResIndex(const INT numBands,
   return error;
 }
 
-static FDK_SACENC_ERROR getSamplingFrequencyIndex(
-    const INT bsSamplingFrequency, INT *const pbsSamplingFrequencyIndex) {
+static FDK_SACENC_ERROR
+getSamplingFrequencyIndex(const INT bsSamplingFrequency,
+                          INT *const pbsSamplingFrequencyIndex) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == pbsSamplingFrequencyIndex) {
@@ -478,8 +479,8 @@ static FDK_SACENC_ERROR getSamplingFrequencyIndex(
 }
 
 /* destroy encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_destroySpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr) {
+FDK_SACENC_ERROR
+fdk_sacenc_destroySpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((selfPtr == NULL) || (*selfPtr == NULL)) {
@@ -493,8 +494,8 @@ FDK_SACENC_ERROR fdk_sacenc_destroySpatialBitstreamEncoder(
 }
 
 /* create encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_createSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr) {
+FDK_SACENC_ERROR
+fdk_sacenc_createSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (NULL == selfPtr) {
@@ -511,8 +512,8 @@ bail:
 }
 
 /* init encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_initSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE selfPtr) {
+FDK_SACENC_ERROR
+fdk_sacenc_initSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE selfPtr) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if (selfPtr == NULL) {
@@ -526,8 +527,8 @@ FDK_SACENC_ERROR fdk_sacenc_initSpatialBitstreamEncoder(
 }
 
 /* get SpatialSpecificConfig struct */
-SPATIALSPECIFICCONFIG *fdk_sacenc_getSpatialSpecificConfig(
-    HANDLE_BSF_INSTANCE selfPtr) {
+SPATIALSPECIFICCONFIG *
+fdk_sacenc_getSpatialSpecificConfig(HANDLE_BSF_INSTANCE selfPtr) {
   return ((selfPtr == NULL) ? NULL : &(selfPtr->spatialSpecificConfig));
 }
 
@@ -606,13 +607,13 @@ SPATIALFRAME *fdk_sacenc_getSpatialFrame(HANDLE_BSF_INSTANCE selfPtr,
   int idx = -1;
 
   switch (frameType) {
-    case READ_SPATIALFRAME:
-    case WRITE_SPATIALFRAME:
-      idx = 0;
-      break;
-    default:
-      idx = -1; /* invalid configuration */
-  }             /* switch frameType */
+  case READ_SPATIALFRAME:
+  case WRITE_SPATIALFRAME:
+    idx = 0;
+    break;
+  default:
+    idx = -1; /* invalid configuration */
+  }           /* switch frameType */
 
   return (((selfPtr == NULL) || (idx == -1)) ? NULL : &selfPtr->frame);
 }
@@ -635,7 +636,8 @@ static FDK_SACENC_ERROR writeFramingInfo(HANDLE_FDK_BITSTREAM hBitstream,
       {
         for (ps = 0; ps < numParamSets; ps++) {
           int bitsParamSlot = 0;
-          while ((1 << bitsParamSlot) < (frameLength + 1)) bitsParamSlot++;
+          while ((1 << bitsParamSlot) < (frameLength + 1))
+            bitsParamSlot++;
           if (bitsParamSlot > 0)
             FDKwriteBits(hBitstream, pFramingInfo->bsParamSlots[ps],
                          bitsParamSlot);
@@ -711,8 +713,9 @@ static FDK_SACENC_ERROR writeOttData(
 }
 
 /* write extension frame data to stream */
-static FDK_SACENC_ERROR WriteSpatialExtensionFrame(
-    HANDLE_FDK_BITSTREAM bitstream, HANDLE_BSF_INSTANCE self) {
+static FDK_SACENC_ERROR
+WriteSpatialExtensionFrame(HANDLE_FDK_BITSTREAM bitstream,
+                           HANDLE_BSF_INSTANCE self) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((bitstream == NULL) || (self == NULL)) {

@@ -103,9 +103,9 @@ amm-info@iis.fraunhofer.de
 #ifndef USACDEC_LPC_H
 #define USACDEC_LPC_H
 
+#include "FDK_bitstream.h"
 #include "channelinfo.h"
 #include "common_fix.h"
-#include "FDK_bitstream.h"
 #include "usacdec_rom.h"
 
 #define LSPARG_SCALE 10

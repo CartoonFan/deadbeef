@@ -101,7 +101,7 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #ifndef __FFT_RAD2_CPP__
-#error \
+#error                                                                         \
     "Do not compile this file separately. It is included on demand from fft_rad2.cpp"
 #endif
 

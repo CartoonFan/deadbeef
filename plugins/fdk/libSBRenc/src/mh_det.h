@@ -108,37 +108,37 @@ amm-info@iis.fraunhofer.de
 #ifndef MH_DET_H
 #define MH_DET_H
 
-#include "sbr_encoder.h"
 #include "fram_gen.h"
+#include "sbr_encoder.h"
 
 typedef struct {
   FIXP_DBL thresHoldDiff;      /*!< threshold for tonality difference */
   FIXP_DBL thresHoldDiffGuide; /*!< threshold for tonality difference for the
-                                  guide */
+                                guide */
   FIXP_DBL thresHoldTone;      /*!< threshold for tonality for a sine */
   FIXP_DBL invThresHoldTone;
   FIXP_DBL thresHoldToneGuide; /*!< threshold for tonality for a sine for the
-                                  guide */
+                                guide */
   FIXP_DBL sfmThresSbr;    /*!< tonality flatness measure threshold for the SBR
-                              signal.*/
+                            signal.*/
   FIXP_DBL sfmThresOrig;   /*!< tonality flatness measure threshold for the
-                              original signal.*/
+                            original signal.*/
   FIXP_DBL decayGuideOrig; /*!< decay value of the tonality value of the guide
-                              for the tone. */
+                            for the tone. */
   FIXP_DBL decayGuideDiff; /*!< decay value of the tonality value of the guide
-                              for the tonality difference. */
+                            for the tonality difference. */
   FIXP_DBL derivThresMaxLD64;   /*!< threshold for detecting LP character in a
-                                   signal. */
+                                 signal. */
   FIXP_DBL derivThresBelowLD64; /*!< threshold for detecting LP character in a
-                                   signal. */
+                                 signal. */
   FIXP_DBL derivThresAboveLD64; /*!< threshold for detecting LP character in a
-                                   signal. */
+                                 signal. */
 } THRES_HOLDS;
 
 typedef struct {
   INT deltaTime; /*!< maximum allowed transient distance (from frame border in
-                    number of qmf subband sample) for a frame to be considered a
-                    transient frame.*/
+                  number of qmf subband sample) for a frame to be considered a
+                  transient frame.*/
   THRES_HOLDS thresHolds; /*!< the thresholds used for detection. */
   INT maxComp; /*!< maximum alllowed compensation factor for the envelope data.
                 */

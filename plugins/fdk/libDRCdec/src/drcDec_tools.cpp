@@ -100,10 +100,10 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "drcDec_types.h"
 #include "drcDec_tools.h"
-#include "fixpoint_math.h"
+#include "drcDec_types.h"
 #include "drcDecoder.h"
+#include "fixpoint_math.h"
 
 int getDeltaTmin(const int sampleRate) {
   /* half_ms = round (0.0005 * sampleRate); */
@@ -118,8 +118,8 @@ int getDeltaTmin(const int sampleRate) {
   return deltaTmin;
 }
 
-DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location) {
+DRC_COEFFICIENTS_UNI_DRC *
+selectDrcCoefficients(HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location) {
   int n;
   int c = -1;
   for (n = 0; n < hUniDrcConfig->drcCoefficientsUniDrcCount; n++) {
@@ -133,8 +133,8 @@ DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
   return NULL; /* possible during bitstream parsing */
 }
 
-DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId) {
+DRC_INSTRUCTIONS_UNI_DRC *
+selectDrcInstructions(HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId) {
   int i;
   for (i = 0; i < hUniDrcConfig->drcInstructionsCountInclVirtual; i++) {
     if (hUniDrcConfig->drcInstructionsUniDrc[i].drcSetId == drcSetId) {
@@ -144,8 +144,9 @@ DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
   return NULL;
 }
 
-DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int downmixId) {
+DOWNMIX_INSTRUCTIONS *
+selectDownmixInstructions(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+                          const int downmixId) {
   int i;
   for (i = 0; i < hUniDrcConfig->downmixInstructionsCount; i++) {
     if (hUniDrcConfig->downmixInstructions[i].downmixId == downmixId) {
@@ -159,12 +160,12 @@ DRC_ERROR
 deriveDrcChannelGroups(
     const int drcSetEffect,                                    /* in */
     const int channelCount,                                    /* in */
-    const SCHAR* gainSetIndex,                                 /* in */
-    const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
-    UCHAR* nDrcChannelGroups,                                  /* out */
-    SCHAR* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
-    SCHAR* groupForChannel, /* out */
-    DUCKING_MODIFICATION* duckingModificationForChannelGroup) /* out */
+    const SCHAR *gainSetIndex,                                 /* in */
+    const DUCKING_MODIFICATION *duckingModificationForChannel, /* in */
+    UCHAR *nDrcChannelGroups,                                  /* out */
+    SCHAR *uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
+    SCHAR *groupForChannel, /* out */
+    DUCKING_MODIFICATION *duckingModificationForChannelGroup) /* out */
 {
   int duckingSequence = -1;
   int c, n, g, match, idx;
@@ -181,7 +182,8 @@ deriveDrcChannelGroups(
   if (drcSetEffect & EB_DUCK_OTHER) {
     for (c = 0; c < channelCount; c++) {
       match = 0;
-      if (c >= 8) return DE_MEMORY_ERROR;
+      if (c >= 8)
+        return DE_MEMORY_ERROR;
       idx = gainSetIndex[c];
       factor = duckingModificationForChannel[c].duckingScaling;
       if (idx < 0) {
@@ -193,7 +195,8 @@ deriveDrcChannelGroups(
           }
         }
         if (match == 0) {
-          if (g >= 8) return DE_MEMORY_ERROR;
+          if (g >= 8)
+            return DE_MEMORY_ERROR;
           uniqueIndex[g] = idx;
           uniqueScaling[g] = factor;
           groupForChannel[c] = g;
@@ -213,7 +216,8 @@ deriveDrcChannelGroups(
   } else if (drcSetEffect & EB_DUCK_SELF) {
     for (c = 0; c < channelCount; c++) {
       match = 0;
-      if (c >= 8) return DE_MEMORY_ERROR;
+      if (c >= 8)
+        return DE_MEMORY_ERROR;
       idx = gainSetIndex[c];
       factor = duckingModificationForChannel[c].duckingScaling;
       if (idx >= 0) {
@@ -225,7 +229,8 @@ deriveDrcChannelGroups(
           }
         }
         if (match == 0) {
-          if (g >= 8) return DE_MEMORY_ERROR;
+          if (g >= 8)
+            return DE_MEMORY_ERROR;
           uniqueIndex[g] = idx;
           uniqueScaling[g] = factor;
           groupForChannel[c] = g;
@@ -237,7 +242,8 @@ deriveDrcChannelGroups(
     }
   } else { /* no ducking */
     for (c = 0; c < channelCount; c++) {
-      if (c >= 8) return DE_MEMORY_ERROR;
+      if (c >= 8)
+        return DE_MEMORY_ERROR;
       idx = gainSetIndex[c];
       match = 0;
       if (idx >= 0) {
@@ -249,7 +255,8 @@ deriveDrcChannelGroups(
           }
         }
         if (match == 0) {
-          if (g >= 8) return DE_MEMORY_ERROR;
+          if (g >= 8)
+            return DE_MEMORY_ERROR;
           uniqueIndex[g] = idx;
           groupForChannel[c] = g;
           g++;
@@ -279,7 +286,7 @@ deriveDrcChannelGroups(
 }
 
 FIXP_DBL
-dB2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
+dB2lin(const FIXP_DBL dB_m, const int dB_e, int *pLin_e) {
   /* get linear value from dB.
      return lin_val = 10^(dB_val/20) = 2^(log2(10)/20*dB_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -291,7 +298,7 @@ dB2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
 }
 
 FIXP_DBL
-lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e) {
+lin2dB(const FIXP_DBL lin_m, const int lin_e, int *pDb_e) {
   /* get dB value from linear value.
      return dB_val = 20*log10(lin_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -311,7 +318,7 @@ lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e) {
 }
 
 FIXP_DBL
-approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
+approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int *pLin_e) {
   /* get linear value from approximate dB.
      return lin_val = 2^(dB_val/6)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -325,12 +332,13 @@ approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
 int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                                   const int downmixId) {
   int i, g, d, seq;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_INSTRUCTIONS_UNI_DRC *pInst;
+  DRC_COEFFICIENTS_UNI_DRC *pCoef = NULL;
   int isMultiband = 0;
 
   pCoef = selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
-  if (pCoef == NULL) return 0;
+  if (pCoef == NULL)
+    return 0;
 
   for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCount; i++) {
     pInst = &(hUniDrcConfig->drcInstructionsUniDrc[i]);
@@ -349,12 +357,13 @@ int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
   return isMultiband;
 }
 
-FIXP_DBL getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount) {
+FIXP_DBL getDownmixOffset(DOWNMIX_INSTRUCTIONS *pDown, int baseChannelCount) {
   FIXP_DBL downmixOffset = FL2FXCONST_DBL(1.0f / (1 << 1)); /* e = 1 */
   if ((pDown->bsDownmixOffset == 1) || (pDown->bsDownmixOffset == 2)) {
     int e_a, e_downmixOffset;
     FIXP_DBL a, q;
-    if (baseChannelCount <= pDown->targetChannelCount) return downmixOffset;
+    if (baseChannelCount <= pDown->targetChannelCount)
+      return downmixOffset;
 
     q = fDivNorm((FIXP_DBL)pDown->targetChannelCount,
                  (FIXP_DBL)baseChannelCount); /* e = 0 */

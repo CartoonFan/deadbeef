@@ -368,17 +368,17 @@ FDK_SACENC_ERROR fdk_sacenc_apply_enhancedTimeDomainDmx(
       FIXP_DBL partialL, partialR, partialX;
       partialL = partialR = partialX = FL2FXCONST_DBL(0.f);
 
-      int in_margin = FDKmin(
-          getScalefactorPCM(
-              &inputTime[L][offset],
-              fixMin(offset + granuleLength, hEnhancedTimeDmx->framelength) -
-                  offset,
-              1),
-          getScalefactorPCM(
-              &inputTime[R][offset],
-              fixMin(offset + granuleLength, hEnhancedTimeDmx->framelength) -
-                  offset,
-              1));
+      int in_margin =
+          FDKmin(getScalefactorPCM(&inputTime[L][offset],
+                                   fixMin(offset + granuleLength,
+                                          hEnhancedTimeDmx->framelength) -
+                                       offset,
+                                   1),
+                 getScalefactorPCM(&inputTime[R][offset],
+                                   fixMin(offset + granuleLength,
+                                          hEnhancedTimeDmx->framelength) -
+                                       offset,
+                                   1));
 
       /* partial energy */
       for (smp = offset;

@@ -125,7 +125,8 @@ int FDK_toolsGetLibInfo(LIB_INFO *info) {
 
   /* search for next free tab */
   i = FDKlibInfo_lookup(info, FDK_TOOLS);
-  if (i < 0) return -1;
+  if (i < 0)
+    return -1;
 
   info += i;
 

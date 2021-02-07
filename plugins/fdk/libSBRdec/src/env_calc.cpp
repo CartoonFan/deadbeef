@@ -143,11 +143,11 @@ amm-info@iis.fraunhofer.de
 
 #include "env_calc.h"
 
-#include "sbrdec_freq_sca.h"
 #include "env_extr.h"
-#include "transcendent.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"
+#include "sbrdec_freq_sca.h"
+#include "transcendent.h"
 
 #include "genericStds.h" /* need FDKpow() for debug outputs */
 
@@ -214,10 +214,11 @@ static void adjustTimeSlotHQ_GainAndNoise(
 /**
  * \brief Variant of adjustTimeSlotHQ() which only adds the additional harmonics
  */
-static void adjustTimeSlotHQ_AddHarmonics(
-    FIXP_DBL *ptrReal, FIXP_DBL *ptrImag,
-    HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env, ENV_CALC_NRGS *nrgs,
-    int lowSubbands, int noSubbands, int scale_change);
+static void
+adjustTimeSlotHQ_AddHarmonics(FIXP_DBL *ptrReal, FIXP_DBL *ptrImag,
+                              HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env,
+                              ENV_CALC_NRGS *nrgs, int lowSubbands,
+                              int noSubbands, int scale_change);
 
 static void adjustTimeSlotHQ(FIXP_DBL *ptrReal, FIXP_DBL *ptrImag,
                              HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env,
@@ -322,21 +323,21 @@ static void mapSineFlags(
   framing. If the SBR framing is trailing the PVC framing the sine mapping of
   the previous SBR frame needs to be used for the overlapping time slots.
 */
-/*static*/ void mapSineFlagsPvc(
-    UCHAR *freqBandTable,       /*!< Band borders (there's only 1 flag per
-                                   band) */
-    int nSfb,                   /*!< Number of bands in the table */
-    ULONG *harmFlagsPrev,       /*!< Packed addHarmonics of previous frame
-                                   (aligned to the MSB) */
-    ULONG *harmFlagsPrevActive, /*!< Packed sineMapped of previous
-                                   frame (aligned to the LSB) */
-    SCHAR *sineMapped,          /*!< Resulting vector of sine start positions
-                                   for each QMF band */
-    int sinusoidalPos,          /*!< sinusoidal position */
-    SCHAR *sinusoidalPosPrev,   /*!< sinusoidal position of previous
-                                   frame */
-    int trailingSbrFrame)       /*!< indication if the SBR framing is
-                                   trailing the PVC framing */
+/*static*/ void
+mapSineFlagsPvc(UCHAR *freqBandTable, /*!< Band borders (there's only 1 flag per
+                                         band) */
+                int nSfb,             /*!< Number of bands in the table */
+                ULONG *harmFlagsPrev, /*!< Packed addHarmonics of previous frame
+                                         (aligned to the MSB) */
+                ULONG *harmFlagsPrevActive, /*!< Packed sineMapped of previous
+                                               frame (aligned to the LSB) */
+                SCHAR *sineMapped, /*!< Resulting vector of sine start positions
+                                      for each QMF band */
+                int sinusoidalPos, /*!< sinusoidal position */
+                SCHAR *sinusoidalPosPrev, /*!< sinusoidal position of previous
+                                             frame */
+                int trailingSbrFrame)     /*!< indication if the SBR framing is
+                                             trailing the PVC framing */
 {
   /* Reset the output vector first */
   FDKmemset(sineMapped, 32, MAX_FREQ_COEFFS); /* 32 means 'no sine' */
@@ -361,7 +362,7 @@ static void mapSineFlags(
          * in this frame */
         sineMapped[i - lsb] =
             *sinusoidalPosPrev - PVC_NTIMESLOT; /* we are 16 sbr time slots
-                                                   ahead of last frame now */
+                                           ahead of last frame now */
       }
     }
   }
@@ -371,13 +372,13 @@ static void mapSineFlags(
 /*!
   \brief     Reduce gain-adjustment induced aliasing for real valued filterbank.
 */
-/*static*/ void aliasingReduction(
-    FIXP_DBL *degreeAlias, /*!< estimated aliasing for each QMF
-                              channel */
-    ENV_CALC_NRGS *nrgs,
-    UCHAR *useAliasReduction, /*!< synthetic sine energy for each
-                                 subband, used as flag */
-    int noSubbands)           /*!< number of QMF channels to process */
+/*static*/ void
+aliasingReduction(FIXP_DBL *degreeAlias, /*!< estimated aliasing for each QMF
+                                            channel */
+                  ENV_CALC_NRGS *nrgs,
+                  UCHAR *useAliasReduction, /*!< synthetic sine energy for each
+                                               subband, used as flag */
+                  int noSubbands) /*!< number of QMF channels to process */
 {
   FIXP_DBL *nrgGain = nrgs->nrgGain; /*!< subband gains to be modified */
   SCHAR *nrgGain_e =
@@ -430,7 +431,7 @@ static void mapSineFlags(
     FIXP_DBL groupGain; /* Total energy gain in group */
     SCHAR groupGain_e;
     FIXP_DBL compensation; /* Compensation factor for the energy change when
-                              applying modified gains */
+                          applying modified gains */
     SCHAR compensation_e;
 
     int startGroup = groupVector[2 * group];
@@ -462,7 +463,8 @@ static void mapSineFlags(
 
       FIXP_DBL alpha = degreeAlias[k];
       if (k < noSubbands - 1) {
-        if (degreeAlias[k + 1] > alpha) alpha = degreeAlias[k + 1];
+        if (degreeAlias[k + 1] > alpha)
+          alpha = degreeAlias[k + 1];
       }
 
       /* Modify gain depending on the degree of aliasing */
@@ -565,7 +567,8 @@ static void apply_inter_tes(FIXP_DBL **qmfReal, FIXP_DBL **qmfImag,
         int postShift = 32 - fNormz((FIXP_DBL)lowSubband);
 
         /* reduce preShift because otherwise we risk to square -1.f */
-        if (preShift != 0) preShift++;
+        if (preShift != 0)
+          preShift++;
 
         subsample_power_low_sf[i] += (low_sf + preShift) * 2 + postShift + 1;
 
@@ -601,7 +604,8 @@ static void apply_inter_tes(FIXP_DBL **qmfReal, FIXP_DBL **qmfImag,
       if (maxVal != FL2FXCONST_DBL(0.f)) {
         int preShift = 1 - CntLeadingZeros(maxVal);
         /* reduce preShift because otherwise we risk to square -1.f */
-        if (preShift != 0) preShift++;
+        if (preShift != 0)
+          preShift++;
 
         int postShift = 32 - fNormz((FIXP_DBL)(highSubband - lowSubband));
         subsample_power_high_sf[i] += (high_sf + preShift) * 2 + postShift + 1;
@@ -1050,7 +1054,7 @@ void calculateSbrEnvelope(
   if (pvc_mode > 0) {
     /* iterate over SBR time slots starting with bordersPvc[i] */
     i = bordersPvc[0]; /* usually 0; can be >0 if switching from legacy SBR to
-                          PVC */
+                      PVC */
     i_stop = PVC_NTIMESLOT;
     FDK_ASSERT(bordersPvc[hFrameData->frameInfo.nEnvelopes] == PVC_NTIMESLOT);
   } else {
@@ -1072,8 +1076,8 @@ void calculateSbrEnvelope(
           hHeaderData->timeStep *
           i; /* Start-position in time (subband sample) for current envelope. */
       stop_pos = hHeaderData->timeStep * (i + 1); /* Stop-position in time
-                                                     (subband sample) for
-                                                     current envelope. */
+                                               (subband sample) for
+                                               current envelope. */
       freq_res =
           hFrameData->frameInfo
               .freqRes[0]; /* Frequency resolution for current envelope. */
@@ -1081,12 +1085,12 @@ void calculateSbrEnvelope(
           freq_res ==
           hFrameData->frameInfo.freqRes[hFrameData->frameInfo.nEnvelopes - 1]);
     } else {
-      start_pos = hHeaderData->timeStep *
-                  borders[i]; /* Start-position in time (subband sample) for
-                                 current envelope. */
+      start_pos =
+          hHeaderData->timeStep * borders[i]; /* Start-position in time (subband
+                                           sample) for current envelope. */
       stop_pos = hHeaderData->timeStep *
                  borders[i + 1]; /* Stop-position in time (subband sample) for
-                                    current envelope. */
+                              current envelope. */
       freq_res =
           hFrameData->frameInfo
               .freqRes[i]; /* Frequency resolution for current envelope. */
@@ -1114,7 +1118,7 @@ void calculateSbrEnvelope(
       if (i >= hFrameData->frameInfo.bordersNoise[envNoise + 1]) {
         if (envNoise >= 0) {
           noiseLevels += noNoiseBands; /* The noise floor data is stored in a
-                                          row [noiseFloor1 noiseFloor2...].*/
+                                row [noiseFloor1 noiseFloor2...].*/
         } else {
           /* leave trailing noise envelope of past frame */
           noNoiseBands = hFreq->nNfb;
@@ -1142,7 +1146,7 @@ void calculateSbrEnvelope(
          noise-floor).*/
       if (borders[i] == hFrameData->frameInfo.bordersNoise[envNoise + 1]) {
         noiseLevels += noNoiseBands; /* The noise floor data is stored in a row
-                                        [noiseFloor1 noiseFloor2...].*/
+                                [noiseFloor1 noiseFloor2...].*/
         envNoise++;
       }
     }
@@ -1150,7 +1154,8 @@ void calculateSbrEnvelope(
         i == h_sbr_cal_env->prevTranEnv) /* attack */
     {
       noNoiseFlag = 1;
-      if (!useLP) smooth_length = 0; /* No smoothing on attacks! */
+      if (!useLP)
+        smooth_length = 0; /* No smoothing on attacks! */
     } else {
       noNoiseFlag = 0;
       if (!useLP)
@@ -1176,9 +1181,8 @@ void calculateSbrEnvelope(
     */
     {
       UCHAR *table = pFreqBandTable[freq_res];
-      UCHAR *pUiNoise =
-          &pFreqBandTableNoise[1]; /*! Upper limit of the current noise floor
-                                      band. */
+      UCHAR *pUiNoise = &pFreqBandTableNoise[1]; /*! Upper limit of the current
+                                              noise floor band. */
 
       FIXP_SGL *pNoiseLevels = noiseLevels;
 
@@ -1215,7 +1219,8 @@ void calculateSbrEnvelope(
 
             FDK_ASSERT(k >= lowSubband);
 
-            if (useLP) useAliasReduction[k - lowSubband] = !sinePresentFlag;
+            if (useLP)
+              useAliasReduction[k - lowSubband] = !sinePresentFlag;
 
             pNrgs->nrgSine[c] = FL2FXCONST_DBL(0.0f);
             pNrgs->nrgSine_e[c] = 0;
@@ -1252,7 +1257,8 @@ void calculateSbrEnvelope(
 
             FDK_ASSERT(k >= lowSubband);
 
-            if (useLP) useAliasReduction[k - lowSubband] = !sinePresentFlag;
+            if (useLP)
+              useAliasReduction[k - lowSubband] = !sinePresentFlag;
 
             pNrgs->nrgSine[c] = FL2FXCONST_DBL(0.0f);
             pNrgs->nrgSine_e[c] = 0;
@@ -1501,9 +1507,9 @@ void calculateSbrEnvelope(
           int shift = (int)(noise_e - final_e);
           if (!useLP)
             filtBufferNoiseShift = shift; /* shifting of
-                                             h_sbr_cal_env->filtBufferNoise[k]
-                                             will be applied in function
-                                             adjustTimeSlotHQ() */
+                                 h_sbr_cal_env->filtBufferNoise[k]
+                                 will be applied in function
+                                 adjustTimeSlotHQ() */
           if (shift >= 0) {
             shift = fixMin(DFRACT_BITS - 1, shift);
             for (k = 0; k < noSubbands; k++) {
@@ -1950,7 +1956,8 @@ FIXP_DBL maxSubbandSample(
      * necessary: if maxVal is a power of 2 */
     FIXP_DBL lowerPow2 =
         (FIXP_DBL)(1 << (DFRACT_BITS - 1 - CntLeadingZeros(maxVal)));
-    if (maxVal == lowerPow2) maxVal += (FIXP_DBL)1;
+    if (maxVal == lowerPow2)
+      maxVal += (FIXP_DBL)1;
   }
 
   return (maxVal);
@@ -2132,7 +2139,7 @@ static void calcNrgPerSfb(
 
   int j, k, l, li, ui;
   FIXP_DBL sumAll, sumLine; /* Single precision would be sufficient,
-                             but overflow bits are required for accumulation */
+                           but overflow bits are required for accumulation */
 
   /* Divide by width of envelope later: */
   invWidth = FX_DBL2FX_SGL(GetInvInt(next_pos - start_pos));
@@ -2213,9 +2220,8 @@ static void calcNrgPerSfb(
       if (analysBufferImag != NULL)
         sum_e = input_e + 4 - shift; /* -4 to compensate right-shift */
       else
-        sum_e = input_e + 4 + 1 -
-                shift; /* -4 to compensate right-shift; +1 due to missing
-                          imag. part */
+        sum_e = input_e + 4 + 1 - shift; /* -4 to compensate right-shift; +1 due
+                                    to missing imag. part */
 
       sum_e -= 2 * preShift;
     } /* maxVal!=0 */
@@ -2337,19 +2343,19 @@ static void calcSubbandGain(
   The result is used as a relative limit for all gains within the
   current "limiter band" (a certain frequency range).
 */
-static void calcAvgGain(
-    ENV_CALC_NRGS *nrgs, int lowSubband, /*!< Begin of the limiter band */
-    int highSubband,                     /*!< High end of the limiter band */
-    FIXP_DBL *ptrSumRef, SCHAR *ptrSumRef_e,
-    FIXP_DBL *ptrAvgGain, /*!< Resulting overall gain (mantissa) */
-    SCHAR *ptrAvgGain_e)  /*!< Resulting overall gain (exponent) */
+static void
+calcAvgGain(ENV_CALC_NRGS *nrgs,
+            int lowSubband,  /*!< Begin of the limiter band */
+            int highSubband, /*!< High end of the limiter band */
+            FIXP_DBL *ptrSumRef, SCHAR *ptrSumRef_e,
+            FIXP_DBL *ptrAvgGain, /*!< Resulting overall gain (mantissa) */
+            SCHAR *ptrAvgGain_e)  /*!< Resulting overall gain (exponent) */
 {
   FIXP_DBL *nrgRef =
       nrgs->nrgRef; /*!< Reference Energy according to envelope data */
-  SCHAR *nrgRef_e =
-      nrgs->nrgRef_e; /*!< Reference Energy according to envelope data
-                         (exponent) */
-  FIXP_DBL *nrgEst = nrgs->nrgEst; /*!< Energy in transposed signal */
+  SCHAR *nrgRef_e = nrgs->nrgRef_e; /*!< Reference Energy according to envelope
+                                     data (exponent) */
+  FIXP_DBL *nrgEst = nrgs->nrgEst;  /*!< Energy in transposed signal */
   SCHAR *nrgEst_e =
       nrgs->nrgEst_e; /*!< Energy in transposed signal (exponent) */
 
@@ -2589,7 +2595,8 @@ static void adjustTimeSlotLC(
       } /* for ... */
     } else {
       /* harmIndex 1,3 in combination with freqInvFlag */
-      if (harmIndex == 1) freqInvFlag = !freqInvFlag;
+      if (harmIndex == 1)
+        freqInvFlag = !freqInvFlag;
 
       for (k = noSubbands - 2; k != 0; k--) {
         index++;
@@ -2816,7 +2823,8 @@ static void adjustTimeSlotHQ_AddHarmonics(
         ptrReal[k] = signalReal + sineLevel;
       } else {
         /* case 1,3 */
-        if (!freqInvFlag) sineLevel = -sineLevel;
+        if (!freqInvFlag)
+          sineLevel = -sineLevel;
         ptrImag[k] = signalImag + sineLevel;
       }
     }
@@ -2913,28 +2921,28 @@ static void adjustTimeSlotHQ(
         sineLevel = pSineLevel[k];
 
         switch (harmIndex) {
-          case 0:
-            *ptrReal++ = (signalReal + sineLevel);
-            *ptrImag++ = (signalImag);
-            break;
-          case 2:
-            *ptrReal++ = (signalReal - sineLevel);
-            *ptrImag++ = (signalImag);
-            break;
-          case 1:
-            *ptrReal++ = (signalReal);
-            if (freqInvFlag)
-              *ptrImag++ = (signalImag - sineLevel);
-            else
-              *ptrImag++ = (signalImag + sineLevel);
-            break;
-          case 3:
-            *ptrReal++ = signalReal;
-            if (freqInvFlag)
-              *ptrImag++ = (signalImag + sineLevel);
-            else
-              *ptrImag++ = (signalImag - sineLevel);
-            break;
+        case 0:
+          *ptrReal++ = (signalReal + sineLevel);
+          *ptrImag++ = (signalImag);
+          break;
+        case 2:
+          *ptrReal++ = (signalReal - sineLevel);
+          *ptrImag++ = (signalImag);
+          break;
+        case 1:
+          *ptrReal++ = (signalReal);
+          if (freqInvFlag)
+            *ptrImag++ = (signalImag - sineLevel);
+          else
+            *ptrImag++ = (signalImag + sineLevel);
+          break;
+        case 3:
+          *ptrReal++ = signalReal;
+          if (freqInvFlag)
+            *ptrImag++ = (signalImag + sineLevel);
+          else
+            *ptrImag++ = (signalImag - sineLevel);
+          break;
         }
       } else {
         if (noNoiseFlag) {
@@ -2968,24 +2976,24 @@ static void adjustTimeSlotHQ(
 
       if ((sineLevel = pSineLevel[k]) != FL2FXCONST_DBL(0.0f)) {
         switch (harmIndex) {
-          case 0:
-            signalReal += sineLevel;
-            break;
-          case 1:
-            if (freqInvFlag)
-              signalImag -= sineLevel;
-            else
-              signalImag += sineLevel;
-            break;
-          case 2:
-            signalReal -= sineLevel;
-            break;
-          case 3:
-            if (freqInvFlag)
-              signalImag += sineLevel;
-            else
-              signalImag -= sineLevel;
-            break;
+        case 0:
+          signalReal += sineLevel;
+          break;
+        case 1:
+          if (freqInvFlag)
+            signalImag -= sineLevel;
+          else
+            signalImag += sineLevel;
+          break;
+        case 2:
+          signalReal -= sineLevel;
+          break;
+        case 3:
+          if (freqInvFlag)
+            signalImag += sineLevel;
+          else
+            signalImag -= sineLevel;
+          break;
         }
       } else {
         if (noNoiseFlag == 0) {
@@ -3047,10 +3055,12 @@ ResetLimiterBands(
 
       if (b41Sbr == 1) {
         for (i = 1; i < MAX_NUM_PATCHES_HBE; i++)
-          if (xOverQmf[i] != 0) noPatches++;
+          if (xOverQmf[i] != 0)
+            noPatches++;
       } else {
         for (i = 1; i < MAX_STRETCH_HBE; i++)
-          if (xOverQmf[i] != 0) noPatches++;
+          if (xOverQmf[i] != 0)
+            noPatches++;
       }
       for (i = 0; i < noPatches; i++) {
         patchBorders[i] = xOverQmf[i] - lowSubband;

@@ -102,9 +102,9 @@ amm-info@iis.fraunhofer.de
 
 #include "ldfiltbank.h"
 
+#include "FDK_tools_rom.h"
 #include "aac_rom.h"
 #include "dct.h"
-#include "FDK_tools_rom.h"
 #include "mdct.h"
 
 #define LDFB_HEADROOM 2
@@ -215,33 +215,33 @@ int InvMdctTransformLowDelay_fdk(FIXP_DBL *mdctData, const int mdctData_e,
   FIXP_DBL gain = (FIXP_DBL)0;
   int scale = mdctData_e + MDCT_OUT_HEADROOM -
               LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside
-                                multE2_DinvF_fdk() below */
+                              multE2_DinvF_fdk() below */
   int i;
 
   /* Select LD window slope */
   switch (N) {
-    case 256:
-      coef = LowDelaySynthesis256;
-      break;
-    case 240:
-      coef = LowDelaySynthesis240;
-      break;
-    case 160:
-      coef = LowDelaySynthesis160;
-      break;
-    case 128:
-      coef = LowDelaySynthesis128;
-      break;
-    case 120:
-      coef = LowDelaySynthesis120;
-      break;
-    case 512:
-      coef = LowDelaySynthesis512;
-      break;
-    case 480:
-    default:
-      coef = LowDelaySynthesis480;
-      break;
+  case 256:
+    coef = LowDelaySynthesis256;
+    break;
+  case 240:
+    coef = LowDelaySynthesis240;
+    break;
+  case 160:
+    coef = LowDelaySynthesis160;
+    break;
+  case 128:
+    coef = LowDelaySynthesis128;
+    break;
+  case 120:
+    coef = LowDelaySynthesis120;
+    break;
+  case 512:
+    coef = LowDelaySynthesis512;
+    break;
+  case 480:
+  default:
+    coef = LowDelaySynthesis480;
+    break;
   }
 
   /*

@@ -125,9 +125,10 @@ static void sbr_envelope_unmapping(HANDLE_SBR_HEADER_DATA hHeaderData,
                                    HANDLE_SBR_FRAME_DATA h_data_right);
 static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
                                    int ampResolution);
-static void deltaToLinearPcmEnvelopeDecoding(
-    HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_SBR_FRAME_DATA h_sbr_data,
-    HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
+static void
+deltaToLinearPcmEnvelopeDecoding(HANDLE_SBR_HEADER_DATA hHeaderData,
+                                 HANDLE_SBR_FRAME_DATA h_sbr_data,
+                                 HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
 static void decodeNoiseFloorlevels(HANDLE_SBR_HEADER_DATA hHeaderData,
                                    HANDLE_SBR_FRAME_DATA h_sbr_data,
                                    HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
@@ -144,10 +145,10 @@ static int checkEnvelopeData(HANDLE_SBR_HEADER_DATA hHeaderData,
 #define DECAY (1 << ENV_EXP_FRACT)
 
 #if ENV_EXP_FRACT
-#define DECAY_COUPLING \
+#define DECAY_COUPLING                                                         \
   (1 << (ENV_EXP_FRACT - 1)) /*!< corresponds to a value of 0.5 */
 #else
-#define DECAY_COUPLING \
+#define DECAY_COUPLING                                                         \
   1 /*!< If the energy data is not shifted, use 1 instead of 0.5 */
 #endif
 
@@ -184,12 +185,12 @@ static int indexLow2High(int offset, /*!< mapping factor */
   low frequency resolution, the energy value will be mapped to the
   corresponding high-res bands.
 */
-static void mapLowResEnergyVal(
-    FIXP_SGL currVal,   /*!< current energy value */
-    FIXP_SGL *prevData, /*!< pointer to previous data vector */
-    int offset,         /*!< mapping factor */
-    int index,          /*!< index to scalefactor band */
-    int res)            /*!< frequeny resolution */
+static void
+mapLowResEnergyVal(FIXP_SGL currVal,   /*!< current energy value */
+                   FIXP_SGL *prevData, /*!< pointer to previous data vector */
+                   int offset,         /*!< mapping factor */
+                   int index,          /*!< index to scalefactor band */
+                   int res)            /*!< frequeny resolution */
 {
   if (res == 0) {
     if (offset >= 0) {
@@ -305,7 +306,7 @@ static void sbr_envelope_unmapping(
     tempR_e = (SCHAR)((LONG)h_data_right->iEnvelope[i] & MASK_E);
 
     tempR_e -= (18 + NRG_EXP_OFFSET); /* -18 = ld(UNMAPPING_SCALE /
-                                         h_data_right->nChannels) */
+                                     h_data_right->nChannels) */
     tempL_m = (FIXP_SGL)((LONG)h_data_left->iEnvelope[i] & MASK_M);
     tempL_e = (SCHAR)((LONG)h_data_left->iEnvelope[i] & MASK_E);
 
@@ -446,13 +447,13 @@ static void leanSbrConcealment(
 /*!
   \brief   Build reference energies and noise levels from bitstream elements
 */
-static void decodeEnvelope(
-    HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
-    HANDLE_SBR_FRAME_DATA h_sbr_data,   /*!< pointer to current data */
-    HANDLE_SBR_PREV_FRAME_DATA
-        h_prev_data, /*!< pointer to data of last frame */
-    HANDLE_SBR_PREV_FRAME_DATA
-        otherChannel /*!< other channel's last frame data */
+static void
+decodeEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
+               HANDLE_SBR_FRAME_DATA h_sbr_data, /*!< pointer to current data */
+               HANDLE_SBR_PREV_FRAME_DATA
+                   h_prev_data, /*!< pointer to data of last frame */
+               HANDLE_SBR_PREV_FRAME_DATA
+                   otherChannel /*!< other channel's last frame data */
 ) {
   int i;
   int fFrameError = hHeaderData->frameErrorFlag;
@@ -495,7 +496,7 @@ static void decodeEnvelope(
     /* decode the envelope data to linear PCM */
     deltaToLinearPcmEnvelopeDecoding(hHeaderData, h_sbr_data, h_prev_data);
   } else /*Do a temporary dummy decoding and check that the envelope values are
-            within limits */
+          within limits */
   {
     if (h_prev_data->frameErrorFlag) {
       timeCompensateFirstEnvelope(hHeaderData, h_sbr_data, h_prev_data);
@@ -598,14 +599,14 @@ static void limitNoiseLevels(
   int i;
   int nNfb = hHeaderData->freqBandData.nNfb;
 
-/*
-  Set range limits. The exact values depend on the coupling mode.
-  However this limitation is primarily intended to avoid unlimited
-  accumulation of the delta-coded noise levels.
-*/
-#define lowerLimit \
+  /*
+    Set range limits. The exact values depend on the coupling mode.
+    However this limitation is primarily intended to avoid unlimited
+    accumulation of the delta-coded noise levels.
+  */
+#define lowerLimit                                                             \
   ((FIXP_SGL)0) /* lowerLimit actually refers to the _highest_ noise energy */
-#define upperLimit \
+#define upperLimit                                                             \
   ((FIXP_SGL)35) /* upperLimit actually refers to the _lowest_ noise energy */
 
   /*

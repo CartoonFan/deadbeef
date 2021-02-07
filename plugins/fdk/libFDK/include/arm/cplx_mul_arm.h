@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #if defined(__arm__) && defined(__GNUC__)
 
-#if defined(__ARM_ARCH_5TE__) || defined(__ARM_ARCH_6__) || \
+#if defined(__ARM_ARCH_5TE__) || defined(__ARM_ARCH_6__) ||                    \
     defined(__ARM_ARCH_8__)
 #define FUNCTION_cplxMultDiv2_32x16
 #define FUNCTION_cplxMultDiv2_32x16X2

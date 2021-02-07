@@ -109,10 +109,10 @@ amm-info@iis.fraunhofer.de
 
 #include "sbrdecoder.h"
 
+#include "FDK_audio.h"
+#include "env_calc.h"
 #include "lpp_tran.h"
 #include "qmf.h"
-#include "env_calc.h"
-#include "FDK_audio.h"
 
 #include "sbrdec_drc.h"
 
@@ -153,7 +153,7 @@ typedef struct {
 
 #endif
   FIXP_DBL **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
-                            hQmfHBESlotsReal */
+                          hQmfHBESlotsReal */
 
   FIXP_DBL **hQmfHBESlotsReal;
   FIXP_DBL **hQmfHBESlotsImag;

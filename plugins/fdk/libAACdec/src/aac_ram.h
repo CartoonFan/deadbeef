@@ -111,8 +111,8 @@ amm-info@iis.fraunhofer.de
 
 #include "ac_arith_coder.h"
 
-#include "aacdec_hcr_types.h"
 #include "aacdec_hcr.h"
+#include "aacdec_hcr_types.h"
 
 /* End of formal fix.h */
 

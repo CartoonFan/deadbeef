@@ -107,9 +107,9 @@ amm-info@iis.fraunhofer.de
 #ifndef BIT_SBR_H
 #define BIT_SBR_H
 
-#include "sbr_def.h"
 #include "cmondata.h"
 #include "fram_gen.h"
+#include "sbr_def.h"
 
 struct SBR_ENV_DATA;
 
@@ -119,10 +119,10 @@ struct SBR_BITSTREAM_DATA {
   INT FillBits;
   INT HeaderActive;
   INT HeaderActiveDelay; /**< sbr payload and its header is delayed depending on
-                            encoder configuration*/
+                          encoder configuration*/
   INT NrSendHeaderData;  /**< input from commandline */
   INT CountSendHeaderData; /**< modulo count. If < 0 then no counting is done
-                              (no SBR headers) */
+                            (no SBR headers) */
   INT rightBorderFIX;      /**< force VARFIX or FIXFIX frames */
 };
 
@@ -223,8 +223,8 @@ struct SBR_ENV_DATA {
   AMP_RES currentAmpResFF;
   FIXP_DBL
   ton_HF[SBR_GLOBAL_TONALITY_VALUES]; /* tonality is scaled by
-                                         2^19/0.524288f (fract part of
-                                         RELAXATION) */
+                                       2^19/0.524288f (fract part of
+                                       RELAXATION) */
   FIXP_DBL global_tonality;
 
   /* extended data */

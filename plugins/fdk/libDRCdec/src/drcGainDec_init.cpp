@@ -100,15 +100,15 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "drcDec_types.h"
-#include "drcDec_tools.h"
-#include "drcDec_gainDecoder.h"
 #include "drcGainDec_init.h"
+#include "drcDec_gainDecoder.h"
+#include "drcDec_tools.h"
+#include "drcDec_types.h"
 
 static DRC_ERROR _generateDrcInstructionsDerivedData(
     HANDLE_DRC_GAIN_DECODER hGainDec, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-    DRC_INSTRUCTIONS_UNI_DRC* pInst, DRC_COEFFICIENTS_UNI_DRC* pCoef,
-    ACTIVE_DRC* pActiveDrc) {
+    DRC_INSTRUCTIONS_UNI_DRC *pInst, DRC_COEFFICIENTS_UNI_DRC *pCoef,
+    ACTIVE_DRC *pActiveDrc) {
   DRC_ERROR err = DE_OK;
   int g;
   int gainElementCount = 0;
@@ -125,10 +125,12 @@ static DRC_ERROR _generateDrcInstructionsDerivedData(
       pInst->drcSetEffect & (EB_DUCK_OTHER | EB_DUCK_SELF)
           ? pActiveDrc->duckingModificationForChannelGroup
           : NULL);
-  if (err) return (err);
+  if (err)
+    return (err);
 
   /* sanity check */
-  if (nDrcChannelGroups != pInst->nDrcChannelGroups) return DE_NOT_OK;
+  if (nDrcChannelGroups != pInst->nDrcChannelGroups)
+    return DE_NOT_OK;
   for (g = 0; g < pInst->nDrcChannelGroups; g++) {
     if (gainSetIndexForChannelGroup[g] != pInst->gainSetIndexForChannelGroup[g])
       return DE_NOT_OK;
@@ -176,8 +178,8 @@ static DRC_ERROR _generateDrcInstructionsDerivedData(
     pActiveDrc->gainElementForGroup[g] =
         pActiveDrc->gainElementForGroup[g - 1] +
         pActiveDrc->bandCountForChannelGroup[g - 1]; /* index of first gain
-                                                        sequence in channel
-                                                        group */
+                                                    sequence in channel
+                                                    group */
   }
 
   return DE_OK;
@@ -226,7 +228,7 @@ initGainDec(HANDLE_DRC_GAIN_DECODER hGainDec, const int frameSize,
   return DE_OK;
 }
 
-void initDrcGainBuffers(const int frameSize, DRC_GAIN_BUFFERS* drcGainBuffers) {
+void initDrcGainBuffers(const int frameSize, DRC_GAIN_BUFFERS *drcGainBuffers) {
   int i, c, j;
   /* prepare 12 instances of node buffers */
   for (i = 0; i < 12; i++) {
@@ -271,8 +273,8 @@ initActiveDrc(HANDLE_DRC_GAIN_DECODER hGainDec,
               const int downmixIdSelected) {
   int g, isMultiband = 0;
   DRC_ERROR err = DE_OK;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst = NULL;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_INSTRUCTIONS_UNI_DRC *pInst = NULL;
+  DRC_COEFFICIENTS_UNI_DRC *pCoef = NULL;
 
   pInst = selectDrcInstructions(hUniDrcConfig, drcSetIdSelected);
   if (pInst == NULL) {
@@ -294,7 +296,8 @@ initActiveDrc(HANDLE_DRC_GAIN_DECODER hGainDec,
     err = _generateDrcInstructionsDerivedData(
         hGainDec, hUniDrcConfig, pInst, pCoef,
         &(hGainDec->activeDrc[hGainDec->nActiveDrcs]));
-    if (err) return err;
+    if (err)
+      return err;
   }
 
   hGainDec->activeDrc[hGainDec->nActiveDrcs].pInst = pInst;
@@ -323,7 +326,8 @@ initActiveDrc(HANDLE_DRC_GAIN_DECODER hGainDec,
   }
 
   hGainDec->nActiveDrcs++;
-  if (hGainDec->nActiveDrcs > MAX_ACTIVE_DRCS) return DE_NOT_OK;
+  if (hGainDec->nActiveDrcs > MAX_ACTIVE_DRCS)
+    return DE_NOT_OK;
 
   return DE_OK;
 }
@@ -338,7 +342,8 @@ initActiveDrcOffset(HANDLE_DRC_GAIN_DECODER hGainDec) {
     accGainElementCount += hGainDec->activeDrc[a].gainElementCount;
   }
 
-  if (accGainElementCount > 12) return DE_NOT_OK;
+  if (accGainElementCount > 12)
+    return DE_NOT_OK;
 
   return DE_OK;
 }

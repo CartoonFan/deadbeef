@@ -579,7 +579,8 @@ static inline ULONG get_pk_v2(ULONG s) {
   if (s12 > p[485]) {
     p += 486; /* 742 - 256 = 486 */
   } else {
-    if (s12 > p[255]) p += 256;
+    if (s12 > p[255])
+      p += 256;
   }
 
   if (s12 > p[127]) {
@@ -604,8 +605,10 @@ static inline ULONG get_pk_v2(ULONG s) {
     p += 2;
   }
   ULONG j = p[0];
-  if (s12 > j) j = p[1];
-  if (s != (j >> 12)) j >>= 6;
+  if (s12 > j)
+    j = p[1];
+  if (s != (j >> 12))
+    j >>= 6;
   return (j & 0x3F);
 }
 
@@ -658,7 +661,8 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf,
 
       lev++;
 
-      if (lev > 23) return ARITH_CODER_ERROR;
+      if (lev > 23)
+        return ARITH_CODER_ERROR;
 
       if (esc_nb < 7) {
         esc_nb++;
@@ -711,8 +715,10 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf,
   int j = i;
   for (i = 0; i < j; i++) {
     int bits = 0;
-    if (pSpectralCoefficient[2 * i] != (FIXP_DBL)0) bits++;
-    if (pSpectralCoefficient[2 * i + 1] != (FIXP_DBL)0) bits++;
+    if (pSpectralCoefficient[2 * i] != (FIXP_DBL)0)
+      bits++;
+    if (pSpectralCoefficient[2 * i + 1] != (FIXP_DBL)0)
+      bits++;
 
     if (bits) {
       r = FDKreadBits(bbuf, bits);

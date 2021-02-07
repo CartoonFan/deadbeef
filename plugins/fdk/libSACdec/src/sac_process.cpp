@@ -105,13 +105,13 @@ amm-info@iis.fraunhofer.de
 
 #include "sac_bitdec.h"
 #include "sac_calcM1andM2.h"
-#include "sac_smoothing.h"
 #include "sac_rom.h"
+#include "sac_smoothing.h"
 
 #include "sac_dec_errorcodes.h"
 
-#include "FDK_trigFcts.h"
 #include "FDK_decorrelate.h"
+#include "FDK_trigFcts.h"
 
 /**
  * \brief  Linear interpolation between two parameter values.
@@ -341,7 +341,8 @@ static void M2ParamToKernelMult(FIXP_SGL *RESTRICT pKernel,
         interpolateParameter(alpha__FDK, Mparam[pb], MparamPrev[pb]));
 
     int i = pWidth[pb];
-    if (i & 1) *pKernel++ = tmp;
+    if (i & 1)
+      *pKernel++ = tmp;
     if (i & 2) {
       *pKernel++ = tmp;
       *pKernel++ = tmp;
@@ -419,9 +420,10 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
   INT max_row = self->numOutputChannels;
 
   INT M2_exp = 0;
-  if (self->residualCoding) M2_exp = 3;
+  if (self->residualCoding)
+    M2_exp = 3;
 
-  for (row = 0; row < max_row; row++)  // 2 times
+  for (row = 0; row < max_row; row++) // 2 times
   {
     FIXP_DBL *Mparam0 = self->M2Real__FDK[row][0];
     FIXP_DBL *Mparam1 = self->M2Real__FDK[row][1];
@@ -443,7 +445,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
 
       INT i = pWidth[pb];
 
-      do  // about 3-4 times
+      do // about 3-4 times
       {
         FIXP_DBL var0, var1, real, imag;
 
@@ -655,10 +657,9 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
             0) { /* default setting, calculate all rows and columns */
           activParamBands = 1;
         } else {
-          if (self->pActivM2ParamBands[MAX_M2_INPUT * row +
-                                       col]) /* table with activ and inactiv
-                                                bands exists for current
-                                                configuration */
+          if (self->pActivM2ParamBands[MAX_M2_INPUT * row + col]) /* table with
+                                              activ and inactiv bands exists for
+                                              current configuration */
             activParamBands = 1;
           else
             activParamBands = 0;
@@ -728,10 +729,9 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
             0) { /* default setting, calculate all rows and columns */
           activParamBands = 1;
         } else {
-          if (self->pActivM2ParamBands[MAX_M2_INPUT * row +
-                                       col]) /* table with activ and inactiv
-                                                bands exists for current
-                                                configuration */
+          if (self->pActivM2ParamBands[MAX_M2_INPUT * row + col]) /* table with
+                                              activ and inactiv bands exists for
+                                              current configuration */
             activParamBands = 1;
           else
             activParamBands = 0;
@@ -925,7 +925,8 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
                                          pQmfReal, pQmfImag, stride,
                                          pTimeOut__FDK + (offset * outCh));
       }
-      if (err != MPS_OK) goto bail;
+      if (err != MPS_OK)
+        goto bail;
     }
   } /* ch loop */
 
@@ -971,9 +972,11 @@ void SpatialDecBufferMatrices(spatialDec *self) {
 /* For better precision, PI (pi_x2) is already doubled */
 static FIXP_DBL interp_angle__FDK(FIXP_DBL angle1, FIXP_DBL angle2,
                                   FIXP_SGL alpha, FIXP_DBL pi_x2) {
-  if (angle2 - angle1 > (pi_x2 >> 1)) angle2 -= pi_x2;
+  if (angle2 - angle1 > (pi_x2 >> 1))
+    angle2 -= pi_x2;
 
-  if (angle1 - angle2 > (pi_x2 >> 1)) angle1 -= pi_x2;
+  if (angle1 - angle2 > (pi_x2 >> 1))
+    angle1 -= pi_x2;
 
   return interpolateParameter(alpha, angle2, angle1);
 }

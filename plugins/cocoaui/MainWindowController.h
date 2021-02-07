@@ -23,24 +23,24 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "DdbSeekBar.h"
 #import "DdbTabStrip.h"
 #import "PlaylistView.h"
-#import "DdbSeekBar.h"
 
 @class DesignableViewController;
 
 @interface MainWindowController : NSWindowController
 
-@property (unsafe_unretained) IBOutlet DdbTabStrip *tabStrip;
-@property (unsafe_unretained) IBOutlet NSTextField *statusBar;
-@property (unsafe_unretained) IBOutlet DdbSeekBar *seekBar;
-@property (unsafe_unretained) IBOutlet NSSlider *volumeBar;
+@property(unsafe_unretained) IBOutlet DdbTabStrip *tabStrip;
+@property(unsafe_unretained) IBOutlet NSTextField *statusBar;
+@property(unsafe_unretained) IBOutlet DdbSeekBar *seekBar;
+@property(unsafe_unretained) IBOutlet NSSlider *volumeBar;
 
-@property (nonatomic, readonly) DesignableViewController *rootViewController;
+@property(nonatomic, readonly) DesignableViewController *rootViewController;
 
 - (IBAction)seekBarAction:(id)sender;
 - (IBAction)volumeBarAction:(id)sender;
-@property (unsafe_unretained) IBOutlet NSSegmentedControl *buttonBar;
+@property(unsafe_unretained) IBOutlet NSSegmentedControl *buttonBar;
 
 - (IBAction)tbClicked:(id)sender;
 

@@ -155,9 +155,9 @@ amm-info@iis.fraunhofer.de
 
 #include "env_extr.h"
 
+#include "huff_dec.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"
-#include "huff_dec.h"
 
 #include "psbitdec.h"
 
@@ -292,10 +292,10 @@ initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int sampleRateIn,
     hHeaderData->bs_data.stopFreq = 0;
     hHeaderData->bs_data.freqScale =
         0; /* previously 2; for ELD reduced delay bitstreams
-           /samplerates initializing of the sbr decoder instance fails if
-           freqScale is set to 2 because no master table can be generated; in
-           ELD reduced delay bitstreams this value is always 0; gets overwritten
-           when header is read */
+       /samplerates initializing of the sbr decoder instance fails if
+       freqScale is set to 2 because no master table can be generated; in
+       ELD reduced delay bitstreams this value is always 0; gets overwritten
+       when header is read */
     hHeaderData->bs_data.alterScale = 1;
     hHeaderData->bs_data.noise_bands = 2;
     hHeaderData->bs_data.limiterBands = 2;
@@ -308,9 +308,9 @@ initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int sampleRateIn,
       hHeaderData->bs_data.startFreq =
           4; /*   having read these frequency values from bit stream before. */
       hHeaderData->bs_data.stopFreq = 3;
-    } else if (sampleRateOut * downscaleFactor >
-               24000) { /* Trigger an error if SBR is going to be processed
-                           without     */
+    } else if (sampleRateOut * downscaleFactor > 24000) {
+      /* Trigger an error if SBR is going to be processed
+                  without     */
       hHeaderData->bs_data.startFreq =
           7; /*   having read these frequency values from bit stream before. */
       hHeaderData->bs_data.stopFreq = 3;
@@ -360,7 +360,8 @@ void initSbrPrevFrameData(
     h_prev_data->sfb_nrg_prev[i] = (FIXP_DBL)0;
   for (i = 0; i < MAX_NOISE_COEFFS; i++)
     h_prev_data->prevNoiseLevel[i] = (FIXP_DBL)0;
-  for (i = 0; i < MAX_INVF_BANDS; i++) h_prev_data->sbr_invf_mode[i] = INVF_OFF;
+  for (i = 0; i < MAX_INVF_BANDS; i++)
+    h_prev_data->sbr_invf_mode[i] = INVF_OFF;
 
   h_prev_data->stopPos = timeSlots;
   h_prev_data->coupling = COUPLING_OFF;
@@ -539,7 +540,8 @@ static int extractExtendedData(
     int bPsRead = 0;
 
     cnt = FDKreadBits(hBs, 4);
-    if (cnt == (1 << 4) - 1) cnt += FDKreadBits(hBs, 8);
+    if (cnt == (1 << 4) - 1)
+      cnt += FDKreadBits(hBs, 8);
 
     nBitsLeft = 8 * cnt;
 
@@ -556,44 +558,45 @@ static int extractExtendedData(
       nBitsLeft -= 2;
 
       switch (extension_id) {
-        case EXTENSION_ID_PS_CODING:
+      case EXTENSION_ID_PS_CODING:
 
-          /* Read PS data from bitstream */
+        /* Read PS data from bitstream */
 
-          if (hParametricStereoDec != NULL) {
-            if (bPsRead &&
-                !hParametricStereoDec->bsData[hParametricStereoDec->bsReadSlot]
-                     .mpeg.bPsHeaderValid) {
-              cnt = nBitsLeft >> 3; /* number of remaining bytes */
-              for (i = 0; i < cnt; i++) FDKreadBits(hBs, 8);
-              nBitsLeft -= cnt * 8;
-            } else {
-              nBitsLeft -=
-                  (INT)ReadPsData(hParametricStereoDec, hBs, nBitsLeft);
-              bPsRead = 1;
-            }
+        if (hParametricStereoDec != NULL) {
+          if (bPsRead &&
+              !hParametricStereoDec->bsData[hParametricStereoDec->bsReadSlot]
+                   .mpeg.bPsHeaderValid) {
+            cnt = nBitsLeft >> 3; /* number of remaining bytes */
+            for (i = 0; i < cnt; i++)
+              FDKreadBits(hBs, 8);
+            nBitsLeft -= cnt * 8;
+          } else {
+            nBitsLeft -= (INT)ReadPsData(hParametricStereoDec, hBs, nBitsLeft);
+            bPsRead = 1;
           }
+        }
 
-          /* parametric stereo detected, could set channelMode accordingly here
-           */
-          /*                                                                     */
-          /* "The usage of this parametric stereo extension to HE-AAC is */
-          /* signalled implicitly in the bitstream. Hence, if an sbr_extension()
-           */
-          /* with bs_extension_id==EXTENSION_ID_PS is found in the SBR part of
-           */
-          /* the bitstream, a decoder supporting the combination of SBR and PS
-           */
-          /* shall operate the PS tool to generate a stereo output signal." */
-          /* source: ISO/IEC 14496-3:2001/FDAM 2:2004(E) */
+        /* parametric stereo detected, could set channelMode accordingly here
+         */
+        /*                                                                     */
+        /* "The usage of this parametric stereo extension to HE-AAC is */
+        /* signalled implicitly in the bitstream. Hence, if an sbr_extension()
+         */
+        /* with bs_extension_id==EXTENSION_ID_PS is found in the SBR part of
+         */
+        /* the bitstream, a decoder supporting the combination of SBR and PS
+         */
+        /* shall operate the PS tool to generate a stereo output signal." */
+        /* source: ISO/IEC 14496-3:2001/FDAM 2:2004(E) */
 
-          break;
+        break;
 
-        default:
-          cnt = nBitsLeft >> 3; /* number of remaining bytes */
-          for (i = 0; i < cnt; i++) FDKreadBits(hBs, 8);
-          nBitsLeft -= cnt * 8;
-          break;
+      default:
+        cnt = nBitsLeft >> 3; /* number of remaining bytes */
+        for (i = 0; i < cnt; i++)
+          FDKreadBits(hBs, 8);
+        nBitsLeft -= cnt * 8;
+        break;
       }
     }
 
@@ -724,7 +727,8 @@ int sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
                         hHeaderData->timeStep))
       return 0;
   } else {
-    if (!extractFrameInfo(hBs, hHeaderData, hFrameDataLeft, 1, flags)) return 0;
+    if (!extractFrameInfo(hBs, hHeaderData, hFrameDataLeft, 1, flags))
+      return 0;
 
     if (!checkFrameInfo(&hFrameDataLeft->frameInfo,
                         hHeaderData->numberTimeSlots, overlap,
@@ -796,9 +800,11 @@ int sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
     sbrGetNoiseFloorData(hHeaderData, hFrameDataRight, hBs);
   } else { /* nCh == 2 && no coupling */
 
-    if (!sbrGetEnvelope(hHeaderData, hFrameDataLeft, hBs, flags)) return 0;
+    if (!sbrGetEnvelope(hHeaderData, hFrameDataLeft, hBs, flags))
+      return 0;
 
-    if (!sbrGetEnvelope(hHeaderData, hFrameDataRight, hBs, flags)) return 0;
+    if (!sbrGetEnvelope(hHeaderData, hFrameDataRight, hBs, flags))
+      return 0;
 
     sbrGetNoiseFloorData(hHeaderData, hFrameDataLeft, hBs);
 
@@ -1064,7 +1070,8 @@ static int sbrGetEnvelope(
         hHeaderData->freqBandData.nSfb[h_frame_data->frameInfo.freqRes[i]];
     h_frame_data->nScaleFactors += no_band[i];
   }
-  if (h_frame_data->nScaleFactors > MAX_NUM_ENVELOPE_VALUES) return 0;
+  if (h_frame_data->nScaleFactors > MAX_NUM_ENVELOPE_VALUES)
+    return 0;
 
   /*
     Select Huffman codebook depending on coupling mode and amplitude resolution
@@ -1153,23 +1160,24 @@ static int generateFixFixOnly(FRAME_INFO *hSbrFrameInfo, int tranPosInternal,
   const int *pTable;
 
   switch (numberTimeSlots) {
-    case 8:
-      pTable = FDK_sbrDecoder_envelopeTable_8[tranPosInternal];
-      break;
-    case 15:
-      pTable = FDK_sbrDecoder_envelopeTable_15[tranPosInternal];
-      break;
-    case 16:
-      pTable = FDK_sbrDecoder_envelopeTable_16[tranPosInternal];
-      break;
-    default:
-      return 0;
+  case 8:
+    pTable = FDK_sbrDecoder_envelopeTable_8[tranPosInternal];
+    break;
+  case 15:
+    pTable = FDK_sbrDecoder_envelopeTable_15[tranPosInternal];
+    break;
+  case 16:
+    pTable = FDK_sbrDecoder_envelopeTable_16[tranPosInternal];
+    break;
+  default:
+    return 0;
   }
 
   /* look number of envelopes in table */
   nEnv = pTable[0];
   /* look up envelope distribution in table */
-  for (i = 1; i < nEnv; i++) hSbrFrameInfo->borders[i] = pTable[i + 2];
+  for (i = 1; i < nEnv; i++)
+    hSbrFrameInfo->borders[i] = pTable[i + 2];
   /* open and close frame border */
   hSbrFrameInfo->borders[0] = 0;
   hSbrFrameInfo->borders[nEnv] = numberTimeSlots;
@@ -1210,19 +1218,19 @@ static int extractLowDelayGrid(
 
   /* get the transient position from the bitstream */
   switch (timeSlots) {
-    case 8:
-      /* 3bit transient position (temp={0;..;7}) */
-      temp = FDKreadBits(hBitBuf, 3);
-      break;
+  case 8:
+    /* 3bit transient position (temp={0;..;7}) */
+    temp = FDKreadBits(hBitBuf, 3);
+    break;
 
-    case 16:
-    case 15:
-      /* 4bit transient position (temp={0;..;15}) */
-      temp = FDKreadBits(hBitBuf, 4);
-      break;
+  case 16:
+  case 15:
+    /* 4bit transient position (temp={0;..;15}) */
+    temp = FDKreadBits(hBitBuf, 4);
+    break;
 
-    default:
-      return 0;
+  default:
+    return 0;
   }
 
   /* For "case 15" only*/
@@ -1369,257 +1377,260 @@ int extractFrameInfo(
   }
 
   switch (frameClass) {
-    case 0:
-      temp = FDKreadBits(hBs, 2); /* E [2 bits ] */
-      nEnv = (int)(1 << temp);    /* E -> e */
+  case 0:
+    temp = FDKreadBits(hBs, 2); /* E [2 bits ] */
+    nEnv = (int)(1 << temp);    /* E -> e */
 
-      if ((flags & SBRDEC_ELD_GRID) && (nEnv == 1))
-        h_frame_data->ampResolutionCurrentFrame =
-            FDKreadBits(hBs, 1); /* new ELD Syntax 07-11-09 */
+    if ((flags & SBRDEC_ELD_GRID) && (nEnv == 1))
+      h_frame_data->ampResolutionCurrentFrame =
+          FDKreadBits(hBs, 1); /* new ELD Syntax 07-11-09 */
 
-      staticFreqRes = FDKreadBits(hBs, 1);
+    staticFreqRes = FDKreadBits(hBs, 1);
 
-      if (flags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
-        if (nEnv > MAX_ENVELOPES_USAC) return 0;
-      } else
+    if (flags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
+      if (nEnv > MAX_ENVELOPES_USAC)
+        return 0;
+    } else
 
-        b = nEnv + 1;
-      switch (nEnv) {
-        case 1:
-          switch (numberTimeSlots) {
-            case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_15,
-                        sizeof(FRAME_INFO));
-              break;
-            case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_16,
-                        sizeof(FRAME_INFO));
-              break;
-            default:
-              FDK_ASSERT(0);
-          }
-          break;
-        case 2:
-          switch (numberTimeSlots) {
-            case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_15,
-                        sizeof(FRAME_INFO));
-              break;
-            case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_16,
-                        sizeof(FRAME_INFO));
-              break;
-            default:
-              FDK_ASSERT(0);
-          }
-          break;
-        case 4:
-          switch (numberTimeSlots) {
-            case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_15,
-                        sizeof(FRAME_INFO));
-              break;
-            case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_16,
-                        sizeof(FRAME_INFO));
-              break;
-            default:
-              FDK_ASSERT(0);
-          }
-          break;
-        case 8:
-#if (MAX_ENVELOPES >= 8)
-          switch (numberTimeSlots) {
-            case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_15,
-                        sizeof(FRAME_INFO));
-              break;
-            case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_16,
-                        sizeof(FRAME_INFO));
-              break;
-            default:
-              FDK_ASSERT(0);
-          }
-          break;
-#else
-          return 0;
-#endif
-      }
-      /* Apply correct freqRes (High is default) */
-      if (!staticFreqRes) {
-        for (i = 0; i < nEnv; i++) pFrameInfo->freqRes[i] = 0;
-      }
-
-      break;
+      b = nEnv + 1;
+    switch (nEnv) {
     case 1:
-    case 2:
-      temp = FDKreadBits(hBs, 2); /* A [2 bits] */
-
-      n = FDKreadBits(hBs, 2); /* n = N [2 bits] */
-
-      nEnv = n + 1; /* # envelopes */
-      b = nEnv + 1; /* # borders   */
-
+      switch (numberTimeSlots) {
+      case 15:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_15,
+                  sizeof(FRAME_INFO));
+        break;
+      case 16:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_16,
+                  sizeof(FRAME_INFO));
+        break;
+      default:
+        FDK_ASSERT(0);
+      }
       break;
+    case 2:
+      switch (numberTimeSlots) {
+      case 15:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_15,
+                  sizeof(FRAME_INFO));
+        break;
+      case 16:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_16,
+                  sizeof(FRAME_INFO));
+        break;
+      default:
+        FDK_ASSERT(0);
+      }
+      break;
+    case 4:
+      switch (numberTimeSlots) {
+      case 15:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_15,
+                  sizeof(FRAME_INFO));
+        break;
+      case 16:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_16,
+                  sizeof(FRAME_INFO));
+        break;
+      default:
+        FDK_ASSERT(0);
+      }
+      break;
+    case 8:
+#if (MAX_ENVELOPES >= 8)
+      switch (numberTimeSlots) {
+      case 15:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_15,
+                  sizeof(FRAME_INFO));
+        break;
+      case 16:
+        FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_16,
+                  sizeof(FRAME_INFO));
+        break;
+      default:
+        FDK_ASSERT(0);
+      }
+      break;
+#else
+      return 0;
+#endif
+    }
+    /* Apply correct freqRes (High is default) */
+    if (!staticFreqRes) {
+      for (i = 0; i < nEnv; i++)
+        pFrameInfo->freqRes[i] = 0;
+    }
+
+    break;
+  case 1:
+  case 2:
+    temp = FDKreadBits(hBs, 2); /* A [2 bits] */
+
+    n = FDKreadBits(hBs, 2); /* n = N [2 bits] */
+
+    nEnv = n + 1; /* # envelopes */
+    b = nEnv + 1; /* # borders   */
+
+    break;
   }
 
   switch (frameClass) {
+  case 1:
+    /* Decode borders: */
+    pFrameInfo->borders[0] = 0;      /* first border          */
+    border = temp + numberTimeSlots; /* A -> aR               */
+    i = b - 1;                       /* frame info index for last border */
+    pFrameInfo->borders[i] = border; /* last border                      */
+
+    for (k = 0; k < n; k++) {
+      temp = FDKreadBits(hBs, 2); /* R [2 bits] */
+      border -= (2 * temp + 2);   /* R -> r                */
+      pFrameInfo->borders[--i] = border;
+    }
+
+    /* Decode pointer: */
+    pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
+    p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
+
+    if (p > n + 1)
+      return 0;
+
+    pFrameInfo->tranEnv = p ? n + 2 - p : -1;
+
+    /* Decode freq res: */
+    for (k = n; k >= 0; k--) {
+      pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
+    }
+
+    /* Calculate noise floor middle border: */
+    if (p == 0 || p == 1)
+      pFrameInfo->bordersNoise[1] = pFrameInfo->borders[n];
+    else
+      pFrameInfo->bordersNoise[1] = pFrameInfo->borders[pFrameInfo->tranEnv];
+
+    break;
+
+  case 2:
+    /* Decode borders: */
+    border = temp;                   /* A -> aL */
+    pFrameInfo->borders[0] = border; /* first border */
+
+    for (k = 1; k <= n; k++) {
+      temp = FDKreadBits(hBs, 2); /* R [2 bits] */
+      border += (2 * temp + 2);   /* R -> r                */
+      pFrameInfo->borders[k] = border;
+    }
+    pFrameInfo->borders[k] = numberTimeSlots; /* last border */
+
+    /* Decode pointer: */
+    pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
+    p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
+    if (p > n + 1)
+      return 0;
+
+    if (p == 0 || p == 1)
+      pFrameInfo->tranEnv = -1;
+    else
+      pFrameInfo->tranEnv = p - 1;
+
+    /* Decode freq res: */
+    for (k = 0; k <= n; k++) {
+      pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
+    }
+
+    /* Calculate noise floor middle border: */
+    switch (p) {
+    case 0:
+      pFrameInfo->bordersNoise[1] = pFrameInfo->borders[1];
+      break;
     case 1:
-      /* Decode borders: */
-      pFrameInfo->borders[0] = 0;      /* first border          */
-      border = temp + numberTimeSlots; /* A -> aR               */
-      i = b - 1;                       /* frame info index for last border */
-      pFrameInfo->borders[i] = border; /* last border                      */
+      pFrameInfo->bordersNoise[1] = pFrameInfo->borders[n];
+      break;
+    default:
+      pFrameInfo->bordersNoise[1] = pFrameInfo->borders[pFrameInfo->tranEnv];
+      break;
+    }
 
-      for (k = 0; k < n; k++) {
-        temp = FDKreadBits(hBs, 2); /* R [2 bits] */
-        border -= (2 * temp + 2);   /* R -> r                */
-        pFrameInfo->borders[--i] = border;
-      }
+    break;
 
-      /* Decode pointer: */
-      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
-      p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
+  case 3:
+    /* v_ctrlSignal = [frameClass,aL,aR,nL,nR,v_rL,v_rR,p,v_fLR]; */
 
-      if (p > n + 1) return 0;
+    aL = FDKreadBits(hBs, 2); /* AL [2 bits], AL -> aL */
 
-      pFrameInfo->tranEnv = p ? n + 2 - p : -1;
+    aR = FDKreadBits(hBs, 2) + numberTimeSlots; /* AR [2 bits], AR -> aR */
 
-      /* Decode freq res: */
-      for (k = n; k >= 0; k--) {
-        pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
-      }
+    nL = FDKreadBits(hBs, 2); /* nL = NL [2 bits] */
 
-      /* Calculate noise floor middle border: */
+    nR = FDKreadBits(hBs, 2); /* nR = NR [2 bits] */
+
+    /*-------------------------------------------------------------------------
+      Calculate help variables
+      --------------------------------------------------------------------------*/
+
+    /* general: */
+    nEnv = nL + nR + 1; /* # envelopes */
+    if (nEnv > MAX_ENVELOPES)
+      return 0;
+    b = nEnv + 1; /* # borders   */
+
+    /*-------------------------------------------------------------------------
+      Decode envelopes
+      --------------------------------------------------------------------------*/
+
+    /* L-borders:   */
+    border = aL; /* first border */
+    pFrameInfo->borders[0] = border;
+
+    for (k = 1; k <= nL; k++) {
+      temp = FDKreadBits(hBs, 2); /* R [2 bits] */
+      border += (2 * temp + 2);   /* R -> r                */
+      pFrameInfo->borders[k] = border;
+    }
+
+    /* R-borders:  */
+    border = aR; /* last border */
+    i = nEnv;
+
+    pFrameInfo->borders[i] = border;
+
+    for (k = 0; k < nR; k++) {
+      temp = FDKreadBits(hBs, 2); /* R [2 bits] */
+      border -= (2 * temp + 2);   /* R -> r                */
+      pFrameInfo->borders[--i] = border;
+    }
+
+    /* decode pointer: */
+    pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(nL + nR + 1));
+    p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
+
+    if (p > nL + nR + 1)
+      return 0;
+
+    pFrameInfo->tranEnv = p ? b - p : -1;
+
+    /* decode freq res: */
+    for (k = 0; k < nEnv; k++) {
+      pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
+    }
+
+    /*-------------------------------------------------------------------------
+      Decode noise floors
+      --------------------------------------------------------------------------*/
+    pFrameInfo->bordersNoise[0] = aL;
+
+    if (nEnv == 1) {
+      /* 1 noise floor envelope: */
+      pFrameInfo->bordersNoise[1] = aR;
+    } else {
+      /* 2 noise floor envelopes */
       if (p == 0 || p == 1)
-        pFrameInfo->bordersNoise[1] = pFrameInfo->borders[n];
+        pFrameInfo->bordersNoise[1] = pFrameInfo->borders[nEnv - 1];
       else
         pFrameInfo->bordersNoise[1] = pFrameInfo->borders[pFrameInfo->tranEnv];
-
-      break;
-
-    case 2:
-      /* Decode borders: */
-      border = temp;                   /* A -> aL */
-      pFrameInfo->borders[0] = border; /* first border */
-
-      for (k = 1; k <= n; k++) {
-        temp = FDKreadBits(hBs, 2); /* R [2 bits] */
-        border += (2 * temp + 2);   /* R -> r                */
-        pFrameInfo->borders[k] = border;
-      }
-      pFrameInfo->borders[k] = numberTimeSlots; /* last border */
-
-      /* Decode pointer: */
-      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
-      p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
-      if (p > n + 1) return 0;
-
-      if (p == 0 || p == 1)
-        pFrameInfo->tranEnv = -1;
-      else
-        pFrameInfo->tranEnv = p - 1;
-
-      /* Decode freq res: */
-      for (k = 0; k <= n; k++) {
-        pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
-      }
-
-      /* Calculate noise floor middle border: */
-      switch (p) {
-        case 0:
-          pFrameInfo->bordersNoise[1] = pFrameInfo->borders[1];
-          break;
-        case 1:
-          pFrameInfo->bordersNoise[1] = pFrameInfo->borders[n];
-          break;
-        default:
-          pFrameInfo->bordersNoise[1] =
-              pFrameInfo->borders[pFrameInfo->tranEnv];
-          break;
-      }
-
-      break;
-
-    case 3:
-      /* v_ctrlSignal = [frameClass,aL,aR,nL,nR,v_rL,v_rR,p,v_fLR]; */
-
-      aL = FDKreadBits(hBs, 2); /* AL [2 bits], AL -> aL */
-
-      aR = FDKreadBits(hBs, 2) + numberTimeSlots; /* AR [2 bits], AR -> aR */
-
-      nL = FDKreadBits(hBs, 2); /* nL = NL [2 bits] */
-
-      nR = FDKreadBits(hBs, 2); /* nR = NR [2 bits] */
-
-      /*-------------------------------------------------------------------------
-        Calculate help variables
-        --------------------------------------------------------------------------*/
-
-      /* general: */
-      nEnv = nL + nR + 1; /* # envelopes */
-      if (nEnv > MAX_ENVELOPES) return 0;
-      b = nEnv + 1; /* # borders   */
-
-      /*-------------------------------------------------------------------------
-        Decode envelopes
-        --------------------------------------------------------------------------*/
-
-      /* L-borders:   */
-      border = aL; /* first border */
-      pFrameInfo->borders[0] = border;
-
-      for (k = 1; k <= nL; k++) {
-        temp = FDKreadBits(hBs, 2); /* R [2 bits] */
-        border += (2 * temp + 2);   /* R -> r                */
-        pFrameInfo->borders[k] = border;
-      }
-
-      /* R-borders:  */
-      border = aR; /* last border */
-      i = nEnv;
-
-      pFrameInfo->borders[i] = border;
-
-      for (k = 0; k < nR; k++) {
-        temp = FDKreadBits(hBs, 2); /* R [2 bits] */
-        border -= (2 * temp + 2);   /* R -> r                */
-        pFrameInfo->borders[--i] = border;
-      }
-
-      /* decode pointer: */
-      pointer_bits =
-          DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(nL + nR + 1));
-      p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
-
-      if (p > nL + nR + 1) return 0;
-
-      pFrameInfo->tranEnv = p ? b - p : -1;
-
-      /* decode freq res: */
-      for (k = 0; k < nEnv; k++) {
-        pFrameInfo->freqRes[k] = FDKreadBits(hBs, 1); /* f = F [1 bits] */
-      }
-
-      /*-------------------------------------------------------------------------
-        Decode noise floors
-        --------------------------------------------------------------------------*/
-      pFrameInfo->bordersNoise[0] = aL;
-
-      if (nEnv == 1) {
-        /* 1 noise floor envelope: */
-        pFrameInfo->bordersNoise[1] = aR;
-      } else {
-        /* 2 noise floor envelopes */
-        if (p == 0 || p == 1)
-          pFrameInfo->bordersNoise[1] = pFrameInfo->borders[nEnv - 1];
-        else
-          pFrameInfo->bordersNoise[1] =
-              pFrameInfo->borders[pFrameInfo->tranEnv];
-        pFrameInfo->bordersNoise[2] = aR;
-      }
-      break;
+      pFrameInfo->bordersNoise[2] = aR;
+    }
+    break;
   }
 
   /*
@@ -1648,11 +1659,11 @@ int extractFrameInfo(
   \brief   Check if the frameInfo vector has reasonable values.
   \return  Zero for error, one for correct
 */
-static int checkFrameInfo(
-    FRAME_INFO *pFrameInfo, /*!< pointer to frameInfo */
-    int numberOfTimeSlots,  /*!< QMF time slots per frame */
-    int overlap,            /*!< Amount of overlap QMF time slots */
-    int timeStep)           /*!< QMF slots to SBR slots step factor */
+static int
+checkFrameInfo(FRAME_INFO *pFrameInfo, /*!< pointer to frameInfo */
+               int numberOfTimeSlots,  /*!< QMF time slots per frame */
+               int overlap,            /*!< Amount of overlap QMF time slots */
+               int timeStep) /*!< QMF slots to SBR slots step factor */
 {
   int maxPos, i, j;
   int startPos;
@@ -1663,9 +1674,11 @@ static int checkFrameInfo(
   int nEnvelopes = pFrameInfo->nEnvelopes;
   int nNoiseEnvelopes = pFrameInfo->nNoiseEnvelopes;
 
-  if (nEnvelopes < 1 || nEnvelopes > MAX_ENVELOPES) return 0;
+  if (nEnvelopes < 1 || nEnvelopes > MAX_ENVELOPES)
+    return 0;
 
-  if (nNoiseEnvelopes > MAX_NOISE_ENVELOPES) return 0;
+  if (nNoiseEnvelopes > MAX_NOISE_ENVELOPES)
+    return 0;
 
   startPos = pFrameInfo->borders[0];
   stopPos = pFrameInfo->borders[nEnvelopes];
@@ -1683,29 +1696,35 @@ static int checkFrameInfo(
 
   /* Check that the start and stop positions of the frame are reasonable values.
    */
-  if ((startPos < 0) || (startPos >= stopPos)) return 0;
+  if ((startPos < 0) || (startPos >= stopPos))
+    return 0;
   if (startPos > maxPos - numberOfTimeSlots) /* First env. must start in or
-                                                directly after the overlap
-                                                buffer */
+                                              directly after the overlap
+                                              buffer */
     return 0;
   if (stopPos < numberOfTimeSlots) /* One complete frame must be ready for
-                                      output after processing */
+                                    output after processing */
     return 0;
-  if (stopPos > maxPos) return 0;
+  if (stopPos > maxPos)
+    return 0;
 
   /* Check that the  start border for every envelope is strictly later in time
    */
   for (i = 0; i < nEnvelopes; i++) {
-    if (pFrameInfo->borders[i] >= pFrameInfo->borders[i + 1]) return 0;
+    if (pFrameInfo->borders[i] >= pFrameInfo->borders[i + 1])
+      return 0;
   }
 
   /* Check that the envelope to be shortened is actually among the envelopes */
-  if (tranEnv > nEnvelopes) return 0;
+  if (tranEnv > nEnvelopes)
+    return 0;
 
   /* Check the noise borders */
-  if (nEnvelopes == 1 && nNoiseEnvelopes > 1) return 0;
+  if (nEnvelopes == 1 && nNoiseEnvelopes > 1)
+    return 0;
 
-  if (startPos != startPosNoise || stopPos != stopPosNoise) return 0;
+  if (startPos != startPosNoise || stopPos != stopPosNoise)
+    return 0;
 
   /* Check that the  start border for every noise-envelope is strictly later in
    * time*/
@@ -1719,9 +1738,11 @@ static int checkFrameInfo(
     startPosNoise = pFrameInfo->bordersNoise[i];
 
     for (j = 0; j < nEnvelopes; j++) {
-      if (pFrameInfo->borders[j] == startPosNoise) break;
+      if (pFrameInfo->borders[j] == startPosNoise)
+        break;
     }
-    if (j == nEnvelopes) return 0;
+    if (j == nEnvelopes)
+      return 0;
   }
 
   return 1;

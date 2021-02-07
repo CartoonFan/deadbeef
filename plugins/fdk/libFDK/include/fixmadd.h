@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #define FIXMADD_H
 
 #include "FDK_archdef.h"
-#include "machine_type.h"
 #include "fixmul.h"
+#include "machine_type.h"
 
 #if defined(__arm__)
 #include "arm/fixmadd_arm.h"
@@ -244,7 +244,7 @@ inline FIXP_DBL fixmsubdiv2BitExact_DS(FIXP_DBL x, const FIXP_DBL a,
 }
 #endif
 
-  /* Normal versions */
+/* Normal versions */
 
 #if !defined(FUNCTION_fixmadd_DD)
 inline FIXP_DBL fixmadd_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {

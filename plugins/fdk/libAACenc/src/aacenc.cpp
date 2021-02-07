@@ -102,15 +102,15 @@ amm-info@iis.fraunhofer.de
 
 #include "aacenc.h"
 
+#include "aacEnc_ram.h"
+#include "bandwidth.h"
 #include "bitenc.h"
+#include "channel_map.h"
 #include "interface.h"
 #include "psy_configuration.h"
 #include "psy_main.h"
 #include "qc_main.h"
-#include "bandwidth.h"
-#include "channel_map.h"
 #include "tns_func.h"
-#include "aacEnc_ram.h"
 
 #include "genericStds.h"
 
@@ -141,9 +141,9 @@ INT FDKaacEnc_CalcBitrate(const INT bitsPerFrame, const INT frameLength,
   return (bitsPerFrame * (samplingRate >> shift)) / (frameLength >> shift);
 }
 
-static AAC_ENCODER_ERROR FDKaacEnc_InitCheckAncillary(
-    INT bitRate, INT framelength, INT ancillaryRate, INT *ancillaryBitsPerFrame,
-    INT sampleRate);
+static AAC_ENCODER_ERROR
+FDKaacEnc_InitCheckAncillary(INT bitRate, INT framelength, INT ancillaryRate,
+                             INT *ancillaryBitsPerFrame, INT sampleRate);
 
 INT FDKaacEnc_LimitBitrate(HANDLE_TRANSPORTENC hTpEnc, AUDIO_OBJECT_TYPE aot,
                            INT coreSamplingRate, INT frameLength, INT nChannels,
@@ -179,9 +179,10 @@ INT FDKaacEnc_LimitBitrate(HANDLE_TRANSPORTENC hTpEnc, AUDIO_OBJECT_TYPE aot,
                                               frameLength, coreSamplingRate)));
     FDK_ASSERT(bitRate >= 0);
 
-    bitRate = fMin(bitRate, FDKaacEnc_CalcBitrate(
-                                (nChannelsEff * MIN_BUFSIZE_PER_EFF_CHAN),
-                                frameLength, coreSamplingRate));
+    bitRate =
+        fMin(bitRate,
+             FDKaacEnc_CalcBitrate((nChannelsEff * MIN_BUFSIZE_PER_EFF_CHAN),
+                                   frameLength, coreSamplingRate));
     FDK_ASSERT(bitRate >= 0);
 
   } while (prevBitRate != bitRate && iter++ < 3);
@@ -221,20 +222,20 @@ INT FDKaacEnc_GetVBRBitrate(AACENC_BITRATE_MODE bitrateMode,
   }
 
   switch (bitrateMode) {
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-      bitrate = configTabVBR[bitrateMode].chanBitrate[monoStereoMode];
-      break;
-    case AACENC_BR_MODE_INVALID:
-    case AACENC_BR_MODE_CBR:
-    case AACENC_BR_MODE_SFR:
-    case AACENC_BR_MODE_FF:
-    default:
-      bitrate = 0;
-      break;
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+    bitrate = configTabVBR[bitrateMode].chanBitrate[monoStereoMode];
+    break;
+  case AACENC_BR_MODE_INVALID:
+  case AACENC_BR_MODE_CBR:
+  case AACENC_BR_MODE_SFR:
+  case AACENC_BR_MODE_FF:
+  default:
+    bitrate = 0;
+    break;
   }
 
   /* convert channel bitrate to overall bitrate*/
@@ -254,23 +255,23 @@ static INT FDKaacEnc_EncBitresToTpBitres(const HANDLE_AAC_ENC hAacEnc) {
   INT transportBitreservoir = 0;
 
   switch (hAacEnc->bitrateMode) {
-    case AACENC_BR_MODE_CBR:
-      transportBitreservoir =
-          hAacEnc->qcKernel->bitResTot; /* encoder bitreservoir level */
-      break;
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-      transportBitreservoir = FDK_INT_MAX; /* signal variable bitrate */
-      break;
-    case AACENC_BR_MODE_SFR:
-      transportBitreservoir = 0; /* super framing and fixed framing */
-      break;                     /* without bitreservoir signaling */
-    default:
-    case AACENC_BR_MODE_INVALID:
-      transportBitreservoir = 0; /* invalid configuration*/
+  case AACENC_BR_MODE_CBR:
+    transportBitreservoir =
+        hAacEnc->qcKernel->bitResTot; /* encoder bitreservoir level */
+    break;
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+    transportBitreservoir = FDK_INT_MAX; /* signal variable bitrate */
+    break;
+  case AACENC_BR_MODE_SFR:
+    transportBitreservoir = 0; /* super framing and fixed framing */
+    break;                     /* without bitreservoir signaling */
+  default:
+  case AACENC_BR_MODE_INVALID:
+    transportBitreservoir = 0; /* invalid configuration*/
   }
 
   if (hAacEnc->config->audioMuxVersion == 2) {
@@ -359,20 +360,24 @@ AAC_ENCODER_ERROR FDKaacEnc_Open(HANDLE_AAC_ENC *phAacEnc, const INT nElements,
   /* allocate the Psy aud Psy Out structure */
   ErrorStatus =
       FDKaacEnc_PsyNew(&hAacEnc->psyKernel, nElements, nChannels, dynamicRAM);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   ErrorStatus = FDKaacEnc_PsyOutNew(hAacEnc->psyOut, nElements, nChannels,
                                     nSubFrames, dynamicRAM);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   /* allocate the Q&C Out structure */
   ErrorStatus = FDKaacEnc_QCOutNew(hAacEnc->qcOut, nElements, nChannels,
                                    nSubFrames, dynamicRAM);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   /* allocate the Q&C kernel */
   ErrorStatus = FDKaacEnc_QCNew(&hAacEnc->qcKernel, nElements, dynamicRAM);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   hAacEnc->maxChannels = nChannels;
   hAacEnc->maxElements = nElements;
@@ -383,12 +388,12 @@ bail:
   return ErrorStatus;
 }
 
-AAC_ENCODER_ERROR FDKaacEnc_Initialize(
-    HANDLE_AAC_ENC hAacEnc,
-    AACENC_CONFIG *config, /* pre-initialized config struct */
-    HANDLE_TRANSPORTENC hTpEnc, ULONG initFlags) {
+AAC_ENCODER_ERROR
+FDKaacEnc_Initialize(HANDLE_AAC_ENC hAacEnc,
+                     AACENC_CONFIG *config, /* pre-initialized config struct */
+                     HANDLE_TRANSPORTENC hTpEnc, ULONG initFlags) {
   AAC_ENCODER_ERROR ErrorStatus;
-  INT psyBitrate, tnsMask;  // INT profile = 1;
+  INT psyBitrate, tnsMask; // INT profile = 1;
   CHANNEL_MAPPING *cm = NULL;
 
   INT mbfac_e, qbw;
@@ -398,7 +403,8 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
   int bitresMin = 0; /* the bitreservoir is always big for AAC-LC */
   const CHANNEL_MODE prevChannelMode = hAacEnc->encoderMode;
 
-  if (config == NULL) return AAC_ENC_INVALID_HANDLE;
+  if (config == NULL)
+    return AAC_ENC_INVALID_HANDLE;
 
   /******************* sanity checks *******************/
 
@@ -409,21 +415,21 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
 
   /* check sample rate */
   switch (config->sampleRate) {
-    case 8000:
-    case 11025:
-    case 12000:
-    case 16000:
-    case 22050:
-    case 24000:
-    case 32000:
-    case 44100:
-    case 48000:
-    case 64000:
-    case 88200:
-    case 96000:
-      break;
-    default:
-      return AAC_ENC_UNSUPPORTED_SAMPLINGRATE;
+  case 8000:
+  case 11025:
+  case 12000:
+  case 16000:
+  case 22050:
+  case 24000:
+  case 32000:
+  case 44100:
+  case 48000:
+  case 64000:
+  case 88200:
+  case 96000:
+    break;
+  default:
+    return AAC_ENC_UNSUPPORTED_SAMPLINGRATE;
   }
 
   /* bitrate has to be set */
@@ -453,30 +459,31 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
 
   /* check frame length */
   switch (config->framelength) {
-    case 1024:
-      if (isLowDelay(config->audioObjectType)) {
-        return AAC_ENC_INVALID_FRAME_LENGTH;
-      }
-      break;
-    case 128:
-    case 256:
-    case 512:
-    case 120:
-    case 240:
-    case 480:
-      if (!isLowDelay(config->audioObjectType)) {
-        return AAC_ENC_INVALID_FRAME_LENGTH;
-      }
-      break;
-    default:
+  case 1024:
+    if (isLowDelay(config->audioObjectType)) {
       return AAC_ENC_INVALID_FRAME_LENGTH;
+    }
+    break;
+  case 128:
+  case 256:
+  case 512:
+  case 120:
+  case 240:
+  case 480:
+    if (!isLowDelay(config->audioObjectType)) {
+      return AAC_ENC_INVALID_FRAME_LENGTH;
+    }
+    break;
+  default:
+    return AAC_ENC_INVALID_FRAME_LENGTH;
   }
 
   if (config->anc_Rate != 0) {
     ErrorStatus = FDKaacEnc_InitCheckAncillary(
         config->bitRate, config->framelength, config->anc_Rate,
         &hAacEnc->ancillaryBitsPerFrame, config->sampleRate);
-    if (ErrorStatus != AAC_ENC_OK) goto bail;
+    if (ErrorStatus != AAC_ENC_OK)
+      goto bail;
 
     /* update estimated consumed bitrate */
     config->ancDataBitRate +=
@@ -501,7 +508,8 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
 
   ErrorStatus = FDKaacEnc_InitChannelMapping(
       hAacEnc->encoderMode, config->channelOrder, &hAacEnc->channelMapping);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   cm = &hAacEnc->channelMapping;
 
@@ -509,7 +517,8 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
       config->bandWidth, config->bitRate - config->ancDataBitRate,
       hAacEnc->bitrateMode, config->sampleRate, config->framelength, cm,
       hAacEnc->encoderMode, &hAacEnc->config->bandWidth);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   hAacEnc->bandwidth90dB = (INT)hAacEnc->config->bandWidth;
 
@@ -522,7 +531,8 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
     ErrorStatus = FDKaacEnc_psyInit(hAacEnc->psyKernel, hAacEnc->psyOut,
                                     hAacEnc->maxFrames, hAacEnc->maxChannels,
                                     config->audioObjectType, cm);
-    if (ErrorStatus != AAC_ENC_OK) goto bail;
+    if (ErrorStatus != AAC_ENC_OK)
+      goto bail;
   }
 
   ErrorStatus = FDKaacEnc_psyMainInit(
@@ -530,10 +540,12 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
       config->framelength, psyBitrate, tnsMask, hAacEnc->bandwidth90dB,
       config->usePns, config->useIS, config->useMS, config->syntaxFlags,
       initFlags);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   ErrorStatus = FDKaacEnc_QCOutInit(hAacEnc->qcOut, hAacEnc->maxFrames, cm);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   qcInit.channelMapping = &hAacEnc->channelMapping;
   qcInit.sceCpe = 0;
@@ -611,23 +623,23 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
 
   /* Configure bitrate distribution strategy. */
   switch (config->channelMode) {
-    case MODE_1_2:
-    case MODE_1_2_1:
-    case MODE_1_2_2:
-    case MODE_1_2_2_1:
-    case MODE_6_1:
-    case MODE_1_2_2_2_1:
-    case MODE_7_1_BACK:
-    case MODE_7_1_TOP_FRONT:
-    case MODE_7_1_REAR_SURROUND:
-    case MODE_7_1_FRONT_CENTER:
-      qcInit.bitDistributionMode = 0; /* over all elements bitrate estimation */
-      break;
-    case MODE_1:
-    case MODE_2:
-    default:                          /* all non mpeg defined channel modes */
-      qcInit.bitDistributionMode = 1; /* element-wise bit bitrate estimation */
-  }                                   /* config->channelMode */
+  case MODE_1_2:
+  case MODE_1_2_1:
+  case MODE_1_2_2:
+  case MODE_1_2_2_1:
+  case MODE_6_1:
+  case MODE_1_2_2_2_1:
+  case MODE_7_1_BACK:
+  case MODE_7_1_TOP_FRONT:
+  case MODE_7_1_REAR_SURROUND:
+  case MODE_7_1_FRONT_CENTER:
+    qcInit.bitDistributionMode = 0; /* over all elements bitrate estimation */
+    break;
+  case MODE_1:
+  case MODE_2:
+  default:                          /* all non mpeg defined channel modes */
+    qcInit.bitDistributionMode = 1; /* element-wise bit bitrate estimation */
+  }                                 /* config->channelMode */
 
   /* Calc meanPe: qcInit.meanPe = 10.0f * FRAME_LEN_LONG *
    * hAacEnc->bandwidth90dB/(config->sampleRate/2.0f); */
@@ -643,33 +655,33 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
   qcInit.maxBitFac = scaleValue(mbfac, -(DFRACT_BITS - 1 - 24 - mbfac_e));
 
   switch (config->bitrateMode) {
-    case AACENC_BR_MODE_CBR:
-      qcInit.bitrateMode = QCDATA_BR_MODE_CBR;
-      break;
-    case AACENC_BR_MODE_VBR_1:
-      qcInit.bitrateMode = QCDATA_BR_MODE_VBR_1;
-      break;
-    case AACENC_BR_MODE_VBR_2:
-      qcInit.bitrateMode = QCDATA_BR_MODE_VBR_2;
-      break;
-    case AACENC_BR_MODE_VBR_3:
-      qcInit.bitrateMode = QCDATA_BR_MODE_VBR_3;
-      break;
-    case AACENC_BR_MODE_VBR_4:
-      qcInit.bitrateMode = QCDATA_BR_MODE_VBR_4;
-      break;
-    case AACENC_BR_MODE_VBR_5:
-      qcInit.bitrateMode = QCDATA_BR_MODE_VBR_5;
-      break;
-    case AACENC_BR_MODE_SFR:
-      qcInit.bitrateMode = QCDATA_BR_MODE_SFR;
-      break;
-    case AACENC_BR_MODE_FF:
-      qcInit.bitrateMode = QCDATA_BR_MODE_FF;
-      break;
-    default:
-      ErrorStatus = AAC_ENC_UNSUPPORTED_BITRATE_MODE;
-      goto bail;
+  case AACENC_BR_MODE_CBR:
+    qcInit.bitrateMode = QCDATA_BR_MODE_CBR;
+    break;
+  case AACENC_BR_MODE_VBR_1:
+    qcInit.bitrateMode = QCDATA_BR_MODE_VBR_1;
+    break;
+  case AACENC_BR_MODE_VBR_2:
+    qcInit.bitrateMode = QCDATA_BR_MODE_VBR_2;
+    break;
+  case AACENC_BR_MODE_VBR_3:
+    qcInit.bitrateMode = QCDATA_BR_MODE_VBR_3;
+    break;
+  case AACENC_BR_MODE_VBR_4:
+    qcInit.bitrateMode = QCDATA_BR_MODE_VBR_4;
+    break;
+  case AACENC_BR_MODE_VBR_5:
+    qcInit.bitrateMode = QCDATA_BR_MODE_VBR_5;
+    break;
+  case AACENC_BR_MODE_SFR:
+    qcInit.bitrateMode = QCDATA_BR_MODE_SFR;
+    break;
+  case AACENC_BR_MODE_FF:
+    qcInit.bitrateMode = QCDATA_BR_MODE_FF;
+    break;
+  default:
+    ErrorStatus = AAC_ENC_UNSUPPORTED_BITRATE_MODE;
+    goto bail;
   }
 
   qcInit.invQuant = (config->useRequant) ? 2 : 0;
@@ -691,22 +703,23 @@ AAC_ENCODER_ERROR FDKaacEnc_Initialize(
 
   qcInit.bitrate = config->bitRate - config->ancDataBitRate;
 
-  qcInit.staticBits = transportEnc_GetStaticBits(
-      hTpEnc, qcInit.averageBits / qcInit.nSubFrames);
+  qcInit.staticBits = transportEnc_GetStaticBits(hTpEnc, qcInit.averageBits /
+                                                             qcInit.nSubFrames);
 
   ErrorStatus = FDKaacEnc_QCInit(hAacEnc->qcKernel, &qcInit, initFlags);
-  if (ErrorStatus != AAC_ENC_OK) goto bail;
+  if (ErrorStatus != AAC_ENC_OK)
+    goto bail;
 
   /* Map virtual aot's to intern aot used in bitstream writer. */
   switch (hAacEnc->config->audioObjectType) {
-    case AOT_MP2_AAC_LC:
-      hAacEnc->aot = AOT_AAC_LC;
-      break;
-    case AOT_MP2_SBR:
-      hAacEnc->aot = AOT_SBR;
-      break;
-    default:
-      hAacEnc->aot = hAacEnc->config->audioObjectType;
+  case AOT_MP2_AAC_LC:
+    hAacEnc->aot = AOT_AAC_LC;
+    break;
+  case AOT_MP2_SBR:
+    hAacEnc->aot = AOT_SBR;
+    break;
+  default:
+    hAacEnc->aot = hAacEnc->config->audioObjectType;
   }
 
   /* common things */
@@ -725,11 +738,11 @@ bail:
     returns:      error code
 
   ---------------------------------------------------------------------------*/
-AAC_ENCODER_ERROR FDKaacEnc_EncodeFrame(
-    HANDLE_AAC_ENC hAacEnc, /* encoder handle */
-    HANDLE_TRANSPORTENC hTpEnc, INT_PCM *RESTRICT inputBuffer,
-    const UINT inputBufferBufSize, INT *nOutBytes,
-    AACENC_EXT_PAYLOAD extPayload[MAX_TOTAL_EXT_PAYLOADS]) {
+AAC_ENCODER_ERROR
+FDKaacEnc_EncodeFrame(HANDLE_AAC_ENC hAacEnc, /* encoder handle */
+                      HANDLE_TRANSPORTENC hTpEnc, INT_PCM *RESTRICT inputBuffer,
+                      const UINT inputBufferBufSize, INT *nOutBytes,
+                      AACENC_EXT_PAYLOAD extPayload[MAX_TOTAL_EXT_PAYLOADS]) {
   AAC_ENCODER_ERROR ErrorStatus;
   int el, n, c = 0;
   UCHAR extPayloadUsed[MAX_TOTAL_EXT_PAYLOADS];
@@ -773,7 +786,8 @@ AAC_ENCODER_ERROR FDKaacEnc_EncodeFrame(
           psyOut->psyOutElement[el], inputBuffer, inputBufferBufSize,
           cm->elInfo[el].ChannelIndex, cm->nChannels);
 
-      if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+      if (ErrorStatus != AAC_ENC_OK)
+        return ErrorStatus;
 
       /* FormFactor, Pe and staticBitDemand calculation */
       ErrorStatus = FDKaacEnc_QCMainPrepare(
@@ -781,7 +795,8 @@ AAC_ENCODER_ERROR FDKaacEnc_EncodeFrame(
           psyOut->psyOutElement[el], qcOut->qcElement[el], hAacEnc->aot,
           hAacEnc->config->syntaxFlags, hAacEnc->config->epConfig);
 
-      if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+      if (ErrorStatus != AAC_ENC_OK)
+        return ErrorStatus;
 
       /*-------------------------------------------- */
 
@@ -907,19 +922,22 @@ AAC_ENCODER_ERROR FDKaacEnc_EncodeFrame(
         hAacEnc->qcKernel, hAacEnc->psyOut, hAacEnc->qcOut, avgTotalBits, cm,
         hAacEnc->aot, hAacEnc->config->syntaxFlags, hAacEnc->config->epConfig);
 
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
     /*-------------------------------------------- */
 
     /*-------------------------------------------- */
     ErrorStatus = FDKaacEnc_updateFillBits(
         cm, hAacEnc->qcKernel, hAacEnc->qcKernel->elementBits, hAacEnc->qcOut);
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
 
     /*-------------------------------------------- */
     ErrorStatus = FDKaacEnc_FinalizeBitConsumption(
         cm, hAacEnc->qcKernel, qcOut, qcOut->qcElement, hTpEnc, hAacEnc->aot,
         hAacEnc->config->syntaxFlags, hAacEnc->config->epConfig);
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
     /*-------------------------------------------- */
     totalBits += qcOut->totalBits;
 
@@ -942,7 +960,8 @@ AAC_ENCODER_ERROR FDKaacEnc_EncodeFrame(
         hTpEnc, cm, qcOut, psyOut, hAacEnc->qcKernel, hAacEnc->aot,
         hAacEnc->config->syntaxFlags, hAacEnc->config->epConfig);
 
-    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    if (ErrorStatus != AAC_ENC_OK)
+      return ErrorStatus;
 
     /* transportEnc_EndAccessUnit() is being called inside
      * FDKaacEnc_WriteBitstream() */
@@ -971,7 +990,8 @@ void FDKaacEnc_Close(HANDLE_AAC_ENC *phAacEnc) /* encoder handle */
   }
   AAC_ENC *hAacEnc = (AAC_ENC *)*phAacEnc;
 
-  if (hAacEnc->dynamic_RAM != NULL) FreeAACdynamic_RAM(&hAacEnc->dynamic_RAM);
+  if (hAacEnc->dynamic_RAM != NULL)
+    FreeAACdynamic_RAM(&hAacEnc->dynamic_RAM);
 
   FDKaacEnc_PsyClose(&hAacEnc->psyKernel, hAacEnc->psyOut);
 
@@ -993,11 +1013,12 @@ void FDKaacEnc_Close(HANDLE_AAC_ENC *phAacEnc) /* encoder handle */
     return:        if success or NULL if error
 
   ---------------------------------------------------------------------------*/
-static AAC_ENCODER_ERROR FDKaacEnc_InitCheckAncillary(
-    INT bitRate, INT framelength, INT ancillaryRate, INT *ancillaryBitsPerFrame,
-    INT sampleRate) {
+static AAC_ENCODER_ERROR
+FDKaacEnc_InitCheckAncillary(INT bitRate, INT framelength, INT ancillaryRate,
+                             INT *ancillaryBitsPerFrame, INT sampleRate) {
   /* don't use negative ancillary rates */
-  if (ancillaryRate < -1) return AAC_ENC_UNSUPPORTED_ANC_BITRATE;
+  if (ancillaryRate < -1)
+    return AAC_ENC_UNSUPPORTED_ANC_BITRATE;
 
   /* check if ancillary rate is ok */
   if ((ancillaryRate != (-1)) && (ancillaryRate != 0)) {

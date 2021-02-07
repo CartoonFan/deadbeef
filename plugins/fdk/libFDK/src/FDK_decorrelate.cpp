@@ -127,14 +127,14 @@ amm-info@iis.fraunhofer.de
 #define DECORR_FILTER_ORDER_BAND_2_LD (DECORR_FILTER_ORDER_BAND_2_MPS)
 #define DECORR_FILTER_ORDER_BAND_3_LD (DECORR_FILTER_ORDER_BAND_3_MPS)
 
-#define MAX_DECORR_SEED_MPS \
+#define MAX_DECORR_SEED_MPS                                                    \
   (5) /* 4 is worst case for 7272 mode for low power */
-      /* 5 is worst case for 7271 and 7272 mode for high quality */
+/* 5 is worst case for 7271 and 7272 mode for high quality */
 #define MAX_DECORR_SEED_USAC (1)
 #define MAX_DECORR_SEED_LD (4)
 
 #define DECORR_FILTER_ORDER_PS (12)
-#define NUM_DECORR_CONFIGS \
+#define NUM_DECORR_CONFIGS                                                     \
   (3) /* different configs defined by bsDecorrConfig bitstream field */
 
 /* REV_bandOffset_... tables map (hybrid) bands to the corresponding reverb
@@ -500,47 +500,47 @@ static INT DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
                             FDK_DECORR_TYPE const decorrType) {
   INT errorCode = 0;
   switch (decorrType) {
-    case DECORR_USAC:
-      if (useFractDelay) {
-        return 1;
-      } else {
-        FDK_ASSERT(decorr_seed == 0);
-
-        switch (reverb_band) {
-          case 0:
-            self->numeratorReal = DecorrNumeratorReal0_USAC[decorr_seed];
-            break;
-          case 1:
-            self->numeratorReal = DecorrNumeratorReal1_USAC[decorr_seed];
-            break;
-          case 2:
-            self->numeratorReal = DecorrNumeratorReal2_USAC[decorr_seed];
-            break;
-          case 3:
-            self->numeratorReal = DecorrNumeratorReal3_USAC[decorr_seed];
-            break;
-        }
-      }
-      break;
-    case DECORR_LD:
-      FDK_ASSERT(decorr_seed < MAX_DECORR_SEED_LD);
-      switch (reverb_band) {
-        case 0:
-          self->numeratorReal = NULL;
-          break;
-        case 1:
-          self->numeratorReal = DecorrNumeratorReal1_LD[decorr_seed];
-          break;
-        case 2:
-          self->numeratorReal = DecorrNumeratorReal2_LD[decorr_seed];
-          break;
-        case 3:
-          self->numeratorReal = DecorrNumeratorReal3_LD[decorr_seed];
-          break;
-      }
-      break;
-    default:
+  case DECORR_USAC:
+    if (useFractDelay) {
       return 1;
+    } else {
+      FDK_ASSERT(decorr_seed == 0);
+
+      switch (reverb_band) {
+      case 0:
+        self->numeratorReal = DecorrNumeratorReal0_USAC[decorr_seed];
+        break;
+      case 1:
+        self->numeratorReal = DecorrNumeratorReal1_USAC[decorr_seed];
+        break;
+      case 2:
+        self->numeratorReal = DecorrNumeratorReal2_USAC[decorr_seed];
+        break;
+      case 3:
+        self->numeratorReal = DecorrNumeratorReal3_USAC[decorr_seed];
+        break;
+      }
+    }
+    break;
+  case DECORR_LD:
+    FDK_ASSERT(decorr_seed < MAX_DECORR_SEED_LD);
+    switch (reverb_band) {
+    case 0:
+      self->numeratorReal = NULL;
+      break;
+    case 1:
+      self->numeratorReal = DecorrNumeratorReal1_LD[decorr_seed];
+      break;
+    case 2:
+      self->numeratorReal = DecorrNumeratorReal2_LD[decorr_seed];
+      break;
+    case 3:
+      self->numeratorReal = DecorrNumeratorReal3_LD[decorr_seed];
+      break;
+    }
+    break;
+  default:
+    return 1;
   }
 
   self->stateCplx = pStateBufferCplx + (*offsetStateBuffer);
@@ -826,10 +826,10 @@ static INT DecorrFilterApplyCPLX_PS(
    * starting-index */
   FIXP_DBL *pDelayBuffer =
       &filter[start].DelayBufferCplx[reverbBandDelayBufferIndex]; /* increases
-                                                                     by 2 every
-                                                                     other call
-                                                                     of this
-                                                                     function */
+                                                                   by 2 every
+                                                                   other call
+                                                                   of this
+                                                                   function */
   /* determine the increment for this pointer to get to the correct position in
    * the delay buffer of the next filter */
   INT offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
@@ -993,26 +993,26 @@ static INT DuckerInit(DUCKER_INSTANCE *const self, int const hybridBands,
 
   if (self) {
     switch (nParamBands) {
-      case (20):
-        FDK_ASSERT(hybridBands == 71);
-        self->mapHybBands2ProcBands = kernels_20_to_71_PS;
-        self->mapProcBands2HybBands = kernels_20_to_71_offset_PS;
-        self->parameterBands = (20);
-        break;
-      case (28):
+    case (20):
+      FDK_ASSERT(hybridBands == 71);
+      self->mapHybBands2ProcBands = kernels_20_to_71_PS;
+      self->mapProcBands2HybBands = kernels_20_to_71_offset_PS;
+      self->parameterBands = (20);
+      break;
+    case (28):
 
-        self->mapHybBands2ProcBands = kernels_28_to_71;
-        self->mapProcBands2HybBands = kernels_28_to_71_offset;
-        self->parameterBands = (28);
-        break;
-      case (23):
-        FDK_ASSERT(hybridBands == 64 || hybridBands == 32);
-        self->mapHybBands2ProcBands = kernels_23_to_64;
-        self->mapProcBands2HybBands = kernels_23_to_64_offset;
-        self->parameterBands = (23);
-        break;
-      default:
-        return 1;
+      self->mapHybBands2ProcBands = kernels_28_to_71;
+      self->mapProcBands2HybBands = kernels_28_to_71_offset;
+      self->parameterBands = (28);
+      break;
+    case (23):
+      FDK_ASSERT(hybridBands == 64 || hybridBands == 32);
+      self->mapHybBands2ProcBands = kernels_23_to_64;
+      self->mapProcBands2HybBands = kernels_23_to_64_offset;
+      self->parameterBands = (23);
+      break;
+    default:
+      return 1;
     }
     self->qs_next = &self->mapProcBands2HybBands[1];
 
@@ -1037,8 +1037,8 @@ static INT DuckerInit(DUCKER_INSTANCE *const self, int const hybridBands,
   return errorCode;
 }
 
-  /*******************************************************************************
-  *******************************************************************************/
+/*******************************************************************************
+*******************************************************************************/
 
 #ifndef FUNCTION_DuckerCalcEnergy
 static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
@@ -1433,8 +1433,8 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
           for (; qs < qs_next; qs++) {
             *pOutputReal = fMult(*pOutputReal, duckGain);
             pOutputReal++; /* don't move in front of "=" above, because then the
-                              fract class treats it differently and provides
-                              wrong argument to fMult() (seen on win32/msvc8) */
+                  fract class treats it differently and provides
+                  wrong argument to fMult() (seen on win32/msvc8) */
             *pOutputImag = fMult(*pOutputImag, duckGain);
             pOutputImag++;
           }
@@ -1458,7 +1458,8 @@ INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, FIXP_DBL *bufferCplx,
                        const INT bufLen) {
   HANDLE_DECORR_DEC self = hDecorrDec;
 
-  if (bufLen < (2 * ((825) + (373)))) return 1;
+  if (bufLen < (2 * ((825) + (373))))
+    return 1;
 
   /* assign all memory to stateBufferCplx. It is reassigned during
    * FDKdecorrelateInit() */
@@ -1505,63 +1506,68 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
   hDecorrDec->numbins = nrHybBands;
 
   switch (decorrType) {
-    case DECORR_PS:
-      /* ignore decorrConfig, seed */
-      if (partiallyComplex) {
-        hDecorrDec->REV_bandOffset = REV_bandOffset_PS_LP;
-        hDecorrDec->REV_delay = REV_delay_PS_LP;
-        errorCode = distributeBuffer(hDecorrDec, (168), (533));
-      } else {
-        hDecorrDec->REV_bandOffset = REV_bandOffset_PS_HQ;
-        hDecorrDec->REV_delay = REV_delay_PS_HQ;
-        errorCode = distributeBuffer(hDecorrDec, (360), (257));
-      }
-      hDecorrDec->REV_filterOrder = REV_filterOrder_PS;
-      hDecorrDec->REV_filtType = REV_filtType_PS;
+  case DECORR_PS:
+    /* ignore decorrConfig, seed */
+    if (partiallyComplex) {
+      hDecorrDec->REV_bandOffset = REV_bandOffset_PS_LP;
+      hDecorrDec->REV_delay = REV_delay_PS_LP;
+      errorCode = distributeBuffer(hDecorrDec, (168), (533));
+    } else {
+      hDecorrDec->REV_bandOffset = REV_bandOffset_PS_HQ;
+      hDecorrDec->REV_delay = REV_delay_PS_HQ;
+      errorCode = distributeBuffer(hDecorrDec, (360), (257));
+    }
+    hDecorrDec->REV_filterOrder = REV_filterOrder_PS;
+    hDecorrDec->REV_filtType = REV_filtType_PS;
 
-      /* Initialize ring buffer offsets for PS specific filter implementation.
-       */
-      for (i = 0; i < (3); i++)
-        hDecorrDec->stateBufferOffset[i] = stateBufferOffsetInit[i];
+    /* Initialize ring buffer offsets for PS specific filter implementation.
+     */
+    for (i = 0; i < (3); i++)
+      hDecorrDec->stateBufferOffset[i] = stateBufferOffsetInit[i];
 
-      break;
-    case DECORR_USAC:
-      if (partiallyComplex) return 1;
-      if (seed != 0) return 1;
-      hDecorrDec->REV_bandOffset =
-          REV_bandOffset_MPS_HQ[decorrConfig]; /* reverb band layout is
-                                                  inherited from MPS standard */
-      hDecorrDec->REV_filterOrder = REV_filterOrder_USAC;
-      hDecorrDec->REV_delay = REV_delay_USAC;
-      if (useFractDelay) {
-        return 1; /* not yet supported */
-      } else {
-        hDecorrDec->REV_filtType = REV_filtType_MPS; /* the filter types are
-                                                        inherited from MPS
-                                                        standard */
-      }
-      /* bsDecorrConfig == 1 is worst case */
-      errorCode = distributeBuffer(hDecorrDec, (509), (643));
-      break;
-    case DECORR_LD:
-      if (partiallyComplex) return 1;
-      if (useFractDelay) return 1;
-      if (decorrConfig > 2) return 1;
-      if (seed > (MAX_DECORR_SEED_LD - 1)) return 1;
-      if (!(nrHybBands == 64 || nrHybBands == 32))
-        return 1; /* actually just qmf bands and no hybrid bands */
-      hDecorrDec->REV_bandOffset = REV_bandOffset_LD[decorrConfig];
-      hDecorrDec->REV_filterOrder = REV_filterOrder_MPS; /* the filter orders
-                                                            are inherited from
-                                                            MPS standard */
-      hDecorrDec->REV_delay =
-          REV_delay_MPS; /* the delays in each reverb band are inherited from
-                            MPS standard */
-      hDecorrDec->REV_filtType = REV_filtType_LD;
-      errorCode = distributeBuffer(hDecorrDec, (825), (373));
-      break;
-    default:
+    break;
+  case DECORR_USAC:
+    if (partiallyComplex)
       return 1;
+    if (seed != 0)
+      return 1;
+    hDecorrDec->REV_bandOffset =
+        REV_bandOffset_MPS_HQ[decorrConfig]; /* reverb band layout is
+                                              inherited from MPS standard */
+    hDecorrDec->REV_filterOrder = REV_filterOrder_USAC;
+    hDecorrDec->REV_delay = REV_delay_USAC;
+    if (useFractDelay) {
+      return 1; /* not yet supported */
+    } else {
+      hDecorrDec->REV_filtType = REV_filtType_MPS; /* the filter types are
+                                                  inherited from MPS
+                                                  standard */
+    }
+    /* bsDecorrConfig == 1 is worst case */
+    errorCode = distributeBuffer(hDecorrDec, (509), (643));
+    break;
+  case DECORR_LD:
+    if (partiallyComplex)
+      return 1;
+    if (useFractDelay)
+      return 1;
+    if (decorrConfig > 2)
+      return 1;
+    if (seed > (MAX_DECORR_SEED_LD - 1))
+      return 1;
+    if (!(nrHybBands == 64 || nrHybBands == 32))
+      return 1; /* actually just qmf bands and no hybrid bands */
+    hDecorrDec->REV_bandOffset = REV_bandOffset_LD[decorrConfig];
+    hDecorrDec->REV_filterOrder = REV_filterOrder_MPS; /* the filter orders
+                                                        are inherited from
+                                                        MPS standard */
+    hDecorrDec->REV_delay = REV_delay_MPS; /* the delays in each reverb band are
+                                            inherited from MPS standard */
+    hDecorrDec->REV_filtType = REV_filtType_LD;
+    errorCode = distributeBuffer(hDecorrDec, (825), (373));
+    break;
+  default:
+    return 1;
   }
 
   if (errorCode) {
@@ -1569,12 +1575,12 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
   }
 
   if (initStatesFlag) {
-    FDKmemclear(
-        hDecorrDec->stateBufferCplx,
-        hDecorrDec->L_stateBufferCplx * sizeof(*hDecorrDec->stateBufferCplx));
-    FDKmemclear(
-        hDecorrDec->delayBufferCplx,
-        hDecorrDec->L_delayBufferCplx * sizeof(*hDecorrDec->delayBufferCplx));
+    FDKmemclear(hDecorrDec->stateBufferCplx,
+                hDecorrDec->L_stateBufferCplx *
+                    sizeof(*hDecorrDec->stateBufferCplx));
+    FDKmemclear(hDecorrDec->delayBufferCplx,
+                hDecorrDec->L_delayBufferCplx *
+                    sizeof(*hDecorrDec->delayBufferCplx));
     FDKmemclear(hDecorrDec->reverbBandDelayBufferIndex,
                 sizeof(hDecorrDec->reverbBandDelayBufferIndex));
   }
@@ -1595,19 +1601,19 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
 
     for (i = i_start; i < i_stop; i++) {
       switch (decorrType) {
-        case DECORR_PS:
-          errorCode = DecorrFilterInitPS(
-              &hDecorrDec->Filter[i], hDecorrDec->stateBufferCplx,
-              hDecorrDec->delayBufferCplx, &offsetStateBuffer,
-              &offsetDelayBuffer, i, rb, hDecorrDec->REV_delay[rb]);
-          break;
-        default:
-          errorCode = DecorrFilterInit(
-              &hDecorrDec->Filter[i], hDecorrDec->stateBufferCplx,
-              hDecorrDec->delayBufferCplx, &offsetStateBuffer,
-              &offsetDelayBuffer, seed, rb, useFractDelay,
-              hDecorrDec->REV_delay[rb], REV_filterOrder[rb], decorrType);
-          break;
+      case DECORR_PS:
+        errorCode = DecorrFilterInitPS(
+            &hDecorrDec->Filter[i], hDecorrDec->stateBufferCplx,
+            hDecorrDec->delayBufferCplx, &offsetStateBuffer, &offsetDelayBuffer,
+            i, rb, hDecorrDec->REV_delay[rb]);
+        break;
+      default:
+        errorCode = DecorrFilterInit(
+            &hDecorrDec->Filter[i], hDecorrDec->stateBufferCplx,
+            hDecorrDec->delayBufferCplx, &offsetStateBuffer, &offsetDelayBuffer,
+            seed, rb, useFractDelay, hDecorrDec->REV_delay[rb],
+            REV_filterOrder[rb], decorrType);
+        break;
       }
     }
 
@@ -1622,24 +1628,24 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
   if (duckerType == DUCKER_AUTOMATIC) {
     /* Choose correct ducker type according to standards: */
     switch (decorrType) {
-      case DECORR_PS:
-        hDecorrDec->ducker.duckerType = DUCKER_PS;
-        if (isLegacyPS) {
-          nParamBands = (20);
-        } else {
-          nParamBands = (28);
-        }
-        break;
-      case DECORR_USAC:
-        hDecorrDec->ducker.duckerType = DUCKER_MPS;
+    case DECORR_PS:
+      hDecorrDec->ducker.duckerType = DUCKER_PS;
+      if (isLegacyPS) {
+        nParamBands = (20);
+      } else {
         nParamBands = (28);
-        break;
-      case DECORR_LD:
-        hDecorrDec->ducker.duckerType = DUCKER_MPS;
-        nParamBands = (23);
-        break;
-      default:
-        return 1;
+      }
+      break;
+    case DECORR_USAC:
+      hDecorrDec->ducker.duckerType = DUCKER_MPS;
+      nParamBands = (28);
+      break;
+    case DECORR_LD:
+      hDecorrDec->ducker.duckerType = DUCKER_MPS;
+      nParamBands = (23);
+      break;
+    default:
+      return 1;
     }
   }
 
@@ -1692,28 +1698,28 @@ INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, FIXP_DBL *dataRealIn,
 
       if (start < stop) {
         switch (hDecorrDec->REV_filtType[rb]) {
-          case DELAY:
-            err = DecorrFilterApplyPASS(&self->Filter[0], dataRealIn,
-                                        dataImagIn, dataRealOut, dataImagOut,
-                                        start, stop, self->REV_delay[rb],
-                                        self->reverbBandDelayBufferIndex[rb]);
-            break;
-          case INDEP_CPLX_PS:
-            err = DecorrFilterApplyCPLX_PS(
-                &self->Filter[0], dataRealIn, dataImagIn, dataRealOut,
-                dataImagOut, start, stop, self->REV_filterOrder[rb],
-                self->REV_delay[rb], self->reverbBandDelayBufferIndex[rb],
-                self->stateBufferOffset);
-            break;
-          case COMMON_REAL:
-            err = DecorrFilterApplyREAL(
-                &self->Filter[0], dataRealIn, dataImagIn, dataRealOut,
-                dataImagOut, start, stop, self->REV_filterOrder[rb],
-                self->REV_delay[rb], self->reverbBandDelayBufferIndex[rb]);
-            break;
-          default:
-            err = 1;
-            break;
+        case DELAY:
+          err = DecorrFilterApplyPASS(&self->Filter[0], dataRealIn, dataImagIn,
+                                      dataRealOut, dataImagOut, start, stop,
+                                      self->REV_delay[rb],
+                                      self->reverbBandDelayBufferIndex[rb]);
+          break;
+        case INDEP_CPLX_PS:
+          err = DecorrFilterApplyCPLX_PS(
+              &self->Filter[0], dataRealIn, dataImagIn, dataRealOut,
+              dataImagOut, start, stop, self->REV_filterOrder[rb],
+              self->REV_delay[rb], self->reverbBandDelayBufferIndex[rb],
+              self->stateBufferOffset);
+          break;
+        case COMMON_REAL:
+          err = DecorrFilterApplyREAL(
+              &self->Filter[0], dataRealIn, dataImagIn, dataRealOut,
+              dataImagOut, start, stop, self->REV_filterOrder[rb],
+              self->REV_delay[rb], self->reverbBandDelayBufferIndex[rb]);
+          break;
+        default:
+          err = 1;
+          break;
         }
         if (err != 0) {
           goto bail;
@@ -1728,16 +1734,18 @@ INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, FIXP_DBL *dataRealIn,
     }
 
     switch (self->ducker.duckerType) {
-      case DUCKER_PS:
-        err = DuckerApplyPS(&self->ducker, directNrg, dataRealOut, dataImagOut,
-                            startHybBand);
-        if (err != 0) goto bail;
-        break;
-      default:
-        err = DuckerApply(&self->ducker, directNrg, dataRealOut, dataImagOut,
+    case DUCKER_PS:
+      err = DuckerApplyPS(&self->ducker, directNrg, dataRealOut, dataImagOut,
                           startHybBand);
-        if (err != 0) goto bail;
-        break;
+      if (err != 0)
+        goto bail;
+      break;
+    default:
+      err = DuckerApply(&self->ducker, directNrg, dataRealOut, dataImagOut,
+                        startHybBand);
+      if (err != 0)
+        goto bail;
+      break;
     }
   }
 

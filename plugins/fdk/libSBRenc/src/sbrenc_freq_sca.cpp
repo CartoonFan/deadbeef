@@ -159,7 +159,8 @@ INT FDKsbrEnc_getSbrStartFreqRAW(INT startFreq, INT fsCore) {
 INT FDKsbrEnc_getSbrStopFreqRAW(INT stopFreq, INT fsCore) {
   INT result;
 
-  if (stopFreq < 0 || stopFreq > 13) return -1;
+  if (stopFreq < 0 || stopFreq > 13)
+    return -1;
 
   /* Uppdate stopFreq struct */
   result = getStopFreq(fsCore, stopFreq);
@@ -183,73 +184,73 @@ static INT getStartFreq(INT fsCore, const INT start_freq) {
   INT k0_min;
 
   switch (fsCore) {
-    case 8000:
-      k0_min = 24; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 11025:
-      k0_min = 17; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 12000:
-      k0_min = 16; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 16000:
-      k0_min = 16; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 22050:
-      k0_min = 12; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 24000:
-      k0_min = 11; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 32000:
-      k0_min = 10; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 44100:
-      k0_min = 7; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 48000:
-      k0_min = 7; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    case 96000:
-      k0_min = 3; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
-      break;
-    default:
-      k0_min = 11; /* illegal fs */
+  case 8000:
+    k0_min = 24; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 11025:
+    k0_min = 17; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 12000:
+    k0_min = 16; /* (3000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 16000:
+    k0_min = 16; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 22050:
+    k0_min = 12; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 24000:
+    k0_min = 11; /* (4000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 32000:
+    k0_min = 10; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 44100:
+    k0_min = 7; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 48000:
+    k0_min = 7; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  case 96000:
+    k0_min = 3; /* (5000 * nQmfChannels / fsSBR ) + 0.5 */
+    break;
+  default:
+    k0_min = 11; /* illegal fs */
   }
 
   switch (fsCore) {
-    case 8000: {
-      INT v_offset[] = {-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7};
-      return (k0_min + v_offset[start_freq]);
-    }
-    case 11025: {
-      INT v_offset[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13};
-      return (k0_min + v_offset[start_freq]);
-    }
-    case 12000: {
-      INT v_offset[] = {-5, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16};
-      return (k0_min + v_offset[start_freq]);
-    }
-    case 16000: {
-      INT v_offset[] = {-6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16};
-      return (k0_min + v_offset[start_freq]);
-    }
-    case 22050:
-    case 24000:
-    case 32000: {
-      INT v_offset[] = {-4, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20};
-      return (k0_min + v_offset[start_freq]);
-    }
-    case 44100:
-    case 48000:
-    case 96000: {
-      INT v_offset[] = {-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20, 24};
-      return (k0_min + v_offset[start_freq]);
-    }
-    default: {
-      INT v_offset[] = {0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20, 24, 28, 33};
-      return (k0_min + v_offset[start_freq]);
-    }
+  case 8000: {
+    INT v_offset[] = {-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7};
+    return (k0_min + v_offset[start_freq]);
+  }
+  case 11025: {
+    INT v_offset[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13};
+    return (k0_min + v_offset[start_freq]);
+  }
+  case 12000: {
+    INT v_offset[] = {-5, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16};
+    return (k0_min + v_offset[start_freq]);
+  }
+  case 16000: {
+    INT v_offset[] = {-6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16};
+    return (k0_min + v_offset[start_freq]);
+  }
+  case 22050:
+  case 24000:
+  case 32000: {
+    INT v_offset[] = {-4, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20};
+    return (k0_min + v_offset[start_freq]);
+  }
+  case 44100:
+  case 48000:
+  case 96000: {
+    INT v_offset[] = {-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20, 24};
+    return (k0_min + v_offset[start_freq]);
+  }
+  default: {
+    INT v_offset[] = {0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 20, 24, 28, 33};
+    return (k0_min + v_offset[start_freq]);
+  }
   }
 } /* End getStartFreq */
 
@@ -290,48 +291,48 @@ static INT getStopFreq(INT fsCore, const INT stop_freq) {
                              23, 27, 32, 38, 46, 54, 64};
 
   switch (fsCore) {
-    case 8000:
-      k1_min = 48;
-      v_stop_freq = v_stop_freq_16;
-      break;
-    case 11025:
-      k1_min = 35;
-      v_stop_freq = v_stop_freq_22;
-      break;
-    case 12000:
-      k1_min = 32;
-      v_stop_freq = v_stop_freq_24;
-      break;
-    case 16000:
-      k1_min = 32;
-      v_stop_freq = v_stop_freq_32;
-      break;
-    case 22050:
-      k1_min = 23;
-      v_stop_freq = v_stop_freq_44;
-      break;
-    case 24000:
-      k1_min = 21;
-      v_stop_freq = v_stop_freq_48;
-      break;
-    case 32000:
-      k1_min = 20;
-      v_stop_freq = v_stop_freq_64;
-      break;
-    case 44100:
-      k1_min = 15;
-      v_stop_freq = v_stop_freq_88;
-      break;
-    case 48000:
-      k1_min = 13;
-      v_stop_freq = v_stop_freq_96;
-      break;
-    case 96000:
-      k1_min = 7;
-      v_stop_freq = v_stop_freq_192;
-      break;
-    default:
-      k1_min = 21; /* illegal fs  */
+  case 8000:
+    k1_min = 48;
+    v_stop_freq = v_stop_freq_16;
+    break;
+  case 11025:
+    k1_min = 35;
+    v_stop_freq = v_stop_freq_22;
+    break;
+  case 12000:
+    k1_min = 32;
+    v_stop_freq = v_stop_freq_24;
+    break;
+  case 16000:
+    k1_min = 32;
+    v_stop_freq = v_stop_freq_32;
+    break;
+  case 22050:
+    k1_min = 23;
+    v_stop_freq = v_stop_freq_44;
+    break;
+  case 24000:
+    k1_min = 21;
+    v_stop_freq = v_stop_freq_48;
+    break;
+  case 32000:
+    k1_min = 20;
+    v_stop_freq = v_stop_freq_64;
+    break;
+  case 44100:
+    k1_min = 15;
+    v_stop_freq = v_stop_freq_88;
+    break;
+  case 48000:
+    k1_min = 13;
+    v_stop_freq = v_stop_freq_96;
+    break;
+  case 96000:
+    k1_min = 7;
+    v_stop_freq = v_stop_freq_192;
+    break;
+  default:
+    k1_min = 21; /* illegal fs  */
   }
 
   /* Ensure increasing bandwidth */
@@ -374,9 +375,8 @@ INT FDKsbrEnc_FindStartAndStopBand(const INT srSbr, const INT srCore,
 
   /* Test if start freq is outside corecoder range */
   if (srSbr * noChannels < *k0 * srCore) {
-    return (
-        1); /* raise the cross-over frequency and/or lower the number
-               of target bands per octave (or lower the sampling frequency) */
+    return (1); /* raise the cross-over frequency and/or lower the number
+        of target bands per octave (or lower the sampling frequency) */
   }
 
   /*Update stopFreq struct */
@@ -396,16 +396,17 @@ INT FDKsbrEnc_FindStartAndStopBand(const INT srSbr, const INT srCore,
   /* Test for invalid  k0 k2 combinations */
   if ((srCore == 22050) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS44100))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-                   fs=44.1kHz */
+               fs=44.1kHz */
 
   if ((srCore >= 24000) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS48000))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-                   fs>=48kHz */
+               fs>=48kHz */
 
   if ((*k2 - *k0) > MAX_FREQ_COEFFS)
     return (1); /*Number of bands exceeds valid range of MAX_FREQ_COEFFS */
 
-  if ((*k2 - *k0) < 0) return (1); /* Number of bands is negative */
+  if ((*k2 - *k0) < 0)
+    return (1); /* Number of bands is negative */
 
   return (0);
 }
@@ -440,9 +441,12 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
   INT incr = 0;
 
   /* Init */
-  if (freqScale == 1) b_p_o = 12;
-  if (freqScale == 2) b_p_o = 10;
-  if (freqScale == 3) b_p_o = 8;
+  if (freqScale == 1)
+    b_p_o = 12;
+  if (freqScale == 2)
+    b_p_o = 10;
+  if (freqScale == 3)
+    b_p_o = 8;
 
   if (freqScale > 0) /*Bark*/
   {
@@ -452,7 +456,7 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       warp = FL2FXCONST_DBL(1.0f / 2.6f); /* 1.0/(1.3*2.0); */
 
     if (4 * k2 >= 9 * k0) /*two or more regions (how many times the basis band
-                             is copied)*/
+                         is copied)*/
     {
       k1 = 2 * k0;
 
@@ -465,8 +469,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       if (diff0[0] == 0) /* too wide FB bands for target tuning */
       {
         return (1); /* raise the cross-over frequency and/or lower the number
-                       of target bands per octave (or lower the sampling
-                       frequency */
+               of target bands per octave (or lower the sampling
+               frequency */
       }
 
       cumSum(k0, diff0, num_bands0, v_k_master); /* cumsum */
@@ -475,7 +479,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       FDKsbrEnc_Shellsort_int(diff1, num_bands1); /* SortBands sort diff1 */
       if (diff0[num_bands0 - 1] > diff1[0])       /* max(1) > min(2) */
       {
-        if (modifyBands(diff0[num_bands0 - 1], diff1, num_bands1)) return (1);
+        if (modifyBands(diff0[num_bands0 - 1], diff1, num_bands1))
+          return (1);
       }
 
       /* Add 2'nd region */
@@ -493,8 +498,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       if (diff0[0] == 0) /* too wide FB bands for target tuning */
       {
         return (1); /* raise the cross-over frequency and/or lower the number
-                       of target bands per octave (or lower the sampling
-                       frequency */
+               of target bands per octave (or lower the sampling
+               frequency */
       }
 
       cumSum(k0, diff0, num_bands0, v_k_master); /* cumsum */
@@ -514,7 +519,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
     k2_achived = k0 + num_bands0 * dk;
     k2_diff = k2 - k2_achived;
 
-    for (i = 0; i < num_bands0; i++) diff_tot[i] = dk;
+    for (i = 0; i < num_bands0; i++)
+      diff_tot[i] = dk;
 
     /* If linear scale wasn't achived */
     /* and we got wide SBR are */
@@ -541,7 +547,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
     *h_num_bands = num_bands0;                    /* Output nr of bands */
   }
 
-  if (*h_num_bands < 1) return (1); /*To small sbr area */
+  if (*h_num_bands < 1)
+    return (1); /*To small sbr area */
 
   return (0);
 } /* End FDKsbrEnc_UpdateFreqScale */
@@ -658,7 +665,8 @@ void FDKsbrEnc_UpdateLoRes(UCHAR *h_lores, INT *num_lores, UCHAR *h_hires,
   {
     *num_lores = num_hires / 2;
     /* Use every second lores=hires[0,2,4...] */
-    for (i = 0; i <= *num_lores; i++) h_lores[i] = h_hires[i * 2];
+    for (i = 0; i <= *num_lores; i++)
+      h_lores[i] = h_hires[i * 2];
 
   } else /* odd number of hires which means xover is odd */
   {

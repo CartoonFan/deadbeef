@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #define SACENC_DMX_TDOM_ENH_H
 
 /* Includes ******************************************************************/
-#include "sacenc_lib.h"
 #include "common_fix.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 

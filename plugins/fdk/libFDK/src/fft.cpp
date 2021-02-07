@@ -100,27 +100,27 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "fft_rad2.h"
 #include "FDK_tools_rom.h"
+#include "fft_rad2.h"
 
 #define W_PiFOURTH STC(0x5a82799a)
 //#define W_PiFOURTH ((FIXP_DBL)(0x5a82799a))
 #ifndef SUMDIFF_PIFOURTH
-#define SUMDIFF_PIFOURTH(diff, sum, a, b) \
-  {                                       \
-    FIXP_DBL wa, wb;                      \
-    wa = fMultDiv2(a, W_PiFOURTH);        \
-    wb = fMultDiv2(b, W_PiFOURTH);        \
-    diff = wb - wa;                       \
-    sum = wb + wa;                        \
+#define SUMDIFF_PIFOURTH(diff, sum, a, b)                                      \
+  {                                                                            \
+    FIXP_DBL wa, wb;                                                           \
+    wa = fMultDiv2(a, W_PiFOURTH);                                             \
+    wb = fMultDiv2(b, W_PiFOURTH);                                             \
+    diff = wb - wa;                                                            \
+    sum = wb + wa;                                                             \
   }
-#define SUMDIFF_PIFOURTH16(diff, sum, a, b)       \
-  {                                               \
-    FIXP_SGL wa, wb;                              \
-    wa = FX_DBL2FX_SGL(fMultDiv2(a, W_PiFOURTH)); \
-    wb = FX_DBL2FX_SGL(fMultDiv2(b, W_PiFOURTH)); \
-    diff = wb - wa;                               \
-    sum = wb + wa;                                \
+#define SUMDIFF_PIFOURTH16(diff, sum, a, b)                                    \
+  {                                                                            \
+    FIXP_SGL wa, wb;                                                           \
+    wa = FX_DBL2FX_SGL(fMultDiv2(a, W_PiFOURTH));                              \
+    wb = FX_DBL2FX_SGL(fMultDiv2(b, W_PiFOURTH));                              \
+    diff = wb - wa;                                                            \
+    sum = wb + wa;                                                             \
   }
 #endif
 
@@ -309,7 +309,7 @@ static FDK_FORCEINLINE void fft5(FIXP_DBL *RESTRICT pDat) {
  *
  * \return   void
  */
-static void fft10(FIXP_DBL *x)  // FIXP_DBL *re, FIXP_DBL *im, FIXP_SGL s)
+static void fft10(FIXP_DBL *x) // FIXP_DBL *re, FIXP_DBL *im, FIXP_SGL s)
 {
   FIXP_DBL t;
   FIXP_DBL x0, x1, x2, x3, x4;
@@ -318,7 +318,7 @@ static void fft10(FIXP_DBL *x)  // FIXP_DBL *re, FIXP_DBL *im, FIXP_SGL s)
   FIXP_DBL y00, y01, y02, y03, y04, y05, y06, y07, y08, y09;
   FIXP_DBL y10, y11, y12, y13, y14, y15, y16, y17, y18, y19;
 
-  const int s = 1;  // stride factor
+  const int s = 1; // stride factor
 
   /* 2 fft5 stages */
 
@@ -619,16 +619,19 @@ static inline void fft15(FIXP_DBL *pInput) {
       pDst[k + 0] = pSrc[l];
       pDst[k + 1] = pSrc[l + 1];
       l += 2 * N5;
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
 
       pDst[k + 2] = pSrc[l];
       pDst[k + 3] = pSrc[l + 1];
       l += 2 * N5;
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
       pDst[k + 4] = pSrc[l];
       pDst[k + 5] = pSrc[l + 1];
       l += (2 * N5) + (2 * N3);
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
 
       /* fft3 merged with shift right by 2 loop */
       FIXP_DBL r1, r2, r3;
@@ -689,19 +692,23 @@ static inline void fft15(FIXP_DBL *pInput) {
       pDst[k + 0] = pSrc[l];
       pDst[k + 1] = pSrc[l + 1];
       l += (2 * N6);
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
       pDst[k + 2] = pSrc[l];
       pDst[k + 3] = pSrc[l + 1];
       l += (2 * N6);
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
       pDst[k + 4] = pSrc[l];
       pDst[k + 5] = pSrc[l + 1];
       l += (2 * N6);
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
       pDst[k + 6] = pSrc[l];
       pDst[k + 7] = pSrc[l + 1];
       l += (2 * N6);
-      if (l >= (2 * N15)) l -= (2 * N15);
+      if (l >= (2 * N15))
+        l -= (2 * N15);
       pDst[k + 8] = pSrc[l];
       pDst[k + 9] = pSrc[l + 1];
       l += 2; /* no modulo check needed, it cannot occur */
@@ -1574,13 +1581,11 @@ static inline void fft_apply_rot_vector(FIXP_DBL *RESTRICT pData, const int cl,
 /* select either switch case of function pointer. */
 //#define FFT_TWO_STAGE_SWITCH_CASE
 #ifndef FUNCTION_fftN2_func
-static inline void fftN2_func(FIXP_DBL *pInput, const int length,
-                              const int dim1, const int dim2,
-                              void (*const fft1)(FIXP_DBL *),
-                              void (*const fft2)(FIXP_DBL *),
-                              const FIXP_STB *RotVectorReal,
-                              const FIXP_STB *RotVectorImag, FIXP_DBL *aDst,
-                              FIXP_DBL *aDst2) {
+static inline void
+fftN2_func(FIXP_DBL *pInput, const int length, const int dim1, const int dim2,
+           void (*const fft1)(FIXP_DBL *), void (*const fft2)(FIXP_DBL *),
+           const FIXP_STB *RotVectorReal, const FIXP_STB *RotVectorImag,
+           FIXP_DBL *aDst, FIXP_DBL *aDst2) {
   /* The real part of the input samples are at the addresses with even indices
   and the imaginary part of the input samples are at the addresses with odd
   indices. The output samples are stored at the address of pInput
@@ -1603,34 +1608,34 @@ static inline void fftN2_func(FIXP_DBL *pInput, const int length,
       pDst[2 * j + 1] = pSrc[2 * j * dim2 + 1];
     }
 
-      /* fft of size dim1 */
+    /* fft of size dim1 */
 #ifndef FFT_TWO_STAGE_SWITCH_CASE
     fft1(pDst);
 #else
     switch (dim1) {
-      case 2:
-        fft2(pDst);
-        break;
-      case 3:
-        fft3(pDst);
-        break;
-      case 4:
-        fft_4(pDst);
-        break;
-      /* case 5: fft5(pDst); break; */
-      /* case 8: fft_8(pDst); break; */
-      case 12:
-        fft12(pDst);
-        break;
-      /* case 15: fft15(pDst); break; */
-      case 16:
-        fft_16(pDst);
-        break;
-      case 32:
-        fft_32(pDst);
-        break;
-        /*case 64: fft_64(pDst); break;*/
-        /* case 128: fft_128(pDst); break; */
+    case 2:
+      fft2(pDst);
+      break;
+    case 3:
+      fft3(pDst);
+      break;
+    case 4:
+      fft_4(pDst);
+      break;
+    /* case 5: fft5(pDst); break; */
+    /* case 8: fft_8(pDst); break; */
+    case 12:
+      fft12(pDst);
+      break;
+    /* case 15: fft15(pDst); break; */
+    case 16:
+      fft_16(pDst);
+      break;
+    case 32:
+      fft_32(pDst);
+      break;
+      /*case 64: fft_64(pDst); break;*/
+      /* case 128: fft_128(pDst); break; */
     }
 #endif
     pSrc += 2;
@@ -1659,24 +1664,24 @@ static inline void fftN2_func(FIXP_DBL *pInput, const int length,
     fft2(pDst);
 #else
     switch (dim2) {
-      case 4:
-        fft_4(pDst);
-        break;
-      case 9:
-        fft9(pDst);
-        break;
-      case 12:
-        fft12(pDst);
-        break;
-      case 15:
-        fft15(pDst);
-        break;
-      case 16:
-        fft_16(pDst);
-        break;
-      case 32:
-        fft_32(pDst);
-        break;
+    case 4:
+      fft_4(pDst);
+      break;
+    case 9:
+      fft9(pDst);
+      break;
+    case 12:
+      fft12(pDst);
+      break;
+    case 15:
+      fft15(pDst);
+      break;
+    case 16:
+      fft_16(pDst);
+      break;
+    case 32:
+      fft_32(pDst);
+      break;
     }
 #endif
 
@@ -1690,26 +1695,26 @@ static inline void fftN2_func(FIXP_DBL *pInput, const int length,
 }
 #endif /* FUNCTION_fftN2_function */
 
-#define fftN2(DATA_TYPE, pInput, length, dim1, dim2, fft_func1, fft_func2, \
-              RotVectorReal, RotVectorImag)                                \
-  {                                                                        \
-    C_AALLOC_SCRATCH_START(aDst, DATA_TYPE, 2 * length)                    \
-    C_AALLOC_SCRATCH_START(aDst2, DATA_TYPE, 2 * dim2)                     \
-    fftN2_func(pInput, length, dim1, dim2, fft_func1, fft_func2,           \
-               RotVectorReal, RotVectorImag, aDst, aDst2);                 \
-    C_AALLOC_SCRATCH_END(aDst2, DATA_TYPE, 2 * dim2)                       \
-    C_AALLOC_SCRATCH_END(aDst, DATA_TYPE, 2 * length)                      \
+#define fftN2(DATA_TYPE, pInput, length, dim1, dim2, fft_func1, fft_func2,     \
+              RotVectorReal, RotVectorImag)                                    \
+  {                                                                            \
+    C_AALLOC_SCRATCH_START(aDst, DATA_TYPE, 2 * length)                        \
+    C_AALLOC_SCRATCH_START(aDst2, DATA_TYPE, 2 * dim2)                         \
+    fftN2_func(pInput, length, dim1, dim2, fft_func1, fft_func2,               \
+               RotVectorReal, RotVectorImag, aDst, aDst2);                     \
+    C_AALLOC_SCRATCH_END(aDst2, DATA_TYPE, 2 * dim2)                           \
+    C_AALLOC_SCRATCH_END(aDst, DATA_TYPE, 2 * length)                          \
   }
 
-  /*!
-   *
-   *  \brief  complex FFT of length 12,18,24,30,48,60,96, 192, 240, 384, 480
-   *  \param  pInput contains the input signal prescaled right by 2
-   *          pInput contains the output signal scaled by SCALEFACTOR<#length>
-   *          The output signal does not have any fixed headroom
-   *  \return void
-   *
-   */
+/*!
+ *
+ *  \brief  complex FFT of length 12,18,24,30,48,60,96, 192, 240, 384, 480
+ *  \param  pInput contains the input signal prescaled right by 2
+ *          pInput contains the output signal scaled by SCALEFACTOR<#length>
+ *          The output signal does not have any fixed headroom
+ *  \return void
+ *
+ */
 
 #ifndef FUNCTION_fft6
 static inline void fft6(FIXP_DBL *pInput) {
@@ -1806,117 +1811,117 @@ void fft(int length, FIXP_DBL *pInput, INT *pScalefactor) {
     *pScalefactor += SCALEFACTOR32;
   } else {
     switch (length) {
-      case 16:
-        fft_16(pInput);
-        *pScalefactor += SCALEFACTOR16;
-        break;
-      case 8:
-        fft_8(pInput);
-        *pScalefactor += SCALEFACTOR8;
-        break;
-      case 2:
-        fft2(pInput);
-        *pScalefactor += SCALEFACTOR2;
-        break;
-      case 3:
-        fft3(pInput);
-        *pScalefactor += SCALEFACTOR3;
-        break;
-      case 4:
-        fft_4(pInput);
-        *pScalefactor += SCALEFACTOR4;
-        break;
-      case 5:
-        fft5(pInput);
-        *pScalefactor += SCALEFACTOR5;
-        break;
-      case 6:
-        fft6(pInput);
-        *pScalefactor += SCALEFACTOR6;
-        break;
-      case 10:
-        fft10(pInput);
-        *pScalefactor += SCALEFACTOR10;
-        break;
-      case 12:
-        fft12(pInput);
-        *pScalefactor += SCALEFACTOR12;
-        break;
-      case 15:
-        fft15(pInput);
-        *pScalefactor += SCALEFACTOR15;
-        break;
-      case 20:
-        fft20(pInput);
-        *pScalefactor += SCALEFACTOR20;
-        break;
-      case 24:
-        fft24(pInput);
-        *pScalefactor += SCALEFACTOR24;
-        break;
-      case 48:
-        fft48(pInput);
-        *pScalefactor += SCALEFACTOR48;
-        break;
-      case 60:
-        fft60(pInput);
-        *pScalefactor += SCALEFACTOR60;
-        break;
-      case 64:
-        dit_fft(pInput, 6, SineTable512, 512);
-        *pScalefactor += SCALEFACTOR64;
-        break;
-      case 80:
-        fft80(pInput);
-        *pScalefactor += SCALEFACTOR80;
-        break;
-      case 96:
-        fft96(pInput);
-        *pScalefactor += SCALEFACTOR96;
-        break;
-      case 120:
-        fft120(pInput);
-        *pScalefactor += SCALEFACTOR120;
-        break;
-      case 128:
-        dit_fft(pInput, 7, SineTable512, 512);
-        *pScalefactor += SCALEFACTOR128;
-        break;
-      case 192:
-        fft192(pInput);
-        *pScalefactor += SCALEFACTOR192;
-        break;
-      case 240:
-        fft240(pInput);
-        *pScalefactor += SCALEFACTOR240;
-        break;
-      case 256:
-        dit_fft(pInput, 8, SineTable512, 512);
-        *pScalefactor += SCALEFACTOR256;
-        break;
-      case 384:
-        fft384(pInput);
-        *pScalefactor += SCALEFACTOR384;
-        break;
-      case 480:
-        fft480(pInput);
-        *pScalefactor += SCALEFACTOR480;
-        break;
-      case 512:
-        dit_fft(pInput, 9, SineTable512, 512);
-        *pScalefactor += SCALEFACTOR512;
-        break;
-      default:
-        FDK_ASSERT(0); /* FFT length not supported! */
-        break;
+    case 16:
+      fft_16(pInput);
+      *pScalefactor += SCALEFACTOR16;
+      break;
+    case 8:
+      fft_8(pInput);
+      *pScalefactor += SCALEFACTOR8;
+      break;
+    case 2:
+      fft2(pInput);
+      *pScalefactor += SCALEFACTOR2;
+      break;
+    case 3:
+      fft3(pInput);
+      *pScalefactor += SCALEFACTOR3;
+      break;
+    case 4:
+      fft_4(pInput);
+      *pScalefactor += SCALEFACTOR4;
+      break;
+    case 5:
+      fft5(pInput);
+      *pScalefactor += SCALEFACTOR5;
+      break;
+    case 6:
+      fft6(pInput);
+      *pScalefactor += SCALEFACTOR6;
+      break;
+    case 10:
+      fft10(pInput);
+      *pScalefactor += SCALEFACTOR10;
+      break;
+    case 12:
+      fft12(pInput);
+      *pScalefactor += SCALEFACTOR12;
+      break;
+    case 15:
+      fft15(pInput);
+      *pScalefactor += SCALEFACTOR15;
+      break;
+    case 20:
+      fft20(pInput);
+      *pScalefactor += SCALEFACTOR20;
+      break;
+    case 24:
+      fft24(pInput);
+      *pScalefactor += SCALEFACTOR24;
+      break;
+    case 48:
+      fft48(pInput);
+      *pScalefactor += SCALEFACTOR48;
+      break;
+    case 60:
+      fft60(pInput);
+      *pScalefactor += SCALEFACTOR60;
+      break;
+    case 64:
+      dit_fft(pInput, 6, SineTable512, 512);
+      *pScalefactor += SCALEFACTOR64;
+      break;
+    case 80:
+      fft80(pInput);
+      *pScalefactor += SCALEFACTOR80;
+      break;
+    case 96:
+      fft96(pInput);
+      *pScalefactor += SCALEFACTOR96;
+      break;
+    case 120:
+      fft120(pInput);
+      *pScalefactor += SCALEFACTOR120;
+      break;
+    case 128:
+      dit_fft(pInput, 7, SineTable512, 512);
+      *pScalefactor += SCALEFACTOR128;
+      break;
+    case 192:
+      fft192(pInput);
+      *pScalefactor += SCALEFACTOR192;
+      break;
+    case 240:
+      fft240(pInput);
+      *pScalefactor += SCALEFACTOR240;
+      break;
+    case 256:
+      dit_fft(pInput, 8, SineTable512, 512);
+      *pScalefactor += SCALEFACTOR256;
+      break;
+    case 384:
+      fft384(pInput);
+      *pScalefactor += SCALEFACTOR384;
+      break;
+    case 480:
+      fft480(pInput);
+      *pScalefactor += SCALEFACTOR480;
+      break;
+    case 512:
+      dit_fft(pInput, 9, SineTable512, 512);
+      *pScalefactor += SCALEFACTOR512;
+      break;
+    default:
+      FDK_ASSERT(0); /* FFT length not supported! */
+      break;
     }
   }
 }
 
 void ifft(int length, FIXP_DBL *pInput, INT *scalefactor) {
   switch (length) {
-    default:
-      FDK_ASSERT(0); /* IFFT length not supported! */
-      break;
+  default:
+    FDK_ASSERT(0); /* IFFT length not supported! */
+    break;
   }
 }

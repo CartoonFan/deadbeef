@@ -215,15 +215,24 @@ static const INT chgWndSq[2][N_BLOCKTYPES] = {
 static const INT chgWndSqLkAhd[2][2][N_BLOCKTYPES] = {
     /*attack         LONG WINDOW    START_WINDOW   SHORT_WINDOW   STOP_WINDOW   LOWOV_WINDOW, WRONG_WINDOW */ /* last attack */
     /*no attack*/ {
-        {LONG_WINDOW, SHORT_WINDOW, STOP_WINDOW, LONG_WINDOW, WRONG_WINDOW,
-         WRONG_WINDOW}, /* no attack   */
-        /*attack   */ {START_WINDOW, SHORT_WINDOW, SHORT_WINDOW, START_WINDOW,
-                       WRONG_WINDOW, WRONG_WINDOW}}, /* no attack   */
-    /*no attack*/ {{LONG_WINDOW, SHORT_WINDOW, SHORT_WINDOW, LONG_WINDOW,
-                    WRONG_WINDOW, WRONG_WINDOW}, /* attack      */
-                   /*attack   */ {START_WINDOW, SHORT_WINDOW, SHORT_WINDOW,
-                                  START_WINDOW, WRONG_WINDOW,
-                                  WRONG_WINDOW}} /* attack      */
+        {   LONG_WINDOW, SHORT_WINDOW, STOP_WINDOW, LONG_WINDOW, WRONG_WINDOW,
+            WRONG_WINDOW
+        }, /* no attack   */
+        /*attack   */ {
+            START_WINDOW, SHORT_WINDOW, SHORT_WINDOW, START_WINDOW,
+            WRONG_WINDOW, WRONG_WINDOW
+        }
+    }, /* no attack   */
+    /*no attack*/ {{
+            LONG_WINDOW, SHORT_WINDOW, SHORT_WINDOW, LONG_WINDOW,
+            WRONG_WINDOW, WRONG_WINDOW
+        }, /* attack      */
+        /*attack   */ {
+            START_WINDOW, SHORT_WINDOW, SHORT_WINDOW,
+            START_WINDOW, WRONG_WINDOW,
+            WRONG_WINDOW
+        }
+    } /* attack      */
 };
 
 int FDKaacEnc_BlockSwitching(BLOCK_SWITCHING_CONTROL *blockSwitchingControl,
@@ -309,7 +318,8 @@ int FDKaacEnc_BlockSwitching(BLOCK_SWITCHING_CONTROL *blockSwitchingControl,
     enMax = fixMax(enMax, enM1);
   }
 
-  if (enMax < minAttackNrg) blockSwitchingControl->attack = FALSE;
+  if (enMax < minAttackNrg)
+    blockSwitchingControl->attack = FALSE;
 
   /* Check if attack spreads over frame border */
   if ((blockSwitchingControl->attack == FALSE) &&
@@ -439,7 +449,8 @@ int FDKaacEnc_SyncBlockSwitching(
 
     /* sanity check (no change from low overlap window to short winow and vice
      * versa) */
-    if (patchType == WRONG_WINDOW) return -1; /* mixed up AAC-LC and AAC-LD */
+    if (patchType == WRONG_WINDOW)
+      return -1; /* mixed up AAC-LC and AAC-LD */
 
     /* Set synchronized Blocktype */
     blockSwitchingControlLeft->lastWindowSequence = patchType;

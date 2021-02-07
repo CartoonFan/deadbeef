@@ -101,9 +101,9 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "channelinfo.h"
-#include "aac_rom.h"
-#include "aac_ram.h"
 #include "FDK_bitstream.h"
+#include "aac_ram.h"
+#include "aac_rom.h"
 
 AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
                                 const SamplingRateInfo *pSamplingRateInfo) {
@@ -164,7 +164,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
   if (IsLongBlock(pIcsInfo)) {
     if (!(flags & (AC_ELD | AC_SCALABLE | AC_BSAC | AC_USAC | AC_RSVD50 |
                    AC_RSV603DA))) /* If not ELD nor Scalable nor BSAC nor USAC
-                                     syntax then ... */
+                                 syntax then ... */
     {
       if ((UCHAR)FDKreadBits(bs, 1) != 0) /* UCHAR PredictorDataPresent */
       {
@@ -200,7 +200,8 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
   }
 
 bail:
-  if (ErrorStatus == AAC_DEC_OK) pIcsInfo->Valid = 1;
+  if (ErrorStatus == AAC_DEC_OK)
+    pIcsInfo->Valid = 1;
 
   return ErrorStatus;
 }
@@ -251,24 +252,24 @@ AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, UINT samplesPerFrame,
   t->samplingRate = samplingRate;
 
   switch (samplesPerFrame) {
-    case 1024:
-      index = 0;
-      break;
-    case 960:
-      index = 1;
-      break;
-    case 768:
-      index = 2;
-      break;
-    case 512:
-      index = 3;
-      break;
-    case 480:
-      index = 4;
-      break;
+  case 1024:
+    index = 0;
+    break;
+  case 960:
+    index = 1;
+    break;
+  case 768:
+    index = 2;
+    break;
+  case 512:
+    index = 3;
+    break;
+  case 480:
+    index = 4;
+    break;
 
-    default:
-      return AAC_DEC_UNSUPPORTED_FORMAT;
+  default:
+    return AAC_DEC_UNSUPPORTED_FORMAT;
   }
 
   t->ScaleFactorBands_Long =

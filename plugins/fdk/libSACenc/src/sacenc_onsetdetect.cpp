@@ -114,8 +114,8 @@ amm-info@iis.fraunhofer.de
 /* Defines *******************************************************************/
 #define SPACE_ONSET_THRESHOLD (3.0)
 #define SPACE_ONSET_THRESHOLD_SF (3)
-#define SPACE_ONSET_THRESHOLD_SQUARE                                        \
-  (FL2FXCONST_DBL((1.0 / (SPACE_ONSET_THRESHOLD * SPACE_ONSET_THRESHOLD)) * \
+#define SPACE_ONSET_THRESHOLD_SQUARE                                           \
+  (FL2FXCONST_DBL((1.0 / (SPACE_ONSET_THRESHOLD * SPACE_ONSET_THRESHOLD)) *    \
                   (float)(1 << SPACE_ONSET_THRESHOLD_SF)))
 
 /* Data Types ****************************************************************/
@@ -164,9 +164,10 @@ bail:
   return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
 }
 
-FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Init(
-    HANDLE_ONSET_DETECT hOnset,
-    const ONSET_DETECT_CONFIG *const pOnsetDetectConfig, const UINT initFlags) {
+FDK_SACENC_ERROR
+fdk_sacenc_onsetDetect_Init(HANDLE_ONSET_DETECT hOnset,
+                            const ONSET_DETECT_CONFIG *const pOnsetDetectConfig,
+                            const UINT initFlags) {
   FDK_SACENC_ERROR error = SACENC_OK;
 
   if ((NULL == hOnset) || (pOnsetDetectConfig == NULL)) {

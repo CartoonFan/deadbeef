@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdec_drc.h"
 
-#include "channelinfo.h"
 #include "aac_rom.h"
+#include "channelinfo.h"
 
 #include "sbrdecoder.h"
 
@@ -115,10 +115,10 @@ amm-info@iis.fraunhofer.de
 #define DRC_PARAMETER_BITS (7)
 #define DRC_MAX_QUANT_STEPS (1 << DRC_PARAMETER_BITS)
 #define DRC_MAX_QUANT_FACTOR (DRC_MAX_QUANT_STEPS - 1)
-#define DRC_PARAM_QUANT_STEP \
+#define DRC_PARAM_QUANT_STEP                                                   \
   (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
 #define DRC_PARAM_SCALE (1)
-#define DRC_SCALING_MAX \
+#define DRC_SCALING_MAX                                                        \
   ((FIXP_DBL)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)127))
 
 #define DRC_BLOCK_LEN (1024)
@@ -226,126 +226,125 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
   switch (param) {
-    case DRC_CUT_SCALE:
-      /* set attenuation scale factor */
-      if ((value < 0) || (value > DRC_MAX_QUANT_FACTOR)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.usrCut = (FIXP_DBL)(
-          (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
-      self->update = 1;
-      break;
-    case DRC_BOOST_SCALE:
-      /* set boost factor */
-      if ((value < 0) || (value > DRC_MAX_QUANT_FACTOR)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.usrBoost = (FIXP_DBL)(
-          (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
-      self->update = 1;
-      break;
-    case TARGET_REF_LEVEL:
-      if (value > MAX_REFERENCE_LEVEL || value < -MAX_REFERENCE_LEVEL) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      if (value < 0) {
-        self->params.applyDigitalNorm = OFF;
-        self->params.targetRefLevel = -1;
-      } else {
-        /* ref_level must be between 0 and MAX_REFERENCE_LEVEL, inclusive */
-        self->params.applyDigitalNorm = ON;
-        if (self->params.targetRefLevel != (SCHAR)value) {
-          self->params.targetRefLevel = (SCHAR)value;
-          self->progRefLevel = (SCHAR)value; /* Always set the program reference
-                                                level equal to the target level
-                                                according to 4.5.2.7.3 of
-                                                ISO/IEC 14496-3. */
-        }
-        self->update = 1;
-      }
-      break;
-    case APPLY_NORMALIZATION:
-      if ((value != OFF) && (value != ON)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      /* Store new parameter value */
-      self->params.applyDigitalNorm = (UCHAR)value;
-      break;
-    case APPLY_HEAVY_COMPRESSION:
-      if ((value != OFF) && (value != ON)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      /* Store new parameter value */
-      self->params.usrApplyHeavyCompression = (UCHAR)value;
-      self->update = 1;
-      break;
-    case DEFAULT_PRESENTATION_MODE:
-      if (value < AAC_DRC_PARAMETER_HANDLING_DISABLED ||
-          value > AAC_DRC_PRESENTATION_MODE_2_DEFAULT) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.defaultPresentationMode =
-          (AACDEC_DRC_PARAMETER_HANDLING)value;
-      self->update = 1;
-      break;
-    case ENCODER_TARGET_LEVEL:
-      if (value > MAX_REFERENCE_LEVEL || value < 0) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.encoderTargetLevel = (UCHAR)value;
-      self->update = 1;
-      break;
-    case DRC_BS_DELAY:
-      if (value < 0 || value > 1) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.bsDelayEnable = value;
-      break;
-    case DRC_DATA_EXPIRY_FRAME:
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->params.expiryFrame = (value > 0) ? (UINT)value : 0;
-      break;
-    case MAX_OUTPUT_CHANNELS:
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->numOutChannels = (INT)value;
-      self->update = 1;
-      break;
-    case UNIDRC_PRECEDENCE:
-      if (self == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      }
-      self->uniDrcPrecedence = (UCHAR)value;
-      break;
-    default:
+  case DRC_CUT_SCALE:
+    /* set attenuation scale factor */
+    if ((value < 0) || (value > DRC_MAX_QUANT_FACTOR)) {
       return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.usrCut =
+        (FIXP_DBL)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
+    self->update = 1;
+    break;
+  case DRC_BOOST_SCALE:
+    /* set boost factor */
+    if ((value < 0) || (value > DRC_MAX_QUANT_FACTOR)) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.usrBoost =
+        (FIXP_DBL)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
+    self->update = 1;
+    break;
+  case TARGET_REF_LEVEL:
+    if (value > MAX_REFERENCE_LEVEL || value < -MAX_REFERENCE_LEVEL) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    if (value < 0) {
+      self->params.applyDigitalNorm = OFF;
+      self->params.targetRefLevel = -1;
+    } else {
+      /* ref_level must be between 0 and MAX_REFERENCE_LEVEL, inclusive */
+      self->params.applyDigitalNorm = ON;
+      if (self->params.targetRefLevel != (SCHAR)value) {
+        self->params.targetRefLevel = (SCHAR)value;
+        self->progRefLevel = (SCHAR)value; /* Always set the program reference
+                                        level equal to the target level
+                                        according to 4.5.2.7.3 of
+                                        ISO/IEC 14496-3. */
+      }
+      self->update = 1;
+    }
+    break;
+  case APPLY_NORMALIZATION:
+    if ((value != OFF) && (value != ON)) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    /* Store new parameter value */
+    self->params.applyDigitalNorm = (UCHAR)value;
+    break;
+  case APPLY_HEAVY_COMPRESSION:
+    if ((value != OFF) && (value != ON)) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    /* Store new parameter value */
+    self->params.usrApplyHeavyCompression = (UCHAR)value;
+    self->update = 1;
+    break;
+  case DEFAULT_PRESENTATION_MODE:
+    if (value < AAC_DRC_PARAMETER_HANDLING_DISABLED ||
+        value > AAC_DRC_PRESENTATION_MODE_2_DEFAULT) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.defaultPresentationMode = (AACDEC_DRC_PARAMETER_HANDLING)value;
+    self->update = 1;
+    break;
+  case ENCODER_TARGET_LEVEL:
+    if (value > MAX_REFERENCE_LEVEL || value < 0) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.encoderTargetLevel = (UCHAR)value;
+    self->update = 1;
+    break;
+  case DRC_BS_DELAY:
+    if (value < 0 || value > 1) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.bsDelayEnable = value;
+    break;
+  case DRC_DATA_EXPIRY_FRAME:
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->params.expiryFrame = (value > 0) ? (UINT)value : 0;
+    break;
+  case MAX_OUTPUT_CHANNELS:
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->numOutChannels = (INT)value;
+    self->update = 1;
+    break;
+  case UNIDRC_PRECEDENCE:
+    if (self == NULL) {
+      return AAC_DEC_INVALID_HANDLE;
+    }
+    self->uniDrcPrecedence = (UCHAR)value;
+    break;
+  default:
+    return AAC_DEC_SET_PARAM_FAIL;
   } /* switch(param) */
 
   return ErrorStatus;
@@ -399,104 +398,102 @@ int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
   bsStartPos = FDKgetValidBits(bs);
 
   switch (type) {
-    case MPEG_DRC_EXT_DATA: {
-      bitCnt = 4;
+  case MPEG_DRC_EXT_DATA: {
+    bitCnt = 4;
 
-      if (FDKreadBits(bs, 1)) { /* pce_tag_present */
-        FDKreadBits(bs, 8);     /* pce_instance_tag + drc_tag_reserved_bits */
-        bitCnt += 8;
-      }
-
-      if (FDKreadBits(bs, 1)) { /* excluded_chns_present */
-        FDKreadBits(bs, 7);     /* exclude mask [0..7] */
-        bitCnt += 8;
-        while (FDKreadBits(bs, 1)) { /* additional_excluded_chns */
-          FDKreadBits(bs, 7);        /* exclude mask [x..y] */
-          bitCnt += 8;
-        }
-      }
-
-      if (FDKreadBits(bs, 1)) {         /* drc_bands_present */
-        numBands += FDKreadBits(bs, 4); /* drc_band_incr */
-        FDKreadBits(bs, 4);             /* reserved */
-        bitCnt += 8;
-        for (i = 0; i < numBands; i++) {
-          FDKreadBits(bs, 8); /* drc_band_top[i] */
-          bitCnt += 8;
-        }
-      }
-
-      if (FDKreadBits(bs, 1)) { /* prog_ref_level_present */
-        FDKreadBits(bs, 8); /* prog_ref_level + prog_ref_level_reserved_bits */
-        bitCnt += 8;
-      }
-
-      for (i = 0; i < numBands; i++) {
-        FDKreadBits(bs, 8); /* dyn_rng_sgn[i] + dyn_rng_ctl[i] */
-        bitCnt += 8;
-      }
-
-      if ((self->numPayloads < MAX_DRC_THREADS) &&
-          ((INT)FDKgetValidBits(bs) >= 0)) {
-        self->drcPayloadPosition[self->numPayloads++] = bsStartPos;
-      }
-    } break;
-
-    case DVB_DRC_ANC_DATA:
+    if (FDKreadBits(bs, 1)) { /* pce_tag_present */
+      FDKreadBits(bs, 8);     /* pce_instance_tag + drc_tag_reserved_bits */
       bitCnt += 8;
-      /* check sync word */
-      if (FDKreadBits(bs, 8) == DVB_ANC_DATA_SYNC_BYTE) {
-        int dmxLevelsPresent, compressionPresent;
-        int coarseGrainTcPresent, fineGrainTcPresent;
+    }
 
-        /* bs_info field */
-        FDKreadBits(
-            bs,
-            8); /* mpeg_audio_type, dolby_surround_mode, presentation_mode */
+    if (FDKreadBits(bs, 1)) { /* excluded_chns_present */
+      FDKreadBits(bs, 7);     /* exclude mask [0..7] */
+      bitCnt += 8;
+      while (FDKreadBits(bs, 1)) { /* additional_excluded_chns */
+        FDKreadBits(bs, 7);        /* exclude mask [x..y] */
         bitCnt += 8;
-
-        /* Evaluate ancillary_data_status */
-        FDKreadBits(bs, 3); /* reserved, set to 0 */
-        dmxLevelsPresent =
-            FDKreadBits(bs, 1); /* downmixing_levels_MPEG4_status */
-        FDKreadBits(bs, 1);     /* reserved, set to 0 */
-        compressionPresent =
-            FDKreadBits(bs, 1); /* audio_coding_mode_and_compression status */
-        coarseGrainTcPresent =
-            FDKreadBits(bs, 1); /* coarse_grain_timecode_status */
-        fineGrainTcPresent =
-            FDKreadBits(bs, 1); /* fine_grain_timecode_status */
-        bitCnt += 8;
-
-        /* MPEG4 downmixing levels */
-        if (dmxLevelsPresent) {
-          FDKreadBits(bs, 8); /* downmixing_levels_MPEG4 */
-          bitCnt += 8;
-        }
-        /* audio coding mode and compression status */
-        if (compressionPresent) {
-          FDKreadBits(bs, 16); /* audio_coding_mode, Compression_value */
-          bitCnt += 16;
-        }
-        /* coarse grain timecode */
-        if (coarseGrainTcPresent) {
-          FDKreadBits(bs, 16); /* coarse_grain_timecode */
-          bitCnt += 16;
-        }
-        /* fine grain timecode */
-        if (fineGrainTcPresent) {
-          FDKreadBits(bs, 16); /* fine_grain_timecode */
-          bitCnt += 16;
-        }
-        if (!self->dvbAncDataAvailable && ((INT)FDKgetValidBits(bs) >= 0)) {
-          self->dvbAncDataPosition = bsStartPos;
-          self->dvbAncDataAvailable = 1;
-        }
       }
-      break;
+    }
 
-    default:
-      break;
+    if (FDKreadBits(bs, 1)) {         /* drc_bands_present */
+      numBands += FDKreadBits(bs, 4); /* drc_band_incr */
+      FDKreadBits(bs, 4);             /* reserved */
+      bitCnt += 8;
+      for (i = 0; i < numBands; i++) {
+        FDKreadBits(bs, 8); /* drc_band_top[i] */
+        bitCnt += 8;
+      }
+    }
+
+    if (FDKreadBits(bs, 1)) { /* prog_ref_level_present */
+      FDKreadBits(bs, 8); /* prog_ref_level + prog_ref_level_reserved_bits */
+      bitCnt += 8;
+    }
+
+    for (i = 0; i < numBands; i++) {
+      FDKreadBits(bs, 8); /* dyn_rng_sgn[i] + dyn_rng_ctl[i] */
+      bitCnt += 8;
+    }
+
+    if ((self->numPayloads < MAX_DRC_THREADS) &&
+        ((INT)FDKgetValidBits(bs) >= 0)) {
+      self->drcPayloadPosition[self->numPayloads++] = bsStartPos;
+    }
+  } break;
+
+  case DVB_DRC_ANC_DATA:
+    bitCnt += 8;
+    /* check sync word */
+    if (FDKreadBits(bs, 8) == DVB_ANC_DATA_SYNC_BYTE) {
+      int dmxLevelsPresent, compressionPresent;
+      int coarseGrainTcPresent, fineGrainTcPresent;
+
+      /* bs_info field */
+      FDKreadBits(
+          bs, 8); /* mpeg_audio_type, dolby_surround_mode, presentation_mode */
+      bitCnt += 8;
+
+      /* Evaluate ancillary_data_status */
+      FDKreadBits(bs, 3); /* reserved, set to 0 */
+      dmxLevelsPresent =
+          FDKreadBits(bs, 1); /* downmixing_levels_MPEG4_status */
+      FDKreadBits(bs, 1);     /* reserved, set to 0 */
+      compressionPresent =
+          FDKreadBits(bs, 1); /* audio_coding_mode_and_compression status */
+      coarseGrainTcPresent =
+          FDKreadBits(bs, 1); /* coarse_grain_timecode_status */
+      fineGrainTcPresent = FDKreadBits(bs, 1); /* fine_grain_timecode_status */
+      bitCnt += 8;
+
+      /* MPEG4 downmixing levels */
+      if (dmxLevelsPresent) {
+        FDKreadBits(bs, 8); /* downmixing_levels_MPEG4 */
+        bitCnt += 8;
+      }
+      /* audio coding mode and compression status */
+      if (compressionPresent) {
+        FDKreadBits(bs, 16); /* audio_coding_mode, Compression_value */
+        bitCnt += 16;
+      }
+      /* coarse grain timecode */
+      if (coarseGrainTcPresent) {
+        FDKreadBits(bs, 16); /* coarse_grain_timecode */
+        bitCnt += 16;
+      }
+      /* fine grain timecode */
+      if (fineGrainTcPresent) {
+        FDKreadBits(bs, 16); /* fine_grain_timecode */
+        bitCnt += 16;
+      }
+      if (!self->dvbAncDataAvailable && ((INT)FDKgetValidBits(bs) >= 0)) {
+        self->dvbAncDataPosition = bsStartPos;
+        self->dvbAncDataAvailable = 1;
+      }
+    }
+    break;
+
+  default:
+    break;
   }
 
   return (bitCnt);
@@ -711,9 +708,9 @@ static int aacDecoder_drcExtractAndMap(
   }
   self->numPayloads = 0;
 
-  if (self->dvbAncDataAvailable &&
-      self->numThreads < MAX_DRC_THREADS) { /* Append a DVB heavy compression
-                                               payload thread if available. */
+  if (self->dvbAncDataAvailable && self->numThreads < MAX_DRC_THREADS) {
+    /* Append a DVB heavy compression
+                                             payload thread if available. */
 
     /* Init payload data chunk. The memclear is very important because it
        initializes the most values. Without it the module wouldn't work properly
@@ -741,11 +738,11 @@ static int aacDecoder_drcExtractAndMap(
     int numExclChns = 0;
 
     switch ((AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType) {
-      default:
-        continue;
-      case MPEG_DRC_EXT_DATA:
-      case DVB_DRC_ANC_DATA:
-        break;
+    default:
+      continue;
+    case MPEG_DRC_EXT_DATA:
+    case DVB_DRC_ANC_DATA:
+      break;
     }
 
     if (pThreadBs->pceInstanceTag >= 0) { /* if PCE tag present */
@@ -821,9 +818,9 @@ static int aacDecoder_drcExtractAndMap(
 
   /* Increment and check expiry counter for the program reference level: */
   if ((pParams->expiryFrame > 0) &&
-      (self->prlExpiryCount++ >
-       pParams->expiryFrame)) { /* The program reference level is too old, so
-                                   set it back to the target level. */
+      (self->prlExpiryCount++ > pParams->expiryFrame)) {
+    /* The program reference level is too old, so
+                                set it back to the target level. */
     self->progRefLevelPresent = 0;
     self->progRefLevel = pParams->targetRefLevel;
     self->prlExpiryCount = 0;
@@ -1087,11 +1084,14 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
 
   p = &self->params;
 
-  if (self->progRefLevel != prevDrcProgRefLevel) self->update = 1;
+  if (self->progRefLevel != prevDrcProgRefLevel)
+    self->update = 1;
 
-  if (self->presMode != prevDrcPresMode) self->update = 1;
+  if (self->presMode != prevDrcPresMode)
+    self->update = 1;
 
-  if (self->prevAacNumChannels != aacNumChannels) self->update = 1;
+  if (self->prevAacNumChannels != aacNumChannels)
+    self->update = 1;
 
   /* return if no relevant parameter has changed */
   if (!self->update) {
@@ -1107,8 +1107,9 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
 
   if ((self->presMode == 1) || (self->presMode == 2)) {
     drcParameterHandling = (AACDEC_DRC_PARAMETER_HANDLING)self->presMode;
-  } else { /* no presentation mode -> use parameter handling specified by
-              AAC_DRC_DEFAULT_PRESENTATION_MODE */
+  } else {
+    /* no presentation mode -> use parameter handling specified by
+                AAC_DRC_DEFAULT_PRESENTATION_MODE */
     drcParameterHandling = p->defaultPresentationMode;
   }
 
@@ -1118,121 +1119,121 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
   p->applyHeavyCompression = p->usrApplyHeavyCompression;
 
   switch (drcParameterHandling) {
-    case DISABLED_PARAMETER_HANDLING:
-    default:
-      /* use drc parameters as requested */
-      break;
+  case DISABLED_PARAMETER_HANDLING:
+  default:
+    /* use drc parameters as requested */
+    break;
 
-    case ENABLED_PARAMETER_HANDLING:
-      /* dDmx: estimated headroom reduction due to downmix, format: -1/4*dB
-         dDmx = floor(-4*20*log10(aacNumChannels/numOutChannels)) */
-      if (isDownmix) {
-        FIXP_DBL dmxTmp;
-        int e_log, e_mult;
-        dmxTmp = fDivNorm(self->numOutChannels,
-                          aacNumChannels); /* inverse division ->
-                                              negative sign after
-                                              logarithm */
-        dmxTmp = fLog2(dmxTmp, 0, &e_log);
-        dmxTmp = fMultNorm(
-            dmxTmp, FL2FXCONST_DBL(4.0f * 20.0f * 0.30103f / (float)(1 << 5)),
-            &e_mult); /* e = e_log + e_mult + 5 */
-        dDmx = (int)scaleValue(dmxTmp, e_log + e_mult + 5 - (DFRACT_BITS - 1));
+  case ENABLED_PARAMETER_HANDLING:
+    /* dDmx: estimated headroom reduction due to downmix, format: -1/4*dB
+       dDmx = floor(-4*20*log10(aacNumChannels/numOutChannels)) */
+    if (isDownmix) {
+      FIXP_DBL dmxTmp;
+      int e_log, e_mult;
+      dmxTmp =
+          fDivNorm(self->numOutChannels, aacNumChannels); /* inverse division ->
+                                                         negative sign after
+                                                         logarithm */
+      dmxTmp = fLog2(dmxTmp, 0, &e_log);
+      dmxTmp = fMultNorm(
+          dmxTmp, FL2FXCONST_DBL(4.0f * 20.0f * 0.30103f / (float)(1 << 5)),
+          &e_mult); /* e = e_log + e_mult + 5 */
+      dDmx = (int)scaleValue(dmxTmp, e_log + e_mult + 5 - (DFRACT_BITS - 1));
+    } else {
+      dDmx = 0;
+    }
+
+    /* dHr: Full estimated (decoder) headroom reduction due to loudness
+     * normalisation (DTL - PRL) and downmix. Format: -1/4*dB */
+    if (p->targetRefLevel >= 0) { /* if target level is provided */
+      dHr = p->targetRefLevel + dDmx - self->progRefLevel;
+    } else {
+      dHr = dDmx;
+    }
+
+    if (dHr < 0) { /* if headroom is reduced */
+      /* Use compression, but as little as possible. */
+      /* eHr: Headroom provided by encoder, format: -1/4 dB */
+      int eHr = fixMin(p->encoderTargetLevel - self->progRefLevel, 0);
+      if (eHr <
+          dHr) { /* if encoder provides more headroom than decoder needs */
+        /* derive scaling of light DRC */
+        FIXP_DBL calcFactor_norm;
+        INT calcFactor; /* fraction of DRC gains that is minimally needed for
+                     clipping prevention */
+        calcFactor_norm =
+            fDivNorm(-dHr, -eHr); /* 0.0 < calcFactor_norm < 1.0 */
+        calcFactor_norm = calcFactor_norm >> DRC_PARAM_SCALE;
+        /* quantize to 128 steps */
+        calcFactor = convert_drcParam(
+            calcFactor_norm); /* convert to integer value between 0 and 127 */
+        calcFactor_norm = (FIXP_DBL)(
+            (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * calcFactor);
+        p->cut = (calcFactor_norm > p->cut)
+                     ? calcFactor_norm
+                     : p->cut; /* use calcFactor_norm as lower limit */
       } else {
-        dDmx = 0;
-      }
-
-      /* dHr: Full estimated (decoder) headroom reduction due to loudness
-       * normalisation (DTL - PRL) and downmix. Format: -1/4*dB */
-      if (p->targetRefLevel >= 0) { /* if target level is provided */
-        dHr = p->targetRefLevel + dDmx - self->progRefLevel;
-      } else {
-        dHr = dDmx;
-      }
-
-      if (dHr < 0) { /* if headroom is reduced */
-        /* Use compression, but as little as possible. */
-        /* eHr: Headroom provided by encoder, format: -1/4 dB */
-        int eHr = fixMin(p->encoderTargetLevel - self->progRefLevel, 0);
-        if (eHr <
-            dHr) { /* if encoder provides more headroom than decoder needs */
-          /* derive scaling of light DRC */
-          FIXP_DBL calcFactor_norm;
-          INT calcFactor; /* fraction of DRC gains that is minimally needed for
-                             clipping prevention */
-          calcFactor_norm =
-              fDivNorm(-dHr, -eHr); /* 0.0 < calcFactor_norm < 1.0 */
-          calcFactor_norm = calcFactor_norm >> DRC_PARAM_SCALE;
-          /* quantize to 128 steps */
-          calcFactor = convert_drcParam(
-              calcFactor_norm); /* convert to integer value between 0 and 127 */
-          calcFactor_norm = (FIXP_DBL)(
-              (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * calcFactor);
-          p->cut = (calcFactor_norm > p->cut)
-                       ? calcFactor_norm
-                       : p->cut; /* use calcFactor_norm as lower limit */
-        } else {
-          /* encoder provides equal or less headroom than decoder needs */
-          /* the time domain limiter must always be active in this case. It is
-           * assumed that the framework activates it by default */
-          p->cut = DRC_SCALING_MAX;
-          if ((dHr - eHr) <=
-              -4 * DRC_HEAVY_THRESHOLD_DB) { /* use heavy compression if
-                                                headroom deficit is equal or
-                                                higher than
-                                                DRC_HEAVY_THRESHOLD_DB */
-            p->applyHeavyCompression = ON;
-          }
-        }
-      } else { /* dHr >= 0 */
-        /* no restrictions required, as headroom is not reduced. */
-        /* p->cut = p->usrCut; */
-      }
-      break;
-
-      /* presentation mode 1 and 2 according to ETSI TS 101 154:
-         Digital Video Broadcasting (DVB); Specification for the use of Video
-         and Audio Coding in Broadcasting Applications based on the MPEG-2
-         Transport Stream, section C.5.4., "Decoding", and Table C.33. Also
-         according to amendment 4 to ISO/IEC 14496-3, section 4.5.2.14.2.4, and
-         Table AMD4.11. ISO DRC            -> applyHeavyCompression = OFF (Use
-         light compression, MPEG-style) Compression_value  ->
-         applyHeavyCompression = ON  (Use heavy compression, DVB-style) scaling
-         restricted -> p->cut = DRC_SCALING_MAX */
-
-    case DRC_PRESENTATION_MODE_1: /* presentation mode 1, Light:-31/Heavy:-23 */
-      if ((p->targetRefLevel >= 0) &&
-          (p->targetRefLevel <
-           124)) { /* if target level is provided and > -31 dB */
-        /* playback up to -23 dB */
-        p->applyHeavyCompression = ON;
-      } else { /* target level <= -31 dB or not provided */
-        /* playback -31 dB */
-        if (isMonoDownmix || isStereoDownmix) { /* stereo or mono downmixing */
-          p->cut = DRC_SCALING_MAX;
-        }
-      }
-      break;
-
-    case DRC_PRESENTATION_MODE_2: /* presentation mode 2, Light:-23/Heavy:-23 */
-      if ((p->targetRefLevel >= 0) &&
-          (p->targetRefLevel <
-           124)) { /* if target level is provided and > -31 dB */
-        /* playback up to -23 dB */
-        if (isMonoDownmix) { /* if mono downmix */
+        /* encoder provides equal or less headroom than decoder needs */
+        /* the time domain limiter must always be active in this case. It is
+         * assumed that the framework activates it by default */
+        p->cut = DRC_SCALING_MAX;
+        if ((dHr - eHr) <= -4 * DRC_HEAVY_THRESHOLD_DB) {
+          /* use heavy compression if
+                                            headroom deficit is equal or
+                                            higher than
+                                            DRC_HEAVY_THRESHOLD_DB */
           p->applyHeavyCompression = ON;
-        } else {
-          p->applyHeavyCompression = OFF;
-          p->cut = DRC_SCALING_MAX;
-        }
-      } else { /* target level <= -31 dB or not provided */
-        /* playback -31 dB */
-        p->applyHeavyCompression = OFF;
-        if (isMonoDownmix || isStereoDownmix) { /* stereo or mono downmixing */
-          p->cut = DRC_SCALING_MAX;
         }
       }
-      break;
+    } else { /* dHr >= 0 */
+             /* no restrictions required, as headroom is not reduced. */
+             /* p->cut = p->usrCut; */
+    }
+    break;
+
+    /* presentation mode 1 and 2 according to ETSI TS 101 154:
+       Digital Video Broadcasting (DVB); Specification for the use of Video
+       and Audio Coding in Broadcasting Applications based on the MPEG-2
+       Transport Stream, section C.5.4., "Decoding", and Table C.33. Also
+       according to amendment 4 to ISO/IEC 14496-3, section 4.5.2.14.2.4, and
+       Table AMD4.11. ISO DRC            -> applyHeavyCompression = OFF (Use
+       light compression, MPEG-style) Compression_value  ->
+       applyHeavyCompression = ON  (Use heavy compression, DVB-style) scaling
+       restricted -> p->cut = DRC_SCALING_MAX */
+
+  case DRC_PRESENTATION_MODE_1: /* presentation mode 1, Light:-31/Heavy:-23 */
+    if ((p->targetRefLevel >= 0) &&
+        (p->targetRefLevel <
+         124)) { /* if target level is provided and > -31 dB */
+      /* playback up to -23 dB */
+      p->applyHeavyCompression = ON;
+    } else { /* target level <= -31 dB or not provided */
+      /* playback -31 dB */
+      if (isMonoDownmix || isStereoDownmix) { /* stereo or mono downmixing */
+        p->cut = DRC_SCALING_MAX;
+      }
+    }
+    break;
+
+  case DRC_PRESENTATION_MODE_2: /* presentation mode 2, Light:-23/Heavy:-23 */
+    if ((p->targetRefLevel >= 0) &&
+        (p->targetRefLevel <
+         124)) { /* if target level is provided and > -31 dB */
+      /* playback up to -23 dB */
+      if (isMonoDownmix) { /* if mono downmix */
+        p->applyHeavyCompression = ON;
+      } else {
+        p->applyHeavyCompression = OFF;
+        p->cut = DRC_SCALING_MAX;
+      }
+    } else { /* target level <= -31 dB or not provided */
+      /* playback -31 dB */
+      p->applyHeavyCompression = OFF;
+      if (isMonoDownmix || isStereoDownmix) { /* stereo or mono downmixing */
+        p->cut = DRC_SCALING_MAX;
+      }
+    }
+    break;
   } /*  switch (drcParameterHandling) */
 
   /* With heavy compression, there is no scaling.

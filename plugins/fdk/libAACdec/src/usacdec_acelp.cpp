@@ -102,19 +102,19 @@ amm-info@iis.fraunhofer.de
 
 #include "usacdec_acelp.h"
 
+#include "genericStds.h"
 #include "usacdec_ace_d4t64.h"
 #include "usacdec_ace_ltp.h"
-#include "usacdec_rom.h"
 #include "usacdec_lpc.h"
-#include "genericStds.h"
+#include "usacdec_rom.h"
 
 #define PIT_FR2_12k8 128 /* Minimum pitch lag with resolution 1/2      */
 #define PIT_FR1_12k8 160 /* Minimum pitch lag with resolution 1        */
-#define TILT_CODE2 \
+#define TILT_CODE2                                                             \
   FL2FXCONST_SGL(0.3f * 2.0f) /* ACELP code pre-emphasis factor ( *2 )      */
-#define PIT_SHARP \
+#define PIT_SHARP                                                              \
   FL2FXCONST_SGL(0.85f) /* pitch sharpening factor                    */
-#define PREEMPH_FAC \
+#define PREEMPH_FAC                                                            \
   FL2FXCONST_SGL(0.68f) /* ACELP synth pre-emphasis factor            */
 
 #define ACELP_HEADROOM 1
@@ -142,8 +142,8 @@ void E_UTIL_preemph(const FIXP_DBL *in, FIXP_DBL *out, INT L) {
  * vector.
  * \param[in,out] x innovative codebook vector.
  */
-static void Preemph_code(
-    FIXP_COD x[] /* (i/o)   : input signal overwritten by the output */
+static void
+Preemph_code(FIXP_COD x[] /* (i/o)   : input signal overwritten by the output */
 ) {
   int i;
   FIXP_DBL L_tmp;
@@ -161,9 +161,9 @@ static void Preemph_code(
  * \param[in,out] x innovative codebook vector.
  * \param[in] pit_lag decoded pitch lag.
  */
-static void Pit_shrp(
-    FIXP_COD x[], /* in/out: impulse response (or algebraic code) */
-    int pit_lag   /* input : pitch lag                            */
+static void
+Pit_shrp(FIXP_COD x[], /* in/out: impulse response (or algebraic code) */
+         int pit_lag   /* input : pitch lag                            */
 ) {
   int i;
   FIXP_DBL L_tmp;
@@ -177,17 +177,17 @@ static void Pit_shrp(
   return;
 }
 
-  /**
-   * \brief Calculate Quantized codebook gain, Quantized pitch gain and unbiased
-   *        Innovative code vector energy.
-   * \param[in] index index of quantizer.
-   * \param[in] code innovative code vector with exponent = SF_CODE.
-   * \param[out] gain_pit Quantized pitch gain g_p with exponent = SF_GAIN_P.
-   * \param[out] gain_code Quantized codebook gain g_c.
-   * \param[in] mean_ener mean_ener defined in open-loop (2 bits), exponent = 7.
-   * \param[out] E_code unbiased innovative code vector energy.
-   * \param[out] E_code_e exponent of unbiased innovative code vector energy.
-   */
+/**
+ * \brief Calculate Quantized codebook gain, Quantized pitch gain and unbiased
+ *        Innovative code vector energy.
+ * \param[in] index index of quantizer.
+ * \param[in] code innovative code vector with exponent = SF_CODE.
+ * \param[out] gain_pit Quantized pitch gain g_p with exponent = SF_GAIN_P.
+ * \param[out] gain_code Quantized codebook gain g_c.
+ * \param[in] mean_ener mean_ener defined in open-loop (2 bits), exponent = 7.
+ * \param[out] E_code unbiased innovative code vector energy.
+ * \param[out] E_code_e exponent of unbiased innovative code vector energy.
+ */
 
 #define SF_MEAN_ENER_LG10 9
 
@@ -397,9 +397,9 @@ static FIXP_DBL
 noise_enhancer(/* (o) : smoothed gain g_sc                     SF_GAIN_C */
                FIXP_DBL gain_code, /* (i) : Quantized codebook gain SF_GAIN_C */
                FIXP_DBL period_fac, /* (i) : periodicity factor (-1=unvoiced to
-                                       1=voiced), SF_PFAC */
+                                                  1=voiced), SF_PFAC */
                FIXP_SGL stab_fac,   /* (i) : stability factor (0 <= ... < 1.0)
-                                       SF_STAB   */
+                                                  SF_STAB   */
                FIXP_DBL
                    *p_gc_threshold) /* (io): gain of code threshold SF_GAIN_C */
 {
@@ -462,9 +462,9 @@ void BuildAdaptiveExcitation(
     FIXP_DBL period_fac, /* (i) : periodicity factor r_v                Q15 */
     FIXP_DBL exc2[]      /* (o) : post-processed excitation u(n)        Q15 */
 ) {
-/* Note: code[L_SUBFR] and exc2[L_SUBFR] share the same memory!
-         If exc2[i] is written, code[i] will be destroyed!
-*/
+  /* Note: code[L_SUBFR] and exc2[L_SUBFR] share the same memory!
+           If exc2[i] is written, code[i] will be destroyed!
+  */
 #define SF (SF_CODE + SF_GAIN_C + 1 - SF_EXC)
 
   int i;
@@ -756,9 +756,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
   int n;
   int bfi = (numLostSubframes > 0) ? 1 : 0;
 
-  C_ALLOC_SCRATCH_START(
-      exc_buf, FIXP_DBL,
-      PIT_MAX_MAX + L_INTERPOL + L_DIV + 1); /* 411 + 17 + 256 + 1 = 685 */
+  C_ALLOC_SCRATCH_START(exc_buf, FIXP_DBL,
+                        PIT_MAX_MAX + L_INTERPOL + L_DIV +
+                            1); /* 411 + 17 + 256 + 1 = 685 */
   C_ALLOC_SCRATCH_START(syn_buf, FIXP_DBL,
                         M_LP_FILTER_ORDER + L_DIV); /* 16 + 256 = 272 */
   /* use same memory for code[L_SUBFR] and exc2[L_SUBFR] */
@@ -854,9 +854,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
     period_fac =
         calc_period_factor(/* (o) : factor (-1=unvoiced to 1=voiced)    */
                            &exc[i_subfr], /* (i) : pitch excitation, exponent =
-                                             SF_EXC */
+                                                        SF_EXC */
                            gain_pit,      /* (i) : gain of pitch, exponent =
-                                             SF_GAIN_P */
+                                                        SF_GAIN_P */
                            gain_code,     /* (i) : gain of code     */
                            Ener_code,     /* (i) : Energy of code[]     */
                            Ener_code_e);  /* (i) : Exponent of energy of code[]
@@ -872,9 +872,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
         noise_enhancer(/* (o) : smoothed gain g_sc exponent = SF_GAIN_C */
                        gain_code,  /* (i) : Quantized codebook gain  */
                        period_fac, /* (i) : periodicity factor (-1=unvoiced to
-                                      1=voiced)  */
+                                             1=voiced)  */
                        stab_fac,   /* (i) : stability factor (0 <= ... < 1),
-                                      exponent = 1 */
+                                             exponent = 1 */
                        &acelp_mem->gc_threshold);
 
     /* Compute adaptive codebook update u'(n), pitch enhancement c'(n) and
@@ -941,12 +941,12 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
                        const FIXP_SGL stab_fac, INT nLostSf, FIXP_DBL synth[],
                        INT coreCoderFrameLength, UCHAR last_tcx_noise_factor) {
   /* repeat past excitation with pitch from previous decoded TCX frame */
-  C_ALLOC_SCRATCH_START(
-      exc_buf, FIXP_DBL,
-      PIT_MAX_MAX + L_INTERPOL + L_DIV); /* 411 +  17 + 256 + 1 =  */
+  C_ALLOC_SCRATCH_START(exc_buf, FIXP_DBL,
+                        PIT_MAX_MAX + L_INTERPOL +
+                            L_DIV); /* 411 +  17 + 256 + 1 =  */
   C_ALLOC_SCRATCH_START(syn_buf, FIXP_DBL,
                         M_LP_FILTER_ORDER + L_DIV); /* 256 +  16           =  */
-                                                    /*                    +=  */
+  /*                    +=  */
   FIXP_DBL ns_buf[L_DIV + 1];
   FIXP_DBL *syn = syn_buf + M_LP_FILTER_ORDER;
   FIXP_DBL *exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
@@ -1232,61 +1232,61 @@ INT CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
     acelp->T0_frac[sfr] = (UCHAR)T0_frac;
     acelp->ltp_filtering_flag[sfr] = FDKreadBits(hBs, 1);
     switch (nbits) {
-      case 12: /* 12 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 1);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 1);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
-        break;
-      case 16: /* 16 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 1);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
-        break;
-      case 20: /* 20 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
-        break;
-      case 28: /* 28 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
-        break;
-      case 36: /* 36 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 9);
-        break;
-      case 44: /* 44 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 13);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 13);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 9);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 9);
-        break;
-      case 52: /* 52 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 13);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 13);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 13);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 13);
-        break;
-      case 64: /* 64 bits AMR-WB codebook is used */
-        acelp->icb_index[sfr][0] = FDKreadBits(hBs, 2);
-        acelp->icb_index[sfr][1] = FDKreadBits(hBs, 2);
-        acelp->icb_index[sfr][2] = FDKreadBits(hBs, 2);
-        acelp->icb_index[sfr][3] = FDKreadBits(hBs, 2);
-        acelp->icb_index[sfr][4] = FDKreadBits(hBs, 14);
-        acelp->icb_index[sfr][5] = FDKreadBits(hBs, 14);
-        acelp->icb_index[sfr][6] = FDKreadBits(hBs, 14);
-        acelp->icb_index[sfr][7] = FDKreadBits(hBs, 14);
-        break;
-      default:
-        FDK_ASSERT(0);
-        break;
+    case 12: /* 12 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 1);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 1);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
+      break;
+    case 16: /* 16 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 1);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
+      break;
+    case 20: /* 20 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
+      break;
+    case 28: /* 28 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 5);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 5);
+      break;
+    case 36: /* 36 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 9);
+      break;
+    case 44: /* 44 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 13);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 13);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 9);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 9);
+      break;
+    case 52: /* 52 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 13);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 13);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 13);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 13);
+      break;
+    case 64: /* 64 bits AMR-WB codebook is used */
+      acelp->icb_index[sfr][0] = FDKreadBits(hBs, 2);
+      acelp->icb_index[sfr][1] = FDKreadBits(hBs, 2);
+      acelp->icb_index[sfr][2] = FDKreadBits(hBs, 2);
+      acelp->icb_index[sfr][3] = FDKreadBits(hBs, 2);
+      acelp->icb_index[sfr][4] = FDKreadBits(hBs, 14);
+      acelp->icb_index[sfr][5] = FDKreadBits(hBs, 14);
+      acelp->icb_index[sfr][6] = FDKreadBits(hBs, 14);
+      acelp->icb_index[sfr][7] = FDKreadBits(hBs, 14);
+      break;
+    default:
+      FDK_ASSERT(0);
+      break;
     }
     acelp->gains[sfr] = FDKreadBits(hBs, 7);
   }

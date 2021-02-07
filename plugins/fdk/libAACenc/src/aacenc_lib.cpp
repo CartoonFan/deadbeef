@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #include "FDK_audio.h"
 #include "aacenc.h"
 
-#include "aacEnc_ram.h"
 #include "FDK_core.h" /* FDK_tools versioning info */
+#include "aacEnc_ram.h"
 
 /* Encoder library info */
 #define AACENCODER_LIB_VL0 4
@@ -122,12 +122,12 @@ amm-info@iis.fraunhofer.de
 
 #include "pcm_utils.h"
 
-#include "sbr_encoder.h"
 #include "../src/sbrenc_ram.h"
 #include "channel_map.h"
+#include "sbr_encoder.h"
 
-#include "psy_const.h"
 #include "bitenc.h"
+#include "psy_const.h"
 
 #include "tpenc_lib.h"
 
@@ -135,19 +135,19 @@ amm-info@iis.fraunhofer.de
 #include "mps_main.h"
 #include "sacenc_lib.h"
 
-#define SBL(fl) \
-  (fl /         \
+#define SBL(fl)                                                                \
+  (fl /                                                                        \
    8) /*!< Short block length (hardcoded to 8 short blocks per long block) */
-#define BSLA(fl) \
+#define BSLA(fl)                                                               \
   (4 * SBL(fl) + SBL(fl) / 2)         /*!< AAC block switching look-ahead */
 #define DELAY_AAC(fl) (fl + BSLA(fl)) /*!< MDCT + blockswitching */
 #define DELAY_AACLD(fl) (fl) /*!< MDCT delay (no framing delay included) */
-#define DELAY_AACELD(fl) \
+#define DELAY_AACELD(fl)                                                       \
   ((fl) / 2) /*!< ELD FB delay (no framing delay included) */
 
 #define MAX_DS_DELAY (100) /*!< Maximum downsampler delay in SBR. */
-#define INPUTBUFFER_SIZE                                                    \
-  (2 * (1024) + MAX_DS_DELAY + 1537) /*!< Audio input samples + downsampler \
+#define INPUTBUFFER_SIZE                                                       \
+  (2 * (1024) + MAX_DS_DELAY + 1537) /*!< Audio input samples + downsampler    \
                                         delay + sbr/aac delay compensation */
 
 #define DEFAULT_HEADER_PERIOD_REPETITION_RATE                                  \
@@ -187,12 +187,12 @@ typedef struct {
   TRANSPORT_TYPE userTpType; /*!< Transport type */
   UCHAR userTpSignaling;     /*!< Extension AOT signaling mode. */
   UCHAR userTpNsubFrames;    /*!< Number of sub frames in a transport frame for
-                                LOAS/LATM or ADTS (default 1). */
+                              LOAS/LATM or ADTS (default 1). */
   UCHAR userTpAmxv; /*!< AudioMuxVersion to be used for LATM (default 0). */
   UCHAR userTpProtection;
   UCHAR userTpHeaderPeriod; /*!< Parameter used to configure LATM/LOAS SMC rate.
-                               Moreover this parameters is used to configure
-                               repetition rate of PCE in raw_data_block. */
+                             Moreover this parameters is used to configure
+                             repetition rate of PCE in raw_data_block. */
 
   UCHAR userErTools;     /*!< Use VCB11, HCR and/or RVLC ER tool. */
   UINT userPceAdditions; /*!< Configure additional bits in PCE. */
@@ -238,8 +238,8 @@ struct AACENCODER {
   /* Meta Data */
   HANDLE_FDK_METADATA_ENCODER hMetadataEnc;
   INT metaDataAllowed; /* Signal whether chosen configuration allows metadata.
-                          Necessary for delay compensation. Metadata mode is a
-                          separate parameter. */
+                        Necessary for delay compensation. Metadata mode is a
+                        separate parameter. */
 
   HANDLE_MPS_ENCODER hMpsEnc;
 
@@ -287,8 +287,8 @@ typedef struct {
 
   /* output*/
   UCHAR sbrMode;       /*!< 0: ELD sbr off,
-                            1: ELD with downsampled sbr,
-                            2: ELD with dualrate sbr. */
+                          1: ELD with downsampled sbr,
+                          2: ELD with dualrate sbr. */
   CHANNEL_MODE chMode; /*!< Channel mode. */
 
 } ELD_SBR_CONFIGURATOR;
@@ -389,8 +389,9 @@ static inline INT isPsActive(const AUDIO_OBJECT_TYPE audioObjectType) {
   return (psUsed);
 }
 
-static CHANNEL_MODE GetCoreChannelMode(
-    const CHANNEL_MODE channelMode, const AUDIO_OBJECT_TYPE audioObjectType) {
+static CHANNEL_MODE
+GetCoreChannelMode(const CHANNEL_MODE channelMode,
+                   const AUDIO_OBJECT_TYPE audioObjectType) {
   CHANNEL_MODE mappedChannelMode = channelMode;
   if ((isPsActive(audioObjectType) && (channelMode == MODE_2)) ||
       (channelMode == MODE_212)) {
@@ -399,9 +400,10 @@ static CHANNEL_MODE GetCoreChannelMode(
   return mappedChannelMode;
 }
 
-static SBR_PS_SIGNALING getSbrSignalingMode(
-    const AUDIO_OBJECT_TYPE audioObjectType, const TRANSPORT_TYPE transportType,
-    const UCHAR transportSignaling, const UINT sbrRatio)
+static SBR_PS_SIGNALING
+getSbrSignalingMode(const AUDIO_OBJECT_TYPE audioObjectType,
+                    const TRANSPORT_TYPE transportType,
+                    const UCHAR transportSignaling, const UINT sbrRatio)
 
 {
   SBR_PS_SIGNALING sbrSignaling;
@@ -419,27 +421,27 @@ static SBR_PS_SIGNALING getSbrSignalingMode(
       (audioObjectType == AOT_PS) || (audioObjectType == AOT_MP2_AAC_LC) ||
       (audioObjectType == AOT_MP2_SBR)) {
     switch (transportType) {
-      case TT_MP4_ADIF:
-      case TT_MP4_ADTS:
-        sbrSignaling = SIG_IMPLICIT; /* For MPEG-2 transport types, only
-                                        implicit signaling is possible */
-        break;
+    case TT_MP4_ADIF:
+    case TT_MP4_ADTS:
+      sbrSignaling = SIG_IMPLICIT; /* For MPEG-2 transport types, only
+                                  implicit signaling is possible */
+      break;
 
-      case TT_MP4_RAW:
-      case TT_MP4_LATM_MCP1:
-      case TT_MP4_LATM_MCP0:
-      case TT_MP4_LOAS:
-      default:
-        if (transportSignaling == 0xFF) {
-          /* Defaults */
-          sbrSignaling = SIG_EXPLICIT_HIERARCHICAL;
-        } else {
-          /* User set parameters */
-          /* Attention: Backward compatible explicit signaling does only work
-           * with AMV1 for LATM/LOAS */
-          sbrSignaling = (SBR_PS_SIGNALING)transportSignaling;
-        }
-        break;
+    case TT_MP4_RAW:
+    case TT_MP4_LATM_MCP1:
+    case TT_MP4_LATM_MCP0:
+    case TT_MP4_LOAS:
+    default:
+      if (transportSignaling == 0xFF) {
+        /* Defaults */
+        sbrSignaling = SIG_EXPLICIT_HIERARCHICAL;
+      } else {
+        /* User set parameters */
+        /* Attention: Backward compatible explicit signaling does only work
+         * with AMV1 for LATM/LOAS */
+        sbrSignaling = (SBR_PS_SIGNALING)transportSignaling;
+      }
+      break;
     }
   }
 
@@ -471,15 +473,15 @@ static void FDKaacEnc_MapConfig(CODER_CONFIG *const cc,
 
   /* Map virtual aot to transport aot. */
   switch (hAacConfig->audioObjectType) {
-    case AOT_MP2_AAC_LC:
-      transport_AOT = AOT_AAC_LC;
-      break;
-    case AOT_MP2_SBR:
-      transport_AOT = AOT_SBR;
-      cc->flags |= CC_SBR;
-      break;
-    default:
-      transport_AOT = hAacConfig->audioObjectType;
+  case AOT_MP2_AAC_LC:
+    transport_AOT = AOT_AAC_LC;
+    break;
+  case AOT_MP2_SBR:
+    transport_AOT = AOT_SBR;
+    cc->flags |= CC_SBR;
+    break;
+  default:
+    transport_AOT = hAacConfig->audioObjectType;
   }
 
   if (hAacConfig->audioObjectType == AOT_ER_AAC_ELD) {
@@ -535,25 +537,25 @@ static void FDKaacEnc_MapConfig(CODER_CONFIG *const cc,
     cc->headerPeriod = extCfg->userTpHeaderPeriod;
   } else { /* auto-mode */
     switch (extCfg->userTpType) {
-      case TT_MP4_ADTS:
-      case TT_MP4_LOAS:
-      case TT_MP4_LATM_MCP1:
-        cc->headerPeriod = DEFAULT_HEADER_PERIOD_REPETITION_RATE;
-        break;
-      default:
-        cc->headerPeriod = 0;
+    case TT_MP4_ADTS:
+    case TT_MP4_LOAS:
+    case TT_MP4_LATM_MCP1:
+      cc->headerPeriod = DEFAULT_HEADER_PERIOD_REPETITION_RATE;
+      break;
+    default:
+      cc->headerPeriod = 0;
     }
   }
 
   /* Mpeg-4 signaling for transport library. */
   switch (hAacConfig->audioObjectType) {
-    case AOT_MP2_AAC_LC:
-    case AOT_MP2_SBR:
-      cc->flags &= ~CC_MPEG_ID; /* Required for ADTS. */
-      cc->extAOT = AOT_NULL_OBJECT;
-      break;
-    default:
-      cc->flags |= CC_MPEG_ID;
+  case AOT_MP2_AAC_LC:
+  case AOT_MP2_SBR:
+    cc->flags &= ~CC_MPEG_ID; /* Required for ADTS. */
+    cc->extAOT = AOT_NULL_OBJECT;
+    break;
+  default:
+    cc->flags |= CC_MPEG_ID;
   }
 
   /* ER-tools signaling. */
@@ -888,7 +890,7 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
   }
   if (config->userDownscaleFactor > 1 && config->userSbrEnabled == 1) {
     return AACENC_INVALID_CONFIG; /* downscaling only allowed for AOT_ER_AAC_ELD
-                                     w/o SBR */
+                                 w/o SBR */
   }
   if (config->userDownscaleFactor > 1 && config->userChannelMode == 128) {
     return AACENC_INVALID_CONFIG; /* disallow downscaling for AAC-ELDv2 */
@@ -904,74 +906,71 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
 
   /* Adapt internal AOT when necessary. */
   switch (config->userAOT) {
-    case AOT_MP2_AAC_LC:
-    case AOT_MP2_SBR:
-      hAacConfig->usePns = 0;
-      FDK_FALLTHROUGH;
-    case AOT_AAC_LC:
-    case AOT_SBR:
-    case AOT_PS:
-      config->userTpType =
-          (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_ADTS;
-      hAacConfig->framelength = (config->userFramelength != (UINT)-1)
-                                    ? config->userFramelength
-                                    : 1024;
-      if (hAacConfig->framelength != 1024 && hAacConfig->framelength != 960) {
-        return AACENC_INVALID_CONFIG;
-      }
+  case AOT_MP2_AAC_LC:
+  case AOT_MP2_SBR:
+    hAacConfig->usePns = 0;
+    FDK_FALLTHROUGH;
+  case AOT_AAC_LC:
+  case AOT_SBR:
+  case AOT_PS:
+    config->userTpType =
+        (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_ADTS;
+    hAacConfig->framelength =
+        (config->userFramelength != (UINT)-1) ? config->userFramelength : 1024;
+    if (hAacConfig->framelength != 1024 && hAacConfig->framelength != 960) {
+      return AACENC_INVALID_CONFIG;
+    }
+    break;
+  case AOT_ER_AAC_LD:
+    hAacConfig->epConfig = 0;
+    hAacConfig->syntaxFlags |= AC_ER | AC_LD;
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x1) ? AC_ER_VCB11 : 0);
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x2) ? AC_ER_HCR : 0);
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x4) ? AC_ER_RVLC : 0);
+    config->userTpType =
+        (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_LOAS;
+    hAacConfig->framelength =
+        (config->userFramelength != (UINT)-1) ? config->userFramelength : 512;
+    if (hAacConfig->framelength != 512 && hAacConfig->framelength != 480) {
+      return AACENC_INVALID_CONFIG;
+    }
+    break;
+  case AOT_ER_AAC_ELD:
+    hAacConfig->epConfig = 0;
+    hAacConfig->syntaxFlags |= AC_ER | AC_ELD;
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x1) ? AC_ER_VCB11 : 0);
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x2) ? AC_ER_HCR : 0);
+    hAacConfig->syntaxFlags |= ((config->userErTools & 0x4) ? AC_ER_RVLC : 0);
+    hAacConfig->syntaxFlags |=
+        ((config->userSbrEnabled == 1) ? AC_SBR_PRESENT : 0);
+    hAacConfig->syntaxFlags |=
+        ((config->userChannelMode == MODE_212) ? AC_LD_MPS : 0);
+    config->userTpType =
+        (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_LOAS;
+    hAacConfig->framelength =
+        (config->userFramelength != (UINT)-1) ? config->userFramelength : 512;
+
+    hAacConfig->downscaleFactor = config->userDownscaleFactor;
+
+    switch (config->userDownscaleFactor) {
+    case 1:
       break;
-    case AOT_ER_AAC_LD:
-      hAacConfig->epConfig = 0;
-      hAacConfig->syntaxFlags |= AC_ER | AC_LD;
-      hAacConfig->syntaxFlags |=
-          ((config->userErTools & 0x1) ? AC_ER_VCB11 : 0);
-      hAacConfig->syntaxFlags |= ((config->userErTools & 0x2) ? AC_ER_HCR : 0);
-      hAacConfig->syntaxFlags |= ((config->userErTools & 0x4) ? AC_ER_RVLC : 0);
-      config->userTpType =
-          (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_LOAS;
-      hAacConfig->framelength =
-          (config->userFramelength != (UINT)-1) ? config->userFramelength : 512;
-      if (hAacConfig->framelength != 512 && hAacConfig->framelength != 480) {
-        return AACENC_INVALID_CONFIG;
-      }
-      break;
-    case AOT_ER_AAC_ELD:
-      hAacConfig->epConfig = 0;
-      hAacConfig->syntaxFlags |= AC_ER | AC_ELD;
-      hAacConfig->syntaxFlags |=
-          ((config->userErTools & 0x1) ? AC_ER_VCB11 : 0);
-      hAacConfig->syntaxFlags |= ((config->userErTools & 0x2) ? AC_ER_HCR : 0);
-      hAacConfig->syntaxFlags |= ((config->userErTools & 0x4) ? AC_ER_RVLC : 0);
-      hAacConfig->syntaxFlags |=
-          ((config->userSbrEnabled == 1) ? AC_SBR_PRESENT : 0);
-      hAacConfig->syntaxFlags |=
-          ((config->userChannelMode == MODE_212) ? AC_LD_MPS : 0);
-      config->userTpType =
-          (config->userTpType != TT_UNKNOWN) ? config->userTpType : TT_MP4_LOAS;
-      hAacConfig->framelength =
-          (config->userFramelength != (UINT)-1) ? config->userFramelength : 512;
-
-      hAacConfig->downscaleFactor = config->userDownscaleFactor;
-
-      switch (config->userDownscaleFactor) {
-        case 1:
-          break;
-        case 2:
-        case 4:
-          hAacConfig->syntaxFlags |= AC_ELD_DOWNSCALE;
-          break;
-        default:
-          return AACENC_INVALID_CONFIG;
-      }
-
-      if (hAacConfig->framelength != 512 && hAacConfig->framelength != 480 &&
-          hAacConfig->framelength != 256 && hAacConfig->framelength != 240 &&
-          hAacConfig->framelength != 128 && hAacConfig->framelength != 120) {
-        return AACENC_INVALID_CONFIG;
-      }
+    case 2:
+    case 4:
+      hAacConfig->syntaxFlags |= AC_ELD_DOWNSCALE;
       break;
     default:
-      break;
+      return AACENC_INVALID_CONFIG;
+    }
+
+    if (hAacConfig->framelength != 512 && hAacConfig->framelength != 480 &&
+        hAacConfig->framelength != 256 && hAacConfig->framelength != 240 &&
+        hAacConfig->framelength != 128 && hAacConfig->framelength != 120) {
+      return AACENC_INVALID_CONFIG;
+    }
+    break;
+  default:
+    break;
   }
 
   /* Initialize SBR parameters */
@@ -997,73 +996,73 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
   hAacConfig->bitRate = config->userBitrate;
 
   switch (hAacConfig->bitrateMode) {
-    case AACENC_BR_MODE_CBR:
-      /* Set default bitrate if no external bitrate declared. */
-      if (config->userBitrate == (UINT)-1) {
-        hAacConfig->bitRate =
-            FDKaacEnc_GetCBRBitrate(hAacConfig, config->userSbrRatio);
-      }
-      hAacConfig->averageBits = -1;
-      break;
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-      /* Get bitrate in VBR configuration */
-      /* In VBR mode; SBR-modul depends on bitrate, core encoder on bitrateMode.
-       */
-      hAacConfig->bitRate = FDKaacEnc_GetVBRBitrate(hAacConfig->bitrateMode,
-                                                    hAacConfig->channelMode);
-      break;
-    default:
-      return AACENC_INVALID_CONFIG;
+  case AACENC_BR_MODE_CBR:
+    /* Set default bitrate if no external bitrate declared. */
+    if (config->userBitrate == (UINT)-1) {
+      hAacConfig->bitRate =
+          FDKaacEnc_GetCBRBitrate(hAacConfig, config->userSbrRatio);
+    }
+    hAacConfig->averageBits = -1;
+    break;
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+    /* Get bitrate in VBR configuration */
+    /* In VBR mode; SBR-modul depends on bitrate, core encoder on bitrateMode.
+     */
+    hAacConfig->bitRate = FDKaacEnc_GetVBRBitrate(hAacConfig->bitrateMode,
+                                                  hAacConfig->channelMode);
+    break;
+  default:
+    return AACENC_INVALID_CONFIG;
   }
 
   /* set bitreservoir size */
   switch (hAacConfig->bitrateMode) {
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-    case AACENC_BR_MODE_CBR:
-      if ((INT)config->userPeakBitrate != -1) {
-        hAacConfig->maxBitsPerFrame =
-            (FDKaacEnc_CalcBitsPerFrame(
-                 fMax(hAacConfig->bitRate, (INT)config->userPeakBitrate),
-                 hAacConfig->framelength, hAacConfig->sampleRate) +
-             7) &
-            ~7;
-      } else {
-        hAacConfig->maxBitsPerFrame = -1;
-      }
-      if (hAacConfig->audioMuxVersion == 2) {
-        hAacConfig->minBitsPerFrame =
-            fMin(32 * 8, FDKaacEnc_CalcBitsPerFrame(hAacConfig->bitRate,
-                                                    hAacConfig->framelength,
-                                                    hAacConfig->sampleRate)) &
-            ~7;
-      }
-      break;
-    default:
-      return AACENC_INVALID_CONFIG;
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+  case AACENC_BR_MODE_CBR:
+    if ((INT)config->userPeakBitrate != -1) {
+      hAacConfig->maxBitsPerFrame =
+          (FDKaacEnc_CalcBitsPerFrame(
+               fMax(hAacConfig->bitRate, (INT)config->userPeakBitrate),
+               hAacConfig->framelength, hAacConfig->sampleRate) +
+           7) &
+          ~7;
+    } else {
+      hAacConfig->maxBitsPerFrame = -1;
+    }
+    if (hAacConfig->audioMuxVersion == 2) {
+      hAacConfig->minBitsPerFrame =
+          fMin(32 * 8, FDKaacEnc_CalcBitsPerFrame(hAacConfig->bitRate,
+                                                  hAacConfig->framelength,
+                                                  hAacConfig->sampleRate)) &
+          ~7;
+    }
+    break;
+  default:
+    return AACENC_INVALID_CONFIG;
   }
 
   /* Max bits per frame limitation depending on transport format. */
   if ((config->userTpNsubFrames > 1)) {
     int maxFrameLength = 8 * hAacEncoder->outBufferInBytes;
     switch (config->userTpType) {
-      case TT_MP4_LOAS:
-        maxFrameLength =
-            fMin(maxFrameLength, 8 * (1 << 13)) / config->userTpNsubFrames;
-        break;
-      case TT_MP4_ADTS:
-        maxFrameLength = fMin(maxFrameLength, 8 * ((1 << 13) - 1)) /
-                         config->userTpNsubFrames;
-        break;
-      default:
-        maxFrameLength = -1;
+    case TT_MP4_LOAS:
+      maxFrameLength =
+          fMin(maxFrameLength, 8 * (1 << 13)) / config->userTpNsubFrames;
+      break;
+    case TT_MP4_ADTS:
+      maxFrameLength =
+          fMin(maxFrameLength, 8 * ((1 << 13) - 1)) / config->userTpNsubFrames;
+      break;
+    default:
+      maxFrameLength = -1;
     }
     if (maxFrameLength != -1) {
       if (hAacConfig->maxBitsPerFrame > maxFrameLength) {
@@ -1124,24 +1123,24 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
   }
 
   switch (hAacConfig->bitrateMode) {
-    case AACENC_BR_MODE_CBR:
-    case AACENC_BR_MODE_VBR_1:
-    case AACENC_BR_MODE_VBR_2:
-    case AACENC_BR_MODE_VBR_3:
-    case AACENC_BR_MODE_VBR_4:
-    case AACENC_BR_MODE_VBR_5:
-      /* We need the frame length to call aacEncoder_LimitBitrate() */
-      if (0 >= (hAacConfig->bitRate = aacEncoder_LimitBitrate(
-                    NULL, hAacConfig->sampleRate, hAacConfig->framelength,
-                    hAacConfig->nChannels, hAacConfig->channelMode,
-                    hAacConfig->bitRate, hAacConfig->nSubFrames,
-                    isSbrActive(hAacConfig), hAacConfig->sbrRatio,
-                    hAacConfig->syntaxFlags, hAacConfig->audioObjectType))) {
-        return AACENC_INVALID_CONFIG;
-      }
-      break;
-    default:
-      break;
+  case AACENC_BR_MODE_CBR:
+  case AACENC_BR_MODE_VBR_1:
+  case AACENC_BR_MODE_VBR_2:
+  case AACENC_BR_MODE_VBR_3:
+  case AACENC_BR_MODE_VBR_4:
+  case AACENC_BR_MODE_VBR_5:
+    /* We need the frame length to call aacEncoder_LimitBitrate() */
+    if (0 >= (hAacConfig->bitRate = aacEncoder_LimitBitrate(
+                  NULL, hAacConfig->sampleRate, hAacConfig->framelength,
+                  hAacConfig->nChannels, hAacConfig->channelMode,
+                  hAacConfig->bitRate, hAacConfig->nSubFrames,
+                  isSbrActive(hAacConfig), hAacConfig->sbrRatio,
+                  hAacConfig->syntaxFlags, hAacConfig->audioObjectType))) {
+      return AACENC_INVALID_CONFIG;
+    }
+    break;
+  default:
+    break;
   }
 
   /* Configure PNS */
@@ -1163,7 +1162,7 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
     if (FDKaacEnc_DetermineEncoderMode(&hAacConfig->channelMode,
                                        hAacConfig->nChannels) != AAC_ENC_OK) {
       return AACENC_INVALID_CONFIG; /* nChannels doesn't match chMode, this is
-                                       just a check-up */
+                                 just a check-up */
     }
   }
 
@@ -1176,23 +1175,23 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
 
   /* Meta data restriction. */
   switch (hAacConfig->audioObjectType) {
-    /* Allow metadata support */
-    case AOT_AAC_LC:
-    case AOT_SBR:
-    case AOT_PS:
-    case AOT_MP2_AAC_LC:
-    case AOT_MP2_SBR:
-      hAacEncoder->metaDataAllowed = 1;
-      if (!((((INT)hAacConfig->channelMode >= 1) &&
-             ((INT)hAacConfig->channelMode <= 14)) ||
-            (MODE_7_1_REAR_SURROUND == hAacConfig->channelMode) ||
-            (MODE_7_1_FRONT_CENTER == hAacConfig->channelMode))) {
-        config->userMetaDataMode = 0;
-      }
-      break;
-    /* Prohibit metadata support */
-    default:
-      hAacEncoder->metaDataAllowed = 0;
+  /* Allow metadata support */
+  case AOT_AAC_LC:
+  case AOT_SBR:
+  case AOT_PS:
+  case AOT_MP2_AAC_LC:
+  case AOT_MP2_SBR:
+    hAacEncoder->metaDataAllowed = 1;
+    if (!((((INT)hAacConfig->channelMode >= 1) &&
+           ((INT)hAacConfig->channelMode <= 14)) ||
+          (MODE_7_1_REAR_SURROUND == hAacConfig->channelMode) ||
+          (MODE_7_1_FRONT_CENTER == hAacConfig->channelMode))) {
+      config->userMetaDataMode = 0;
+    }
+    break;
+  /* Prohibit metadata support */
+  default:
+    hAacEncoder->metaDataAllowed = 0;
   }
 
   return err;
@@ -1261,15 +1260,15 @@ static AACENC_ERROR aacEncInit(HANDLE_AACENCODER hAacEncoder, ULONG InitFlags,
   if ((InitFlags & AACENC_INIT_CONFIG)) {
     aacBufferOffset = 0;
     switch (hAacConfig->audioObjectType) {
-      case AOT_ER_AAC_LD:
-        hAacEncoder->nDelay = DELAY_AACLD(hAacConfig->framelength);
-        break;
-      case AOT_ER_AAC_ELD:
-        hAacEncoder->nDelay = DELAY_AACELD(hAacConfig->framelength);
-        break;
-      default:
-        hAacEncoder->nDelay =
-            DELAY_AAC(hAacConfig->framelength); /* AAC encoder delay */
+    case AOT_ER_AAC_LD:
+      hAacEncoder->nDelay = DELAY_AACLD(hAacConfig->framelength);
+      break;
+    case AOT_ER_AAC_ELD:
+      hAacEncoder->nDelay = DELAY_AACELD(hAacConfig->framelength);
+      break;
+    default:
+      hAacEncoder->nDelay =
+          DELAY_AAC(hAacConfig->framelength); /* AAC encoder delay */
     }
 
     hAacConfig->ancDataBitRate = 0;
@@ -1348,7 +1347,7 @@ static AACENC_ERROR aacEncInit(HANDLE_AACENCODER hAacEncoder, ULONG InitFlags,
                           config->userSamplerate, hAacConfig->bitRate,
                           isSbrActive(hAacConfig) ? hAacConfig->sbrRatio : 0,
                           frameLength, /* for dual rate sbr this value is
-                                          already multiplied by 2 */
+                                  already multiplied by 2 */
                           hAacEncoder->inputBufferSizePerChannel,
                           coreCoderDelay)) {
       return AACENC_INIT_MPS_ERROR;
@@ -1535,10 +1534,10 @@ AACENC_ERROR aacEncOpen(HANDLE_AACENCODER *phAacEncoder, const UINT encModules,
 
   /* Open SBR Encoder */
   if (hAacEncoder->encoder_modis & ENC_MODE_FLAG_SBR) {
-    if (sbrEncoder_Open(
-            &hAacEncoder->hEnvEnc, hAacEncoder->nMaxSbrElements,
-            hAacEncoder->nMaxSbrChannels,
-            (hAacEncoder->encoder_modis & ENC_MODE_FLAG_PS) ? 1 : 0)) {
+    if (sbrEncoder_Open(&hAacEncoder->hEnvEnc, hAacEncoder->nMaxSbrElements,
+                        hAacEncoder->nMaxSbrChannels,
+                        (hAacEncoder->encoder_modis & ENC_MODE_FLAG_PS) ? 1
+                                                                        : 0)) {
       err = AACENC_MEMORY_ERROR;
       goto bail;
     }
@@ -1880,11 +1879,11 @@ AACENC_ERROR aacEncEncode(const HANDLE_AACENCODER hAacEncoder,
     FDKmemclear(&mpsExtensionPayload, sizeof(AACENC_EXT_PAYLOAD));
 
     if (MPS_ENCODER_OK !=
-        FDK_MpegsEnc_Process(
-            hAacEncoder->hMpsEnc,
-            hAacEncoder->inputBuffer + hAacEncoder->inputBufferOffset /
-                                           hAacEncoder->coderConfig.noChannels,
-            hAacEncoder->nSamplesRead, &mpsExtensionPayload)) {
+        FDK_MpegsEnc_Process(hAacEncoder->hMpsEnc,
+                             hAacEncoder->inputBuffer +
+                                 hAacEncoder->inputBufferOffset /
+                                     hAacEncoder->coderConfig.noChannels,
+                             hAacEncoder->nSamplesRead, &mpsExtensionPayload)) {
       err = AACENC_ENCODE_ERROR;
       goto bail;
     }
@@ -1921,7 +1920,7 @@ AACENC_ERROR aacEncEncode(const HANDLE_AACENCODER hAacEncoder,
           }
           hAacEncoder->extPayload[nExtensions].dataType =
               EXT_SBR_DATA; /* Once SBR Encoder supports SBR CRC set
-                               EXT_SBR_DATA_CRC */
+                     EXT_SBR_DATA_CRC */
           nExtensions++;    /* or EXT_SBR_DATA according to configuration. */
           FDK_ASSERT(nExtensions <= MAX_TOTAL_EXT_PAYLOADS);
         }
@@ -2024,7 +2023,8 @@ static AAC_ENCODER_ERROR aacEncGetConf(HANDLE_AACENCODER hAacEncoder,
   FDKbyteAlign(&tmpConf, 0);
 
   /* Check buffer size */
-  if (FDKgetValidBits(&tmpConf) > ((*size) << 3)) return AAC_ENC_UNKNOWN;
+  if (FDKgetValidBits(&tmpConf) > ((*size) << 3))
+    return AAC_ENC_UNKNOWN;
 
   FDKfetchBuffer(&tmpConf, confBuffer, size);
 
@@ -2048,7 +2048,8 @@ AACENC_ERROR aacEncGetLibInfo(LIB_INFO *info) {
 
   /* search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return AACENC_INIT_ERROR;
@@ -2084,284 +2085,280 @@ AACENC_ERROR aacEncoder_SetParam(const HANDLE_AACENCODER hAacEncoder,
 
   /* apply param value */
   switch (param) {
-    case AACENC_AOT:
-      if (settings->userAOT != (AUDIO_OBJECT_TYPE)value) {
-        /* check if AOT matches the allocated modules */
-        switch (value) {
-          case AOT_PS:
-            if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_PS))) {
-              err = AACENC_INVALID_CONFIG;
-              goto bail;
-            }
-            FDK_FALLTHROUGH;
-          case AOT_SBR:
-          case AOT_MP2_SBR:
-            if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_SBR))) {
-              err = AACENC_INVALID_CONFIG;
-              goto bail;
-            }
-            FDK_FALLTHROUGH;
-          case AOT_AAC_LC:
-          case AOT_MP2_AAC_LC:
-          case AOT_ER_AAC_LD:
-          case AOT_ER_AAC_ELD:
-            if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_AAC))) {
-              err = AACENC_INVALID_CONFIG;
-              goto bail;
-            }
-            break;
-          default:
-            err = AACENC_INVALID_CONFIG;
-            goto bail;
-        } /* switch value */
-        settings->userAOT = (AUDIO_OBJECT_TYPE)value;
-        hAacEncoder->InitFlags |=
-            AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    case AACENC_BITRATE:
-      if (settings->userBitrate != value) {
-        settings->userBitrate = value;
+  case AACENC_AOT:
+    if (settings->userAOT != (AUDIO_OBJECT_TYPE)value) {
+      /* check if AOT matches the allocated modules */
+      switch (value) {
+      case AOT_PS:
+        if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_PS))) {
+          err = AACENC_INVALID_CONFIG;
+          goto bail;
+        }
+        FDK_FALLTHROUGH;
+      case AOT_SBR:
+      case AOT_MP2_SBR:
+        if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_SBR))) {
+          err = AACENC_INVALID_CONFIG;
+          goto bail;
+        }
+        FDK_FALLTHROUGH;
+      case AOT_AAC_LC:
+      case AOT_MP2_AAC_LC:
+      case AOT_ER_AAC_LD:
+      case AOT_ER_AAC_ELD:
+        if (!(hAacEncoder->encoder_modis & (ENC_MODE_FLAG_AAC))) {
+          err = AACENC_INVALID_CONFIG;
+          goto bail;
+        }
+        break;
+      default:
+        err = AACENC_INVALID_CONFIG;
+        goto bail;
+      } /* switch value */
+      settings->userAOT = (AUDIO_OBJECT_TYPE)value;
+      hAacEncoder->InitFlags |=
+          AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_BITRATE:
+    if (settings->userBitrate != value) {
+      settings->userBitrate = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_BITRATEMODE:
+    if (settings->userBitrateMode != value) {
+      switch (value) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+        settings->userBitrateMode = value;
         hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
+        break;
+      default:
+        err = AACENC_INVALID_CONFIG;
+        break;
+      } /* switch value */
+    }
+    break;
+  case AACENC_SAMPLERATE:
+    if (settings->userSamplerate != value) {
+      if (!((value == 8000) || (value == 11025) || (value == 12000) ||
+            (value == 16000) || (value == 22050) || (value == 24000) ||
+            (value == 32000) || (value == 44100) || (value == 48000) ||
+            (value == 64000) || (value == 88200) || (value == 96000))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_BITRATEMODE:
-      if (settings->userBitrateMode != value) {
-        switch (value) {
-          case 0:
-          case 1:
-          case 2:
-          case 3:
-          case 4:
-          case 5:
-            settings->userBitrateMode = value;
-            hAacEncoder->InitFlags |=
-                AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
-            break;
-          default:
-            err = AACENC_INVALID_CONFIG;
-            break;
-        } /* switch value */
-      }
-      break;
-    case AACENC_SAMPLERATE:
-      if (settings->userSamplerate != value) {
-        if (!((value == 8000) || (value == 11025) || (value == 12000) ||
-              (value == 16000) || (value == 22050) || (value == 24000) ||
-              (value == 32000) || (value == 44100) || (value == 48000) ||
-              (value == 64000) || (value == 88200) || (value == 96000))) {
+      settings->userSamplerate = value;
+      hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
+      hAacEncoder->InitFlags |=
+          AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_CHANNELMODE:
+    if (settings->userChannelMode != (CHANNEL_MODE)value) {
+      if (((CHANNEL_MODE)value == MODE_212) && (NULL != hAacEncoder->hMpsEnc)) {
+        settings->userChannelMode = (CHANNEL_MODE)value;
+        settings->nChannels = 2;
+      } else {
+        const CHANNEL_MODE_CONFIG_TAB *pConfig =
+            FDKaacEnc_GetChannelModeConfiguration((CHANNEL_MODE)value);
+        if (pConfig == NULL) {
           err = AACENC_INVALID_CONFIG;
           break;
         }
-        settings->userSamplerate = value;
-        hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
-        hAacEncoder->InitFlags |=
-            AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    case AACENC_CHANNELMODE:
-      if (settings->userChannelMode != (CHANNEL_MODE)value) {
-        if (((CHANNEL_MODE)value == MODE_212) &&
-            (NULL != hAacEncoder->hMpsEnc)) {
-          settings->userChannelMode = (CHANNEL_MODE)value;
-          settings->nChannels = 2;
-        } else {
-          const CHANNEL_MODE_CONFIG_TAB *pConfig =
-              FDKaacEnc_GetChannelModeConfiguration((CHANNEL_MODE)value);
-          if (pConfig == NULL) {
-            err = AACENC_INVALID_CONFIG;
-            break;
-          }
-          if ((pConfig->nElements > hAacEncoder->nMaxAacElements) ||
-              (pConfig->nChannelsEff > hAacEncoder->nMaxAacChannels)) {
-            err = AACENC_INVALID_CONFIG;
-            break;
-          }
+        if ((pConfig->nElements > hAacEncoder->nMaxAacElements) ||
+            (pConfig->nChannelsEff > hAacEncoder->nMaxAacChannels)) {
+          err = AACENC_INVALID_CONFIG;
+          break;
+        }
 
-          settings->userChannelMode = (CHANNEL_MODE)value;
-          settings->nChannels = pConfig->nChannels;
+        settings->userChannelMode = (CHANNEL_MODE)value;
+        settings->nChannels = pConfig->nChannels;
+      }
+      hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
+      if (!((value >= 1) && (value <= 6))) {
+        hAacEncoder->InitFlags |= AACENC_INIT_STATES;
+      }
+    }
+    break;
+  case AACENC_BANDWIDTH:
+    if (settings->userBandwidth != value) {
+      settings->userBandwidth = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
+    }
+    break;
+  case AACENC_CHANNELORDER:
+    if (hAacEncoder->aacConfig.channelOrder != (CHANNEL_ORDER)value) {
+      if (!((value == 0) || (value == 1) || (value == 2))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
+      }
+      hAacEncoder->aacConfig.channelOrder = (CHANNEL_ORDER)value;
+      hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
+      hAacEncoder->InitFlags |=
+          AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_AFTERBURNER:
+    if (settings->userAfterburner != value) {
+      if (!((value == 0) || (value == 1))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
+      }
+      settings->userAfterburner = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
+    }
+    break;
+  case AACENC_GRANULE_LENGTH:
+    if (settings->userFramelength != value) {
+      switch (value) {
+      case 1024:
+      case 512:
+      case 480:
+      case 256:
+      case 240:
+      case 128:
+      case 120:
+        if ((value << 1) == 480 || (value << 1) == 512) {
+          settings->userDownscaleFactor = 2;
+        } else if ((value << 2) == 480 || (value << 2) == 512) {
+          settings->userDownscaleFactor = 4;
         }
-        hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
+        settings->userFramelength = value;
         hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
-        if (!((value >= 1) && (value <= 6))) {
-          hAacEncoder->InitFlags |= AACENC_INIT_STATES;
-        }
+        break;
+      default:
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_BANDWIDTH:
-      if (settings->userBandwidth != value) {
-        settings->userBandwidth = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
+    }
+    break;
+  case AACENC_SBR_RATIO:
+    if (settings->userSbrRatio != value) {
+      if (!((value == 0) || (value == 1) || (value == 2))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_CHANNELORDER:
-      if (hAacEncoder->aacConfig.channelOrder != (CHANNEL_ORDER)value) {
-        if (!((value == 0) || (value == 1) || (value == 2))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        hAacEncoder->aacConfig.channelOrder = (CHANNEL_ORDER)value;
-        hAacEncoder->nSamplesRead = 0; /* reset internal inputbuffer */
-        hAacEncoder->InitFlags |=
-            AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    case AACENC_AFTERBURNER:
-      if (settings->userAfterburner != value) {
-        if (!((value == 0) || (value == 1))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userAfterburner = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
-      }
-      break;
-    case AACENC_GRANULE_LENGTH:
-      if (settings->userFramelength != value) {
-        switch (value) {
-          case 1024:
-          case 512:
-          case 480:
-          case 256:
-          case 240:
-          case 128:
-          case 120:
-            if ((value << 1) == 480 || (value << 1) == 512) {
-              settings->userDownscaleFactor = 2;
-            } else if ((value << 2) == 480 || (value << 2) == 512) {
-              settings->userDownscaleFactor = 4;
-            }
-            settings->userFramelength = value;
-            hAacEncoder->InitFlags |=
-                AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
-            break;
-          default:
-            err = AACENC_INVALID_CONFIG;
-            break;
-        }
-      }
-      break;
-    case AACENC_SBR_RATIO:
-      if (settings->userSbrRatio != value) {
-        if (!((value == 0) || (value == 1) || (value == 2))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userSbrRatio = value;
-        hAacEncoder->InitFlags |=
-            AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    case AACENC_SBR_MODE:
-      if ((settings->userSbrEnabled != value) &&
-          (NULL != hAacEncoder->hEnvEnc)) {
-        settings->userSbrEnabled = value;
-        hAacEncoder->InitFlags |=
-            AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    case AACENC_TRANSMUX:
-      if (settings->userTpType != (TRANSPORT_TYPE)value) {
-        TRANSPORT_TYPE type = (TRANSPORT_TYPE)value;
-        UINT flags = hAacEncoder->CAPF_tpEnc;
+      settings->userSbrRatio = value;
+      hAacEncoder->InitFlags |=
+          AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_SBR_MODE:
+    if ((settings->userSbrEnabled != value) && (NULL != hAacEncoder->hEnvEnc)) {
+      settings->userSbrEnabled = value;
+      hAacEncoder->InitFlags |=
+          AACENC_INIT_CONFIG | AACENC_INIT_STATES | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_TRANSMUX:
+    if (settings->userTpType != (TRANSPORT_TYPE)value) {
+      TRANSPORT_TYPE type = (TRANSPORT_TYPE)value;
+      UINT flags = hAacEncoder->CAPF_tpEnc;
 
-        if (!(((type == TT_MP4_ADIF) && (flags & CAPF_ADIF)) ||
-              ((type == TT_MP4_ADTS) && (flags & CAPF_ADTS)) ||
-              ((type == TT_MP4_LATM_MCP0) &&
-               ((flags & CAPF_LATM) && (flags & CAPF_RAWPACKETS))) ||
-              ((type == TT_MP4_LATM_MCP1) &&
-               ((flags & CAPF_LATM) && (flags & CAPF_RAWPACKETS))) ||
-              ((type == TT_MP4_LOAS) && (flags & CAPF_LOAS)) ||
-              ((type == TT_MP4_RAW) && (flags & CAPF_RAWPACKETS)))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpType = (TRANSPORT_TYPE)value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      if (!(((type == TT_MP4_ADIF) && (flags & CAPF_ADIF)) ||
+            ((type == TT_MP4_ADTS) && (flags & CAPF_ADTS)) ||
+            ((type == TT_MP4_LATM_MCP0) &&
+             ((flags & CAPF_LATM) && (flags & CAPF_RAWPACKETS))) ||
+            ((type == TT_MP4_LATM_MCP1) &&
+             ((flags & CAPF_LATM) && (flags & CAPF_RAWPACKETS))) ||
+            ((type == TT_MP4_LOAS) && (flags & CAPF_LOAS)) ||
+            ((type == TT_MP4_RAW) && (flags & CAPF_RAWPACKETS)))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_SIGNALING_MODE:
-      if (settings->userTpSignaling != value) {
-        if (!((value == 0) || (value == 1) || (value == 2))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpSignaling = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      settings->userTpType = (TRANSPORT_TYPE)value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_SIGNALING_MODE:
+    if (settings->userTpSignaling != value) {
+      if (!((value == 0) || (value == 1) || (value == 2))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_PROTECTION:
-      if (settings->userTpProtection != value) {
-        if (!((value == 0) || (value == 1))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpProtection = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      settings->userTpSignaling = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_PROTECTION:
+    if (settings->userTpProtection != value) {
+      if (!((value == 0) || (value == 1))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_HEADER_PERIOD:
-      if (settings->userTpHeaderPeriod != value) {
-        if (!(((INT)value >= 0) && (value <= 255))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpHeaderPeriod = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      settings->userTpProtection = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_HEADER_PERIOD:
+    if (settings->userTpHeaderPeriod != value) {
+      if (!(((INT)value >= 0) && (value <= 255))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_AUDIOMUXVER:
-      if (settings->userTpAmxv != value) {
-        if (!((value == 0) || (value == 1) || (value == 2))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpAmxv = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      settings->userTpHeaderPeriod = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_AUDIOMUXVER:
+    if (settings->userTpAmxv != value) {
+      if (!((value == 0) || (value == 1) || (value == 2))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_TPSUBFRAMES:
-      if (settings->userTpNsubFrames != value) {
-        if (!((value >= 1) && (value <= 4))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userTpNsubFrames = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+      settings->userTpAmxv = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_TPSUBFRAMES:
+    if (settings->userTpNsubFrames != value) {
+      if (!((value >= 1) && (value <= 4))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_ANCILLARY_BITRATE:
-      if (settings->userAncDataRate != value) {
-        settings->userAncDataRate = value;
+      settings->userTpNsubFrames = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_TRANSPORT;
+    }
+    break;
+  case AACENC_ANCILLARY_BITRATE:
+    if (settings->userAncDataRate != value) {
+      settings->userAncDataRate = value;
+    }
+    break;
+  case AACENC_CONTROL_STATE:
+    if (hAacEncoder->InitFlags != value) {
+      if (value & AACENC_RESET_INBUFFER) {
+        hAacEncoder->nSamplesRead = 0;
       }
-      break;
-    case AACENC_CONTROL_STATE:
-      if (hAacEncoder->InitFlags != value) {
-        if (value & AACENC_RESET_INBUFFER) {
-          hAacEncoder->nSamplesRead = 0;
-        }
-        hAacEncoder->InitFlags = value;
+      hAacEncoder->InitFlags = value;
+    }
+    break;
+  case AACENC_METADATA_MODE:
+    if ((UINT)settings->userMetaDataMode != value) {
+      if (!(((INT)value >= 0) && ((INT)value <= 3))) {
+        err = AACENC_INVALID_CONFIG;
+        break;
       }
-      break;
-    case AACENC_METADATA_MODE:
-      if ((UINT)settings->userMetaDataMode != value) {
-        if (!(((INT)value >= 0) && ((INT)value <= 3))) {
-          err = AACENC_INVALID_CONFIG;
-          break;
-        }
-        settings->userMetaDataMode = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
-      }
-      break;
-    case AACENC_PEAK_BITRATE:
-      if (settings->userPeakBitrate != value) {
-        settings->userPeakBitrate = value;
-        hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
-      }
-      break;
-    default:
-      err = AACENC_UNSUPPORTED_PARAMETER;
-      break;
+      settings->userMetaDataMode = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG;
+    }
+    break;
+  case AACENC_PEAK_BITRATE:
+    if (settings->userPeakBitrate != value) {
+      settings->userPeakBitrate = value;
+      hAacEncoder->InitFlags |= AACENC_INIT_CONFIG | AACENC_INIT_TRANSPORT;
+    }
+    break;
+  default:
+    err = AACENC_UNSUPPORTED_PARAMETER;
+    break;
   } /* switch(param) */
 
 bail:
@@ -2380,99 +2377,97 @@ UINT aacEncoder_GetParam(const HANDLE_AACENCODER hAacEncoder,
 
   /* apply param value */
   switch (param) {
-    case AACENC_AOT:
-      value = (UINT)hAacEncoder->aacConfig.audioObjectType;
+  case AACENC_AOT:
+    value = (UINT)hAacEncoder->aacConfig.audioObjectType;
+    break;
+  case AACENC_BITRATE:
+    switch (hAacEncoder->aacConfig.bitrateMode) {
+    case AACENC_BR_MODE_CBR:
+      value = (UINT)hAacEncoder->aacConfig.bitRate;
       break;
-    case AACENC_BITRATE:
-      switch (hAacEncoder->aacConfig.bitrateMode) {
-        case AACENC_BR_MODE_CBR:
-          value = (UINT)hAacEncoder->aacConfig.bitRate;
-          break;
-        default:
-          value = (UINT)-1;
-      }
-      break;
-    case AACENC_BITRATEMODE:
-      value = (UINT)((hAacEncoder->aacConfig.bitrateMode != AACENC_BR_MODE_FF)
-                         ? hAacEncoder->aacConfig.bitrateMode
-                         : AACENC_BR_MODE_CBR);
-      break;
-    case AACENC_SAMPLERATE:
-      value = (UINT)hAacEncoder->coderConfig.extSamplingRate;
-      break;
-    case AACENC_CHANNELMODE:
-      if ((MODE_1 == hAacEncoder->aacConfig.channelMode) &&
-          (hAacEncoder->aacConfig.syntaxFlags & AC_LD_MPS)) {
-        value = MODE_212;
-      } else {
-        value = (UINT)hAacEncoder->aacConfig.channelMode;
-      }
-      break;
-    case AACENC_BANDWIDTH:
-      value = (UINT)hAacEncoder->aacConfig.bandWidth;
-      break;
-    case AACENC_CHANNELORDER:
-      value = (UINT)hAacEncoder->aacConfig.channelOrder;
-      break;
-    case AACENC_AFTERBURNER:
-      value = (UINT)hAacEncoder->aacConfig.useRequant;
-      break;
-    case AACENC_GRANULE_LENGTH:
-      value = (UINT)hAacEncoder->aacConfig.framelength;
-      break;
-    case AACENC_SBR_RATIO:
-      value = isSbrActive(&hAacEncoder->aacConfig)
-                  ? hAacEncoder->aacConfig.sbrRatio
-                  : 0;
-      break;
-    case AACENC_SBR_MODE:
-      value =
-          (UINT)(hAacEncoder->aacConfig.syntaxFlags & AC_SBR_PRESENT) ? 1 : 0;
-      break;
-    case AACENC_TRANSMUX:
-      value = (UINT)settings->userTpType;
-      break;
-    case AACENC_SIGNALING_MODE:
-      value = (UINT)getSbrSignalingMode(
-          hAacEncoder->aacConfig.audioObjectType, settings->userTpType,
-          settings->userTpSignaling, hAacEncoder->aacConfig.sbrRatio);
-      break;
-    case AACENC_PROTECTION:
-      value = (UINT)settings->userTpProtection;
-      break;
-    case AACENC_HEADER_PERIOD:
-      value = (UINT)hAacEncoder->coderConfig.headerPeriod;
-      break;
-    case AACENC_AUDIOMUXVER:
-      value = (UINT)hAacEncoder->aacConfig.audioMuxVersion;
-      break;
-    case AACENC_TPSUBFRAMES:
-      value = (UINT)settings->userTpNsubFrames;
-      break;
-    case AACENC_ANCILLARY_BITRATE:
-      value = (UINT)hAacEncoder->aacConfig.anc_Rate;
-      break;
-    case AACENC_CONTROL_STATE:
-      value = (UINT)hAacEncoder->InitFlags;
-      break;
-    case AACENC_METADATA_MODE:
-      value = (hAacEncoder->metaDataAllowed == 0)
-                  ? 0
-                  : (UINT)settings->userMetaDataMode;
-      break;
-    case AACENC_PEAK_BITRATE:
-      value = (UINT)-1; /* peak bitrate parameter is meaningless */
-      if (((INT)hAacEncoder->extParam.userPeakBitrate != -1)) {
-        value =
-            (UINT)(fMax((INT)hAacEncoder->extParam.userPeakBitrate,
-                        hAacEncoder->aacConfig
-                            .bitRate)); /* peak bitrate parameter is in use */
-      }
-      break;
-
     default:
-      // err = MPS_INVALID_PARAMETER;
-      break;
+      value = (UINT)-1;
+    }
+    break;
+  case AACENC_BITRATEMODE:
+    value = (UINT)((hAacEncoder->aacConfig.bitrateMode != AACENC_BR_MODE_FF)
+                       ? hAacEncoder->aacConfig.bitrateMode
+                       : AACENC_BR_MODE_CBR);
+    break;
+  case AACENC_SAMPLERATE:
+    value = (UINT)hAacEncoder->coderConfig.extSamplingRate;
+    break;
+  case AACENC_CHANNELMODE:
+    if ((MODE_1 == hAacEncoder->aacConfig.channelMode) &&
+        (hAacEncoder->aacConfig.syntaxFlags & AC_LD_MPS)) {
+      value = MODE_212;
+    } else {
+      value = (UINT)hAacEncoder->aacConfig.channelMode;
+    }
+    break;
+  case AACENC_BANDWIDTH:
+    value = (UINT)hAacEncoder->aacConfig.bandWidth;
+    break;
+  case AACENC_CHANNELORDER:
+    value = (UINT)hAacEncoder->aacConfig.channelOrder;
+    break;
+  case AACENC_AFTERBURNER:
+    value = (UINT)hAacEncoder->aacConfig.useRequant;
+    break;
+  case AACENC_GRANULE_LENGTH:
+    value = (UINT)hAacEncoder->aacConfig.framelength;
+    break;
+  case AACENC_SBR_RATIO:
+    value = isSbrActive(&hAacEncoder->aacConfig)
+                ? hAacEncoder->aacConfig.sbrRatio
+                : 0;
+    break;
+  case AACENC_SBR_MODE:
+    value = (UINT)(hAacEncoder->aacConfig.syntaxFlags & AC_SBR_PRESENT) ? 1 : 0;
+    break;
+  case AACENC_TRANSMUX:
+    value = (UINT)settings->userTpType;
+    break;
+  case AACENC_SIGNALING_MODE:
+    value = (UINT)getSbrSignalingMode(
+        hAacEncoder->aacConfig.audioObjectType, settings->userTpType,
+        settings->userTpSignaling, hAacEncoder->aacConfig.sbrRatio);
+    break;
+  case AACENC_PROTECTION:
+    value = (UINT)settings->userTpProtection;
+    break;
+  case AACENC_HEADER_PERIOD:
+    value = (UINT)hAacEncoder->coderConfig.headerPeriod;
+    break;
+  case AACENC_AUDIOMUXVER:
+    value = (UINT)hAacEncoder->aacConfig.audioMuxVersion;
+    break;
+  case AACENC_TPSUBFRAMES:
+    value = (UINT)settings->userTpNsubFrames;
+    break;
+  case AACENC_ANCILLARY_BITRATE:
+    value = (UINT)hAacEncoder->aacConfig.anc_Rate;
+    break;
+  case AACENC_CONTROL_STATE:
+    value = (UINT)hAacEncoder->InitFlags;
+    break;
+  case AACENC_METADATA_MODE:
+    value = (hAacEncoder->metaDataAllowed == 0)
+                ? 0
+                : (UINT)settings->userMetaDataMode;
+    break;
+  case AACENC_PEAK_BITRATE:
+    value = (UINT)-1; /* peak bitrate parameter is meaningless */
+    if (((INT)hAacEncoder->extParam.userPeakBitrate != -1)) {
+      value = (UINT)(fMax((INT)hAacEncoder->extParam.userPeakBitrate,
+                          hAacEncoder->aacConfig
+                              .bitRate)); /* peak bitrate parameter is in use */
+    }
+    break;
+
+  default:
+    // err = MPS_INVALID_PARAMETER;
+    break;
   } /* switch(param) */
 
 bail:

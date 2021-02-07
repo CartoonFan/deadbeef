@@ -108,9 +108,10 @@ amm-info@iis.fraunhofer.de
 
 #include "qmf.h"
 
-SACDEC_ERROR CalculateSpaceSynthesisQmf(
-    const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const FIXP_DBL *Sr,
-    const FIXP_DBL *Si, const INT stride, INT_PCM *timeSig) {
+SACDEC_ERROR
+CalculateSpaceSynthesisQmf(const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh,
+                           const FIXP_DBL *Sr, const FIXP_DBL *Si,
+                           const INT stride, INT_PCM *timeSig) {
   SACDEC_ERROR err = MPS_OK;
 
   if (hQmfDomainOutCh == NULL) {
@@ -137,9 +138,9 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
   return err;
 }
 
-SACDEC_ERROR CalculateSpaceAnalysisQmf(
-    HANDLE_SPACE_ANALYSIS_QMF hSpaceAnalysisQmf, const PCM_MPS *timeSig,
-    FIXP_DBL *Sr, FIXP_DBL *Si) {
+SACDEC_ERROR
+CalculateSpaceAnalysisQmf(HANDLE_SPACE_ANALYSIS_QMF hSpaceAnalysisQmf,
+                          const PCM_MPS *timeSig, FIXP_DBL *Sr, FIXP_DBL *Si) {
   SACDEC_ERROR err = MPS_OK;
 
   if (hSpaceAnalysisQmf == NULL) {

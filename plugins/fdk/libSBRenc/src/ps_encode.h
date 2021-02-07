@@ -108,16 +108,16 @@ amm-info@iis.fraunhofer.de
 #ifndef PS_ENCODE_H
 #define PS_ENCODE_H
 
-#include "ps_const.h"
 #include "ps_bitenc.h"
+#include "ps_const.h"
 
 #define IID_SCALE_FT (64.f) /* maxVal in Quant tab is +/- 50 */
 #define IID_SCALE 6         /* maxVal in Quant tab is +/- 50 */
 #define IID_MAXVAL (1 << IID_SCALE)
 
-#define PS_QUANT_SCALE_FT \
+#define PS_QUANT_SCALE_FT                                                      \
   (64.f) /* error smaller (64-25)/64 * 20 bands * 4 env -> QuantScale 64 */
-#define PS_QUANT_SCALE \
+#define PS_QUANT_SCALE                                                         \
   6 /* error smaller (64-25)/64 * 20 bands * 4 env -> QuantScale 6 bit */
 
 #define QMF_GROUPS_LO_RES 12
@@ -176,10 +176,10 @@ FDK_PSENC_ERROR FDKsbrEnc_InitPSEncode(HANDLE_PS_ENCODE hPsEncode,
 
 FDK_PSENC_ERROR FDKsbrEnc_DestroyPSEncode(HANDLE_PS_ENCODE *phPsEncode);
 
-FDK_PSENC_ERROR FDKsbrEnc_PSEncode(
-    HANDLE_PS_ENCODE hPsEncode, HANDLE_PS_OUT hPsOut, UCHAR *dynBandScale,
-    UINT maxEnvelopes,
-    FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
-    const INT frameSize, const INT sendHeader);
+FDK_PSENC_ERROR
+FDKsbrEnc_PSEncode(HANDLE_PS_ENCODE hPsEncode, HANDLE_PS_OUT hPsOut,
+                   UCHAR *dynBandScale, UINT maxEnvelopes,
+                   FIXP_DBL *hybridData[HYBRID_FRAMESIZE][MAX_PS_CHANNELS][2],
+                   const INT frameSize, const INT sendHeader);
 
 #endif

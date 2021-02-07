@@ -106,14 +106,14 @@ amm-info@iis.fraunhofer.de
 
 #define MAX_FRAME_LENGTH (1024)
 
-INT FDK_Delay_Create(FDK_SignalDelay* data, const USHORT delay,
+INT FDK_Delay_Create(FDK_SignalDelay *data, const USHORT delay,
                      const UCHAR num_channels) {
   FDK_ASSERT(data != NULL);
   FDK_ASSERT(num_channels > 0);
 
   if (delay > 0) {
     data->delay_line =
-        (INT_PCM*)FDKcalloc(num_channels * delay, sizeof(INT_PCM));
+        (INT_PCM *)FDKcalloc(num_channels * delay, sizeof(INT_PCM));
     if (data->delay_line == NULL) {
       return -1;
     }
@@ -126,7 +126,7 @@ INT FDK_Delay_Create(FDK_SignalDelay* data, const USHORT delay,
   return 0;
 }
 
-void FDK_Delay_Apply(FDK_SignalDelay* data, FIXP_PCM* time_buffer,
+void FDK_Delay_Apply(FDK_SignalDelay *data, FIXP_PCM *time_buffer,
                      const UINT frame_length, const UCHAR channel) {
   FDK_ASSERT(data != NULL);
 
@@ -161,7 +161,7 @@ void FDK_Delay_Apply(FDK_SignalDelay* data, FIXP_PCM* time_buffer,
   return;
 }
 
-void FDK_Delay_Destroy(FDK_SignalDelay* data) {
+void FDK_Delay_Destroy(FDK_SignalDelay *data) {
   if (data->delay_line != NULL) {
     FDKfree(data->delay_line);
   }

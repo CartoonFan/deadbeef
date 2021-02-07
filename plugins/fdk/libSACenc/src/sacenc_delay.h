@@ -108,9 +108,9 @@ amm-info@iis.fraunhofer.de
 #define SACENC_DELAY_H
 
 /* Includes ******************************************************************/
-#include "sacenc_lib.h"
-#include "machine_type.h"
 #include "FDK_matrixCalloc.h"
+#include "machine_type.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_DELAY_INPUT 1024
@@ -147,8 +147,9 @@ FDK_SACENC_ERROR fdk_sacenc_delay_SetTimeDomDmx(HANDLE_DELAY hDelay,
 FDK_SACENC_ERROR fdk_sacenc_delay_SetSacTimeAlignmentDynamicOut(
     HANDLE_DELAY hDelay, const INT bSacTimeAlignmentDynamicOutIn);
 
-FDK_SACENC_ERROR fdk_sacenc_delay_SetNSacTimeAlignment(
-    HANDLE_DELAY hDelay, const INT nSacTimeAlignmentIn);
+FDK_SACENC_ERROR
+fdk_sacenc_delay_SetNSacTimeAlignment(HANDLE_DELAY hDelay,
+                                      const INT nSacTimeAlignmentIn);
 
 FDK_SACENC_ERROR fdk_sacenc_delay_SetMinimizeDelay(HANDLE_DELAY hDelay,
                                                    const INT bMinimizeDelay);

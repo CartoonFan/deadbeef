@@ -105,9 +105,9 @@ amm-info@iis.fraunhofer.de
 #define SACENC_TREE_H
 
 /* Includes ******************************************************************/
+#include "sacenc_bitstream.h"
 #include "sacenc_framewindowing.h"
 #include "sacenc_lib.h"
-#include "sacenc_bitstream.h"
 
 /* Defines *******************************************************************/
 

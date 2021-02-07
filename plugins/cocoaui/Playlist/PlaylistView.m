@@ -22,90 +22,102 @@
 */
 
 #import "PlaylistView.h"
-#import "PlaylistHeaderView.h"
-#import "PlaylistContentView.h"
 #import "DdbShared.h"
+#import "PlaylistContentView.h"
+#import "PlaylistHeaderView.h"
 #include "deadbeef.h"
 
 extern DB_functions_t *deadbeef;
 
 static int headerheight = 23;
 
-
 #pragma mark -
 
-@interface PlaylistView()
+@interface PlaylistView ()
 
-@property (nonatomic,readwrite) PlaylistHeaderView *headerView;
-@property (nonatomic,readwrite) PlaylistContentView *contentView;
+@property(nonatomic, readwrite) PlaylistHeaderView *headerView;
+@property(nonatomic, readwrite) PlaylistContentView *contentView;
 
 @end
 
 @implementation PlaylistView
 
 - (PlaylistView *)initWithFrame:(NSRect)rect {
-    self = [super initWithFrame:rect];
-    if (self) {
-        PlaylistHeaderView *thv = [PlaylistHeaderView new];
+  self = [super initWithFrame:rect];
+  if (self) {
+    PlaylistHeaderView *thv = [PlaylistHeaderView new];
 
-        thv.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:thv];
+    thv.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:thv];
 
-        [thv.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
-        [thv.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
-        [thv.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-        [thv.heightAnchor constraintEqualToConstant:headerheight].active = YES;
+    [thv.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
+    [thv.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active =
+        YES;
+    [thv.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+    [thv.heightAnchor constraintEqualToConstant:headerheight].active = YES;
 
-        thv.listview = self;
-        self.headerView = thv;
+    thv.listview = self;
+    self.headerView = thv;
 
-        NSScrollView *sv = [NSScrollView new];
-        sv.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:sv];
+    NSScrollView *sv = [NSScrollView new];
+    sv.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:sv];
 
-        [sv.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
-        [sv.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
-        [sv.topAnchor constraintEqualToAnchor:thv.bottomAnchor].active = YES;
-        [sv.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+    [sv.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
+    [sv.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active =
+        YES;
+    [sv.topAnchor constraintEqualToAnchor:thv.bottomAnchor].active = YES;
+    [sv.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
 
-        NSSize size = [sv contentSize];
-        NSRect lcvrect = NSMakeRect(0, 0, size.width, size.height-headerheight);
-        PlaylistContentView *lcv = [[PlaylistContentView alloc] initWithFrame:lcvrect];
-        self.contentView = lcv;
+    NSSize size = [sv contentSize];
+    NSRect lcvrect = NSMakeRect(0, 0, size.width, size.height - headerheight);
+    PlaylistContentView *lcv =
+        [[PlaylistContentView alloc] initWithFrame:lcvrect];
+    self.contentView = lcv;
 
-        lcv.translatesAutoresizingMaskIntoConstraints = NO;
-        sv.documentView = lcv;
+    lcv.translatesAutoresizingMaskIntoConstraints = NO;
+    sv.documentView = lcv;
 
-        [lcv.leadingAnchor constraintEqualToAnchor:sv.contentView.leadingAnchor].active = YES;
-        [lcv.topAnchor constraintEqualToAnchor:sv.contentView.topAnchor].active = YES;
-        [lcv.trailingAnchor constraintGreaterThanOrEqualToAnchor:sv.contentView.trailingAnchor].active = YES;
-        [lcv.bottomAnchor constraintGreaterThanOrEqualToAnchor:sv.contentView.bottomAnchor].active = YES;
+    [lcv.leadingAnchor constraintEqualToAnchor:sv.contentView.leadingAnchor]
+        .active = YES;
+    [lcv.topAnchor constraintEqualToAnchor:sv.contentView.topAnchor].active =
+        YES;
+    [lcv.trailingAnchor
+        constraintGreaterThanOrEqualToAnchor:sv.contentView.trailingAnchor]
+        .active = YES;
+    [lcv.bottomAnchor
+        constraintGreaterThanOrEqualToAnchor:sv.contentView.bottomAnchor]
+        .active = YES;
 
-        sv.hasVerticalScroller = YES;
-        sv.hasHorizontalScroller = YES;
-        sv.autohidesScrollers = YES;
-        sv.autoresizingMask = NSViewWidthSizable|NSViewMinYMargin|NSViewHeightSizable;
-        sv.contentView.copiesOnScroll = NO;
+    sv.hasVerticalScroller = YES;
+    sv.hasHorizontalScroller = YES;
+    sv.autohidesScrollers = YES;
+    sv.autoresizingMask =
+        NSViewWidthSizable | NSViewMinYMargin | NSViewHeightSizable;
+    sv.contentView.copiesOnScroll = NO;
 
-        NSView *synchronizedContentView = [sv contentView];
-        synchronizedContentView.postsBoundsChangedNotifications = YES;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollChanged:) name:NSViewBoundsDidChangeNotification object:synchronizedContentView];
-
-    }
-    return self;
+    NSView *synchronizedContentView = [sv contentView];
+    synchronizedContentView.postsBoundsChangedNotifications = YES;
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self
+           selector:@selector(scrollChanged:)
+               name:NSViewBoundsDidChangeNotification
+             object:synchronizedContentView];
+  }
+  return self;
 }
 
 - (void)scrollChanged:(id)notification {
-    self.headerView.needsDisplay = YES;
+  self.headerView.needsDisplay = YES;
 
-    NSScrollView *sv = [self.contentView enclosingScrollView];
-    NSRect rect = [sv documentVisibleRect];
-    [self.contentView scrollChanged:rect];
+  NSScrollView *sv = [self.contentView enclosingScrollView];
+  NSRect rect = [sv documentVisibleRect];
+  [self.contentView scrollChanged:rect];
 }
 
 - (void)setDelegate:(id<DdbListviewDelegate>)delegate {
-    _delegate = delegate;
-    self.contentView.delegate = delegate;
+  _delegate = delegate;
+  self.contentView.delegate = delegate;
 }
 
 @end

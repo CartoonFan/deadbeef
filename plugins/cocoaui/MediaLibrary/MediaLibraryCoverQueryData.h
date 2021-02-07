@@ -15,8 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MediaLibraryCoverQueryData : NSObject
 
-@property (nonatomic) MediaLibraryItem *item;
-@property (nonatomic) MediaLibraryOutlineViewController *viewController;
+@property(nonatomic) MediaLibraryItem *item;
+@property(nonatomic) MediaLibraryOutlineViewController *viewController;
 
 @end
 

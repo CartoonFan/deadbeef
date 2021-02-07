@@ -178,11 +178,12 @@ FIXP_DBL fixp_atan2(FIXP_DBL y, FIXP_DBL x) {
   /* --- atan() */
 
   if (sfo > ATI_SF) {
-  /* --- could not calc fixp_atan() here bec of input data out of range */
-  /*     ==> therefore give back boundary values */
+    /* --- could not calc fixp_atan() here bec of input data out of range */
+    /*     ==> therefore give back boundary values */
 
 #if IMPROVE_ATAN2_ACCURACY
-    if (sfo > MAXSFTAB) sfo = MAXSFTAB;
+    if (sfo > MAXSFTAB)
+      sfo = MAXSFTAB;
 #endif
 
     if (q > FL2FXCONST_DBL(0.0f)) {
@@ -213,7 +214,7 @@ FIXP_DBL fixp_atan2(FIXP_DBL y, FIXP_DBL x) {
 
   // --- atan2()
 
-  at2 = at >> (AT2O_SF - ATO_SF);  // now AT2O_SF for atan2
+  at2 = at >> (AT2O_SF - ATO_SF); // now AT2O_SF for atan2
   if (x > FL2FXCONST_DBL(0.0f)) {
     ret = at2;
   } else if (x < FL2FXCONST_DBL(0.0f)) {
@@ -240,8 +241,8 @@ FIXP_DBL fixp_atan(FIXP_DBL x) {
   FIXP_DBL result, temp;
 
   /* SNR of fixp_atan() = 56 dB */
-  FIXP_DBL P281 = (FIXP_DBL)0x00013000;     // 0.281 in q18
-  FIXP_DBL ONEP571 = (FIXP_DBL)0x6487ef00;  // 1.571 in q30
+  FIXP_DBL P281 = (FIXP_DBL)0x00013000;    // 0.281 in q18
+  FIXP_DBL ONEP571 = (FIXP_DBL)0x6487ef00; // 1.571 in q30
 
   if (x < FIXP_DBL(0)) {
     sign = 1;

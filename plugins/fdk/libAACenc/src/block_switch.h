@@ -110,10 +110,10 @@ amm-info@iis.fraunhofer.de
 /****************** Defines ******************************/
 #define BLOCK_SWITCH_WINDOWS 8 /* number of windows for energy calculation */
 
-#define BLOCK_SWITCHING_IIR_LEN \
+#define BLOCK_SWITCHING_IIR_LEN                                                \
   2 /* Length of HighPass-IIR-Filter for Attack-Detection */
-#define BLOCK_SWITCH_ENERGY_SHIFT                                        \
-  7 /* should be logDualis(BLOCK_SWITCH_WINDOW_LEN) to avoid overflow in \
+#define BLOCK_SWITCH_ENERGY_SHIFT                                              \
+  7 /* should be logDualis(BLOCK_SWITCH_WINDOW_LEN) to avoid overflow in       \
        windowNrgs. */
 
 #define LAST_WINDOW 0
@@ -137,10 +137,10 @@ typedef struct {
 
   FIXP_DBL
   windowNrg[2][BLOCK_SWITCH_WINDOWS]; /* time signal energy in Subwindows
-                                         (last and current) */
+                                       (last and current) */
   FIXP_DBL windowNrgF[2][BLOCK_SWITCH_WINDOWS]; /* filtered time signal energy
-                                                   in segments (last and
-                                                   current) */
+                                                 in segments (last and
+                                                 current) */
   FIXP_DBL accWindowNrg; /* recursively accumulated windowNrgF */
 
   FIXP_DBL iirStates[BLOCK_SWITCHING_IIR_LEN]; /* filter delay-line */

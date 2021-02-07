@@ -104,8 +104,8 @@ amm-info@iis.fraunhofer.de
 #define NLC_DEC_H
 
 #include "FDK_bitstream.h"
-#include "huff_nodes.h"
 #include "common_fix.h"
+#include "huff_nodes.h"
 
 typedef enum {
 

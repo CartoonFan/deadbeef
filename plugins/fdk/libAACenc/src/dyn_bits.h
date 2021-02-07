@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#include "psy_const.h"
 #include "aacenc_tns.h"
+#include "psy_const.h"
 
 #define MAX_SECTIONS MAX_GROUPED_SFB
 #define SECT_ESC_VAL_LONG 31
@@ -139,22 +139,22 @@ typedef struct {
 } SECTION_DATA;
 
 struct BITCNTR_STATE {
-  INT* bitLookUp;
-  INT* mergeGainLookUp;
+  INT *bitLookUp;
+  INT *mergeGainLookUp;
 };
 
-INT FDKaacEnc_BCNew(BITCNTR_STATE** phBC, UCHAR* dynamic_RAM);
+INT FDKaacEnc_BCNew(BITCNTR_STATE **phBC, UCHAR *dynamic_RAM);
 
-void FDKaacEnc_BCClose(BITCNTR_STATE** phBC);
+void FDKaacEnc_BCClose(BITCNTR_STATE **phBC);
 
-INT FDKaacEnc_dynBitCount(BITCNTR_STATE* const hBC,
-                          const SHORT* const quantSpectrum,
-                          const UINT* const maxValueInSfb,
-                          const INT* const scalefac, const INT blockType,
+INT FDKaacEnc_dynBitCount(BITCNTR_STATE *const hBC,
+                          const SHORT *const quantSpectrum,
+                          const UINT *const maxValueInSfb,
+                          const INT *const scalefac, const INT blockType,
                           const INT sfbCnt, const INT maxSfbPerGroup,
-                          const INT sfbPerGroup, const INT* const sfbOffset,
-                          SECTION_DATA* const RESTRICT sectionData,
-                          const INT* const noiseNrg, const INT* const isBook,
-                          const INT* const isScale, const UINT syntaxFlags);
+                          const INT sfbPerGroup, const INT *const sfbOffset,
+                          SECTION_DATA *const RESTRICT sectionData,
+                          const INT *const noiseNrg, const INT *const isBook,
+                          const INT *const isScale, const UINT syntaxFlags);
 
 #endif

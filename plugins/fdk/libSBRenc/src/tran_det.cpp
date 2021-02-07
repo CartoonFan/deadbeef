@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #include "tran_det.h"
 
 #include "fram_gen.h"
-#include "sbrenc_ram.h"
 #include "sbr_misc.h"
+#include "sbrenc_ram.h"
 
 #include "genericStds.h"
 
@@ -128,10 +128,10 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 #define NRG_SHIFT 3 /* for energy summation */
 
-static FIXP_DBL spectralChange(
-    FIXP_DBL Energies[NUMBER_TIME_SLOTS_2304][MAX_FREQ_COEFFS],
-    INT *scaleEnergies, FIXP_DBL EnergyTotal, INT nSfb, INT start, INT border,
-    INT YBufferWriteOffset, INT stop, INT *result_e) {
+static FIXP_DBL
+spectralChange(FIXP_DBL Energies[NUMBER_TIME_SLOTS_2304][MAX_FREQ_COEFFS],
+               INT *scaleEnergies, FIXP_DBL EnergyTotal, INT nSfb, INT start,
+               INT border, INT YBufferWriteOffset, INT stop, INT *result_e) {
   INT i, j;
   INT len1, len2;
   SCHAR energies_e_diff[NUMBER_TIME_SLOTS_2304], energies_e, energyTotal_e = 19,
@@ -213,7 +213,7 @@ static FIXP_DBL spectralChange(
     accu1 = fMax(accu1, (FIXP_DBL)len1);
     accu2 = fMax(accu2, (FIXP_DBL)len2);
 
-/* Energy change in current band */
+    /* Energy change in current band */
 #define LN2 FL2FXCONST_DBL(0.6931471806f) /* ln(2) */
     tmp0 = fLog2(accu2, accu_e) - fLog2(accu1, accu_e);
     tmp1 = fLog2((FIXP_DBL)len1, 31) - fLog2((FIXP_DBL)len2, 31);
@@ -227,7 +227,7 @@ static FIXP_DBL spectralChange(
 
     if (accu_e & 1) {
       accu_e++; /* for a defined square result exponent, the exponent has to be
-                   even */
+             even */
       accu1 >>= 1;
       accu2 >>= 1;
     }
@@ -238,7 +238,7 @@ static FIXP_DBL spectralChange(
 
   if (energyTotal_e & 1) {
     energyTotal_e += 1; /* for a defined square result exponent, the exponent
-                           has to be even */
+                       has to be even */
     EnergyTotal >>= 1;
   }
 
@@ -318,12 +318,13 @@ static FIXP_DBL addLowbandEnergies(FIXP_DBL **Energies, int *scaleEnergies,
  \return  total energy in the highband, scaled by factor 2^19
 *******************************************************************************/
 
-static FIXP_DBL addHighbandEnergies(
-    FIXP_DBL **RESTRICT Energies, /*!< input */
-    INT *scaleEnergies, INT YBufferWriteOffset,
-    FIXP_DBL EnergiesM[NUMBER_TIME_SLOTS_2304]
-                      [MAX_FREQ_COEFFS], /*!< Combined output */
-    UCHAR *RESTRICT freqBandTable, INT nSfb, INT sbrSlots, INT timeStep) {
+static FIXP_DBL
+addHighbandEnergies(FIXP_DBL **RESTRICT Energies, /*!< input */
+                    INT *scaleEnergies, INT YBufferWriteOffset,
+                    FIXP_DBL EnergiesM[NUMBER_TIME_SLOTS_2304]
+                                      [MAX_FREQ_COEFFS], /*!< Combined output */
+                    UCHAR *RESTRICT freqBandTable, INT nSfb, INT sbrSlots,
+                    INT timeStep) {
   INT i, j, k, slotIn, slotOut, scale[2];
   INT li, ui;
   FIXP_DBL nrgTotal;
@@ -436,7 +437,7 @@ void FDKsbrEnc_frameSplitter(
       border = (sbrSlots + 1) >> 1;
 
       if ((INT)EnergyTotal & 0xffffffe0 &&
-          (scaleEnergies[0] < 32 || scaleEnergies[1] < 32)) /* i.e. > 31 */ {
+          (scaleEnergies[0] < 32 || scaleEnergies[1] < 32)) { /* i.e. > 31 */
         delta = spectralChange(EnergiesM, scaleEnergies, EnergyTotal, nSfb, 0,
                                border, YBufferWriteOffset, sbrSlots, &delta_e);
       } else {
@@ -578,9 +579,9 @@ static void extractTransientCandidates(
 
   endCond = noCols; /* Amount of new transient values to be calculated. */
   startEnerg = (tran_off - 3) >> YBufferSzShift; /* >>YBufferSzShift because of
-                                                    amount of energy values. -3
-                                                    because of neighbors being
-                                                    watched. */
+                                                  amount of energy values. -3
+                                                  because of neighbors being
+                                                  watched. */
   endEnerg =
       ((noCols + (YBufferWriteOffset << YBufferSzShift)) - 1) >>
       YBufferSzShift; /* YBufferSzShift shifts because of half energy values. */
@@ -664,15 +665,15 @@ void FDKsbrEnc_transientDetect(HANDLE_SBR_TRANSIENT_DETECTOR h_sbrTran,
   addPrevSamples = (qmfStartSample > 0) ? 0 : 1;
 
   switch (timeStep) {
-    case 1:
-      timeStepShift = 0;
-      break;
-    case 2:
-      timeStepShift = 1;
-      break;
-    case 4:
-      timeStepShift = 2;
-      break;
+  case 1:
+    timeStepShift = 0;
+    break;
+  case 2:
+    timeStepShift = 1;
+    break;
+  case 4:
+    timeStepShift = 2;
+    break;
   }
 
   calculateThresholds(Energies, scaleEnergies, h_sbrTran->thresholds,
@@ -828,8 +829,8 @@ INT FDKsbrEnc_InitSbrFastTransientDetector(
                  h_sbrFastTransientDetector->startBand <=
              64);
 
-/* QMF_HP_dB_SLOPE_FIX says that we want a 20 dB per 16 kHz HP filter.
-   The following lines map this to the QMF bandwidth. */
+  /* QMF_HP_dB_SLOPE_FIX says that we want a 20 dB per 16 kHz HP filter.
+     The following lines map this to the QMF bandwidth. */
 #define EXP_E 7 /* 64 (=64) multiplications max, max. allowed sum is 0.5 */
   myExp = fMultNorm(QMF_HP_dBd_SLOPE_FIX, 0, (FIXP_DBL)bandwidth_qmf_slot,
                     DFRACT_BITS - 1, EXP_E);
@@ -866,10 +867,10 @@ INT FDKsbrEnc_InitSbrFastTransientDetector(
        LD_DATA_SHIFT. Therefore, the correctly scaled result is
        dBf_int^(2^(EXP_E-LD_DATA_SHIFT)), which is dBf_int^2 */
 
-    if (dBf_int <=
-        46340) { /* compare with maximum allowed value for signed integer
-                    multiplication, 46340 =
-                    (INT)floor(sqrt((double)(((UINT)1<<(DFRACT_BITS-1))-1))) */
+    if (dBf_int <= 46340) {
+      /* compare with maximum allowed value for signed integer
+                  multiplication, 46340 =
+                  (INT)floor(sqrt((double)(((UINT)1<<(DFRACT_BITS-1))-1))) */
       dBf_int *= dBf_int;
 
       /* Calc fractional part */

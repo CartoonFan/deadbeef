@@ -118,12 +118,12 @@ amm-info@iis.fraunhofer.de
 
 #include "sbr_dec.h"
 
-#include "sbr_ram.h"
-#include "env_extr.h"
-#include "env_calc.h"
-#include "scale.h"
 #include "FDK_matrixCalloc.h"
+#include "env_calc.h"
+#include "env_extr.h"
 #include "hbe.h"
+#include "sbr_ram.h"
+#include "scale.h"
 
 #include "genericStds.h"
 
@@ -526,7 +526,7 @@ void sbr_dec(
 
       lppTransposer(
           &hSbrDec->LppTrans, &hSbrDec->qmfDomainInCh->scaling, pLowBandReal,
-          degreeAlias,  // only used if useLP = 1
+          degreeAlias, // only used if useLP = 1
           pLowBandImag, flags & SBRDEC_LOW_POWER,
           hHeaderData->bs_info.sbr_preprocessing,
           hHeaderData->freqBandData.v_k_master[0], hHeaderData->timeStep,
@@ -692,12 +692,12 @@ void sbr_dec(
                    (UINT)hSbrDec->qmfDomainOutCh->fb.no_channels);
         }
         {
-          qmfSynthesisFiltering(
-              &hSbrDec->qmfDomainOutCh->fb, pLowBandReal,
-              (flags & SBRDEC_LOW_POWER) ? NULL : pLowBandImag,
-              &hSbrDec->qmfDomainInCh->scaling,
-              hSbrDec->LppTrans.pSettings->overlap, timeOut, strideOut,
-              qmfTemp);
+          qmfSynthesisFiltering(&hSbrDec->qmfDomainOutCh->fb, pLowBandReal,
+                                (flags & SBRDEC_LOW_POWER) ? NULL
+                                                           : pLowBandImag,
+                                &hSbrDec->qmfDomainInCh->scaling,
+                                hSbrDec->LppTrans.pSettings->overlap, timeOut,
+                                strideOut, qmfTemp);
         }
         /* restore saved value */
         hSbrDec->qmfDomainOutCh->fb.usb = save_usb;
@@ -735,7 +735,7 @@ void sbr_dec(
         fMin(DFRACT_BITS - 1, fMax(-(DFRACT_BITS - 1), scaleFactorHighBand));
 
     if (h_ps_d->procFrameBased == 1) /* If we have switched from frame to slot
-                                        based processing copy filter states */
+                                    based processing copy filter states */
     {                                /* procFrameBased will be unset later */
       /* copy filter states from left to right */
       /* was ((640)-(64))*sizeof(FIXP_QSS)
@@ -831,12 +831,12 @@ void sbr_dec(
         outScalefactorL += maxShift;
 
         if (!(flags & SBRDEC_SKIP_QMF_SYN)) {
-          qmfSynthesisFilteringSlot(
-              synQmfRight, rQmfReal, /* QMF real buffer */
-              rQmfImag,              /* QMF imag buffer */
-              outScalefactorL, outScalefactorL,
-              timeOutRight + (i * synQmf->no_channels * strideOut), strideOut,
-              pWorkBuffer);
+          qmfSynthesisFilteringSlot(synQmfRight, rQmfReal, /* QMF real buffer */
+                                    rQmfImag,              /* QMF imag buffer */
+                                    outScalefactorL, outScalefactorL,
+                                    timeOutRight +
+                                        (i * synQmf->no_channels * strideOut),
+                                    strideOut, pWorkBuffer);
 
           qmfSynthesisFilteringSlot(
               synQmf, *(pLowBandReal + i), /* QMF real buffer */
@@ -1003,7 +1003,8 @@ int deleteSbrDec(SBR_CHANNEL *hSbrChannel) {
   /* modify here */
   FDK_FREE_MEMORY_2D_ALIGNED(hs->hQmfHBESlotsImag);
 
-  if (hs->hHBE != NULL) QmfTransposerClose(hs->hHBE);
+  if (hs->hHBE != NULL)
+    QmfTransposerClose(hs->hHBE);
 
   if (hs->codecQMFBufferReal != NULL) {
     FDK_FREE_MEMORY_2D_ALIGNED(hs->codecQMFBufferReal);
@@ -1244,7 +1245,8 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
       hHeaderData->freqBandData.freqBandTableNoise,
       hHeaderData->freqBandData.nNfb, hHeaderData->freqBandData.highSubband,
       hHeaderData->sbrProcSmplRate);
-  if (sbrError != SBRDEC_OK) return sbrError;
+  if (sbrError != SBRDEC_OK)
+    return sbrError;
 
   hSbrDec->savedStates = 0;
 
@@ -1252,7 +1254,8 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     sbrError = QmfTransposerReInit(hSbrDec->hHBE,
                                    hHeaderData->freqBandData.freqBandTable,
                                    hHeaderData->freqBandData.nSfb);
-    if (sbrError != SBRDEC_OK) return sbrError;
+    if (sbrError != SBRDEC_OK)
+      return sbrError;
 
     /* copy saved states from previous frame to legacy SBR lpc filterstate
      * buffer   */

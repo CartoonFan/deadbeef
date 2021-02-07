@@ -100,9 +100,9 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include "ps_main.h"
-#include "ps_const.h"
 #include "FDK_bitstream.h"
+#include "ps_const.h"
+#include "ps_main.h"
 
 #ifndef PS_BITENC_H
 #define PS_BITENC_H

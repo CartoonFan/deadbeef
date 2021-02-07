@@ -124,10 +124,10 @@ amm-info@iis.fraunhofer.de
 inline INT fixmul_DD(INT a, const INT b) {
   __asm
   {
-    mov eax, a
-    imul b
-    shl edx, 1
-    mov a, edx
+        mov eax, a
+        imul b
+        shl edx, 1
+        mov a, edx
   }
   return a;
 }
@@ -135,9 +135,9 @@ inline INT fixmul_DD(INT a, const INT b) {
 inline INT fixmuldiv2_DD(INT a, const INT b) {
   __asm
   {
-    mov eax, a
-    imul b
-    mov a, edx
+        mov eax, a
+        imul b
+        mov a, edx
   }
   return a;
 }

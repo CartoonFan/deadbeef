@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 #ifndef ENV_BIT_H
 #define ENV_BIT_H
 
-#include "sbr_encoder.h"
 #include "FDK_crc.h"
+#include "sbr_encoder.h"
 
 /* G(x) = x^10 + x^9 + x^5 + x^4 + x + 1 */
 #define SBR_CRC_POLY (0x0233)

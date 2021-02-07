@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef USACDEC_ACELP_H
 #define USACDEC_ACELP_H
 
-#include "common_fix.h"
 #include "FDK_bitstream.h"
+#include "common_fix.h"
 #include "usacdec_const.h"
 #include "usacdec_rom.h"
 
@@ -137,7 +137,7 @@ typedef struct {
   USHORT T0[NB_SUBFR];
   UCHAR T0_frac[NB_SUBFR];
   UCHAR ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
-                                         active for each ACELP subframe */
+                                       active for each ACELP subframe */
   SHORT icb_index[NB_SUBFR]
                  [8]; /**< innovative codebook index for each ACELP subframe */
   UCHAR gains[NB_SUBFR]; /**< gain index for each ACELP subframe */

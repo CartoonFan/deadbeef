@@ -102,10 +102,10 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdecoder_lib.h"
 
+#include "FDK_core.h" /* FDK_tools version info */
 #include "aac_ram.h"
 #include "aacdecoder.h"
 #include "tpdec_lib.h"
-#include "FDK_core.h" /* FDK_tools version info */
 
 #include "sbrdecoder.h"
 
@@ -161,7 +161,8 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, UINT *pFreeBytes) {
   *pFreeBytes = 0;
 
   /* check handle */
-  if (!self) return AAC_DEC_INVALID_HANDLE;
+  if (!self)
+    return AAC_DEC_INVALID_HANDLE;
 
   /* return nr of free bytes */
   HANDLE_FDK_BITSTREAM hBs = transportDec_GetBitstream(self->hInput, 0);
@@ -202,15 +203,15 @@ LINKSPEC_CPP AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
                                            length[layer], layer);
       if (errTp != TRANSPORTDEC_OK) {
         switch (errTp) {
-          case TRANSPORTDEC_NEED_TO_RESTART:
-            err = AAC_DEC_NEED_TO_RESTART;
-            break;
-          case TRANSPORTDEC_UNSUPPORTED_FORMAT:
-            err = AAC_DEC_UNSUPPORTED_FORMAT;
-            break;
-          default:
-            err = AAC_DEC_UNKNOWN;
-            break;
+        case TRANSPORTDEC_NEED_TO_RESTART:
+          err = AAC_DEC_NEED_TO_RESTART;
+          break;
+        case TRANSPORTDEC_UNSUPPORTED_FORMAT:
+          err = AAC_DEC_UNSUPPORTED_FORMAT;
+          break;
+        default:
+          err = AAC_DEC_UNKNOWN;
+          break;
         }
         /* if baselayer is OK we continue decoding */
         if (layer >= 1) {
@@ -232,15 +233,18 @@ LINKSPEC_CPP AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
   HANDLE_FDK_BITSTREAM hBs = &bs;
   AAC_DECODER_ERROR err = AAC_DEC_OK;
 
-  if (length < 8) return AAC_DEC_UNKNOWN;
+  if (length < 8)
+    return AAC_DEC_UNKNOWN;
 
   while (length >= 8) {
     UINT size =
         (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
     DRC_DEC_ERROR uniDrcErr = DRC_DEC_OK;
 
-    if (length < size) return AAC_DEC_UNKNOWN;
-    if (size <= 8) return AAC_DEC_UNKNOWN;
+    if (length < size)
+      return AAC_DEC_UNKNOWN;
+    if (size <= 8)
+      return AAC_DEC_UNKNOWN;
 
     FDKinitBitStream(hBs, buffer + 8, 0x10000000, (size - 8) * 8);
 
@@ -261,7 +265,8 @@ LINKSPEC_CPP AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
           FDK_drcDec_ReadUniDrcCoefficients_Box(self->hUniDrcDecoder, hBs);
     }
 
-    if (uniDrcErr != DRC_DEC_OK) err = AAC_DEC_UNKNOWN;
+    if (uniDrcErr != DRC_DEC_OK)
+      err = AAC_DEC_UNKNOWN;
 
     buffer += size;
     length -= size;
@@ -291,7 +296,7 @@ static INT aacDecoder_ConfigCallback(void *handle,
          (self->concealMethodUser == ConcealMethodNone) &&
          CConcealment_GetDelay(&self->concealCommonData) >
              0) /* might not be meaningful but allow if user has set it
-                   expicitly */
+                expicitly */
         || (self->flags[0] & (AC_USAC | AC_RSVD50 | AC_RSV603DA) &&
             CConcealment_GetDelay(&self->concealCommonData) >
                 0) /* not implemented */
@@ -352,8 +357,9 @@ static INT aacDecoder_FreeMemCallback(void *handle,
   return errTp;
 }
 
-static INT aacDecoder_CtrlCFGChangeCallback(
-    void *handle, const CCtrlCFGChange *pCtrlCFGChangeStruct) {
+static INT
+aacDecoder_CtrlCFGChangeCallback(void *handle,
+                                 const CCtrlCFGChange *pCtrlCFGChangeStruct) {
   TRANSPORTDEC_ERROR errTp = TRANSPORTDEC_OK;
   HANDLE_AACDECODER self = (HANDLE_AACDECODER)handle;
 
@@ -402,32 +408,32 @@ static INT aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs,
       configBytes, configMode, configChanged);
 
   switch (err) {
-    case MPS_UNSUPPORTED_CONFIG:
-      /* MPS found but invalid or not decodable by this instance            */
-      /* We switch off MPS and keep going                                   */
-      hAacDecoder->mpsEnableCurr = 0;
-      hAacDecoder->mpsApplicable = 0;
+  case MPS_UNSUPPORTED_CONFIG:
+    /* MPS found but invalid or not decodable by this instance            */
+    /* We switch off MPS and keep going                                   */
+    hAacDecoder->mpsEnableCurr = 0;
+    hAacDecoder->mpsApplicable = 0;
+    errTp = TRANSPORTDEC_OK;
+    break;
+  case MPS_PARSE_ERROR:
+    /* MPS found but invalid or not decodable by this instance            */
+    hAacDecoder->mpsEnableCurr = 0;
+    hAacDecoder->mpsApplicable = 0;
+    if ((coreCodec == AOT_USAC) || (coreCodec == AOT_DRM_USAC) ||
+        IS_LOWDELAY(coreCodec)) {
+      errTp = TRANSPORTDEC_PARSE_ERROR;
+    } else {
       errTp = TRANSPORTDEC_OK;
-      break;
-    case MPS_PARSE_ERROR:
-      /* MPS found but invalid or not decodable by this instance            */
-      hAacDecoder->mpsEnableCurr = 0;
-      hAacDecoder->mpsApplicable = 0;
-      if ((coreCodec == AOT_USAC) || (coreCodec == AOT_DRM_USAC) ||
-          IS_LOWDELAY(coreCodec)) {
-        errTp = TRANSPORTDEC_PARSE_ERROR;
-      } else {
-        errTp = TRANSPORTDEC_OK;
-      }
-      break;
-    case MPS_OK:
-      hAacDecoder->mpsApplicable = 1;
-      errTp = TRANSPORTDEC_OK;
-      break;
-    default:
-      /* especially Parsing error is critical for transport layer          */
-      hAacDecoder->mpsApplicable = 0;
-      errTp = TRANSPORTDEC_UNKOWN_ERROR;
+    }
+    break;
+  case MPS_OK:
+    hAacDecoder->mpsApplicable = 1;
+    errTp = TRANSPORTDEC_OK;
+    break;
+  default:
+    /* especially Parsing error is critical for transport layer          */
+    hAacDecoder->mpsApplicable = 0;
+    errTp = TRANSPORTDEC_UNKOWN_ERROR;
   }
 
   return (INT)errTp;
@@ -453,7 +459,8 @@ static INT aacDecoder_UniDrcCallback(void *handle, HANDLE_FDK_BITSTREAM hBs,
   }
 
   err = FDK_drcDec_SetCodecMode(hAacDecoder->hUniDrcDecoder, drcDecCodecMode);
-  if (err) return (INT)TRANSPORTDEC_UNKOWN_ERROR;
+  if (err)
+    return (INT)TRANSPORTDEC_UNKOWN_ERROR;
 
   if (payloadType == 0) /* uniDrcConfig */
   {
@@ -522,30 +529,30 @@ static int isSupportedMpsConfig(AUDIO_OBJECT_TYPE aot,
   }
   /* Check whether the MPS modul supports the given number of input channels: */
   switch (numInChannels) {
-    case 1:
-      if (!(mpsCaps & CAPF_MPS_1CH_IN)) {
-        /* We got a one channel input to MPS decoder but it does not support it.
-         */
-        isSupportedCfg = 0;
-      }
-      break;
-    case 2:
-      if (!(mpsCaps & CAPF_MPS_2CH_IN)) {
-        /* We got a two channel input to MPS decoder but it does not support it.
-         */
-        isSupportedCfg = 0;
-      }
-      break;
-    case 5:
-    case 6:
-      if (!(mpsCaps & CAPF_MPS_6CH_IN)) {
-        /* We got a six channel input to MPS decoder but it does not support it.
-         */
-        isSupportedCfg = 0;
-      }
-      break;
-    default:
+  case 1:
+    if (!(mpsCaps & CAPF_MPS_1CH_IN)) {
+      /* We got a one channel input to MPS decoder but it does not support it.
+       */
       isSupportedCfg = 0;
+    }
+    break;
+  case 2:
+    if (!(mpsCaps & CAPF_MPS_2CH_IN)) {
+      /* We got a two channel input to MPS decoder but it does not support it.
+       */
+      isSupportedCfg = 0;
+    }
+    break;
+  case 5:
+  case 6:
+    if (!(mpsCaps & CAPF_MPS_6CH_IN)) {
+      /* We got a six channel input to MPS decoder but it does not support it.
+       */
+      isSupportedCfg = 0;
+    }
+    break;
+  default:
+    isSupportedCfg = 0;
   }
 
   return (isSupportedCfg);
@@ -590,11 +597,11 @@ static AAC_DECODER_ERROR setConcealMethod(
   /* Be sure to set AAC and SBR concealment method simultaneously! */
   errorStatus = CConcealment_SetParams(
       pConcealData,
-      (method_revert == 0) ? (int)method : (int)1,  // concealMethod
-      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,           // concealFadeOutSlope
-      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,           // concealFadeInSlope
-      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,           // concealMuteRelease
-      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED            // concealComfNoiseLevel
+      (method_revert == 0) ? (int)method : (int)1, // concealMethod
+      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,          // concealFadeOutSlope
+      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,          // concealFadeInSlope
+      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED,          // concealMuteRelease
+      AACDEC_CONCEAL_PARAM_NOT_SPECIFIED           // concealComfNoiseLevel
   );
   if ((errorStatus != AAC_DEC_OK) && (errorStatus != AAC_DEC_INVALID_HANDLE)) {
     goto bail;
@@ -610,17 +617,17 @@ static AAC_DECODER_ERROR setConcealMethod(
     sbrErr = sbrDecoder_SetParam(hSbrDec, SBR_SYSTEM_BITSTREAM_DELAY, bsDelay);
 
     switch (sbrErr) {
-      case SBRDEC_OK:
-      case SBRDEC_NOT_INITIALIZED:
-        if (self != NULL) {
-          /* save the param value and set later
-             (when SBR has been initialized) */
-          self->sbrParams.bsDelay = bsDelay;
-        }
-        break;
-      default:
-        errorStatus = AAC_DEC_SET_PARAM_FAIL;
-        goto bail;
+    case SBRDEC_OK:
+    case SBRDEC_NOT_INITIALIZED:
+      if (self != NULL) {
+        /* save the param value and set later
+           (when SBR has been initialized) */
+        self->sbrParams.bsDelay = bsDelay;
+      }
+      break;
+    default:
+      errorStatus = AAC_DEC_SET_PARAM_FAIL;
+      goto bail;
     }
   }
 
@@ -632,14 +639,14 @@ static AAC_DECODER_ERROR setConcealMethod(
   if (errorStatus == AAC_DEC_OK) {
     PCMDMX_ERROR err = pcmDmx_SetParam(hPcmDmx, DMX_BS_DATA_DELAY, bsDelay);
     switch (err) {
-      case PCMDMX_INVALID_HANDLE:
-        errorStatus = AAC_DEC_INVALID_HANDLE;
-        break;
-      case PCMDMX_OK:
-        break;
-      default:
-        errorStatus = AAC_DEC_SET_PARAM_FAIL;
-        goto bail;
+    case PCMDMX_INVALID_HANDLE:
+      errorStatus = AAC_DEC_INVALID_HANDLE;
+      break;
+    case PCMDMX_OK:
+      break;
+    default:
+      errorStatus = AAC_DEC_SET_PARAM_FAIL;
+      goto bail;
     }
   }
 
@@ -688,210 +695,209 @@ LINKSPEC_CPP AAC_DECODER_ERROR aacDecoder_SetParam(
 
   /* configure the subsystems */
   switch (param) {
-    case AAC_PCM_MIN_OUTPUT_CHANNELS:
-      if (value < -1 || value > (8)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      dmxErr = pcmDmx_SetParam(hPcmDmx, MIN_NUMBER_OF_OUTPUT_CHANNELS, value);
-      break;
+  case AAC_PCM_MIN_OUTPUT_CHANNELS:
+    if (value < -1 || value > (8)) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    dmxErr = pcmDmx_SetParam(hPcmDmx, MIN_NUMBER_OF_OUTPUT_CHANNELS, value);
+    break;
 
-    case AAC_PCM_MAX_OUTPUT_CHANNELS:
-      if (value < -1 || value > (8)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      dmxErr = pcmDmx_SetParam(hPcmDmx, MAX_NUMBER_OF_OUTPUT_CHANNELS, value);
+  case AAC_PCM_MAX_OUTPUT_CHANNELS:
+    if (value < -1 || value > (8)) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    dmxErr = pcmDmx_SetParam(hPcmDmx, MAX_NUMBER_OF_OUTPUT_CHANNELS, value);
 
-      if (dmxErr != PCMDMX_OK) {
-        goto bail;
-      }
-      errorStatus =
-          aacDecoder_drcSetParam(hDrcInfo, MAX_OUTPUT_CHANNELS, value);
-      if (value > 0) {
-        uniDrcErr = FDK_drcDec_SetParam(self->hUniDrcDecoder,
-                                        DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED,
-                                        (FIXP_DBL)value);
-      }
-      break;
-
-    case AAC_PCM_DUAL_CHANNEL_OUTPUT_MODE:
-      dmxErr = pcmDmx_SetParam(hPcmDmx, DMX_DUAL_CHANNEL_MODE, value);
-      break;
-
-    case AAC_PCM_LIMITER_ENABLE:
-      if (value < -2 || value > 1) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      self->limiterEnableUser = value;
-      break;
-
-    case AAC_PCM_LIMITER_ATTACK_TIME:
-      if (value <= 0) { /* module function converts value to unsigned */
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      switch (pcmLimiter_SetAttack(hPcmTdl, value)) {
-        case TDLIMIT_OK:
-          break;
-        case TDLIMIT_INVALID_HANDLE:
-          return AAC_DEC_INVALID_HANDLE;
-        case TDLIMIT_INVALID_PARAMETER:
-        default:
-          return AAC_DEC_SET_PARAM_FAIL;
-      }
-      break;
-
-    case AAC_PCM_LIMITER_RELEAS_TIME:
-      if (value <= 0) { /* module function converts value to unsigned */
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      switch (pcmLimiter_SetRelease(hPcmTdl, value)) {
-        case TDLIMIT_OK:
-          break;
-        case TDLIMIT_INVALID_HANDLE:
-          return AAC_DEC_INVALID_HANDLE;
-        case TDLIMIT_INVALID_PARAMETER:
-        default:
-          return AAC_DEC_SET_PARAM_FAIL;
-      }
-      break;
-
-    case AAC_METADATA_PROFILE: {
-      DMX_PROFILE_TYPE dmxProfile;
-      INT mdExpiry = -1; /* in ms (-1: don't change) */
-
-      switch ((AAC_MD_PROFILE)value) {
-        case AAC_MD_PROFILE_MPEG_STANDARD:
-          dmxProfile = DMX_PRFL_STANDARD;
-          break;
-        case AAC_MD_PROFILE_MPEG_LEGACY:
-          dmxProfile = DMX_PRFL_MATRIX_MIX;
-          break;
-        case AAC_MD_PROFILE_MPEG_LEGACY_PRIO:
-          dmxProfile = DMX_PRFL_FORCE_MATRIX_MIX;
-          break;
-        case AAC_MD_PROFILE_ARIB_JAPAN:
-          dmxProfile = DMX_PRFL_ARIB_JAPAN;
-          mdExpiry = 550; /* ms */
-          break;
-        default:
-          return AAC_DEC_SET_PARAM_FAIL;
-      }
-      dmxErr = pcmDmx_SetParam(hPcmDmx, DMX_PROFILE_SETTING, (INT)dmxProfile);
-      if (dmxErr != PCMDMX_OK) {
-        goto bail;
-      }
-      if ((self != NULL) && (mdExpiry >= 0)) {
-        self->metadataExpiry = mdExpiry;
-        /* Determine the corresponding number of frames and configure all
-         * related modules. */
-        aacDecoder_setMetadataExpiry(self, mdExpiry);
-      }
-    } break;
-
-    case AAC_METADATA_EXPIRY_TIME:
-      if (value < 0) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      if (self != NULL) {
-        self->metadataExpiry = value;
-        /* Determine the corresponding number of frames and configure all
-         * related modules. */
-        aacDecoder_setMetadataExpiry(self, value);
-      }
-      break;
-
-    case AAC_PCM_OUTPUT_CHANNEL_MAPPING:
-      if (value < 0 || value > 1) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-      /* CAUTION: The given value must be inverted to match the logic! */
-      FDK_chMapDescr_setPassThrough(&self->mapDescr, !value);
-      break;
-
-    case AAC_QMF_LOWPOWER:
-      if (value < -1 || value > 1) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-
-      /**
-       * Set QMF mode (might be overriden)
-       *  0:HQ (complex)
-       *  1:LP (partially complex)
-       */
-      self->qmfModeUser = (QMF_MODE)value;
-      break;
-
-    case AAC_DRC_ATTENUATION_FACTOR:
-      /* DRC compression factor (where 0 is no and 127 is max compression) */
-      errorStatus = aacDecoder_drcSetParam(hDrcInfo, DRC_CUT_SCALE, value);
-      break;
-
-    case AAC_DRC_BOOST_FACTOR:
-      /* DRC boost factor (where 0 is no and 127 is max boost) */
-      errorStatus = aacDecoder_drcSetParam(hDrcInfo, DRC_BOOST_SCALE, value);
-      break;
-
-    case AAC_DRC_REFERENCE_LEVEL:
-      if ((value >= 0) &&
-          ((value < 40) || (value > 127))) /* allowed range: -10 to -31.75 dB */
-        return AAC_DEC_SET_PARAM_FAIL;
-      /* DRC target reference level quantized in 0.25dB steps using values
-         [40..127]. Negative values switch off loudness normalisation. Negative
-         values also switch off MPEG-4 DRC, while MPEG-D DRC can be separately
-         switched on/off with AAC_UNIDRC_SET_EFFECT */
-      errorStatus = aacDecoder_drcSetParam(hDrcInfo, TARGET_REF_LEVEL, value);
+    if (dmxErr != PCMDMX_OK) {
+      goto bail;
+    }
+    errorStatus = aacDecoder_drcSetParam(hDrcInfo, MAX_OUTPUT_CHANNELS, value);
+    if (value > 0) {
       uniDrcErr = FDK_drcDec_SetParam(self->hUniDrcDecoder,
-                                      DRC_DEC_LOUDNESS_NORMALIZATION_ON,
-                                      (FIXP_DBL)(value >= 0));
-      /* set target loudness also for MPEG-D DRC */
-      self->defaultTargetLoudness = (SCHAR)value;
-      break;
-
-    case AAC_DRC_HEAVY_COMPRESSION:
-      /* Don't need to overwrite cut/boost values */
-      errorStatus =
-          aacDecoder_drcSetParam(hDrcInfo, APPLY_HEAVY_COMPRESSION, value);
-      break;
-
-    case AAC_DRC_DEFAULT_PRESENTATION_MODE:
-      /* DRC default presentation mode */
-      errorStatus =
-          aacDecoder_drcSetParam(hDrcInfo, DEFAULT_PRESENTATION_MODE, value);
-      break;
-
-    case AAC_DRC_ENC_TARGET_LEVEL:
-      /* Encoder target level for light (i.e. not heavy) compression:
-         Target reference level assumed at encoder for deriving limiting gains
-       */
-      errorStatus =
-          aacDecoder_drcSetParam(hDrcInfo, ENCODER_TARGET_LEVEL, value);
-      break;
-
-    case AAC_UNIDRC_SET_EFFECT:
-      if ((value < -1) || (value > 6)) return AAC_DEC_SET_PARAM_FAIL;
-      uniDrcErr = FDK_drcDec_SetParam(self->hUniDrcDecoder, DRC_DEC_EFFECT_TYPE,
+                                      DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED,
                                       (FIXP_DBL)value);
-      break;
-    case AAC_TPDEC_CLEAR_BUFFER:
-      errTp = transportDec_SetParam(hTpDec, TPDEC_PARAM_RESET, 1);
-      self->streamInfo.numLostAccessUnits = 0;
-      self->streamInfo.numBadBytes = 0;
-      self->streamInfo.numTotalBytes = 0;
-      /* aacDecoder_SignalInterruption(self); */
-      break;
-    case AAC_CONCEAL_METHOD:
-      /* Changing the concealment method can introduce additional bitstream
-         delay. And that in turn affects sub libraries and modules which makes
-         the whole thing quite complex.  So the complete changing routine is
-         packed into a helper function which keeps all modules and libs in a
-         consistent state even in the case an error occures. */
-      errorStatus = setConcealMethod(self, value);
-      if (errorStatus == AAC_DEC_OK) {
-        self->concealMethodUser = (CConcealmentMethod)value;
-      }
-      break;
+    }
+    break;
 
+  case AAC_PCM_DUAL_CHANNEL_OUTPUT_MODE:
+    dmxErr = pcmDmx_SetParam(hPcmDmx, DMX_DUAL_CHANNEL_MODE, value);
+    break;
+
+  case AAC_PCM_LIMITER_ENABLE:
+    if (value < -2 || value > 1) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    self->limiterEnableUser = value;
+    break;
+
+  case AAC_PCM_LIMITER_ATTACK_TIME:
+    if (value <= 0) { /* module function converts value to unsigned */
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    switch (pcmLimiter_SetAttack(hPcmTdl, value)) {
+    case TDLIMIT_OK:
+      break;
+    case TDLIMIT_INVALID_HANDLE:
+      return AAC_DEC_INVALID_HANDLE;
+    case TDLIMIT_INVALID_PARAMETER:
     default:
       return AAC_DEC_SET_PARAM_FAIL;
+    }
+    break;
+
+  case AAC_PCM_LIMITER_RELEAS_TIME:
+    if (value <= 0) { /* module function converts value to unsigned */
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    switch (pcmLimiter_SetRelease(hPcmTdl, value)) {
+    case TDLIMIT_OK:
+      break;
+    case TDLIMIT_INVALID_HANDLE:
+      return AAC_DEC_INVALID_HANDLE;
+    case TDLIMIT_INVALID_PARAMETER:
+    default:
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    break;
+
+  case AAC_METADATA_PROFILE: {
+    DMX_PROFILE_TYPE dmxProfile;
+    INT mdExpiry = -1; /* in ms (-1: don't change) */
+
+    switch ((AAC_MD_PROFILE)value) {
+    case AAC_MD_PROFILE_MPEG_STANDARD:
+      dmxProfile = DMX_PRFL_STANDARD;
+      break;
+    case AAC_MD_PROFILE_MPEG_LEGACY:
+      dmxProfile = DMX_PRFL_MATRIX_MIX;
+      break;
+    case AAC_MD_PROFILE_MPEG_LEGACY_PRIO:
+      dmxProfile = DMX_PRFL_FORCE_MATRIX_MIX;
+      break;
+    case AAC_MD_PROFILE_ARIB_JAPAN:
+      dmxProfile = DMX_PRFL_ARIB_JAPAN;
+      mdExpiry = 550; /* ms */
+      break;
+    default:
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    dmxErr = pcmDmx_SetParam(hPcmDmx, DMX_PROFILE_SETTING, (INT)dmxProfile);
+    if (dmxErr != PCMDMX_OK) {
+      goto bail;
+    }
+    if ((self != NULL) && (mdExpiry >= 0)) {
+      self->metadataExpiry = mdExpiry;
+      /* Determine the corresponding number of frames and configure all
+       * related modules. */
+      aacDecoder_setMetadataExpiry(self, mdExpiry);
+    }
+  } break;
+
+  case AAC_METADATA_EXPIRY_TIME:
+    if (value < 0) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    if (self != NULL) {
+      self->metadataExpiry = value;
+      /* Determine the corresponding number of frames and configure all
+       * related modules. */
+      aacDecoder_setMetadataExpiry(self, value);
+    }
+    break;
+
+  case AAC_PCM_OUTPUT_CHANNEL_MAPPING:
+    if (value < 0 || value > 1) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+    /* CAUTION: The given value must be inverted to match the logic! */
+    FDK_chMapDescr_setPassThrough(&self->mapDescr, !value);
+    break;
+
+  case AAC_QMF_LOWPOWER:
+    if (value < -1 || value > 1) {
+      return AAC_DEC_SET_PARAM_FAIL;
+    }
+
+    /**
+     * Set QMF mode (might be overriden)
+     *  0:HQ (complex)
+     *  1:LP (partially complex)
+     */
+    self->qmfModeUser = (QMF_MODE)value;
+    break;
+
+  case AAC_DRC_ATTENUATION_FACTOR:
+    /* DRC compression factor (where 0 is no and 127 is max compression) */
+    errorStatus = aacDecoder_drcSetParam(hDrcInfo, DRC_CUT_SCALE, value);
+    break;
+
+  case AAC_DRC_BOOST_FACTOR:
+    /* DRC boost factor (where 0 is no and 127 is max boost) */
+    errorStatus = aacDecoder_drcSetParam(hDrcInfo, DRC_BOOST_SCALE, value);
+    break;
+
+  case AAC_DRC_REFERENCE_LEVEL:
+    if ((value >= 0) &&
+        ((value < 40) || (value > 127))) /* allowed range: -10 to -31.75 dB */
+      return AAC_DEC_SET_PARAM_FAIL;
+    /* DRC target reference level quantized in 0.25dB steps using values
+       [40..127]. Negative values switch off loudness normalisation. Negative
+       values also switch off MPEG-4 DRC, while MPEG-D DRC can be separately
+       switched on/off with AAC_UNIDRC_SET_EFFECT */
+    errorStatus = aacDecoder_drcSetParam(hDrcInfo, TARGET_REF_LEVEL, value);
+    uniDrcErr = FDK_drcDec_SetParam(self->hUniDrcDecoder,
+                                    DRC_DEC_LOUDNESS_NORMALIZATION_ON,
+                                    (FIXP_DBL)(value >= 0));
+    /* set target loudness also for MPEG-D DRC */
+    self->defaultTargetLoudness = (SCHAR)value;
+    break;
+
+  case AAC_DRC_HEAVY_COMPRESSION:
+    /* Don't need to overwrite cut/boost values */
+    errorStatus =
+        aacDecoder_drcSetParam(hDrcInfo, APPLY_HEAVY_COMPRESSION, value);
+    break;
+
+  case AAC_DRC_DEFAULT_PRESENTATION_MODE:
+    /* DRC default presentation mode */
+    errorStatus =
+        aacDecoder_drcSetParam(hDrcInfo, DEFAULT_PRESENTATION_MODE, value);
+    break;
+
+  case AAC_DRC_ENC_TARGET_LEVEL:
+    /* Encoder target level for light (i.e. not heavy) compression:
+       Target reference level assumed at encoder for deriving limiting gains
+     */
+    errorStatus = aacDecoder_drcSetParam(hDrcInfo, ENCODER_TARGET_LEVEL, value);
+    break;
+
+  case AAC_UNIDRC_SET_EFFECT:
+    if ((value < -1) || (value > 6))
+      return AAC_DEC_SET_PARAM_FAIL;
+    uniDrcErr = FDK_drcDec_SetParam(self->hUniDrcDecoder, DRC_DEC_EFFECT_TYPE,
+                                    (FIXP_DBL)value);
+    break;
+  case AAC_TPDEC_CLEAR_BUFFER:
+    errTp = transportDec_SetParam(hTpDec, TPDEC_PARAM_RESET, 1);
+    self->streamInfo.numLostAccessUnits = 0;
+    self->streamInfo.numBadBytes = 0;
+    self->streamInfo.numTotalBytes = 0;
+    /* aacDecoder_SignalInterruption(self); */
+    break;
+  case AAC_CONCEAL_METHOD:
+    /* Changing the concealment method can introduce additional bitstream
+       delay. And that in turn affects sub libraries and modules which makes
+       the whole thing quite complex.  So the complete changing routine is
+       packed into a helper function which keeps all modules and libs in a
+       consistent state even in the case an error occures. */
+    errorStatus = setConcealMethod(self, value);
+    if (errorStatus == AAC_DEC_OK) {
+      self->concealMethodUser = (CConcealmentMethod)value;
+    }
+    break;
+
+  default:
+    return AAC_DEC_SET_PARAM_FAIL;
   } /* switch(param) */
 
 bail:
@@ -899,13 +905,13 @@ bail:
   if (errorStatus == AAC_DEC_OK) {
     /* Check error code returned by DMX module library: */
     switch (dmxErr) {
-      case PCMDMX_OK:
-        break;
-      case PCMDMX_INVALID_HANDLE:
-        errorStatus = AAC_DEC_INVALID_HANDLE;
-        break;
-      default:
-        errorStatus = AAC_DEC_SET_PARAM_FAIL;
+    case PCMDMX_OK:
+      break;
+    case PCMDMX_INVALID_HANDLE:
+      errorStatus = AAC_DEC_INVALID_HANDLE;
+      break;
+    default:
+      errorStatus = AAC_DEC_SET_PARAM_FAIL;
     }
   }
 
@@ -916,14 +922,14 @@ bail:
   if (errorStatus == AAC_DEC_OK) {
     /* Check error code returned by MPEG-D DRC decoder library: */
     switch (uniDrcErr) {
-      case 0:
-        break;
-      case -9998:
-        errorStatus = AAC_DEC_INVALID_HANDLE;
-        break;
-      default:
-        errorStatus = AAC_DEC_SET_PARAM_FAIL;
-        break;
+    case 0:
+      break;
+    case -9998:
+      errorStatus = AAC_DEC_INVALID_HANDLE;
+      break;
+    default:
+      errorStatus = AAC_DEC_SET_PARAM_FAIL;
+      break;
     }
   }
 
@@ -1141,7 +1147,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
   int fEndAuNotAdjusted = 0;  /* The end of the access unit was not adjusted */
   int applyCrossfade = 1;     /* flag indicates if flushing was possible */
   FIXP_PCM *pTimeDataFixpPcm; /* Signal buffer for decoding process before PCM
-                                 processing */
+                               processing */
   INT timeDataFixpPcmSize;
   PCM_DEC *pTimeDataPcmPost; /* Signal buffer for PCM post-processing */
   INT timeDataPcmPostSize;
@@ -1185,26 +1191,26 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
       err = transportDec_ReadAccessUnit(self->hInput, layer);
       if (err != TRANSPORTDEC_OK) {
         switch (err) {
-          case TRANSPORTDEC_NOT_ENOUGH_BITS:
-            ErrorStatus = AAC_DEC_NOT_ENOUGH_BITS;
-            goto bail;
-          case TRANSPORTDEC_SYNC_ERROR:
-            self->streamInfo.numLostAccessUnits =
-                aacDecoder_EstimateNumberOfLostFrames(self);
-            fTpInterruption = 1;
-            break;
-          case TRANSPORTDEC_NEED_TO_RESTART:
-            ErrorStatus = AAC_DEC_NEED_TO_RESTART;
-            goto bail;
-          case TRANSPORTDEC_CRC_ERROR:
-            fTpConceal = 1;
-            break;
-          case TRANSPORTDEC_UNSUPPORTED_FORMAT:
-            ErrorStatus = AAC_DEC_UNSUPPORTED_FORMAT;
-            goto bail;
-          default:
-            ErrorStatus = AAC_DEC_UNKNOWN;
-            goto bail;
+        case TRANSPORTDEC_NOT_ENOUGH_BITS:
+          ErrorStatus = AAC_DEC_NOT_ENOUGH_BITS;
+          goto bail;
+        case TRANSPORTDEC_SYNC_ERROR:
+          self->streamInfo.numLostAccessUnits =
+              aacDecoder_EstimateNumberOfLostFrames(self);
+          fTpInterruption = 1;
+          break;
+        case TRANSPORTDEC_NEED_TO_RESTART:
+          ErrorStatus = AAC_DEC_NEED_TO_RESTART;
+          goto bail;
+        case TRANSPORTDEC_CRC_ERROR:
+          fTpConceal = 1;
+          break;
+        case TRANSPORTDEC_UNSUPPORTED_FORMAT:
+          ErrorStatus = AAC_DEC_UNSUPPORTED_FORMAT;
+          goto bail;
+        default:
+          ErrorStatus = AAC_DEC_UNKNOWN;
+          goto bail;
         }
       }
     }
@@ -1231,22 +1237,21 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
         (accessUnit == 0) &&
         (self->hasAudioPreRoll ||
          (self->buildUpStatus == AACDEC_RSV60_BUILD_UP_IDLE_IN_BAND)) &&
-        !fTpInterruption &&
-        !fTpConceal /* Bit stream pointer needs to be at the beginning of a
-                       (valid) AU. */
+        !fTpInterruption && !fTpConceal /* Bit stream pointer needs to be at the
+                                   beginning of a (valid) AU. */
     ) {
       ErrorStatus = CAacDecoder_PreRollExtensionPayloadParse(
           self, &numPrerollAU, prerollAUOffset, prerollAULength);
 
       if (ErrorStatus != AAC_DEC_OK) {
         switch (ErrorStatus) {
-          case AAC_DEC_NOT_ENOUGH_BITS:
-            goto bail;
-          case AAC_DEC_PARSE_ERROR:
-            self->frameOK = 0;
-            break;
-          default:
-            break;
+        case AAC_DEC_NOT_ENOUGH_BITS:
+          goto bail;
+        case AAC_DEC_PARSE_ERROR:
+          self->frameOK = 0;
+          break;
+        default:
+          break;
         }
       }
 
@@ -1338,8 +1343,9 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
         if (tpErr != TRANSPORTDEC_OK) {
           self->frameOK = 0;
         }
-      } else { /* while preroll processing later possibly an error in the
-                  renderer part occurrs */
+      } else {
+        /* while preroll processing later possibly an error in the
+                    renderer part occurrs */
         if (IS_OUTPUT_VALID(ErrorStatus)) {
           fEndAuNotAdjusted = 1;
         }
@@ -1412,15 +1418,15 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
       self->qmfDomain.globalConf.TDinput = pTimeData;
 
       switch (FDK_QmfDomain_Configure(&self->qmfDomain)) {
-        default:
-        case QMF_DOMAIN_INIT_ERROR:
-          ErrorStatus = AAC_DEC_UNKNOWN;
-          goto bail;
-        case QMF_DOMAIN_OUT_OF_MEMORY:
-          ErrorStatus = AAC_DEC_OUT_OF_MEMORY;
-          goto bail;
-        case QMF_DOMAIN_OK:
-          break;
+      default:
+      case QMF_DOMAIN_INIT_ERROR:
+        ErrorStatus = AAC_DEC_UNKNOWN;
+        goto bail;
+      case QMF_DOMAIN_OUT_OF_MEMORY:
+        ErrorStatus = AAC_DEC_OUT_OF_MEMORY;
+        goto bail;
+      case QMF_DOMAIN_OK:
+        break;
       }
 
       /* sbr decoder */
@@ -1429,7 +1435,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
           self->pAacDecoderStaticChannelInfo[0]->concealmentInfo.concealState >
               ConcealState_FadeIn) {
         self->frameOK = 0; /* if an error has occured do concealment in the SBR
-                              decoder too */
+                      decoder too */
       }
 
       if (self->sbrEnabled && (!(self->flags[0] & AC_USAC_SCFGI3))) {
@@ -1672,8 +1678,10 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
           /* If SBR and/or MPS is active, the DRC gains are aligned to the QMF
              domain signal before the QMF synthesis. Therefore the DRC gains
              need to be delayed by the QMF synthesis delay. */
-          if (self->sbrEnabled) drcDelay = 257;
-          if (self->mpsEnableCurr) drcDelay = 257;
+          if (self->sbrEnabled)
+            drcDelay = 257;
+          if (self->mpsEnableCurr)
+            drcDelay = 257;
           /* Take into account concealment delay */
           drcDelay += CConcealment_GetDelay(&self->concealCommonData) *
                       self->streamInfo.frameSize;
@@ -1681,12 +1689,14 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
           for (ch = 0; ch < self->streamInfo.numChannels; ch++) {
             UCHAR mapValue = FDK_chMapDescr_getMapValue(
                 &self->mapDescr, (UCHAR)ch, self->chMapIndex);
-            if (mapValue < (8)) reverseInChannelMap[mapValue] = ch;
+            if (mapValue < (8))
+              reverseInChannelMap[mapValue] = ch;
           }
           for (ch = 0; ch < (int)numDrcOutChannels; ch++) {
             UCHAR mapValue = FDK_chMapDescr_getMapValue(
                 &self->mapDescr, (UCHAR)ch, numDrcOutChannels);
-            if (mapValue < (8)) reverseOutChannelMap[mapValue] = ch;
+            if (mapValue < (8))
+              reverseOutChannelMap[mapValue] = ch;
           }
 
           /* The output of SBR and MPS is interleaved. Deinterleaving may be
@@ -1734,7 +1744,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
               self->hUniDrcDecoder, reverseInChannelMap, reverseOutChannelMap,
               drcWorkBuffer,
               &self->streamInfo.numChannels); /* self->streamInfo.numChannels
-                                                 may change here */
+                                       may change here */
           /* apply DRC2/3 gain sequence */
           for (ch = 0; ch < self->streamInfo.numChannels; ch++) {
             FDK_drcDec_ProcessTime(self->hUniDrcDecoder, drcDelay,
@@ -1830,10 +1840,10 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
           (resampled or not) */
           if ((self->streamInfo.numChannels == 1) || (self->sbrEnabled) ||
               (self->mpsEnableCurr)) {
-            scaleValuesSaturate(
-                pTimeData, pTimeDataPcmPost,
-                self->streamInfo.frameSize * self->streamInfo.numChannels,
-                PCM_OUT_HEADROOM);
+            scaleValuesSaturate(pTimeData, pTimeDataPcmPost,
+                                self->streamInfo.frameSize *
+                                    self->streamInfo.numChannels,
+                                PCM_OUT_HEADROOM);
 
           } else {
             scaleValuesSaturate(
@@ -1955,7 +1965,8 @@ bail:
 }
 
 LINKSPEC_CPP void aacDecoder_Close(HANDLE_AACDECODER self) {
-  if (self == NULL) return;
+  if (self == NULL)
+    return;
 
   if (self->hLimiter != NULL) {
     pcmLimiter_Destroy(self->hLimiter);
@@ -2004,7 +2015,8 @@ LINKSPEC_CPP INT aacDecoder_GetLibInfo(LIB_INFO *info) {
 
   /* search for next free tab */
   for (i = 0; i < FDK_MODULE_LAST; i++) {
-    if (info[i].module_id == FDK_NONE) break;
+    if (info[i].module_id == FDK_NONE)
+      break;
   }
   if (i == FDK_MODULE_LAST) {
     return -1;

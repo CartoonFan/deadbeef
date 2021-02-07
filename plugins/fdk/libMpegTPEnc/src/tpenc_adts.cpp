@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "tpenc_adts.h"
 
-#include "tpenc_lib.h"
 #include "tpenc_asc.h"
+#include "tpenc_lib.h"
 
 int adtsWrite_CrcStartReg(
     HANDLE_ADTS pAdts,        /*!< pointer to adts stucture */

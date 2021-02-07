@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef USACDEC_ROM_H
 #define USACDEC_ROM_H
 
-#include "common_fix.h"
 #include "FDK_lpc.h"
+#include "common_fix.h"
 
 #include "usacdec_const.h"
 

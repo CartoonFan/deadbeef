@@ -135,7 +135,8 @@ void **fdkCallocMatrix2D(UINT dim1, UINT dim2, UINT size) {
   void **p1;
   UINT i;
   char *p2;
-  if (!dim1 || !dim2) return NULL;
+  if (!dim1 || !dim2)
+    return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D(dim1, sizeof(void *))) == NULL) {
     goto bail;
   }
@@ -156,7 +157,8 @@ void **fdkCallocMatrix2D_aligned(UINT dim1, UINT dim2, UINT size) {
   void **p1;
   UINT i;
   char *p2;
-  if (!dim1 || !dim2) return NULL;
+  if (!dim1 || !dim2)
+    return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D(dim1, sizeof(void *))) == NULL) {
     goto bail;
   }
@@ -174,13 +176,15 @@ bail:
 }
 
 void fdkFreeMatrix2D(void **p) {
-  if (!p) return;
+  if (!p)
+    return;
   fdkFreeMatrix1D(p[0]);
   fdkFreeMatrix1D(p);
 }
 
 void fdkFreeMatrix2D_aligned(void **p) {
-  if (!p) return;
+  if (!p)
+    return;
   fdkFreeMatrix1D_aligned(p[0]);
   fdkFreeMatrix1D(p);
 }
@@ -191,7 +195,8 @@ void **fdkCallocMatrix2D_int(UINT dim1, UINT dim2, UINT size,
   UINT i;
   char *p2;
 
-  if (!dim1 || !dim2) return NULL;
+  if (!dim1 || !dim2)
+    return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D_int(dim1, sizeof(void *), s)) == NULL) {
     goto bail;
   }
@@ -214,7 +219,8 @@ void **fdkCallocMatrix2D_int_aligned(UINT dim1, UINT dim2, UINT size,
   UINT i;
   char *p2;
 
-  if (!dim1 || !dim2) return NULL;
+  if (!dim1 || !dim2)
+    return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D_int(dim1, sizeof(void *), s)) == NULL) {
     goto bail;
   }
@@ -239,7 +245,8 @@ void ***fdkCallocMatrix3D(UINT dim1, UINT dim2, UINT dim3, UINT size) {
   void **p2;
   char *p3;
 
-  if (!dim1 || !dim2 || !dim3) return NULL;
+  if (!dim1 || !dim2 || !dim3)
+    return NULL;
   if ((p1 = (void ***)fdkCallocMatrix1D(dim1, sizeof(void **))) == NULL) {
     goto bail;
   }
@@ -269,8 +276,10 @@ bail:
 }
 
 void fdkFreeMatrix3D(void ***p) {
-  if (!p) return;
-  if (p[0] != NULL) fdkFreeMatrix1D(p[0][0]);
+  if (!p)
+    return;
+  if (p[0] != NULL)
+    fdkFreeMatrix1D(p[0][0]);
   fdkFreeMatrix1D(p[0]);
   fdkFreeMatrix1D(p);
 }
@@ -282,7 +291,8 @@ void ***fdkCallocMatrix3D_int(UINT dim1, UINT dim2, UINT dim3, UINT size,
   void **p2;
   char *p3;
 
-  if (!dim1 || !dim2 || !dim3) return NULL;
+  if (!dim1 || !dim2 || !dim3)
+    return NULL;
   if ((p1 = (void ***)fdkCallocMatrix1D_int(dim1, sizeof(void **), s)) ==
       NULL) {
     goto bail;

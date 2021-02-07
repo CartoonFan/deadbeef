@@ -245,19 +245,19 @@ void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const UINT crcPoly,
 
   if (hCrcInfo->crcLen == 16) {
     switch (crcPoly) {
-      case 0x8021:
-        hCrcInfo->pCrcLookup = crcLookup_16_15_5_0;
-        break;
-      case 0x8005:
-        hCrcInfo->pCrcLookup = crcLookup_16_15_2_0;
-        break;
-      case 0x1021:
-        hCrcInfo->pCrcLookup = crcLookup_16_12_5_0;
-        break;
-      case 0x001d:
-      default:
-        /* no lookup table */
-        break;
+    case 0x8021:
+      hCrcInfo->pCrcLookup = crcLookup_16_15_5_0;
+      break;
+    case 0x8005:
+      hCrcInfo->pCrcLookup = crcLookup_16_15_2_0;
+      break;
+    case 0x1021:
+      hCrcInfo->pCrcLookup = crcLookup_16_12_5_0;
+      break;
+    case 0x001d:
+    default:
+      /* no lookup table */
+      break;
     }
   }
 }
@@ -340,15 +340,16 @@ static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
 
   if (hBs != NULL) {
     for (i = 0; (i < nBits); i++) {
-      USHORT tmp = FDKreadBit(hBs);  // process single bit
+      USHORT tmp = FDKreadBit(hBs); // process single bit
       tmp ^= ((crc & crcMask) ? 1 : 0);
-      if (tmp != 0) tmp = crcPoly;
+      if (tmp != 0)
+        tmp = crcPoly;
       crc <<= 1;
       crc ^= tmp;
     }
   } else {
     for (i = 0; (i < nBits); i++) {
-      USHORT tmp = (crc & crcMask) ? crcPoly : 0;  // process single bit
+      USHORT tmp = (crc & crcMask) ? crcPoly : 0; // process single bit
       crc <<= 1;
       crc ^= tmp;
     }

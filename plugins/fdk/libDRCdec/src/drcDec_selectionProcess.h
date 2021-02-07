@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 /* DRC set selection according to section 6.2 of ISO/IEC 23003-4 (MPEG-D DRC) */
 /* including ISO/IEC 23003-4/AMD1 (Amendment 1) */
 
-typedef struct s_drcdec_selection_process* HANDLE_DRC_SELECTION_PROCESS;
+typedef struct s_drcdec_selection_process *HANDLE_DRC_SELECTION_PROCESS;
 
 typedef enum {
   DRCDEC_SELECTION_PROCESS_NO_ERROR = 0,
@@ -179,10 +179,10 @@ typedef struct s_selection_process_output {
 } SEL_PROC_OUTPUT, *HANDLE_SEL_PROC_OUTPUT;
 
 DRCDEC_SELECTION_PROCESS_RETURN
-drcDec_SelectionProcess_Create(HANDLE_DRC_SELECTION_PROCESS* phInstance);
+drcDec_SelectionProcess_Create(HANDLE_DRC_SELECTION_PROCESS *phInstance);
 
 DRCDEC_SELECTION_PROCESS_RETURN
-drcDec_SelectionProcess_Delete(HANDLE_DRC_SELECTION_PROCESS* phInstance);
+drcDec_SelectionProcess_Delete(HANDLE_DRC_SELECTION_PROCESS *phInstance);
 
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_Init(HANDLE_DRC_SELECTION_PROCESS hInstance);
@@ -194,7 +194,7 @@ drcDec_SelectionProcess_SetCodecMode(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType,
-                                 FIXP_DBL requestValue, int* pDiff);
+                                 FIXP_DBL requestValue, int *pDiff);
 
 FIXP_DBL
 drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
@@ -203,10 +203,10 @@ drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetMpeghParams(
     HANDLE_DRC_SELECTION_PROCESS hInstance, const int numGroupIdsRequested,
-    const int* groupIdRequested, const int numGroupPresetIdsRequested,
-    const int* groupPresetIdRequested,
-    const int* numMembersGroupPresetIdsRequested,
-    const int groupPresetIdRequestedPreference, int* pDiff);
+    const int *groupIdRequested, const int numGroupPresetIdsRequested,
+    const int *groupPresetIdRequested,
+    const int *numMembersGroupPresetIdsRequested,
+    const int groupPresetIdRequestedPreference, int *pDiff);
 
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_Process(HANDLE_DRC_SELECTION_PROCESS hInstance,

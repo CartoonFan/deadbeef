@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 /* Includes ******************************************************************/
 #include "FDK_bitstream.h"
 #include "FDK_matrixCalloc.h"
-#include "sacenc_lib.h"
 #include "sacenc_const.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_NUM_BINS 23
@@ -258,19 +258,19 @@ typedef struct BSF_INSTANCE *HANDLE_BSF_INSTANCE;
 
 /* Function / Class Declarations *********************************************/
 /* destroy encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_destroySpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr);
+FDK_SACENC_ERROR
+fdk_sacenc_destroySpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr);
 
 /* create encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_createSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr);
+FDK_SACENC_ERROR
+fdk_sacenc_createSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr);
 
-FDK_SACENC_ERROR fdk_sacenc_initSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE selfPtr);
+FDK_SACENC_ERROR
+fdk_sacenc_initSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE selfPtr);
 
 /* get SpatialSpecificConfig struct */
-SPATIALSPECIFICCONFIG *fdk_sacenc_getSpatialSpecificConfig(
-    HANDLE_BSF_INSTANCE selfPtr);
+SPATIALSPECIFICCONFIG *
+fdk_sacenc_getSpatialSpecificConfig(HANDLE_BSF_INSTANCE selfPtr);
 
 /* write SpatialSpecificConfig to stream */
 FDK_SACENC_ERROR fdk_sacenc_writeSpatialSpecificConfig(
@@ -289,8 +289,9 @@ FDK_SACENC_ERROR fdk_sacenc_writeSpatialFrame(UCHAR *const pOutputBuffer,
                                               HANDLE_BSF_INSTANCE selfPtr);
 
 /* Copy/Save spatial frame data for one parameter set */
-FDK_SACENC_ERROR fdk_sacenc_duplicateParameterSet(
-    const SPATIALFRAME *const hFrom, const INT setFrom, SPATIALFRAME *const hTo,
-    const INT setTo);
+FDK_SACENC_ERROR
+fdk_sacenc_duplicateParameterSet(const SPATIALFRAME *const hFrom,
+                                 const INT setFrom, SPATIALFRAME *const hTo,
+                                 const INT setTo);
 
 #endif /* SACENC_BITSTREAM_H */

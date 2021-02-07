@@ -102,8 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "usacdec_lpc.h"
 
-#include "usacdec_rom.h"
 #include "FDK_trigFcts.h"
+#include "usacdec_rom.h"
 
 #define NQ_MAX 36
 
@@ -385,18 +385,18 @@ static void re8_decode_base_index(int *n, UINT index, SHORT y[8]) {
        Q2 is a subset of Q3 - the two cases are considered in the same branch
      */
     switch (*n) {
-      case 2:
-      case 3:
-        i = table_lookup(fdk_dec_I3, index, NB_LDQ3);
-        ka = fdk_dec_A3[i];
-        break;
-      case 4:
-        i = table_lookup(fdk_dec_I4, index, NB_LDQ4);
-        ka = fdk_dec_A4[i];
-        break;
-      default:
-        FDK_ASSERT(0);
-        return;
+    case 2:
+    case 3:
+      i = table_lookup(fdk_dec_I3, index, NB_LDQ3);
+      ka = fdk_dec_A3[i];
+      break;
+    case 4:
+      i = table_lookup(fdk_dec_I4, index, NB_LDQ4);
+      ka = fdk_dec_A4[i];
+      break;
+    default:
+      FDK_ASSERT(0);
+      return;
     }
     /* reconstruct the absolute leader */
     for (i = 0; i < 8; i++) {
@@ -549,18 +549,18 @@ static void lsf_weight_2st(FIXP_LPC *lsfq, FIXP_DBL *xq, int nk_mode) {
   }
 
   switch (nk_mode) {
-    case 0:
-      factor = FL2FXCONST_SGL(2.0f * 60.0f / FREQ_DIV);
-      break; /* abs */
-    case 1:
-      factor = FL2FXCONST_SGL(2.0f * 65.0f / FREQ_DIV);
-      break; /* mid */
-    case 2:
-      factor = FL2FXCONST_SGL(2.0f * 64.0f / FREQ_DIV);
-      break; /* rel1 */
-    default:
-      factor = FL2FXCONST_SGL(2.0f * 63.0f / FREQ_DIV);
-      break; /* rel2 */
+  case 0:
+    factor = FL2FXCONST_SGL(2.0f * 60.0f / FREQ_DIV);
+    break; /* abs */
+  case 1:
+    factor = FL2FXCONST_SGL(2.0f * 65.0f / FREQ_DIV);
+    break; /* mid */
+  case 2:
+    factor = FL2FXCONST_SGL(2.0f * 64.0f / FREQ_DIV);
+    break; /* rel1 */
+  default:
+    factor = FL2FXCONST_SGL(2.0f * 63.0f / FREQ_DIV);
+    break; /* rel2 */
   }
   /* add non-weighted residual LSF vector to LSF1st */
   for (i = 0; i < M_LP_FILTER_ORDER; i++) {
@@ -602,7 +602,8 @@ static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int nk_mode, int nqn,
       for (n = 0; n < nqn; n++) {
         if (qn[n] > 4) {
           qn[n] = get_vlclbf(hBs);
-          if (qn[n] > 0) qn[n] += 4;
+          if (qn[n] > 0)
+            qn[n] += 4;
         }
       }
     } else { /* nk_mode == (0 and 3) */
@@ -612,18 +613,18 @@ static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int nk_mode, int nqn,
         if (qn[n] > 4) {
           qn[n] = get_vlclbf(hBs);
           switch (qn[n]) {
-            case 0:
-              qn[n] = 5;
-              break;
-            case 1:
-              qn[n] = 6;
-              break;
-            case 2:
-              qn[n] = 0;
-              break;
-            default:
-              qn[n] += 4;
-              break;
+          case 0:
+            qn[n] = 5;
+            break;
+          case 1:
+            qn[n] = 6;
+            break;
+          case 2:
+            qn[n] = 0;
+            break;
+          default:
+            qn[n] += 4;
+            break;
           }
         }
       }
@@ -667,9 +668,9 @@ static void reorder_lsf(FIXP_LPC *lsf, FIXP_LPC min_dist, int n) {
  * \param lsfq pointer to output buffer to hold LPC coefficients scaled by
  * LSF_SCALE.
  */
-static void vlpc_1st_dec(
-    HANDLE_FDK_BITSTREAM hBs, /* input:  codebook index                  */
-    FIXP_LPC *lsfq            /* i/o:    i:prediction   o:quantized lsf  */
+static void
+vlpc_1st_dec(HANDLE_FDK_BITSTREAM hBs, /* input:  codebook index */
+             FIXP_LPC *lsfq /* i/o:    i:prediction   o:quantized lsf  */
 ) {
   const FIXP_LPC *p_dico;
   int i, index;
@@ -690,10 +691,10 @@ static void vlpc_1st_dec(
  * \param nk_mode quantization mode.
  * \return 0 on success, -1 on error.
  */
-static int vlpc_2st_dec(
-    HANDLE_FDK_BITSTREAM hBs,
-    FIXP_LPC *lsfq, /* i/o:    i:1st stage   o:1st+2nd stage   */
-    int nk_mode     /* input:  0=abs, >0=rel                   */
+static int
+vlpc_2st_dec(HANDLE_FDK_BITSTREAM hBs,
+             FIXP_LPC *lsfq, /* i/o:    i:1st stage   o:1st+2nd stage   */
+             int nk_mode     /* input:  0=abs, >0=rel                   */
 ) {
   int err;
   FIXP_DBL xq[M_LP_FILTER_ORDER]; /* weighted residual LSF vector */
@@ -831,36 +832,36 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     mode_lpc_bin = get_vlclbf_n(hBs, 2);
 
     switch (mode_lpc_bin) {
-      case 1:
-        /* LPC1: abs */
-        vlpc_1st_dec(hBs, lsp[1]);
-        err = vlpc_2st_dec(hBs, lsp[1], 0);
-        if (err != 0) {
-          return err;
+    case 1:
+      /* LPC1: abs */
+      vlpc_1st_dec(hBs, lsp[1]);
+      err = vlpc_2st_dec(hBs, lsp[1], 0);
+      if (err != 0) {
+        return err;
+      }
+      break;
+    case 2:
+      /* LPC1: mid0 (no second stage AVQ quantizer in this case) */
+      if (lpc0_available) { /* LPC0/lsf[0] might be zero some times */
+        for (i = 0; i < M_LP_FILTER_ORDER; i++) {
+          lsp[1][i] = (lsp[0][i] >> 1) + (lsp[2][i] >> 1);
         }
-        break;
-      case 2:
-        /* LPC1: mid0 (no second stage AVQ quantizer in this case) */
-        if (lpc0_available) { /* LPC0/lsf[0] might be zero some times */
-          for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-            lsp[1][i] = (lsp[0][i] >> 1) + (lsp[2][i] >> 1);
-          }
-        } else {
-          for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-            lsp[1][i] = lsp[2][i];
-          }
-        }
-        break;
-      case 0:
-        /* LPC1: RelR */
+      } else {
         for (i = 0; i < M_LP_FILTER_ORDER; i++) {
           lsp[1][i] = lsp[2][i];
         }
-        err = vlpc_2st_dec(hBs, lsp[1], 2 << s);
-        if (err != 0) {
-          return err;
-        }
-        break;
+      }
+      break;
+    case 0:
+      /* LPC1: RelR */
+      for (i = 0; i < M_LP_FILTER_ORDER; i++) {
+        lsp[1][i] = lsp[2][i];
+      }
+      err = vlpc_2st_dec(hBs, lsp[1], 2 << s);
+      if (err != 0) {
+        return err;
+      }
+      break;
     }
   }
 
@@ -872,31 +873,31 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     mode_lpc_bin = get_vlclbf_n(hBs, 3);
 
     switch (mode_lpc_bin) {
-      case 1:
-        /* LPC3: abs */
-        vlpc_1st_dec(hBs, lsp[3]);
-        break;
-      case 0:
-        /* LPC3: mid */
-        for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-          lsp[3][i] = (lsp[2][i] >> 1) + (lsp[4][i] >> 1);
-        }
-        nk_mode = 1;
-        break;
-      case 2:
-        /* LPC3: relL */
-        for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-          lsp[3][i] = lsp[2][i];
-        }
-        nk_mode = 2;
-        break;
-      case 3:
-        /* LPC3: relR */
-        for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-          lsp[3][i] = lsp[4][i];
-        }
-        nk_mode = 2;
-        break;
+    case 1:
+      /* LPC3: abs */
+      vlpc_1st_dec(hBs, lsp[3]);
+      break;
+    case 0:
+      /* LPC3: mid */
+      for (i = 0; i < M_LP_FILTER_ORDER; i++) {
+        lsp[3][i] = (lsp[2][i] >> 1) + (lsp[4][i] >> 1);
+      }
+      nk_mode = 1;
+      break;
+    case 2:
+      /* LPC3: relL */
+      for (i = 0; i < M_LP_FILTER_ORDER; i++) {
+        lsp[3][i] = lsp[2][i];
+      }
+      nk_mode = 2;
+      break;
+    case 3:
+      /* LPC3: relR */
+      for (i = 0; i < M_LP_FILTER_ORDER; i++) {
+        lsp[3][i] = lsp[4][i];
+      }
+      nk_mode = 2;
+      break;
     }
     err = vlpc_2st_dec(hBs, lsp[3], nk_mode);
     if (err != 0) {
@@ -939,15 +940,15 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     last = i;
 
     switch (numLpc) {
-      case 3:
-        divFac = FL2FXCONST_DBL(1.0f / 3.0f);
-        break;
-      case 2:
-        divFac = FL2FXCONST_DBL(1.0f / 2.0f);
-        break;
-      default:
-        divFac = FL2FXCONST_DBL(1.0f);
-        break;
+    case 3:
+      divFac = FL2FXCONST_DBL(1.0f / 3.0f);
+      break;
+    case 2:
+      divFac = FL2FXCONST_DBL(1.0f / 2.0f);
+      break;
+    default:
+      divFac = FL2FXCONST_DBL(1.0f);
+      break;
     }
 
     /* get the adaptive mean for the next (bad) frame */
@@ -1107,22 +1108,22 @@ void CLpd_DecodeGain(FIXP_DBL *gain, INT *gain_e, int gain_code) {
       7, gain_e);
 }
 
-  /**
-   * \brief *   Find the polynomial F1(z) or F2(z) from the LSPs.
-   * This is performed by expanding the product polynomials:
-   *
-   * F1(z) =   product   ( 1 - 2 LSP_i z^-1 + z^-2 )
-   *         i=0,2,4,6,8
-   * F2(z) =   product   ( 1 - 2 LSP_i z^-1 + z^-2 )
-   *         i=1,3,5,7,9
-   *
-   * where LSP_i are the LSPs in the cosine domain.
-   * R.A.Salami    October 1990
-   * \param lsp input, line spectral freq. (cosine domain)
-   * \param f output, the coefficients of F1 or F2, scaled by 8 bits
-   * \param n no of coefficients (m/2)
-   * \param flag 1 : F1(z) ; 2 : F2(z)
-   */
+/**
+ * \brief *   Find the polynomial F1(z) or F2(z) from the LSPs.
+ * This is performed by expanding the product polynomials:
+ *
+ * F1(z) =   product   ( 1 - 2 LSP_i z^-1 + z^-2 )
+ *         i=0,2,4,6,8
+ * F2(z) =   product   ( 1 - 2 LSP_i z^-1 + z^-2 )
+ *         i=1,3,5,7,9
+ *
+ * where LSP_i are the LSPs in the cosine domain.
+ * R.A.Salami    October 1990
+ * \param lsp input, line spectral freq. (cosine domain)
+ * \param f output, the coefficients of F1 or F2, scaled by 8 bits
+ * \param n no of coefficients (m/2)
+ * \param flag 1 : F1(z) ; 2 : F2(z)
+ */
 
 #define SF_F 8
 

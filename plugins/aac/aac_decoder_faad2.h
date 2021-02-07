@@ -11,7 +11,6 @@
 
 #include "aac_decoder_protocol.h"
 
-aacDecoderHandle_t *
-aacDecoderOpenFAAD2 (void);
+aacDecoderHandle_t *aacDecoderOpenFAAD2(void);
 
 #endif /* aac_decoder_faad2_h */

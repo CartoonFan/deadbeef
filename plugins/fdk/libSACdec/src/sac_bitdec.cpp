@@ -102,10 +102,10 @@ amm-info@iis.fraunhofer.de
 
 #include "sac_bitdec.h"
 
-#include "sac_dec_errorcodes.h"
-#include "nlc_dec.h"
-#include "sac_rom.h"
 #include "FDK_matrixCalloc.h"
+#include "nlc_dec.h"
+#include "sac_dec_errorcodes.h"
+#include "sac_rom.h"
 #include "sac_tsd.h"
 
 enum {
@@ -115,34 +115,35 @@ enum {
   ottVsTotDb1Db2Activ = 3
 };
 
-static SACDEC_ERROR SpatialDecDecodeHelperInfo(
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, UPMIXTYPE upmixType) {
+static SACDEC_ERROR
+SpatialDecDecodeHelperInfo(SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                           UPMIXTYPE upmixType) {
   int i;
   UINT syntaxFlags;
 
   /* Determine bit stream syntax */
   syntaxFlags = 0;
   switch (pSpatialSpecificConfig->coreCodec) {
-    case AOT_ER_AAC_ELD:
-    case AOT_ER_AAC_LD:
-      syntaxFlags |= SACDEC_SYNTAX_LD;
-      break;
-    case AOT_USAC:
-      syntaxFlags |= SACDEC_SYNTAX_USAC;
-      break;
-    case AOT_NONE:
-    default:
-      return MPS_UNSUPPORTED_FORMAT;
+  case AOT_ER_AAC_ELD:
+  case AOT_ER_AAC_LD:
+    syntaxFlags |= SACDEC_SYNTAX_LD;
+    break;
+  case AOT_USAC:
+    syntaxFlags |= SACDEC_SYNTAX_USAC;
+    break;
+  case AOT_NONE:
+  default:
+    return MPS_UNSUPPORTED_FORMAT;
   }
 
   pSpatialSpecificConfig->syntaxFlags = syntaxFlags;
 
   switch (pSpatialSpecificConfig->treeConfig) {
-    case TREE_212: {
-      pSpatialSpecificConfig->ottCLDdefault[0] = 0;
-    } break;
-    default:
-      return MPS_INVALID_TREECONFIG;
+  case TREE_212: {
+    pSpatialSpecificConfig->ottCLDdefault[0] = 0;
+  } break;
+  default:
+    return MPS_INVALID_TREECONFIG;
   }
 
   if (syntaxFlags & SACDEC_SYNTAX_USAC) {
@@ -154,25 +155,25 @@ static SACDEC_ERROR SpatialDecDecodeHelperInfo(
 
       numParameterBands = pSpatialSpecificConfig->freqRes;
       switch (numParameterBands) {
-        case 4:
-        case 5:
-          pSpatialSpecificConfig->numOttBandsIPD = 2;
-          break;
-        case 7:
-          pSpatialSpecificConfig->numOttBandsIPD = 3;
-          break;
-        case 10:
-          pSpatialSpecificConfig->numOttBandsIPD = 5;
-          break;
-        case 14:
-          pSpatialSpecificConfig->numOttBandsIPD = 7;
-          break;
-        case 20:
-        case 28:
-          pSpatialSpecificConfig->numOttBandsIPD = 10;
-          break;
-        default:
-          return MPS_INVALID_PARAMETERBANDS;
+      case 4:
+      case 5:
+        pSpatialSpecificConfig->numOttBandsIPD = 2;
+        break;
+      case 7:
+        pSpatialSpecificConfig->numOttBandsIPD = 3;
+        break;
+      case 10:
+        pSpatialSpecificConfig->numOttBandsIPD = 5;
+        break;
+      case 14:
+        pSpatialSpecificConfig->numOttBandsIPD = 7;
+        break;
+      case 20:
+      case 28:
+        pSpatialSpecificConfig->numOttBandsIPD = 10;
+        break;
+      default:
+        return MPS_INVALID_PARAMETERBANDS;
       }
     }
   } else {
@@ -253,7 +254,7 @@ static SACDEC_ERROR SpatialDecParseExtensionConfig(
     }
 
     switch (config->sacExtType[config->sacExtCnt]) {
-      default:; /* unknown extension data => do nothing */
+    default:; /* unknown extension data => do nothing */
     }
 
     /* skip remaining extension data */
@@ -318,11 +319,12 @@ SACDEC_ERROR SpatialDecParseSpecificConfigHeader(
   return err;
 }
 
-SACDEC_ERROR SpatialDecParseMps212Config(
-    HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int samplingRate,
-    AUDIO_OBJECT_TYPE coreCodec, INT stereoConfigIndex,
-    INT coreSbrFrameLengthIndex) {
+SACDEC_ERROR
+SpatialDecParseMps212Config(HANDLE_FDK_BITSTREAM bitstream,
+                            SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                            int samplingRate, AUDIO_OBJECT_TYPE coreCodec,
+                            INT stereoConfigIndex,
+                            INT coreSbrFrameLengthIndex) {
   int i;
 
   FDKmemclear(pSpatialSpecificConfig, sizeof(SPATIAL_SPECIFIC_CONFIG));
@@ -336,29 +338,29 @@ SACDEC_ERROR SpatialDecParseMps212Config(
   }
 
   switch (coreCodec) {
-    case AOT_DRM_USAC:
-      pSpatialSpecificConfig->bsFixedGainDMX =
-          (SPATIALDEC_FIXED_GAINS)FDKreadBits(bitstream, 3);
-      /* tempShapeConfig = (bsTempShapeConfigDrm == 1) ? 3 : 0 */
-      pSpatialSpecificConfig->tempShapeConfig =
-          (SPATIALDEC_TS_CONF)(FDKreadBits(bitstream, 1) * 3);
-      pSpatialSpecificConfig->decorrConfig = (SPATIALDEC_DECORR_CONF)0;
-      pSpatialSpecificConfig->bsDecorrType = 0;
-      break;
-    case AOT_USAC:
-      pSpatialSpecificConfig->bsFixedGainDMX =
-          (SPATIALDEC_FIXED_GAINS)FDKreadBits(bitstream, 3);
-      pSpatialSpecificConfig->tempShapeConfig =
-          (SPATIALDEC_TS_CONF)FDKreadBits(bitstream, 2);
-      pSpatialSpecificConfig->decorrConfig =
-          (SPATIALDEC_DECORR_CONF)FDKreadBits(bitstream, 2);
-      if (pSpatialSpecificConfig->decorrConfig > 2) {
-        return MPS_PARSE_ERROR; /* reserved value */
-      }
-      pSpatialSpecificConfig->bsDecorrType = 0;
-      break;
-    default:
-      return MPS_UNSUPPORTED_FORMAT;
+  case AOT_DRM_USAC:
+    pSpatialSpecificConfig->bsFixedGainDMX =
+        (SPATIALDEC_FIXED_GAINS)FDKreadBits(bitstream, 3);
+    /* tempShapeConfig = (bsTempShapeConfigDrm == 1) ? 3 : 0 */
+    pSpatialSpecificConfig->tempShapeConfig =
+        (SPATIALDEC_TS_CONF)(FDKreadBits(bitstream, 1) * 3);
+    pSpatialSpecificConfig->decorrConfig = (SPATIALDEC_DECORR_CONF)0;
+    pSpatialSpecificConfig->bsDecorrType = 0;
+    break;
+  case AOT_USAC:
+    pSpatialSpecificConfig->bsFixedGainDMX =
+        (SPATIALDEC_FIXED_GAINS)FDKreadBits(bitstream, 3);
+    pSpatialSpecificConfig->tempShapeConfig =
+        (SPATIALDEC_TS_CONF)FDKreadBits(bitstream, 2);
+    pSpatialSpecificConfig->decorrConfig =
+        (SPATIALDEC_DECORR_CONF)FDKreadBits(bitstream, 2);
+    if (pSpatialSpecificConfig->decorrConfig > 2) {
+      return MPS_PARSE_ERROR; /* reserved value */
+    }
+    pSpatialSpecificConfig->bsDecorrType = 0;
+    break;
+  default:
+    return MPS_UNSUPPORTED_FORMAT;
   }
   pSpatialSpecificConfig->nTimeSlots = (coreSbrFrameLengthIndex == 4) ? 64 : 32;
   pSpatialSpecificConfig->bsHighRateMode = (UCHAR)FDKreadBits(bitstream, 1);
@@ -400,11 +402,11 @@ SACDEC_ERROR SpatialDecParseMps212Config(
 
   if (pSpatialSpecificConfig->tempShapeConfig == 2) {
     switch (coreCodec) {
-      case AOT_USAC:
-        pSpatialSpecificConfig->envQuantMode = FDKreadBits(bitstream, 1);
-        break;
-      default: /* added to avoid compiler warning */
-        break; /* added to avoid compiler warning */
+    case AOT_USAC:
+      pSpatialSpecificConfig->envQuantMode = FDKreadBits(bitstream, 1);
+      break;
+    default: /* added to avoid compiler warning */
+      break; /* added to avoid compiler warning */
     }
   }
 
@@ -438,10 +440,10 @@ SACDEC_ERROR SpatialDecParseMps212Config(
   return MPS_OK;
 }
 
-SACDEC_ERROR SpatialDecParseSpecificConfig(
-    HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int sacHeaderLen,
-    AUDIO_OBJECT_TYPE coreCodec) {
+SACDEC_ERROR
+SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
+                              SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                              int sacHeaderLen, AUDIO_OBJECT_TYPE coreCodec) {
   SACDEC_ERROR err = MPS_OK;
   int i;
   int bsSamplingFreqIndex;
@@ -571,8 +573,8 @@ SACDEC_ERROR SpatialDecParseSpecificConfig(
 
   FDKbyteAlign(bitstream,
                cfgStartPos); /* ISO/IEC FDIS 23003-1: 5.2. ... byte alignment
-                                with respect to the beginning of the syntactic
-                                element in which ByteAlign() occurs. */
+                              with respect to the beginning of the syntactic
+                              element in which ByteAlign() occurs. */
 
   numHeaderBits = cfgStartPos - (INT)FDKgetValidBits(bitstream);
   bitsAvailable -= numHeaderBits;
@@ -592,7 +594,7 @@ SACDEC_ERROR SpatialDecParseSpecificConfig(
   FDKbyteAlign(
       bitstream,
       cfgStartPos); /* Same alignment anchor as above because
-                       SpatialExtensionConfig() always reads full bytes */
+                     SpatialExtensionConfig() always reads full bytes */
 
   pSpatialSpecificConfig->coreCodec = coreCodec;
 
@@ -602,9 +604,9 @@ bail:
   if (sacHeaderLen > 0) {
     /* If the config is of known length then assure that the
        bitbuffer is exactly at its end when leaving the function. */
-    FDKpushBiDirectional(
-        bitstream,
-        (sacHeaderLen * 8) - (cfgStartPos - (INT)FDKgetValidBits(bitstream)));
+    FDKpushBiDirectional(bitstream,
+                         (sacHeaderLen * 8) -
+                             (cfgStartPos - (INT)FDKgetValidBits(bitstream)));
   }
 
   return err;
@@ -751,7 +753,8 @@ static int getStrideMap(int freqResStride, int startBand, int stopBand,
   }
   strOffset = 0;
   while (aStrides[dataBands] > stopBand) {
-    if (strOffset < dataBands) strOffset++;
+    if (strOffset < dataBands)
+      strOffset++;
     for (i = strOffset; i <= dataBands; i++) {
       aStrides[i]--;
     }
@@ -776,11 +779,12 @@ Output:
 
 *******************************************************************************/
 
-static SACDEC_ERROR ecDataDec(
-    const SPATIAL_BS_FRAME *frame, UINT syntaxFlags,
-    HANDLE_FDK_BITSTREAM bitstream, LOSSLESSDATA *const llData,
-    SCHAR (*data)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS], SCHAR **lastdata,
-    int datatype, int boxIdx, int startBand, int stopBand, SCHAR defaultValue) {
+static SACDEC_ERROR
+ecDataDec(const SPATIAL_BS_FRAME *frame, UINT syntaxFlags,
+          HANDLE_FDK_BITSTREAM bitstream, LOSSLESSDATA *const llData,
+          SCHAR (*data)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+          SCHAR **lastdata, int datatype, int boxIdx, int startBand,
+          int stopBand, SCHAR defaultValue) {
   SACDEC_ERROR err = MPS_OK;
   int i, j, pb, dataSets, setIdx, bsDataPair, dataBands, oldQuantCoarseXXX;
   INT aStrides[MAX_PARAMETER_BANDS + 1] = {0};
@@ -790,16 +794,15 @@ static SACDEC_ERROR ecDataDec(
     llData->bsXXXDataMode[i] = (SCHAR)FDKreadBits(bitstream, 2);
 
     if ((frame->bsIndependencyFlag == 1) && (i == 0) &&
-        (llData->bsXXXDataMode[i] == 1 ||
-         llData->bsXXXDataMode[i] == 2)) { /* This check catches bitstreams
-                                              generated by older encoder that
-                                              cause trouble */
+        (llData->bsXXXDataMode[i] == 1 || llData->bsXXXDataMode[i] == 2)) {
+      /* This check catches bitstreams
+                                           generated by older encoder that
+                                           cause trouble */
       return MPS_PARSE_ERROR;
     }
-    if ((i >= frame->numParameterSets - 1) &&
-        (llData->bsXXXDataMode[i] ==
-         2)) { /* The interpolation mode must not be active for the last
-                  parameter set */
+    if ((i >= frame->numParameterSets - 1) && (llData->bsXXXDataMode[i] == 2)) {
+      /* The interpolation mode must not be active for the last
+               parameter set */
       return MPS_PARSE_ERROR;
     }
 
@@ -846,7 +849,8 @@ static SACDEC_ERROR ecDataDec(
           lastdata[boxIdx][startBand + pb] = lastdata[boxIdx][aStrides[pb]];
         }
 
-        if (boxIdx > MAX_NUM_OTT) return MPS_INVALID_BOXIDX;
+        if (boxIdx > MAX_NUM_OTT)
+          return MPS_INVALID_BOXIDX;
         if ((setIdx + bsDataPair) > MAX_PARAMETER_SETS)
           return MPS_INVALID_SETIDX;
 
@@ -863,7 +867,8 @@ static SACDEC_ERROR ecDataDec(
             data[boxIdx][setIdx + 1], lastdata[boxIdx], (DATA_TYPE)datatype,
             startBand, dataBands, bsDataPair, llData->bsQuantCoarseXXX[setIdx],
             !(frame->bsIndependencyFlag && (i == 0)) || (setIdx > 0));
-        if (err != MPS_OK) goto bail;
+        if (err != MPS_OK)
+          goto bail;
 
         if (datatype == t_IPD) {
           const SCHAR mask = (llData->bsQuantCoarseXXX[setIdx]) ? 7 : 15;
@@ -912,10 +917,10 @@ bail:
  Return:
 
 *******************************************************************************/
-static SACDEC_ERROR parseArbitraryDownmixData(
-    spatialDec *self, const SPATIAL_SPECIFIC_CONFIG *pSSC,
-    const UINT syntaxFlags, const SPATIAL_BS_FRAME *frame,
-    HANDLE_FDK_BITSTREAM bitstream) {
+static SACDEC_ERROR
+parseArbitraryDownmixData(spatialDec *self, const SPATIAL_SPECIFIC_CONFIG *pSSC,
+                          const UINT syntaxFlags, const SPATIAL_BS_FRAME *frame,
+                          HANDLE_FDK_BITSTREAM bitstream) {
   SACDEC_ERROR err = MPS_OK;
   int ch;
   int offset = pSSC->nOttBoxes;
@@ -926,7 +931,8 @@ static SACDEC_ERROR parseArbitraryDownmixData(
                     &frame->CLDLosslessData[offset + ch],
                     frame->cmpArbdmxGainIdx, self->cmpArbdmxGainIdxPrev, t_CLD,
                     ch, 0, pSSC->freqRes, arbdmxGainDefault);
-    if (err != MPS_OK) return err;
+    if (err != MPS_OK)
+      return err;
   }
 
   return err;
@@ -959,11 +965,11 @@ static int nBitsParamSlot(int i) {
   return bitsParamSlot;
 }
 
-SACDEC_ERROR SpatialDecParseFrameData(
-    spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
-    HANDLE_FDK_BITSTREAM bitstream,
-    const SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, UPMIXTYPE upmixType,
-    int fGlobalIndependencyFlag) {
+SACDEC_ERROR
+SpatialDecParseFrameData(spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
+                         HANDLE_FDK_BITSTREAM bitstream,
+                         const SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                         UPMIXTYPE upmixType, int fGlobalIndependencyFlag) {
   SACDEC_ERROR err = MPS_OK;
   int bsFramingType, dataBands, ps, pg, i;
   int pb;
@@ -971,8 +977,8 @@ SACDEC_ERROR SpatialDecParseFrameData(
   int bsNumOutputChannels =
       treePropertyTable[pSpatialSpecificConfig->treeConfig]
           .numOutputChannels; /* CAUTION: Maybe different to
-                                 pSpatialSpecificConfig->treeConfig in some
-                                 modes! */
+                                   pSpatialSpecificConfig->treeConfig in some
+                                   modes! */
   int paramSetErr = 0;
   UINT alignAnchor = FDKgetValidBits(
       bitstream); /* Anchor for ByteAlign() function. See comment below. */
@@ -1147,42 +1153,41 @@ SACDEC_ERROR SpatialDecParseFrameData(
           tempShapeChanTable[pSpatialSpecificConfig->tempShapeConfig - 1]
                             [pSpatialSpecificConfig->treeConfig];
       switch (pSpatialSpecificConfig->tempShapeConfig) {
-        case 1: /* STP */
-          for (i = 0; i < numTempShapeChan; i++) {
-            int stpEnable = FDKreadBits(bitstream, 1);
-            frame->tempShapeEnableChannelSTP[i] = stpEnable;
-          }
-          break;
-        case 2: /* GES */
-        {
-          UCHAR gesChannelEnable[MAX_OUTPUT_CHANNELS];
+      case 1: /* STP */
+        for (i = 0; i < numTempShapeChan; i++) {
+          int stpEnable = FDKreadBits(bitstream, 1);
+          frame->tempShapeEnableChannelSTP[i] = stpEnable;
+        }
+        break;
+      case 2: /* GES */
+      {
+        UCHAR gesChannelEnable[MAX_OUTPUT_CHANNELS];
 
-          for (i = 0; i < numTempShapeChan; i++) {
-            gesChannelEnable[i] = (UCHAR)FDKreadBits(bitstream, 1);
-            frame->tempShapeEnableChannelGES[i] = gesChannelEnable[i];
-          }
-          for (i = 0; i < numTempShapeChan; i++) {
-            if (gesChannelEnable[i]) {
-              int envShapeData_tmp[MAX_TIME_SLOTS];
-              if (huff_dec_reshape(bitstream, envShapeData_tmp,
-                                   pSpatialSpecificConfig->nTimeSlots) != 0) {
+        for (i = 0; i < numTempShapeChan; i++) {
+          gesChannelEnable[i] = (UCHAR)FDKreadBits(bitstream, 1);
+          frame->tempShapeEnableChannelGES[i] = gesChannelEnable[i];
+        }
+        for (i = 0; i < numTempShapeChan; i++) {
+          if (gesChannelEnable[i]) {
+            int envShapeData_tmp[MAX_TIME_SLOTS];
+            if (huff_dec_reshape(bitstream, envShapeData_tmp,
+                                 pSpatialSpecificConfig->nTimeSlots) != 0) {
+              err = MPS_PARSE_ERROR;
+              goto bail;
+            }
+            for (int ts = 0; ts < pSpatialSpecificConfig->nTimeSlots; ts++) {
+              if (!(envShapeData_tmp[ts] >= 0) && (envShapeData_tmp[ts] <= 4)) {
                 err = MPS_PARSE_ERROR;
                 goto bail;
               }
-              for (int ts = 0; ts < pSpatialSpecificConfig->nTimeSlots; ts++) {
-                if (!(envShapeData_tmp[ts] >= 0) &&
-                    (envShapeData_tmp[ts] <= 4)) {
-                  err = MPS_PARSE_ERROR;
-                  goto bail;
-                }
-                frame->bsEnvShapeData[i][ts] = (UCHAR)envShapeData_tmp[ts];
-              }
+              frame->bsEnvShapeData[i][ts] = (UCHAR)envShapeData_tmp[ts];
             }
           }
-        } break;
-        default:
-          err = MPS_INVALID_TEMPSHAPE;
-          goto bail;
+        }
+      } break;
+      default:
+        err = MPS_INVALID_TEMPSHAPE;
+        goto bail;
       }
     } /* bsTempShapeEnable */
   }   /* pSpatialSpecificConfig->tempShapeConfig != 0 */
@@ -1190,14 +1195,15 @@ SACDEC_ERROR SpatialDecParseFrameData(
   if (pSpatialSpecificConfig->bArbitraryDownmix != 0) {
     err = parseArbitraryDownmixData(self, pSpatialSpecificConfig, syntaxFlags,
                                     frame, bitstream);
-    if (err != MPS_OK) goto bail;
+    if (err != MPS_OK)
+      goto bail;
   }
 
   if (1 && (!(syntaxFlags & (SACDEC_SYNTAX_USAC)))) {
     FDKbyteAlign(bitstream,
                  alignAnchor); /* ISO/IEC FDIS 23003-1: 5.2. ... byte alignment
-                                  with respect to the beginning of the syntactic
-                                  element in which ByteAlign() occurs. */
+                              with respect to the beginning of the syntactic
+                              element in which ByteAlign() occurs. */
   }
 
 bail:
@@ -1312,44 +1318,44 @@ static int deqIdx(int value, int paramType) {
   int idx = -1;
 
   switch (paramType) {
-    case t_CLD:
-      if (((value + 15) >= 0) && ((value + 15) < 31)) {
-        idx = (value + 15);
-      }
-      break;
+  case t_CLD:
+    if (((value + 15) >= 0) && ((value + 15) < 31)) {
+      idx = (value + 15);
+    }
+    break;
 
-    case t_ICC:
-      if ((value >= 0) && (value < 8)) {
-        idx = value;
-      }
-      break;
+  case t_ICC:
+    if ((value >= 0) && (value < 8)) {
+      idx = value;
+    }
+    break;
 
-    case t_IPD:
-      /* (+/-)15 * MAX_PARAMETER_BANDS for differential coding in frequency
-       * domain (according to rbl) */
-      if ((value >= -420) && (value <= 420)) {
-        idx = (value & 0xf);
-      }
-      break;
+  case t_IPD:
+    /* (+/-)15 * MAX_PARAMETER_BANDS for differential coding in frequency
+     * domain (according to rbl) */
+    if ((value >= -420) && (value <= 420)) {
+      idx = (value & 0xf);
+    }
+    break;
 
-    default:
-      FDK_ASSERT(0);
+  default:
+    FDK_ASSERT(0);
   }
 
   return idx;
 }
 
-  /*******************************************************************************
-   Functionname: factorFunct
-   *******************************************************************************
+/*******************************************************************************
+ Functionname: factorFunct
+ *******************************************************************************
 
-   Description:
+ Description:
 
-   Arguments:
+ Arguments:
 
-   Return:
+ Return:
 
-  *******************************************************************************/
+*******************************************************************************/
 
 #define SF_IDX (7)
 #define SF_FACTOR (3)
@@ -1366,33 +1372,33 @@ static FIXP_DBL factorFunct(FIXP_DBL ottVsTotDb, INT quantMode) {
   ottVsTotDb = -ottVsTotDb;
 
   switch (quantMode) {
-    case 0:
+  case 0:
+    factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
+    break;
+  case 1:
+    if (ottVsTotDb >= FL2FXCONST_DBL(21.0f / SCALE_CLD_C1C2))
+      factor = FL2FXCONST_DBL(5.0f / SCALE_FACTOR);
+    else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))
       factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
-      break;
-    case 1:
-      if (ottVsTotDb >= FL2FXCONST_DBL(21.0f / SCALE_CLD_C1C2))
-        factor = FL2FXCONST_DBL(5.0f / SCALE_FACTOR);
-      else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))
-        factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
-      else
-        factor = (fMult(FL2FXCONST_DBL(0.2f), ottVsTotDb) +
-                  FL2FXCONST_DBL(0.8f / SCALE_CLD_C1C2))
-                 << (SF_CLD_C1C2 - SF_FACTOR);
-      break;
-    case 2:
-      if (ottVsTotDb >= FL2FXCONST_DBL(25.0f / SCALE_CLD_C1C2)) {
-        FDK_ASSERT(SF_FACTOR == 3);
-        factor = (FIXP_DBL)
-            MAXVAL_DBL; /* avoid warning: FL2FXCONST_DBL(8.0f/SCALE_FACTOR) */
-      } else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))
-        factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
-      else
-        factor = (fMult(FL2FXCONST_DBL(7.0f / 24.0f), ottVsTotDb) +
-                  FL2FXCONST_DBL((17.0f / 24.0f) / SCALE_CLD_C1C2))
-                 << (SF_CLD_C1C2 - SF_FACTOR);
-      break;
-    default:
-      factor = FL2FXCONST_DBL(0.0f);
+    else
+      factor = (fMult(FL2FXCONST_DBL(0.2f), ottVsTotDb) +
+                FL2FXCONST_DBL(0.8f / SCALE_CLD_C1C2))
+               << (SF_CLD_C1C2 - SF_FACTOR);
+    break;
+  case 2:
+    if (ottVsTotDb >= FL2FXCONST_DBL(25.0f / SCALE_CLD_C1C2)) {
+      FDK_ASSERT(SF_FACTOR == 3);
+      factor = (FIXP_DBL)
+          MAXVAL_DBL; /* avoid warning: FL2FXCONST_DBL(8.0f/SCALE_FACTOR) */
+    } else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))
+      factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
+    else
+      factor = (fMult(FL2FXCONST_DBL(7.0f / 24.0f), ottVsTotDb) +
+                FL2FXCONST_DBL((17.0f / 24.0f) / SCALE_CLD_C1C2))
+               << (SF_CLD_C1C2 - SF_FACTOR);
+    break;
+  default:
+    factor = FL2FXCONST_DBL(0.0f);
   }
 
   return (factor);
@@ -1467,7 +1473,8 @@ static SACDEC_ERROR mapIndexData(
   int ps, pb;
   int i1;
 
-  if (numParameterSets > MAX_PARAMETER_SETS) return MPS_WRONG_PARAMETERSETS;
+  if (numParameterSets > MAX_PARAMETER_SETS)
+    return MPS_WRONG_PARAMETERSETS;
 
   dataSets = 0;
   for (i = 0; i < numParameterSets; i++) {
@@ -1568,7 +1575,8 @@ static SACDEC_ERROR mapIndexData(
     x2 = paramSlot[i2];
 
     if (aInterpolate[i] == 1) {
-      if (i2 >= numParameterSets) return MPS_WRONG_PARAMETERSETS;
+      if (i2 >= numParameterSets)
+        return MPS_WRONG_PARAMETERSETS;
       for (band = startBand; band < stopBand; band++) {
         int yi, y1, y2;
         y1 = outputIdxData[xttIdx][i1][band];
@@ -1586,7 +1594,8 @@ static SACDEC_ERROR mapIndexData(
   /* Dequantize data and apply factorCLD if necessary */
   for (ps = 0; ps < numParameterSets; ps++) {
     if (quantMode && (paramType == t_CLD)) {
-      if (pOttVsTotDbIn == 0) return MPS_WRONG_OTT;
+      if (pOttVsTotDbIn == 0)
+        return MPS_WRONG_OTT;
       if ((pOttVsTotDb1 == 0) && (ottVsTotDbMode == ottVsTotDb1Activ))
         return MPS_WRONG_OTT;
       if ((pOttVsTotDb2 == 0) && (ottVsTotDbMode == ottVsTotDb2Activ))
@@ -1644,35 +1653,36 @@ static SACDEC_ERROR decodeAndMapFrameOtt(HANDLE_SPATIAL_DEC self,
   numOttBoxes = self->numOttBoxes;
 
   switch (self->treeConfig) {
-    default: {
-      if (self->quantMode != 0) {
-        goto bail;
-      }
+  default: {
+    if (self->quantMode != 0) {
+      goto bail;
     }
-      for (i = 0; i < numOttBoxes; i++) {
-        err = mapIndexData(
-            &pCurBs->CLDLosslessData[i], /* LOSSLESSDATA *llData,*/
-            self->ottCLD__FDK, self->outIdxData,
-            pCurBs
-                ->cmpOttCLDidx, /* int
-                                   cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-                                 */
-            NULL,               /* no differential data */
-            i, /*  int   xttIdx,  Which ott/ttt index to use for input and
-                  output buffers */
-            self->ottCLDidxPrev,                        /* int
-                                                           idxPrev[MAX_NUM_OTT][MAX_PARAMETER_BANDS],
-                                                         */
-            i, t_CLD, 0,                                /* int   startBand, */
-            self->pConfigCurrent->bitstreamOttBands[i], /*  int   stopBand, */
-            self->pConfigCurrent->ottCLDdefault[i], /* int   defaultValue, */
-            pCurBs->numParameterSets, /* int   numParameterSets) */
-            pCurBs->paramSlot, self->extendFrame, self->quantMode,
-            &(self->concealInfo), ottVsTotInactiv, NULL, NULL, NULL);
-        if (err != MPS_OK) goto bail;
+  }
+    for (i = 0; i < numOttBoxes; i++) {
+      err = mapIndexData(
+          &pCurBs->CLDLosslessData[i], /* LOSSLESSDATA *llData,*/
+          self->ottCLD__FDK, self->outIdxData,
+          pCurBs
+              ->cmpOttCLDidx, /* int
+                           cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+                         */
+          NULL,               /* no differential data */
+          i, /*  int   xttIdx,  Which ott/ttt index to use for input and
+      output buffers */
+          self->ottCLDidxPrev,                        /* int
+                                               idxPrev[MAX_NUM_OTT][MAX_PARAMETER_BANDS],
+                                             */
+          i, t_CLD, 0,                                /* int   startBand, */
+          self->pConfigCurrent->bitstreamOttBands[i], /*  int   stopBand, */
+          self->pConfigCurrent->ottCLDdefault[i],     /* int   defaultValue, */
+          pCurBs->numParameterSets, /* int   numParameterSets) */
+          pCurBs->paramSlot, self->extendFrame, self->quantMode,
+          &(self->concealInfo), ottVsTotInactiv, NULL, NULL, NULL);
+      if (err != MPS_OK)
+        goto bail;
 
-      } /* for(i = 0; i < numOttBoxes ; i++ ) */
-      break;
+    } /* for(i = 0; i < numOttBoxes ; i++ ) */
+    break;
   } /* case */
 
   for (ottIdx = 0; ottIdx < numOttBoxes; ottIdx++) {
@@ -1682,11 +1692,11 @@ static SACDEC_ERROR decodeAndMapFrameOtt(HANDLE_SPATIAL_DEC self,
         self->ottICC__FDK, self->outIdxData,
         pCurBs
             ->cmpOttICCidx,  /* int
-                                cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-                              */
+                          cmpIdxData[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+                        */
         self->ottICCdiffidx, /* differential data */
         ottIdx, /* int   xttIdx,  Which ott/ttt index to use for input and
-                   output buffers */
+         output buffers */
         self->ottICCidxPrev, /* int   idxPrev[MAX_NUM_OTT][MAX_PARAMETER_BANDS],
                               */
         ottIdx, t_ICC, 0,    /* int   startBand, */
@@ -1695,7 +1705,8 @@ static SACDEC_ERROR decodeAndMapFrameOtt(HANDLE_SPATIAL_DEC self,
         pCurBs->numParameterSets, /* int   numParameterSets) */
         pCurBs->paramSlot, self->extendFrame, self->quantMode,
         &(self->concealInfo), ottVsTotInactiv, NULL, NULL, NULL);
-    if (err != MPS_OK) goto bail;
+    if (err != MPS_OK)
+      goto bail;
   } /* ottIdx */
 
   if ((self->treeConfig == TREE_212) && (self->phaseCoding)) {
@@ -1747,44 +1758,44 @@ static SACDEC_ERROR decodeAndMapFrameSmg(HANDLE_SPATIAL_DEC self,
 
   for (ps = 0; ps < frame->numParameterSets; ps++) {
     switch (frame->bsSmoothMode[ps]) {
-      case 0:
-        self->smgTime[ps] = 256;
-        FDKmemclear(self->smgData[ps],
-                    self->bitstreamParameterBands * sizeof(UCHAR));
-        break;
+    case 0:
+      self->smgTime[ps] = 256;
+      FDKmemclear(self->smgData[ps],
+                  self->bitstreamParameterBands * sizeof(UCHAR));
+      break;
 
-      case 1:
-        if (ps > 0) {
-          self->smgTime[ps] = self->smgTime[ps - 1];
-          FDKmemcpy(self->smgData[ps], self->smgData[ps - 1],
-                    self->bitstreamParameterBands * sizeof(UCHAR));
-        } else {
-          self->smgTime[ps] = self->smoothState->prevSmgTime;
-          FDKmemcpy(self->smgData[ps], self->smoothState->prevSmgData,
-                    self->bitstreamParameterBands * sizeof(UCHAR));
-        }
-        break;
+    case 1:
+      if (ps > 0) {
+        self->smgTime[ps] = self->smgTime[ps - 1];
+        FDKmemcpy(self->smgData[ps], self->smgData[ps - 1],
+                  self->bitstreamParameterBands * sizeof(UCHAR));
+      } else {
+        self->smgTime[ps] = self->smoothState->prevSmgTime;
+        FDKmemcpy(self->smgData[ps], self->smoothState->prevSmgData,
+                  self->bitstreamParameterBands * sizeof(UCHAR));
+      }
+      break;
 
-      case 2:
-        self->smgTime[ps] = smgTimeTable[frame->bsSmoothTime[ps]];
-        for (pb = 0; pb < self->bitstreamParameterBands; pb++) {
-          self->smgData[ps][pb] = 1;
-        }
-        break;
+    case 2:
+      self->smgTime[ps] = smgTimeTable[frame->bsSmoothTime[ps]];
+      for (pb = 0; pb < self->bitstreamParameterBands; pb++) {
+        self->smgData[ps][pb] = 1;
+      }
+      break;
 
-      case 3:
-        self->smgTime[ps] = smgTimeTable[frame->bsSmoothTime[ps]];
-        pbStride = pbStrideTable[frame->bsFreqResStrideSmg[ps]];
-        dataBands = (self->bitstreamParameterBands - 1) / pbStride + 1;
-        createMapping(aGroupToBand, 0, self->bitstreamParameterBands, pbStride);
-        for (pg = 0; pg < dataBands; pg++) {
-          pbStart = aGroupToBand[pg];
-          pbStop = aGroupToBand[pg + 1];
-          for (pb = pbStart; pb < pbStop; pb++) {
-            self->smgData[ps][pb] = frame->bsSmgData[ps][pg];
-          }
+    case 3:
+      self->smgTime[ps] = smgTimeTable[frame->bsSmoothTime[ps]];
+      pbStride = pbStrideTable[frame->bsFreqResStrideSmg[ps]];
+      dataBands = (self->bitstreamParameterBands - 1) / pbStride + 1;
+      createMapping(aGroupToBand, 0, self->bitstreamParameterBands, pbStride);
+      for (pg = 0; pg < dataBands; pg++) {
+        pbStart = aGroupToBand[pg];
+        pbStop = aGroupToBand[pg + 1];
+        for (pb = pbStart; pb < pbStop; pb++) {
+          self->smgData[ps][pb] = frame->bsSmgData[ps][pg];
         }
-        break;
+      }
+      break;
     }
   }
 
@@ -1833,7 +1844,8 @@ static SACDEC_ERROR decodeAndMapFrameArbdmx(HANDLE_SPATIAL_DEC self,
                        0 /*self->arbdmxGainDefault*/, frame->numParameterSets,
                        frame->paramSlot, self->extendFrame, 0,
                        &(self->concealInfo), ottVsTotInactiv, NULL, NULL, NULL);
-    if (err != MPS_OK) goto bail;
+    if (err != MPS_OK)
+      goto bail;
   }
 
 bail:
@@ -1862,12 +1874,15 @@ SACDEC_ERROR SpatialDecDecodeFrame(spatialDec *self, SPATIAL_BS_FRAME *frame) {
   self->TsdTs = 0;
 
   /****** DTDF and MAP DATA ********/
-  if ((err = decodeAndMapFrameOtt(self, frame)) != MPS_OK) goto bail;
+  if ((err = decodeAndMapFrameOtt(self, frame)) != MPS_OK)
+    goto bail;
 
-  if ((err = decodeAndMapFrameSmg(self, frame)) != MPS_OK) goto bail;
+  if ((err = decodeAndMapFrameSmg(self, frame)) != MPS_OK)
+    goto bail;
 
   if (self->arbitraryDownmix != 0) {
-    if ((err = decodeAndMapFrameArbdmx(self, frame)) != MPS_OK) goto bail;
+    if ((err = decodeAndMapFrameArbdmx(self, frame)) != MPS_OK)
+      goto bail;
   }
 
   if (self->extendFrame) {
@@ -1902,8 +1917,9 @@ bail:
 
 *******************************************************************************/
 
-SACDEC_ERROR SpatialDecDecodeHeader(
-    spatialDec *self, SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig) {
+SACDEC_ERROR
+SpatialDecDecodeHeader(spatialDec *self,
+                       SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig) {
   SACDEC_ERROR err = MPS_OK;
   int i;
 
@@ -1922,55 +1938,55 @@ SACDEC_ERROR SpatialDecDecodeHeader(
 
   if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD) {
     switch (self->numParameterBands) {
-      case 4:
-        self->kernels = kernels_4_to_64;
-        break;
-      case 5:
-        self->kernels = kernels_5_to_64;
-        break;
-      case 7:
-        self->kernels = kernels_7_to_64;
-        break;
-      case 9:
-        self->kernels = kernels_9_to_64;
-        break;
-      case 12:
-        self->kernels = kernels_12_to_64;
-        break;
-      case 15:
-        self->kernels = kernels_15_to_64;
-        break;
-      case 23:
-        self->kernels = kernels_23_to_64;
-        break;
-      default:
-        return MPS_INVALID_PARAMETERBANDS; /* unsupported numParameterBands */
+    case 4:
+      self->kernels = kernels_4_to_64;
+      break;
+    case 5:
+      self->kernels = kernels_5_to_64;
+      break;
+    case 7:
+      self->kernels = kernels_7_to_64;
+      break;
+    case 9:
+      self->kernels = kernels_9_to_64;
+      break;
+    case 12:
+      self->kernels = kernels_12_to_64;
+      break;
+    case 15:
+      self->kernels = kernels_15_to_64;
+      break;
+    case 23:
+      self->kernels = kernels_23_to_64;
+      break;
+    default:
+      return MPS_INVALID_PARAMETERBANDS; /* unsupported numParameterBands */
     }
   } else {
     switch (self->numParameterBands) {
-      case 4:
-        self->kernels = kernels_4_to_71;
-        break;
-      case 5:
-        self->kernels = kernels_5_to_71;
-        break;
-      case 7:
-        self->kernels = kernels_7_to_71;
-        break;
-      case 10:
-        self->kernels = kernels_10_to_71;
-        break;
-      case 14:
-        self->kernels = kernels_14_to_71;
-        break;
-      case 20:
-        self->kernels = kernels_20_to_71;
-        break;
-      case 28:
-        self->kernels = kernels_28_to_71;
-        break;
-      default:
-        return MPS_INVALID_PARAMETERBANDS; /* unsupported numParameterBands */
+    case 4:
+      self->kernels = kernels_4_to_71;
+      break;
+    case 5:
+      self->kernels = kernels_5_to_71;
+      break;
+    case 7:
+      self->kernels = kernels_7_to_71;
+      break;
+    case 10:
+      self->kernels = kernels_10_to_71;
+      break;
+    case 14:
+      self->kernels = kernels_14_to_71;
+      break;
+    case 20:
+      self->kernels = kernels_20_to_71;
+      break;
+    case 28:
+      self->kernels = kernels_28_to_71;
+      break;
+    default:
+      return MPS_INVALID_PARAMETERBANDS; /* unsupported numParameterBands */
     }
   }
 
@@ -2065,17 +2081,17 @@ SACDEC_ERROR SpatialDecDecodeHeader(
   }
 
   switch (self->treeConfig) {
-    case TREE_212:
-      self->numDirektSignals = 1;
-      self->numDecorSignals = 1;
-      self->numXChannels = 1;
-      if (self->arbitraryDownmix == 2) {
-        self->numXChannels += 1;
-      }
-      self->numVChannels = self->numDirektSignals + self->numDecorSignals;
-      break;
-    default:
-      return MPS_INVALID_TREECONFIG;
+  case TREE_212:
+    self->numDirektSignals = 1;
+    self->numDecorSignals = 1;
+    self->numXChannels = 1;
+    if (self->arbitraryDownmix == 2) {
+      self->numXChannels += 1;
+    }
+    self->numVChannels = self->numDirektSignals + self->numDecorSignals;
+    break;
+  default:
+    return MPS_INVALID_TREECONFIG;
   }
 
   self->highRateMode = pSpatialSpecificConfig->bsHighRateMode;

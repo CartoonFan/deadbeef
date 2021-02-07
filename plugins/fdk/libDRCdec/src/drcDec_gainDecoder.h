@@ -154,8 +154,8 @@ typedef struct {
 
 typedef struct {
   int activeDrcOffset;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef;
+  DRC_INSTRUCTIONS_UNI_DRC *pInst;
+  DRC_COEFFICIENTS_UNI_DRC *pCoef;
 
   DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
   SCHAR channelGroupForChannel[8];
@@ -164,7 +164,7 @@ typedef struct {
   UCHAR gainElementForGroup[8];
   UCHAR channelGroupIsParametricDrc[8];
   UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
-                             bands */
+                           bands */
   int lnbIndexForChannel[8][NUM_LNB_FRAMES];
   int subbandGainsReady;
 } ACTIVE_DRC;
@@ -192,7 +192,7 @@ typedef struct {
 
 /* init functions */
 DRC_ERROR
-drcDec_GainDecoder_Open(HANDLE_DRC_GAIN_DECODER* phGainDec);
+drcDec_GainDecoder_Open(HANDLE_DRC_GAIN_DECODER *phGainDec);
 
 DRC_ERROR
 drcDec_GainDecoder_Init(HANDLE_DRC_GAIN_DECODER hGainDec, const int frameSize,
@@ -208,12 +208,12 @@ DRC_ERROR
 drcDec_GainDecoder_Config(HANDLE_DRC_GAIN_DECODER hGainDec,
                           HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                           const UCHAR numSelectedDrcSets,
-                          const SCHAR* selectedDrcSetIds,
-                          const UCHAR* selectedDownmixIds);
+                          const SCHAR *selectedDrcSetIds,
+                          const UCHAR *selectedDownmixIds);
 
 /* close functions */
 DRC_ERROR
-drcDec_GainDecoder_Close(HANDLE_DRC_GAIN_DECODER* phGainDec);
+drcDec_GainDecoder_Close(HANDLE_DRC_GAIN_DECODER *phGainDec);
 
 /* process functions */
 
@@ -231,15 +231,15 @@ drcDec_GainDecoder_ProcessTimeDomain(
     HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
     const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
     const int drcChannelOffset, const int numChannelsProcessed,
-    const int timeDataChannelOffset, FIXP_DBL* audioIOBuffer);
+    const int timeDataChannelOffset, FIXP_DBL *audioIOBuffer);
 
 DRC_ERROR
 drcDec_GainDecoder_ProcessSubbandDomain(
     HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
     GAIN_DEC_LOCATION drcLocation, const int channelOffset,
     const int drcChannelOffset, const int numChannelsProcessed,
-    const int processSingleTimeslot, FIXP_DBL* audioIOBufferReal[],
-    FIXP_DBL* audioIOBufferImag[]);
+    const int processSingleTimeslot, FIXP_DBL *audioIOBufferReal[],
+    FIXP_DBL *audioIOBufferImag[]);
 
 DRC_ERROR
 drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
@@ -257,8 +257,8 @@ int drcDec_GainDecoder_GetDeltaTminDefault(HANDLE_DRC_GAIN_DECODER hGainDec);
 void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
                                         const int numChannels,
                                         const int frameSize,
-                                        const FIXP_DBL* channelGainDb,
+                                        const FIXP_DBL *channelGainDb,
                                         const int audioBufferChannelOffset,
-                                        FIXP_DBL* audioBuffer);
+                                        FIXP_DBL *audioBuffer);
 
 #endif

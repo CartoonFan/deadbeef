@@ -101,8 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "psy_configuration.h"
-#include "adj_thr.h"
 #include "aacEnc_rom.h"
+#include "adj_thr.h"
 
 #include "genericStds.h"
 
@@ -203,37 +203,37 @@ AAC_ENCODER_ERROR FDKaacEnc_initSfbTable(const LONG sampleRate,
     select table
   */
   switch (granuleLength) {
-    case 1024:
-    case 960:
-      sfbInfo = sfbInfoTab;
-      size = (INT)(sizeof(sfbInfoTab) / sizeof(SFB_INFO_TAB));
-      break;
-    case 512:
-      sfbInfo = sfbInfoTabLD512;
-      size = sizeof(sfbInfoTabLD512);
-      break;
-    case 480:
-      sfbInfo = sfbInfoTabLD480;
-      size = sizeof(sfbInfoTabLD480);
-      break;
-    default:
-      return AAC_ENC_INVALID_FRAME_LENGTH;
+  case 1024:
+  case 960:
+    sfbInfo = sfbInfoTab;
+    size = (INT)(sizeof(sfbInfoTab) / sizeof(SFB_INFO_TAB));
+    break;
+  case 512:
+    sfbInfo = sfbInfoTabLD512;
+    size = sizeof(sfbInfoTabLD512);
+    break;
+  case 480:
+    sfbInfo = sfbInfoTabLD480;
+    size = sizeof(sfbInfoTabLD480);
+    break;
+  default:
+    return AAC_ENC_INVALID_FRAME_LENGTH;
   }
 
   for (i = 0; i < size; i++) {
     if (sfbInfo[i].sampleRate == sampleRate) {
       switch (blockType) {
-        case LONG_WINDOW:
-        case START_WINDOW:
-        case STOP_WINDOW:
-          sfbWidth = sfbInfo[i].paramLong->sfbWidth;
-          *sfbCnt = sfbInfo[i].paramLong->sfbCnt;
-          break;
-        case SHORT_WINDOW:
-          sfbWidth = sfbInfo[i].paramShort->sfbWidth;
-          *sfbCnt = sfbInfo[i].paramShort->sfbCnt;
-          granuleLengthWindow /= TRANS_FAC;
-          break;
+      case LONG_WINDOW:
+      case START_WINDOW:
+      case STOP_WINDOW:
+        sfbWidth = sfbInfo[i].paramLong->sfbWidth;
+        *sfbCnt = sfbInfo[i].paramLong->sfbCnt;
+        break;
+      case SHORT_WINDOW:
+        sfbWidth = sfbInfo[i].paramShort->sfbWidth;
+        *sfbCnt = sfbInfo[i].paramShort->sfbCnt;
+        granuleLengthWindow /= TRANS_FAC;
+        break;
       }
       break;
     }
@@ -288,20 +288,20 @@ static FIXP_DBL FDKaacEnc_BarcLineValue(INT noOfLines, INT fftLine,
   center_freq = fftLine * samplingFreq; /* q11 or q8 */
 
   switch (noOfLines) {
-    case 1024:
-      center_freq = center_freq << 2; /* q13 */
-      break;
-    case 128:
-      center_freq = center_freq << 5; /* q13 */
-      break;
-    case 512:
-      center_freq = (fftLine * samplingFreq) << 3;  // q13
-      break;
-    case 480:
-      center_freq = fMult(center_freq, INV480) << 4;  // q13
-      break;
-    default:
-      center_freq = (FIXP_DBL)0;
+  case 1024:
+    center_freq = center_freq << 2; /* q13 */
+    break;
+  case 128:
+    center_freq = center_freq << 5; /* q13 */
+    break;
+  case 512:
+    center_freq = (fftLine * samplingFreq) << 3; // q13
+    break;
+  case 480:
+    center_freq = fMult(center_freq, INV480) << 4; // q13
+    break;
+  default:
+    center_freq = (FIXP_DBL)0;
   }
 
   x1 = fMult(center_freq, FOURBY3EM4); /* q13 * q43 - (DFRACT_BITS-1) = q25 */
@@ -324,8 +324,8 @@ static FIXP_DBL FDKaacEnc_BarcLineValue(INT noOfLines, INT fftLine,
 */
 static void FDKaacEnc_InitMinPCMResolution(int numPb, int *pbOffset,
                                            FIXP_DBL *sfbPCMquantThreshold) {
-/* PCM_QUANT_NOISE = FDKpow(10.0f, - 20.f / 10.0f) * ABS_LOW * NORM_PCM_ENERGY *
- * FDKpow(2,PCM_QUANT_THR_SCALE) */
+  /* PCM_QUANT_NOISE = FDKpow(10.0f, - 20.f / 10.0f) * ABS_LOW * NORM_PCM_ENERGY
+   * * FDKpow(2,PCM_QUANT_THR_SCALE) */
 #define PCM_QUANT_NOISE ((FIXP_DBL)0x00547062)
 
   for (int i = 0; i < numPb; i++) {
@@ -455,19 +455,19 @@ static void FDKaacEnc_initMinSnr(const LONG bitrate, const LONG samplerate,
   qperwin = qperwin + 36 - (DFRACT_BITS - 1);
 
   switch (numLines) {
-    case 1024:
-      qperwin = qperwin - 10;
-      break;
-    case 128:
-      qperwin = qperwin - 7;
-      break;
-    case 512:
-      qperwin = qperwin - 9;
-      break;
-    case 480:
-      qperwin = qperwin - 9;
-      pePerWindow = fMult(pePerWindow, FL2FXCONST_DBL(480.f / 512.f));
-      break;
+  case 1024:
+    qperwin = qperwin - 10;
+    break;
+  case 128:
+    qperwin = qperwin - 7;
+    break;
+  case 512:
+    qperwin = qperwin - 9;
+    break;
+  case 480:
+    qperwin = qperwin - 9;
+    pePerWindow = fMult(pePerWindow, FL2FXCONST_DBL(480.f / 512.f));
+    break;
   }
 
   /* for short blocks it is assumed that more bits are available */
@@ -545,17 +545,17 @@ AAC_ENCODER_ERROR FDKaacEnc_InitPsyConfiguration(INT bitrate, INT samplerate,
   INT downscaleFactor = 1;
 
   switch (granuleLength) {
-    case 256:
-    case 240:
-      downscaleFactor = 2;
-      break;
-    case 128:
-    case 120:
-      downscaleFactor = 4;
-      break;
-    default:
-      downscaleFactor = 1;
-      break;
+  case 256:
+  case 240:
+    downscaleFactor = 2;
+    break;
+  case 128:
+  case 120:
+    downscaleFactor = 4;
+    break;
+  default:
+    downscaleFactor = 1;
+    break;
   }
 
   FDKmemclear(psyConf, sizeof(PSY_CONFIGURATION));
@@ -570,7 +570,8 @@ AAC_ENCODER_ERROR FDKaacEnc_InitPsyConfiguration(INT bitrate, INT samplerate,
                                        granuleLength * downscaleFactor,
                                        psyConf->sfbOffset, &psyConf->sfbCnt);
 
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+  if (ErrorStatus != AAC_ENC_OK)
+    return ErrorStatus;
 
   /* calculate barc values for each pb */
   FDKaacEnc_initBarcValues(psyConf->sfbCnt, psyConf->sfbOffset,
@@ -608,12 +609,14 @@ AAC_ENCODER_ERROR FDKaacEnc_InitPsyConfiguration(INT bitrate, INT samplerate,
   }
 
   for (sfb = 0; sfb < psyConf->sfbCnt; sfb++) {
-    if (psyConf->sfbOffset[sfb] >= psyConf->lowpassLine) break;
+    if (psyConf->sfbOffset[sfb] >= psyConf->lowpassLine)
+      break;
   }
   psyConf->sfbActive = fMax(sfb, 1);
 
   for (sfb = 0; sfb < psyConf->sfbCnt; sfb++) {
-    if (psyConf->sfbOffset[sfb] >= psyConf->lowpassLineLFE) break;
+    if (psyConf->sfbOffset[sfb] >= psyConf->lowpassLineLFE)
+      break;
   }
   psyConf->sfbActiveLFE = sfb;
   psyConf->sfbActive = fMax(psyConf->sfbActive, psyConf->sfbActiveLFE);

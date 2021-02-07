@@ -1595,11 +1595,13 @@ const UCHAR aMaxCwLen[MAX_CB] = {0,  11, 9,  20, 16, 13, 11, 14, 12, 17, 14,
  * 21  23  25  27  39  31 */
 /*                            CB:  0 1 2 3 4 5 6 7 8 9 10  12  14  16  18  20
  * 22  24  26  28  30       */
-const UCHAR aDimCb[MAX_CB] = {
-    2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}; /* codebook dimension -
-                                                          zero cb got a
-                                                          dimension of 2 */
+const UCHAR
+    aDimCb[MAX_CB] =
+        {
+            2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}; /* codebook dimension
+                                                             - zero cb got a
+                                                                                                                 dimension of 2 */
 
 /*                                                           11  13  15  17  19
  * 21  23  25  27  39  31 */
@@ -3247,20 +3249,20 @@ const MP4_ELEMENT_ID
     elementsTab[AACDEC_MAX_CH_CONF][AACDEC_CH_ELEMENTS_TAB_SIZE] = {
         /*  1 */ {ID_SCE, ID_EXT, ID_END, ID_NONE, ID_NONE, ID_NONE,
                   ID_NONE}, /* 1 channel  */
-                            /*  2 */
+        /*  2 */
         {ID_CPE, ID_EXT, ID_END, ID_NONE, ID_NONE, ID_NONE,
          ID_NONE} /* 2 channels */
 #if (AACDEC_MAX_CH_CONF > 2)
         /*  3 */,
         {ID_SCE, ID_CPE, ID_EXT, ID_END, ID_NONE, ID_NONE,
          ID_NONE}, /* 3 channels */
-                   /*  4 */
+        /*  4 */
         {ID_SCE, ID_CPE, ID_SCE, ID_EXT, ID_END, ID_NONE,
          ID_NONE}, /* 4 channels */
-                   /*  5 */
+        /*  5 */
         {ID_SCE, ID_CPE, ID_CPE, ID_EXT, ID_END, ID_NONE,
          ID_NONE}, /* 5 channels */
-                   /*  6 */
+        /*  6 */
         {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_EXT, ID_END,
          ID_NONE} /* 6 channels */
 #endif
@@ -3268,25 +3270,25 @@ const MP4_ELEMENT_ID
         /*  7 */,
         {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_EXT,
          ID_END}, /* 8 channels */
-                  /*  8 */
+        /*  8 */
         {ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE,
          ID_NONE}, /* reserved   */
-                   /*  9 */
+        /*  9 */
         {ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE,
          ID_NONE}, /* reserved   */
-                   /* 10 */
+        /* 10 */
         {ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE,
          ID_NONE}, /* reserved   */
-                   /* 11 */
+        /* 11 */
         {ID_SCE, ID_CPE, ID_CPE, ID_SCE, ID_LFE, ID_EXT,
          ID_END}, /* 7 channels */
-                  /* 12 */
+        /* 12 */
         {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_EXT,
          ID_END}, /* 8 channels */
-                  /* 13 */
+        /* 13 */
         {ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE, ID_NONE,
          ID_NONE}, /* see elementsChCfg13 */
-                   /* 14 */
+        /* 14 */
         {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_CPE, ID_EXT,
          ID_END} /* 8 channels */
 #endif
@@ -3347,50 +3349,62 @@ const FIXP_FILT mdst_filt_coef_curr[20][3] = {
 
     {FILT(0.102658f), FILT(0.103791f), FILT(0.567149f)},
     /*, FILT( 0.000000f), FILT(-0.567149f), FILT(-0.103791f), FILT(-0.102658f) }, */ /* long start                             */
-    {FILT(0.150512f), FILT(0.047969f),
-     FILT(0.608574f)}, /*, FILT( 0.000000f), FILT(-0.608574f),
+    {   FILT(0.150512f), FILT(0.047969f),
+        FILT(0.608574f)
+    }, /*, FILT( 0.000000f), FILT(-0.608574f),
                           FILT(-0.047969f), FILT(-0.150512f) }, */
-    {FILT(0.104763f), FILT(0.105207f),
-     FILT(0.567861f)}, /*, FILT( 0.000000f), FILT(-0.567861f),
+    {   FILT(0.104763f), FILT(0.105207f),
+        FILT(0.567861f)
+    }, /*, FILT( 0.000000f), FILT(-0.567861f),
                           FILT(-0.105207f), FILT(-0.104763f) }, */
-    {FILT(0.148406f), FILT(0.046553f),
-     FILT(0.607863f)}, /*, FILT( 0.000000f), FILT(-0.607863f),
+    {   FILT(0.148406f), FILT(0.046553f),
+        FILT(0.607863f)
+    }, /*, FILT( 0.000000f), FILT(-0.607863f),
                           FILT(-0.046553f), FILT(-0.148406f) }, */
 
     {FILT(0.102658f), FILT(-0.103791f), FILT(0.567149f)},
     /*, FILT( 0.000000f), FILT(-0.567149f), FILT( 0.103791f), FILT(-0.102658f) }, */ /* long stop                              */
-    {FILT(0.150512f), FILT(-0.047969f),
-     FILT(0.608574f)}, /*, FILT( 0.000000f), FILT(-0.608574f), FILT(
+    {   FILT(0.150512f), FILT(-0.047969f),
+        FILT(0.608574f)
+    }, /*, FILT( 0.000000f), FILT(-0.608574f), FILT(
                           0.047969f), FILT(-0.150512f) }, */
-    {FILT(0.148406f), FILT(-0.046553f),
-     FILT(0.607863f)}, /*, FILT( 0.000000f), FILT(-0.607863f), FILT(
+    {   FILT(0.148406f), FILT(-0.046553f),
+        FILT(0.607863f)
+    }, /*, FILT( 0.000000f), FILT(-0.607863f), FILT(
                           0.046553f), FILT(-0.148406f) }, */
-    {FILT(0.104763f), FILT(-0.105207f),
-     FILT(0.567861f)}, /*, FILT( 0.000000f), FILT(-0.567861f), FILT(
+    {   FILT(0.104763f), FILT(-0.105207f),
+        FILT(0.567861f)
+    }, /*, FILT( 0.000000f), FILT(-0.567861f), FILT(
                           0.105207f), FILT(-0.104763f) }, */
 
     {FILT(0.205316f), FILT(0.000000f), FILT(0.634298f)},
     /*, FILT( 0.000000f), FILT(-0.634298f), FILT( 0.000000f), FILT(-0.205316f) }, */ /* stop start                             */
-    {FILT(0.209526f), FILT(0.000000f),
-     FILT(0.635722f)}, /*, FILT( 0.000000f), FILT(-0.635722f), FILT(
+    {   FILT(0.209526f), FILT(0.000000f),
+        FILT(0.635722f)
+    }, /*, FILT( 0.000000f), FILT(-0.635722f), FILT(
                           0.000000f), FILT(-0.209526f) }, */
-    {FILT(0.207421f), FILT(0.001416f),
-     FILT(0.635010f)}, /*, FILT( 0.000000f), FILT(-0.635010f),
+    {   FILT(0.207421f), FILT(0.001416f),
+        FILT(0.635010f)
+    }, /*, FILT( 0.000000f), FILT(-0.635010f),
                           FILT(-0.001416f), FILT(-0.207421f) }, */
-    {FILT(0.207421f), FILT(-0.001416f),
-     FILT(0.635010f)}, /*, FILT( 0.000000f), FILT(-0.635010f), FILT(
+    {   FILT(0.207421f), FILT(-0.001416f),
+        FILT(0.635010f)
+    }, /*, FILT( 0.000000f), FILT(-0.635010f), FILT(
                           0.001416f), FILT(-0.207421f) }  */
 
     {FILT(0.185618f), FILT(0.000000f), FILT(0.627371f)},
     /*, FILT( 0.000000f), FILT(-0.634298f), FILT( 0.000000f), FILT(-0.205316f) }, */ /* stop start   Transform Splitting        */
-    {FILT(0.204932f), FILT(0.000000f),
-     FILT(0.634159f)}, /*, FILT( 0.000000f), FILT(-0.635722f), FILT(
+    {   FILT(0.204932f), FILT(0.000000f),
+        FILT(0.634159f)
+    }, /*, FILT( 0.000000f), FILT(-0.635722f), FILT(
                           0.000000f), FILT(-0.209526f) }, */
-    {FILT(0.194609f), FILT(0.006202f),
-     FILT(0.630536f)}, /*, FILT( 0.000000f), FILT(-0.635010f),
+    {   FILT(0.194609f), FILT(0.006202f),
+        FILT(0.630536f)
+    }, /*, FILT( 0.000000f), FILT(-0.635010f),
                           FILT(-0.001416f), FILT(-0.207421f) }, */
-    {FILT(0.194609f), FILT(-0.006202f),
-     FILT(0.630536f)}, /*, FILT( 0.000000f), FILT(-0.635010f), FILT(
+    {   FILT(0.194609f), FILT(-0.006202f),
+        FILT(0.630536f)
+    }, /*, FILT( 0.000000f), FILT(-0.635010f), FILT(
                           0.001416f), FILT(-0.207421f) }  */
 };
 
