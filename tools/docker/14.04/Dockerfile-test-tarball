@@ -8,4 +8,3 @@ RUN rm ltmain.sh
 RUN ./autogen.sh
 RUN ./configure
 RUN make distcheck
-

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Grzegorz Gibas <amigib@gmail.com>, 2010
 # Jakub Wasylków <kuba_160@protonmail.com>, 2017

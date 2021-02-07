@@ -190,7 +190,7 @@ version 1.8.0
 	renamed Looping and Order menus to Repeat and Shuffle, respectively
 	fixed loading larger Songlenths.txt in sid plugin, and added support for Songlengths.md5
 
-version 0.7.2 
+version 0.7.2
 	fixed title formatting %filename% crash
 	fixed streaming of aac content in mp4 container
 	added https:// support to vfs_curl (Viktor Semykin)
@@ -481,11 +481,11 @@ version 0.5.5
 	fixed crash in adplug when playing ADL files
 	fixed crash in aac reload metadata
 	fixed Grandia - Parallel Trippers.gbs crash in GME plugin
-	fixed crash in GME plugin when a file doesn't exist 
+	fixed crash in GME plugin when a file doesn't exist
 	fixed integer overflow bug in float32->int32 conversion
 	fixed m3u parser string copy bug
 	fixed several dsp bugs in the converter
-	fixed up/down buttons in the converter's dsp preset editor 
+	fixed up/down buttons in the converter's dsp preset editor
 	fixed selected row bugs in dsp preset editors in gtkui preferences and converter
 	fixed parent window of dsp plugin configure window
 	fixed all known issues in gtk3 plugin -- it should be fully working now
@@ -845,7 +845,7 @@ version 0.3.2
 	new "stop after current track" feature
 	.dbpl extension is auto-added when saving playlist
 	improved robustness in http code (handling connection problems, etc)
-		
+
 version 0.3.1
 	improved header widget drawing and gtkengines compatibility
 	fixed vfs_curl to fetch content size properly again
@@ -924,7 +924,7 @@ version 0.2.2.2
 version 0.2.2.1
 	fixed playlist drawing regressions encountered in 0.2.2
 
-version 0.2.2	
+version 0.2.2
 	fixed several build problems reported by users
 	added app icons, updated launcher script
 	proper sse2 detection and usage in ape plugin
