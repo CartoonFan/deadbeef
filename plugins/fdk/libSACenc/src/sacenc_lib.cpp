@@ -684,14 +684,12 @@ FDK_SACENC_ERROR FDK_sacenc_init(HANDLE_MP4SPACE_ENCODER hEnc,
         goto bail;
       }
 
-      hEnc->nInputChannels =
-          spaceTreeDescription.nOutChannels; /* space tree description
-                                          describes decoder
-                                          configuration */
-      hEnc->nOutputChannels =
-          spaceTreeDescription.nInChannels; /* space tree description
-                                         describes decoder
-                                         configuration */
+      hEnc->nInputChannels = spaceTreeDescription.nOutChannels; /* space tree
+                                                       description describes
+                                                       decoder configuration */
+      hEnc->nOutputChannels = spaceTreeDescription.nInChannels; /* space tree
+                                                       description describes
+                                                       decoder configuration */
     }
 
     nChInArbDmx = 0;

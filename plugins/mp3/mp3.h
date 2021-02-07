@@ -54,7 +54,7 @@ typedef struct {
 
   int64_t currentsample;
   int64_t skipsamples; // how many samples to skip after seek, usually
-                       // "seek_sample - mp3info.pcmsample"
+  // "seek_sample - mp3info.pcmsample"
 
   DB_FILE *file;
   DB_playItem_t *it;
@@ -62,7 +62,7 @@ typedef struct {
   // output buffer, supplied by player
   int bytes_to_decode; // how many bytes is asked to be written to `out`
   int decoded_samples_remaining; // number of samples left of current decoded
-                                 // mpeg frame
+  // mpeg frame
   char *out;
 
   // temp buffer for 32bit decoding, before converting to 16 bit

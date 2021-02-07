@@ -180,9 +180,9 @@ typedef struct {
   UCHAR lowSubband;     /*!< QMF-band where SBR frequency range starts */
   UCHAR highSubband;    /*!< QMF-band where SBR frequency range ends */
   UCHAR ov_highSubband; /*!< if headerchange applies this value holds the old
-                         highband value -> highband value of overlap area;
-                           required for overlap in usac when headerchange
-                         occurs between XVAR and VARX frame */
+                       highband value -> highband value of overlap area;
+                         required for overlap in usac when headerchange
+                       occurs between XVAR and VARX frame */
   UCHAR limiterBandTable[MAX_NUM_LIMITERS + 1]; /*!< Limiter band table. */
   UCHAR noLimiterBands;                         /*!< Number of limiter bands. */
   UCHAR nInvfBands; /*!< Number of bands for inverse filtering */
@@ -240,10 +240,10 @@ typedef FREQ_BAND_DATA *HANDLE_FREQ_BAND_DATA;
 
 typedef struct {
   UCHAR ampResolution; /*!< Amplitude resolution of envelope values (0: 1.5dB,
-                        1: 3dB) */
+                      1: 3dB) */
   UCHAR
   xover_band; /*!< Start index in #v_k_master[] used for dynamic crossover
-               frequency */
+             frequency */
   UCHAR sbr_preprocessing; /*!< SBR prewhitening flag. */
   UCHAR pvc_mode;          /*!< Predictive vector coding mode */
 } SBR_HEADER_DATA_BS_INFO;
@@ -260,7 +260,7 @@ typedef struct {
   UCHAR limiterBands; /*!< Index for number of limiter bands per octave */
   UCHAR limiterGains; /*!< Index to select gain limit */
   UCHAR interpolFreq; /*!< Select gain calculation method (1: per QMF channel,
-                       0: per SBR band) */
+                     0: per SBR band) */
   UCHAR smoothingLength; /*!< Smoothing of gains over time (0: on  1: off) */
 
 } SBR_HEADER_DATA_BS;
@@ -270,20 +270,20 @@ typedef struct {
   syncState; /*!< The current initialization status of the header */
 
   UCHAR status; /*!< Flags field used for signaling a reset right before the
-                 processing starts and an update from config (e.g. ASC). */
+               processing starts and an update from config (e.g. ASC). */
   UCHAR
   frameErrorFlag; /*!< Frame data valid flag. CAUTION: This variable will be
-                   overwritten by the flag stored in the element
-                   structure. This is necessary because of the frame
-                   delay. There it might happen that different slots use
-                   the same header. */
+                 overwritten by the flag stored in the element
+                 structure. This is necessary because of the frame
+                 delay. There it might happen that different slots use
+                 the same header. */
   UCHAR numberTimeSlots;       /*!< AAC: 16,15 */
   UCHAR numberOfAnalysisBands; /*!< Number of QMF analysis bands */
   UCHAR timeStep;              /*!< Time resolution of SBR in QMF-slots */
-  UINT
-      sbrProcSmplRate; /*!< SBR processing sampling frequency (!=
-                            OutputSamplingRate)        (always: CoreSamplingRate
-                          * UpSamplingFactor; even in single rate mode) */
+  UINT sbrProcSmplRate;        /*!< SBR processing sampling frequency (!=
+                                      OutputSamplingRate)        (always:
+                                  CoreSamplingRate
+                                    * UpSamplingFactor; even in single rate mode) */
 
   SBR_HEADER_DATA_BS bs_data;      /*!< current SBR header. */
   SBR_HEADER_DATA_BS bs_dflt;      /*!< Default sbr header. */
@@ -299,9 +299,9 @@ typedef struct {
   UCHAR frameClass;                 /*!< Select grid type */
   UCHAR nEnvelopes;                 /*!< Number of envelopes */
   UCHAR borders[MAX_ENVELOPES + 1]; /*!< Envelope borders (in SBR-timeslots,
-                                     e.g. mp3PRO: 0..11) */
+                                   e.g. mp3PRO: 0..11) */
   UCHAR freqRes[MAX_ENVELOPES];     /*!< Frequency resolution for each envelope
-                                     (0=low, 1=high) */
+                                   (0=low, 1=high) */
   SCHAR tranEnv;                    /*!< Transient envelope, -1 if none */
   UCHAR nNoiseEnvelopes;            /*!< Number of noise envelopes */
   UCHAR
@@ -313,13 +313,13 @@ typedef struct {
 
 typedef struct {
   FIXP_SGL sfb_nrg_prev[MAX_FREQ_COEFFS]; /*!< Previous envelope (required for
-                                           differential-coded values) */
+                                         differential-coded values) */
   FIXP_SGL
   prevNoiseLevel[MAX_NOISE_COEFFS]; /*!< Previous noise envelope (required
-                                     for differential-coded values) */
+                                   for differential-coded values) */
   COUPLING_MODE coupling;           /*!< Stereo-mode of previous frame */
   INVF_MODE sbr_invf_mode[MAX_INVF_BANDS]; /*!< Previous strength of filtering
-                                            in transposer */
+                                          in transposer */
   UCHAR ampRes;         /*!< Previous amplitude resolution (0: 1.5dB, 1: 3dB) */
   UCHAR stopPos;        /*!< Position in time where last envelope ended */
   UCHAR frameErrorFlag; /*!< Previous frame status */
@@ -334,27 +334,27 @@ typedef struct {
 
   FRAME_INFO frameInfo;            /*!< time grid for current frame */
   UCHAR domain_vec[MAX_ENVELOPES]; /*!< Bitfield containing direction of
-                                    delta-coding for each envelope
-                                    (0:frequency, 1:time) */
+                                  delta-coding for each envelope
+                                  (0:frequency, 1:time) */
   UCHAR domain_vec_noise[MAX_NOISE_ENVELOPES]; /*!< Same as above, but for noise
-                                                  envelopes */
+                                                envelopes */
 
   INVF_MODE
   sbr_invf_mode[MAX_INVF_BANDS]; /*!< Strength of filtering in transposer */
   COUPLING_MODE coupling;        /*!< Stereo-mode */
   int ampResolutionCurrentFrame; /*!< Amplitude resolution of envelope values
-                                  (0: 1.5dB, 1: 3dB) */
+                                (0: 1.5dB, 1: 3dB) */
 
   ULONG addHarmonics[ADD_HARMONICS_FLAGS_SIZE]; /*!< Flags for synthetic sine
-                                                 addition (aligned to MSB) */
+                                               addition (aligned to MSB) */
 
   FIXP_SGL iEnvelope[MAX_NUM_ENVELOPE_VALUES];       /*!< Envelope data */
   FIXP_SGL sbrNoiseFloorLevel[MAX_NUM_NOISE_VALUES]; /*!< Noise envelope data */
   UCHAR iTESactive; /*!< One flag for each envelope to enable USAC inter-TES */
   UCHAR
   interTempShapeMode[MAX_ENVELOPES]; /*!< USAC inter-TES:
-                                      bs_inter_temp_shape_mode[ch][env]
-                                      value */
+                                    bs_inter_temp_shape_mode[ch][env]
+                                    value */
   UCHAR pvcID[PVC_NTIMESLOT];        /*!< One PVC ID value for each time slot */
   UCHAR ns;
   UCHAR sinusoidal_position;

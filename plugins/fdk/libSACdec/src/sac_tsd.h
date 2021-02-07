@@ -114,8 +114,8 @@ typedef struct {
   UCHAR numSlots;    /**< total number of QMF slots per frame */
   SCHAR
   bsTsdTrPhaseData[MAX_TSD_TIME_SLOTS]; /**< -1 => TsdSepData[ts]=0; 0-7:
-                                         values of bsTsdTrPhaseData[ts]
-                                         and TsdSepData[ts]=1 */
+                                       values of bsTsdTrPhaseData[ts]
+                                       and TsdSepData[ts]=1 */
 } TSD_DATA;
 
 FDK_INLINE int isTsdActive(const TSD_DATA *pTsdData) {

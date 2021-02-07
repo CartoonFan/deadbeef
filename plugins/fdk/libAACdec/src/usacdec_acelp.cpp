@@ -396,10 +396,11 @@ static FIXP_DBL calc_period_factor(FIXP_DBL exc[], FIXP_SGL gain_pit,
 static FIXP_DBL
 noise_enhancer(/* (o) : smoothed gain g_sc                     SF_GAIN_C */
                FIXP_DBL gain_code, /* (i) : Quantized codebook gain SF_GAIN_C */
-               FIXP_DBL period_fac, /* (i) : periodicity factor (-1=unvoiced to
-                                                  1=voiced), SF_PFAC */
-               FIXP_SGL stab_fac,   /* (i) : stability factor (0 <= ... < 1.0)
-                                                  SF_STAB   */
+               FIXP_DBL
+                   period_fac,    /* (i) : periodicity factor (-1=unvoiced to
+                                                           1=voiced), SF_PFAC */
+               FIXP_SGL stab_fac, /* (i) : stability factor (0 <= ... < 1.0)
+                                                           SF_STAB   */
                FIXP_DBL
                    *p_gc_threshold) /* (io): gain of code threshold SF_GAIN_C */
 {
@@ -854,9 +855,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
     period_fac =
         calc_period_factor(/* (o) : factor (-1=unvoiced to 1=voiced)    */
                            &exc[i_subfr], /* (i) : pitch excitation, exponent =
-                                                        SF_EXC */
+                                                                   SF_EXC */
                            gain_pit,      /* (i) : gain of pitch, exponent =
-                                                        SF_GAIN_P */
+                                                                   SF_GAIN_P */
                            gain_code,     /* (i) : gain of code     */
                            Ener_code,     /* (i) : Energy of code[]     */
                            Ener_code_e);  /* (i) : Exponent of energy of code[]
@@ -872,9 +873,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
         noise_enhancer(/* (o) : smoothed gain g_sc exponent = SF_GAIN_C */
                        gain_code,  /* (i) : Quantized codebook gain  */
                        period_fac, /* (i) : periodicity factor (-1=unvoiced to
-                                             1=voiced)  */
+                                                    1=voiced)  */
                        stab_fac,   /* (i) : stability factor (0 <= ... < 1),
-                                             exponent = 1 */
+                                                    exponent = 1 */
                        &acelp_mem->gc_threshold);
 
     /* Compute adaptive codebook update u'(n), pitch enhancement c'(n) and

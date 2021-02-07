@@ -119,23 +119,22 @@ typedef struct {
   LONG vbrQualFactor;
 } TAB_VBR_QUAL_FACTOR;
 
-static const TAB_VBR_QUAL_FACTOR tableVbrQualFactor[] =
-    {
-        {QCDATA_BR_MODE_VBR_1, FL2FXCONST_DBL(
-                                   0.160f)}, /* Approx. 32 -  48 (AC-LC),  32 -
-                                                56 (AAC-LD/ELD) kbps/channel */
-        {QCDATA_BR_MODE_VBR_2, FL2FXCONST_DBL(
-                                   0.148f)}, /* Approx. 40 -  56 (AC-LC),  40 -
-                                                64 (AAC-LD/ELD) kbps/channel */
-        {QCDATA_BR_MODE_VBR_3, FL2FXCONST_DBL(
-                                   0.135f)}, /* Approx. 48 -  64 (AC-LC),  48 -
-                                                72 (AAC-LD/ELD) kbps/channel */
-        {QCDATA_BR_MODE_VBR_4, FL2FXCONST_DBL(
-                                   0.111f)}, /* Approx. 64 -  80 (AC-LC),  64 -
-                                                88 (AAC-LD/ELD) kbps/channel */
-        {QCDATA_BR_MODE_VBR_5, FL2FXCONST_DBL(
-                                   0.070f)} /* Approx. 96 - 120 (AC-LC), 112 -
-                                               144 (AAC-LD/ELD) kbps/channel */
+static const TAB_VBR_QUAL_FACTOR tableVbrQualFactor[] = {
+    {QCDATA_BR_MODE_VBR_1, FL2FXCONST_DBL(0.160f)}, /* Approx. 32 -  48 (AC-LC),
+                                                       32 - 56 (AAC-LD/ELD)
+                                                       kbps/channel */
+    {QCDATA_BR_MODE_VBR_2, FL2FXCONST_DBL(0.148f)}, /* Approx. 40 -  56 (AC-LC),
+                                                       40 - 64 (AAC-LD/ELD)
+                                                       kbps/channel */
+    {QCDATA_BR_MODE_VBR_3, FL2FXCONST_DBL(0.135f)}, /* Approx. 48 -  64 (AC-LC),
+                                                       48 - 72 (AAC-LD/ELD)
+                                                       kbps/channel */
+    {QCDATA_BR_MODE_VBR_4, FL2FXCONST_DBL(0.111f)}, /* Approx. 64 -  80 (AC-LC),
+                                                       64 - 88 (AAC-LD/ELD)
+                                                       kbps/channel */
+    {QCDATA_BR_MODE_VBR_5, FL2FXCONST_DBL(0.070f)}  /* Approx. 96 - 120 (AC-LC),
+                                                       112 -  144 (AAC-LD/ELD)
+                                                       kbps/channel */
 };
 
 static INT isConstantBitrateMode(const QCDATA_BR_MODE bitrateMode) {
@@ -413,9 +412,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE *hQC, struct QC_INIT *init,
           AACENC_DZQ_BR_THR &&
       init->isLowDelay !=
           0) /* watch out here: init->bitrate is the bitrate "minus" the
-              standard SBR bitrate (=2500kbps) --> for the FDK the OFFSTE
-              tuning should start somewhere below 32000kbps-2500kbps ... so
-              everything is fine here */
+            standard SBR bitrate (=2500kbps) --> for the FDK the OFFSTE
+            tuning should start somewhere below 32000kbps-2500kbps ... so
+            everything is fine here */
   {
     hQC->dZoneQuantEnable = 1;
   } else {
@@ -427,9 +426,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE *hQC, struct QC_INIT *init,
       init->sampleRate, /* output sample rate */
       init->bitrate,    /* total bitrate */
       init->isLowDelay, /* if set, calc bits2PE factor
-                         depending on samplerate */
+                       depending on samplerate */
       init->bitResMode  /* for a small bitreservoir, the pe
-                         correction is calc'd differently */
+                       correction is calc'd differently */
       ,
       hQC->dZoneQuantEnable, init->bitDistributionMode, hQC->vbrQualFactor);
 
@@ -1002,7 +1001,7 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE *RESTRICT hQC, PSY_OUT **psyOut,
             /*-------------------------------------------- */
 
           } while (!constraintsFulfilled[c][i]); /* does not regard bit
-                                          consumption */
+                                consumption */
 
           /*-------------------------------------------- */
           /*-------------------------------------------- */
@@ -1155,7 +1154,7 @@ static AAC_ENCODER_ERROR FDKaacEnc_reduceBitConsumption(
       if (!chConstraintsFulfilled[ch]) {
         qcOutElement->qcOutChannel[ch]->globalGain += gainAdjustment;
         calculateQuant[ch] = 1; /* global gain has changed, recalculate
-                           quantization in next iteration! */
+                   quantization in next iteration! */
       }
     }
   } else if ((*iterations) == maxIterations) {

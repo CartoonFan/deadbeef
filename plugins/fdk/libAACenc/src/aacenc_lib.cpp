@@ -187,12 +187,12 @@ typedef struct {
   TRANSPORT_TYPE userTpType; /*!< Transport type */
   UCHAR userTpSignaling;     /*!< Extension AOT signaling mode. */
   UCHAR userTpNsubFrames;    /*!< Number of sub frames in a transport frame for
-                              LOAS/LATM or ADTS (default 1). */
+                            LOAS/LATM or ADTS (default 1). */
   UCHAR userTpAmxv; /*!< AudioMuxVersion to be used for LATM (default 0). */
   UCHAR userTpProtection;
   UCHAR userTpHeaderPeriod; /*!< Parameter used to configure LATM/LOAS SMC rate.
-                             Moreover this parameters is used to configure
-                             repetition rate of PCE in raw_data_block. */
+                           Moreover this parameters is used to configure
+                           repetition rate of PCE in raw_data_block. */
 
   UCHAR userErTools;     /*!< Use VCB11, HCR and/or RVLC ER tool. */
   UINT userPceAdditions; /*!< Configure additional bits in PCE. */
@@ -238,8 +238,8 @@ struct AACENCODER {
   /* Meta Data */
   HANDLE_FDK_METADATA_ENCODER hMetadataEnc;
   INT metaDataAllowed; /* Signal whether chosen configuration allows metadata.
-                        Necessary for delay compensation. Metadata mode is a
-                        separate parameter. */
+                      Necessary for delay compensation. Metadata mode is a
+                      separate parameter. */
 
   HANDLE_MPS_ENCODER hMpsEnc;
 
@@ -287,8 +287,8 @@ typedef struct {
 
   /* output*/
   UCHAR sbrMode;       /*!< 0: ELD sbr off,
-                          1: ELD with downsampled sbr,
-                          2: ELD with dualrate sbr. */
+                        1: ELD with downsampled sbr,
+                        2: ELD with dualrate sbr. */
   CHANNEL_MODE chMode; /*!< Channel mode. */
 
 } ELD_SBR_CONFIGURATOR;
@@ -424,7 +424,7 @@ getSbrSignalingMode(const AUDIO_OBJECT_TYPE audioObjectType,
     case TT_MP4_ADIF:
     case TT_MP4_ADTS:
       sbrSignaling = SIG_IMPLICIT; /* For MPEG-2 transport types, only
-                                  implicit signaling is possible */
+                            implicit signaling is possible */
       break;
 
     case TT_MP4_RAW:
@@ -890,7 +890,7 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
   }
   if (config->userDownscaleFactor > 1 && config->userSbrEnabled == 1) {
     return AACENC_INVALID_CONFIG; /* downscaling only allowed for AOT_ER_AAC_ELD
-                                 w/o SBR */
+                             w/o SBR */
   }
   if (config->userDownscaleFactor > 1 && config->userChannelMode == 128) {
     return AACENC_INVALID_CONFIG; /* disallow downscaling for AAC-ELDv2 */
@@ -1162,7 +1162,7 @@ static AACENC_ERROR FDKaacEnc_AdjustEncSettings(HANDLE_AACENCODER hAacEncoder,
     if (FDKaacEnc_DetermineEncoderMode(&hAacConfig->channelMode,
                                        hAacConfig->nChannels) != AAC_ENC_OK) {
       return AACENC_INVALID_CONFIG; /* nChannels doesn't match chMode, this is
-                                 just a check-up */
+                           just a check-up */
     }
   }
 
@@ -1347,7 +1347,7 @@ static AACENC_ERROR aacEncInit(HANDLE_AACENCODER hAacEncoder, ULONG InitFlags,
                           config->userSamplerate, hAacConfig->bitRate,
                           isSbrActive(hAacConfig) ? hAacConfig->sbrRatio : 0,
                           frameLength, /* for dual rate sbr this value is
-                                  already multiplied by 2 */
+                          already multiplied by 2 */
                           hAacEncoder->inputBufferSizePerChannel,
                           coreCoderDelay)) {
       return AACENC_INIT_MPS_ERROR;
@@ -1920,7 +1920,7 @@ AACENC_ERROR aacEncEncode(const HANDLE_AACENCODER hAacEncoder,
           }
           hAacEncoder->extPayload[nExtensions].dataType =
               EXT_SBR_DATA; /* Once SBR Encoder supports SBR CRC set
-                     EXT_SBR_DATA_CRC */
+           EXT_SBR_DATA_CRC */
           nExtensions++;    /* or EXT_SBR_DATA according to configuration. */
           FDK_ASSERT(nExtensions <= MAX_TOTAL_EXT_PAYLOADS);
         }

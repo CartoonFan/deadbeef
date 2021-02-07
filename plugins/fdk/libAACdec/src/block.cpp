@@ -613,10 +613,10 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
       FDKmemclear(pSpectralCoefficient, diff_clear * sizeof(FIXP_DBL));
 
     } /* for (groupwin=0; groupwin <
-     GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
-     groupwin++, window++) */
+ GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
+ groupwin++, window++) */
   }   /* for (window=0, group=0; group <
-       GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
+     GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++)*/
 
   return AAC_DEC_OK;
 }

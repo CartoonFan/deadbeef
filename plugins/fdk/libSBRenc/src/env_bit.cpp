@@ -219,7 +219,7 @@ void FDKsbrEnc_AssembleSbrBitstream(HANDLE_COMMON_DATA hCmonData,
       }
 
       sbrLoad += 4; /* Do byte Align with 4 bit offset. ISO/IEC 14496-3:2005(E)
-                 page 39. */
+           page 39. */
 
       hCmonData->sbrFillBits = (8 - (sbrLoad % 8)) % 8;
 

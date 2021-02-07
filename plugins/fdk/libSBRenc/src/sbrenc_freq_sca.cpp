@@ -376,7 +376,7 @@ INT FDKsbrEnc_FindStartAndStopBand(const INT srSbr, const INT srCore,
   /* Test if start freq is outside corecoder range */
   if (srSbr * noChannels < *k0 * srCore) {
     return (1); /* raise the cross-over frequency and/or lower the number
-        of target bands per octave (or lower the sampling frequency) */
+    of target bands per octave (or lower the sampling frequency) */
   }
 
   /*Update stopFreq struct */
@@ -396,11 +396,11 @@ INT FDKsbrEnc_FindStartAndStopBand(const INT srSbr, const INT srCore,
   /* Test for invalid  k0 k2 combinations */
   if ((srCore == 22050) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS44100))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-               fs=44.1kHz */
+           fs=44.1kHz */
 
   if ((srCore >= 24000) && ((*k2 - *k0) > MAX_FREQ_COEFFS_FS48000))
     return (1); /* Number of bands exceeds valid range of MAX_FREQ_COEFFS for
-               fs>=48kHz */
+           fs>=48kHz */
 
   if ((*k2 - *k0) > MAX_FREQ_COEFFS)
     return (1); /*Number of bands exceeds valid range of MAX_FREQ_COEFFS */
@@ -456,7 +456,7 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       warp = FL2FXCONST_DBL(1.0f / 2.6f); /* 1.0/(1.3*2.0); */
 
     if (4 * k2 >= 9 * k0) /*two or more regions (how many times the basis band
-                         is copied)*/
+                     is copied)*/
     {
       k1 = 2 * k0;
 
@@ -469,8 +469,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       if (diff0[0] == 0) /* too wide FB bands for target tuning */
       {
         return (1); /* raise the cross-over frequency and/or lower the number
-               of target bands per octave (or lower the sampling
-               frequency */
+       of target bands per octave (or lower the sampling
+       frequency */
       }
 
       cumSum(k0, diff0, num_bands0, v_k_master); /* cumsum */
@@ -498,8 +498,8 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       if (diff0[0] == 0) /* too wide FB bands for target tuning */
       {
         return (1); /* raise the cross-over frequency and/or lower the number
-               of target bands per octave (or lower the sampling
-               frequency */
+       of target bands per octave (or lower the sampling
+       frequency */
       }
 
       cumSum(k0, diff0, num_bands0, v_k_master); /* cumsum */

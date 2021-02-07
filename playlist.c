@@ -124,7 +124,7 @@ static int no_remove_notify;
 
 static playlist_t
     *addfiles_playlist; // current playlist for adding files/folders; set in
-                        // pl_add_files_begin
+// pl_add_files_begin
 
 int conf_cue_prefer_embedded = 0;
 
@@ -3017,7 +3017,7 @@ static int pl_format_title_int(const char *escape_chars, playItem_t *it,
       } else if (*fmt == 'Z') {
         DB_fileinfo_t *c =
             deadbeef->streamer_get_current_fileinfo(); // FIXME: might crash
-                                                       // streamer
+        // streamer
         if (c) {
           if (c->fmt.channels <= 2) {
             meta = c->fmt.channels == 1 ? _("Mono") : _("Stereo");

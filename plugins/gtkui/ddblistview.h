@@ -159,10 +159,10 @@ struct _DdbListview {
   GtkWidget *scrollbar;
   GtkWidget *hscrollbar;
 
-  int list_width;    // width if the list widget as of the last resize
-  int list_height;   // heught of the list widget as of the last resize
-  int totalwidth;    // width of listview, including any invisible (scrollable)
-                     // part
+  int list_width;  // width if the list widget as of the last resize
+  int list_height; // heught of the list widget as of the last resize
+  int totalwidth;  // width of listview, including any invisible (scrollable)
+  // part
   int fullheight;    // total height of all groups
   const char *title; // unique id, used for config writing, etc
   int lastpos[2];    // last mouse position (for list widget)
@@ -190,12 +190,12 @@ struct _DdbListview {
   // selection
   int areaselect;   // boolean, whether area selection is active (1), or not (0)
   int areaselect_x; // x pixel-coordinate of anchor click relative to playlist
-                    // origin
+  // origin
   int areaselect_y; // y pixel-coordinate of anchor click relative to playlist
-                    // origin
-  int dragwait;     // set to 1 when mouse was pressed down on already selected
-                    // track, but not moved since (so we're waiting for dnd to
-                    // begin)
+  // origin
+  int dragwait; // set to 1 when mouse was pressed down on already selected
+  // track, but not moved since (so we're waiting for dnd to
+  // begin)
   int drag_source_playlist;
   int shift_sel_anchor;
 

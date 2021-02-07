@@ -217,31 +217,31 @@ typedef struct {
                          */
 
   USAC_COREMODE last_core_mode; /* core mode used by the decoder in previous
-                                 frame. (not signalled by the bitstream, see
-                                 CAacDecoderChannelInfo::core_mode_last !! )
-                               */
+                               frame. (not signalled by the bitstream, see
+                               CAacDecoderChannelInfo::core_mode_last !! )
+                             */
   UCHAR last_lpd_mode;      /* LPD mode used by the decoder in last LPD subframe
-                              (not signalled by the bitstream, see
-                             CAacDecoderChannelInfo::lpd_mode_last !! ) */
+                            (not signalled by the bitstream, see
+                           CAacDecoderChannelInfo::lpd_mode_last !! ) */
   UCHAR last_last_lpd_mode; /* LPD mode used in second last LPD subframe
-                              (not signalled by the bitstream) */
+                            (not signalled by the bitstream) */
   UCHAR last_lpc_lost;      /* Flag indicating that the previous LPC is lost */
 
   FIXP_LPC
   lpc4_lsf[M_LP_FILTER_ORDER]; /* Last LPC4 coefficients in LSF domain. */
   FIXP_LPC lsf_adaptive_mean[M_LP_FILTER_ORDER]; /* Adaptive mean of LPC
-                                                  coefficients in LSF domain
-                                                  for concealment. */
+                                                coefficients in LSF domain
+                                                for concealment. */
   FIXP_LPC lp_coeff_old[2][M_LP_FILTER_ORDER];   /* Last LPC coefficients in LP
-                                  domain. lp_coeff_old[0] is lpc4 (coeffs for
-                                  right folding point of last tcx frame),
-                                  lp_coeff_old[1] are coeffs for left folding
-                                  point of last tcx frame */
+                                domain. lp_coeff_old[0] is lpc4 (coeffs for
+                                right folding point of last tcx frame),
+                                lp_coeff_old[1] are coeffs for left folding
+                                point of last tcx frame */
   INT lp_coeff_old_exp[2];
 
   FIXP_SGL
   oldStability; /* LPC coeff stability value from last frame (required for
-                 TCX concealment). */
+               TCX concealment). */
   UINT numLostLpdFrames; /* Number of consecutive lost subframes. */
 
   /* TCX memory */
@@ -281,10 +281,10 @@ typedef struct {
     struct {
       CPulseData PulseData;
       SHORT aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
-                                         except for Drm syntax */
+                                   except for Drm syntax */
       UCHAR
       aCodeBooks4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for
-                                Drm syntax. Same as "aCodeBook" ? */
+                          Drm syntax. Same as "aCodeBook" ? */
       SHORT lenOfReorderedSpectralData;
       SCHAR lenOfLongestCodeword;
       SCHAR numberSection;
@@ -366,27 +366,28 @@ typedef struct {
       UCHAR core_mode; /* current core mode */
       USAC_COREMODE
       core_mode_last;      /* previous core mode, signalled in the bitstream
-                        (not done by the decoder, see
-                        CAacDecoderStaticChannelInfo::last_core_mode !!)*/
+                  (not done by the decoder, see
+                  CAacDecoderStaticChannelInfo::last_core_mode !!)*/
       UCHAR lpd_mode_last; /* previous LPD mode, signalled in the bitstream
-                        (not done by the decoder, see
-                        CAacDecoderStaticChannelInfo::last_core_mode !!)*/
+                  (not done by the decoder, see
+                  CAacDecoderStaticChannelInfo::last_core_mode !!)*/
       UCHAR mod[4];
       UCHAR bpf_control_info; /* (1: enable, 0: disable) bpf for current
-                           superframe */
+                     superframe */
 
       FIXP_LPC lsp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction
-                                             coefficients in LSP domain */
+                                       coefficients in LSP domain */
       FIXP_LPC
       lp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction coefficients in
-                                   LP domain */
+                             LP domain */
       INT lp_coeff_exp[5];
-      FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER]; /* concealment: is
-                                           copied to
-                                           CAacDecoderStaticChannelInfo->lsf_adaptive_mean
-                                           once frame is assumed to be correct*/
+      FIXP_LPC
+          lsf_adaptive_mean_cand[M_LP_FILTER_ORDER]; /* concealment: is
+                                copied to
+                                CAacDecoderStaticChannelInfo->lsf_adaptive_mean
+                                once frame is assumed to be correct*/
       FIXP_SGL aStability[4]; /* LPC coeff stability values required for ACELP
-                           and TCX (concealment) */
+                     and TCX (concealment) */
 
       CAcelpChannelData acelp[4];
 
@@ -413,8 +414,8 @@ typedef struct {
   CAacDecoderCommonData
       *pComData; /* Data required for one channel at a time during decode */
   CAacDecoderCommonStaticData *pComStaticData; /* Persistent data required for
-                                                one channel at a time during
-                                                decode */
+                                              one channel at a time during
+                                              decode */
 
   int currAliasingSymmetry; /* required for RSVD60 MCT */
 

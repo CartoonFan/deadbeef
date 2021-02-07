@@ -613,7 +613,7 @@ void CJointStereo_ApplyMS(
     /* get length of short window for current configuration */
     windowLen =
         pAacDecoderChannelInfo[L]->granuleLength; /* framelength 768 => 96,
-                                                 framelength 1024 => 128 */
+                                             framelength 1024 => 128 */
 
     /* if this is no short-block set length for long-block */
     if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence != BLOCK_SHORT) {
@@ -667,7 +667,7 @@ void CJointStereo_ApplyMS(
     } else if ((previousShape == SHAPE_KBD) && (currentShape == SHAPE_KBD)) {
       coeffPointerOffset = 1;
     } else /* if ( (previousShape == SHAPE_KBD) && (currentShape == SHAPE_SINE)
-          ) */
+      ) */
     {
       coeffPointerOffset = 3;
     }
@@ -836,7 +836,7 @@ void CJointStereo_ApplyMS(
               *store_dmx_re_prev_e = dmx_re_prev_e;
 
             } /* if ( (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence !=
-     BLOCK_SHORT) || (window == 0) ) */
+BLOCK_SHORT) || (window == 0) ) */
 
           } /* if ( pJointStereoData->use_prev_frame == 1 ) */
 
@@ -897,10 +897,10 @@ void CJointStereo_ApplyMS(
 
           lScale = fMin(DFRACT_BITS - 1, specScaleL[window] - lScale);
           rScale = fMin(DFRACT_BITS - 1, specScaleL[window] - rScale); /* L or R
-                                                                doesn't matter,
-                                                                specScales are
-                                                                equal at this
-                                                                point */
+                                                      doesn't matter,
+                                                      specScales are
+                                                      equal at this
+                                                      point */
 
           /* Write back to sfb scale to cover the case when max_sfb_ste <
            * max_sfb */
@@ -1076,7 +1076,7 @@ void CJointStereo_ApplyMS(
 
         } /* for ( band=0; band < max_sfb_ste; band++ ) */
       }   /* for ( groupwin=0; groupwin<pWindowGroupLength[group]; groupwin++,
-       window++ ) */
+ window++ ) */
 
     } /* for ( window = 0, group = 0; group < windowGroups; group++ ) */
 

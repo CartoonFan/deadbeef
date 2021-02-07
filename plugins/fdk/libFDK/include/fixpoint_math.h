@@ -306,7 +306,7 @@ static FDK_FORCEINLINE FIXP_DBL invSqrtNorm2(FIXP_DBL op, INT *shift) {
   /* normalize input, calculate shift value */
   FDK_ASSERT(val > FL2FXCONST_DBL(0.0));
   *shift = fNormz(val) - 1; /* CountLeadingBits() is not necessary here since
-                             test value is always > 0 */
+                           test value is always > 0 */
   val <<= *shift;           /* normalized input V */
   *shift += 2;              /* bias for exponent */
 

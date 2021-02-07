@@ -403,7 +403,7 @@ typedef enum ddb_repeat_e {
 // NOTE: these events can only be sent individually, and can't be ORed.
 enum ddb_playlist_change_t {
   DDB_PLAYLIST_CHANGE_CONTENT, // this is the most generic one, will work for
-                               // the cases when p1 was omitted (0)
+  // the cases when p1 was omitted (0)
   DDB_PLAYLIST_CHANGE_CREATED,
   DDB_PLAYLIST_CHANGE_DELETED,
   DDB_PLAYLIST_CHANGE_POSITION,
@@ -429,7 +429,7 @@ typedef struct {
   ddb_event_t ev;
   DB_playItem_t *track;
   float playtime; // for SONGFINISHED event -- for how many seconds track was
-                  // playing
+  // playing
   time_t started_timestamp; // time when "track" started playing
 } ddb_event_track_t;
 
@@ -438,7 +438,7 @@ typedef struct {
   DB_playItem_t *from;
   DB_playItem_t *to;
   float playtime; // for SONGCHANGED event -- for how many seconds prev track
-                  // was playing
+  // was playing
   time_t started_timestamp; // time when "from" started playing
 } ddb_event_trackchange_t;
 
@@ -518,16 +518,16 @@ enum {
   // structured events
 
   DB_EV_FIRST = 1000, // this is not an event id by itself, but used for
-                      // checking which events are structured (>=DB_EV_FIRST)
+  // checking which events are structured (>=DB_EV_FIRST)
 
-  DB_EV_SONGCHANGED = 1000,  // current song changed from one to another,
-                             // ctx=ddb_event_trackchange_t
+  DB_EV_SONGCHANGED = 1000, // current song changed from one to another,
+  // ctx=ddb_event_trackchange_t
   DB_EV_SONGSTARTED = 1001,  // song started playing, ctx=ddb_event_track_t
   DB_EV_SONGFINISHED = 1002, // song finished playing, ctx=ddb_event_track_t
 
   DB_EV_TRACKINFOCHANGED =
       1004, // trackinfo was changed (included medatata, playback status,
-            // playqueue state, etc), ctx=ddb_event_track_t
+  // playqueue state, etc), ctx=ddb_event_track_t
   // DB_EV_TRACKINFOCHANGED NOTE: when multiple tracks change,
   // DB_EV_PLAYLISTCHANGED may be sent instead, for speed reasons, so always
   // handle both events.
@@ -1862,8 +1862,8 @@ typedef struct DB_plugin_s {
   const char *name;      // short name
   const char *descr;     // short description (what the plugin is doing)
   const char *copyright; // copyright notice(s), list of developers, links to
-                         // original works, etc
-  const char *website;   // plugin website
+  // original works, etc
+  const char *website; // plugin website
 
   // plugin-specific command interface; can be NULL
   int (*command)(int cmd, ...);
@@ -2132,14 +2132,14 @@ typedef struct DB_vfs_s {
   // capabilities
   const char **(*get_schemes)(
       void); // NULL-terminated list of supported schemes, e.g. {"http://",
-             // "ftp://", NULL}; can be NULL
+  // "ftp://", NULL}; can be NULL
 
   int (*is_streaming)(void); // return 1 if the plugin streaming data over slow
-                             // connection, e.g. http; plugins will avoid
-                             // scanning entire files if this is the case
+  // connection, e.g. http; plugins will avoid
+  // scanning entire files if this is the case
 
   int (*is_container)(const char *fname); // should return 1 if this plugin can
-                                          // parse specified file
+  // parse specified file
 
   // Was used to interrupt hanging network streams, but not used since API 1.11.
   // Use get_identifier / abort_with_identifier instead

@@ -146,13 +146,13 @@ typedef struct {
 typedef struct {
   UCHAR MsMaskPresent;
   UCHAR MsUsed[JointStereoMaximumBands]; /*!< every arry element contains flags
-                                          for up to 8 groups. this array is
-                                          also utilized for complex stereo
-                                          prediction. */
+                                        for up to 8 groups. this array is
+                                        also utilized for complex stereo
+                                        prediction. */
   UCHAR IGF_MsMaskPresent;
 
   UCHAR cplx_pred_flag; /* stereo complex prediction was signalled for this
-                         frame */
+                       frame */
   UCHAR igf_cplx_pred_flag;
 
   /* The following array and variable are needed for the case  when INF is
@@ -165,15 +165,15 @@ typedef struct {
 /* joint stereo persistent memory */
 typedef struct {
   UCHAR clearSpectralCoeffs; /* indicates that the spectral coeffs must be
-                              cleared because the transform splitting active
-                              flag of the left and right channel was different
-                            */
+                            cleared because the transform splitting active
+                            flag of the left and right channel was different
+                          */
 
   FIXP_DBL *scratchBuffer; /* pointer to scratch buffer */
 
   FIXP_DBL
   *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
-                       complex stereo prediction */
+                     complex stereo prediction */
   SHORT *specScale[2];
 
   SHORT alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];

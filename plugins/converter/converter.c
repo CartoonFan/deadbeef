@@ -941,7 +941,7 @@ static int64_t _write_wav(DB_playItem_t *it, DB_decoder_t *dec,
       int32_t wavefmtsize = exheader ? 0x28 : 0x10;
       write_int32_le(wavehdr + 16,
                      wavefmtsize); // chunk size; fe ff; num chan ;
-                                   // samples_per_sec; avg_bytes_per_sec
+      // samples_per_sec; avg_bytes_per_sec
       int16_t fmt = exheader ? 0xfffe : (output_is_float ? 3 : 1);
       write_int16_le(wavehdr + 20, fmt);
       write_int16_le(wavehdr + 22, outch);

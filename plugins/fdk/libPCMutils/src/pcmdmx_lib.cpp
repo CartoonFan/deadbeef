@@ -347,8 +347,8 @@ typedef struct {
   UCHAR matrixMixdownIdx;
   /* Attributes: */
   SCHAR pseudoSurround; /*!< If set to 1 the signal is pseudo surround
-                         compatible. The value 0 tells that it is not. If the
-                         value is -1 the information is not available.  */
+                       compatible. The value 0 tells that it is not. If the
+                       value is -1 the information is not available.  */
   UINT expiryCount; /*!< Counter to monitor the life time of a meta data set. */
 
 } DMX_BS_META_DATA;
@@ -378,7 +378,7 @@ struct PCM_DMX_INSTANCE {
   PCM_DMX_USER_PARAMS userParams;
 
   UCHAR applyProcessing; /*!< Flag to en-/disable modules processing.
-                            The max channel limiting is done independently. */
+                          The max channel limiting is done independently. */
 };
 
 /* Memory allocation macro */
@@ -1214,21 +1214,21 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
       /* Apply the dual channel mode. */
       switch (pParams->dualChannelMode) {
       case CH1_MODE: /* L' = 0.707 * Ch1;
-                      R' = 0.707 * Ch1; */
+                R' = 0.707 * Ch1; */
         dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
         dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
                       LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
         break;
       case CH2_MODE: /* L' = 0.707 * Ch2;
-                      R' = 0.707 * Ch2; */
+                R' = 0.707 * Ch2; */
         dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
         dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
                       RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
         break;
       case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;
-                        R' = 0.5*Ch1 + 0.5*Ch2; */
+                  R' = 0.5*Ch1 + 0.5*Ch2; */
         dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
         dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
@@ -2316,7 +2316,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     *nChannels = numOutChannels;
 
   } /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-     - - - - - - - - - - - - - - - - - - */
+   - - - - - - - - - - - - - - - - - - */
   else if (numInChannels < numOutChannels) { /* Apply rudimentary upmix */
     /* Set up channel pointer */
     UCHAR outOffsetTable[(8)];
@@ -2342,8 +2342,8 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Set input channel pointer. The first channel is always at index 0. */
       pInPcm[CENTER_FRONT_CHANNEL] =
           &pPcmBuf[(frameSize - 1) * inStride]; /* Considering input mapping
-                             could lead to a invalid pointer here if the channel
-                             is not declared to be a front channel. */
+                       could lead to a invalid pointer here if the channel
+                       is not declared to be a front channel. */
 
       /* Set output channel pointer (for this stage). */
       pOutLF = &pPcmBuf[outOffsetTable[LEFT_FRONT_CHANNEL] * offset +
@@ -2529,7 +2529,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     /* update the number of output channels */
     *nChannels = numOutChannels;
   } /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-     - - - - - - - - - - - - - - - - - - */
+   - - - - - - - - - - - - - - - - - - */
   else if (numInChannels == numOutChannels) {
     /* Don't need to change the channel description here */
 
@@ -2662,13 +2662,13 @@ PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info) {
   /* Set flags */
   info[i].flags = 0 | CAPF_DMX_BLIND /* At least blind downmixing is possible */
                   | CAPF_DMX_PCE     /* Guided downmix with data from MPEG-2/4
-                                      Program Config Elements (PCE). */
+                                    Program Config Elements (PCE). */
                   | CAPF_DMX_ARIB /* PCE guided downmix with slightly different
-                                   equations and levels. */
+                                 equations and levels. */
                   | CAPF_DMX_DVB  /* Guided downmix with data from DVB ancillary
-                                   data fields. */
+                                 data fields. */
                   | CAPF_DMX_CH_EXP /* Simple upmixing by dublicating channels
-                                     or adding zero channels. */
+                                   or adding zero channels. */
                   | CAPF_DMX_6_CH | CAPF_DMX_8_CH;
 
   /* Add lib info for FDK tools (if not yet done). */

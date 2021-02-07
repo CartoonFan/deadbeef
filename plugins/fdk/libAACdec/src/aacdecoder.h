@@ -200,32 +200,32 @@ struct AAC_DECODER_INSTANCE {
   frameOK; /*!< Will be unset if a consistency check, e.g. CRC etc. fails */
 
   UINT flags[(1 * 1)]; /*!< Flags for internal decoder use. DO NOT USE
-                        self::streaminfo::flags ! */
+                      self::streaminfo::flags ! */
   UINT elFlags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                 1)]; /*!< Flags for internal decoder use (element specific). DO
-            NOT USE self::streaminfo::flags ! */
+NOT USE self::streaminfo::flags ! */
 
   MP4_ELEMENT_ID elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                            1)]; /*!< Table where the element Id's are listed */
   UCHAR elTags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                 1)]; /*!< Table where the elements id Tags are listed      */
   UCHAR chMapping[((8) * 2)]; /*!< Table of MPEG canonical order to bitstream
-                               channel order mapping. */
+                             channel order mapping. */
 
   AUDIO_CHANNEL_TYPE channelType[(8)]; /*!< Audio channel type of each output
-                                        audio channel (from 0 upto
-                                        numChannels).           */
+                                      audio channel (from 0 upto
+                                      numChannels).           */
   UCHAR channelIndices[(8)]; /*!< Audio channel index for each output audio
-                              channel (from 0 upto numChannels).         */
+                            channel (from 0 upto numChannels).         */
   /* See ISO/IEC 13818-7:2005(E), 8.5.3.2 Explicit channel mapping using a
    * program_config_element() */
 
   FDK_channelMapDescr mapDescr; /*!< Describes the output channel mapping. */
   UCHAR chMapIndex; /*!< Index to access one line of the channelOutputMapping
-                     table. This is required because not all 8 channel
-                     configurations have the same output mapping. */
+                   table. This is required because not all 8 channel
+                   configurations have the same output mapping. */
   INT sbrDataLen;   /*!< Expected length of the SBR remaining in bitbuffer after
-                       the AAC payload has been pared.   */
+                     the AAC payload has been pared.   */
 
   CProgramConfig pce;
   CStreamInfo
@@ -247,7 +247,7 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
   CConcealmentMethod concealMethodUser;
 
   CUsacCoreExtensions usacCoreExt; /*!< Data and handles to extend USAC FD/LPD
-                                    core decoder (SBR, MPS, ...) */
+                                  core decoder (SBR, MPS, ...) */
   UINT numUsacElements[(1 * 1)];
   UCHAR usacStereoConfigIndex[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)];
   const CSUsacConfig *pUsacConfig[(1 * 1)];
@@ -256,32 +256,32 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
   UCHAR useLdQmfTimeAlign;
 
   INT aacChannelsPrev; /*!< The amount of AAC core channels of the last
-                        successful decode call.         */
+                      successful decode call.         */
   AUDIO_CHANNEL_TYPE channelTypePrev[(8)]; /*!< Array holding the channelType
-                                            values of the last successful
-                                            decode call.    */
+                                          values of the last successful
+                                          decode call.    */
   UCHAR
   channelIndicesPrev[(8)]; /*!< Array holding the channelIndices values of
-                            the last successful decode call. */
+                          the last successful decode call. */
 
   UCHAR
   downscaleFactor; /*!< Variable to store a supported ELD downscale factor
-                    of 1, 2, 3 or 4 */
+                  of 1, 2, 3 or 4 */
   UCHAR downscaleFactorInBS; /*!< Variable to store the (not necessarily
-                              supported) ELD downscale factor discovered in
-                              the bitstream */
+                            supported) ELD downscale factor discovered in
+                            the bitstream */
 
   HANDLE_SBRDECODER hSbrDecoder; /*!< SBR decoder handle. */
   UCHAR sbrEnabled;     /*!< flag to store if SBR has been detected     */
   UCHAR sbrEnabledPrev; /*!< flag to store if SBR has been detected from
-                         previous frame */
+                       previous frame */
   UCHAR psPossible;     /*!< flag to store if PS is possible            */
   SBR_PARAMS sbrParams; /*!< struct to store all sbr parameters         */
 
   UCHAR *pDrmBsBuffer; /*!< Pointer to dynamic buffer which is used to reverse
-                        the bits of the DRM SBR payload */
+                      the bits of the DRM SBR payload */
   USHORT drmBsBufferSize; /*!< Size of the dynamic buffer which is used to
-                           reverse the bits of the DRM SBR payload */
+                         reverse the bits of the DRM SBR payload */
   FDK_QMF_DOMAIN
   qmfDomain; /*!< Instance of module for QMF domain data handling */
 
@@ -296,11 +296,11 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
   UCHAR mpsEnableCurr;        /*!< MPS enable decoder state                   */
   UCHAR mpsApplicable;        /*!< MPS applicable                             */
   SCHAR mpsOutputMode; /*!< setting: normal = 0, binaural = 1, stereo = 2, 5.1ch
-                        = 3 */
+                      = 3 */
   INT mpsOutChannelsLast; /*!< The amount of channels returned by the last
-                           successful MPS decoder call. */
+                         successful MPS decoder call. */
   INT mpsFrameSizeLast;   /*!< The frame length returned by the last successful
-                           MPS decoder call. */
+                         MPS decoder call. */
 
   CAncData ancData; /*!< structure to handle ancillary data         */
 
@@ -308,7 +308,7 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
 
   TDLimiterPtr hLimiter;   /*!< Handle of time domain limiter.             */
   UCHAR limiterEnableUser; /*!< The limiter configuration requested by the
-                            library user */
+                          library user */
   UCHAR limiterEnableCurr; /*!< The current limiter configuration.         */
   FIXP_DBL extGain[1]; /*!< Gain that must be applied to the output signal. */
   UINT extGainDelay;   /*!< Delay that must be accounted for extGain. */
@@ -323,8 +323,8 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
 
   INT_PCM
   *pTimeDataFlush[((8) * 2)]; /*!< Pointer to the flushed time data which
-                               will be used for the crossfade in case of
-                               an USAC DASH IPF config change */
+                             will be used for the crossfade in case of
+                             an USAC DASH IPF config change */
 
   UCHAR flushStatus;     /*!< Indicates flush status: on|off */
   SCHAR flushCnt;        /*!< Flush frame counter */
@@ -332,17 +332,17 @@ by both channels of a CPE. This structure is allocated once for each CPE. */
   SCHAR buildUpCnt;      /*!< Build up frame counter */
   UCHAR hasAudioPreRoll; /*!< Indicates preRoll status: on|off */
   UINT prerollAULength[AACDEC_MAX_NUM_PREROLL_AU + 1]; /*!< Relative offset of
-                                                        the prerollAU end
-                                                        position to the AU
-                                                        start position in the
-                                                        bitstream */
+                                                      the prerollAU end
+                                                      position to the AU
+                                                      start position in the
+                                                      bitstream */
   INT accessUnit; /*!< Number of the actual processed preroll accessUnit */
   UCHAR applyCrossfade; /*!< if set crossfade for seamless stream switching is
-                         applied */
+                       applied */
 
   FDK_SignalDelay usacResidualDelay; /*!< Delay residual signal to compensate
-                                      for eSBR delay of DMX signal in case of
-                                      stereoConfigIndex==2. */
+                                    for eSBR delay of DMX signal in case of
+                                    stereoConfigIndex==2. */
 };
 
 #define AAC_DEBUG_EXTHLP                                                       \

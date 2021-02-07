@@ -114,7 +114,7 @@ amm-info@iis.fraunhofer.de
 typedef enum {
   MPEGS_ANCTYPE_FRAME = 0, /*!< MPEG Surround frame, see ISO/IEC 23003-1 */
   MPEGS_ANCTYPE_HEADER_AND_FRAME = 1, /*!< MPEG Surround header and MPEG
-                                       Surround frame, see ISO/IEC 23003-1 */
+                                     Surround frame, see ISO/IEC 23003-1 */
   MPEGS_ANCTYPE_RESERVED_1 = 2,       /*!< reserved, see ISO/IEC 23003-1 */
   MPEGS_ANCTYPE_RESERVED_2 = 3        /*!< reserved, see ISO/IEC 23003-1*/
 } MPEGS_ANCTYPE;
@@ -140,10 +140,10 @@ typedef enum {
   MPEGS_SYNC_LOST =
       0, /*!< Indicates lost sync because of current discontinuity. */
   MPEGS_SYNC_FOUND = 1,   /*!< Parsed a valid header and (re)intialization was
-                           successfully completed. */
+                         successfully completed. */
   MPEGS_SYNC_COMPLETE = 2 /*!< In sync and continuous. Found an independent
-                           frame in addition to MPEGS_SYNC_FOUND.
-                             Precondition: MPEGS_SYNC_FOUND. */
+                         frame in addition to MPEGS_SYNC_FOUND.
+                           Precondition: MPEGS_SYNC_FOUND. */
 } MPEGS_SYNCSTATE;
 
 /**
@@ -182,8 +182,8 @@ typedef enum {
   /* Re-initialization of submodules */
 
   MPEGS_INIT_CHANGE_CONCEAL_PARAMS = 0x00100000, /*!< indicate a change of at
-                                                  least one error concealment
-                                                  param */
+                                                least one error concealment
+                                                param */
 
   /* No re-initialization needed, currently not used */
   MPEGS_INIT_CHANGE_BYPASS_MODE =
@@ -198,11 +198,11 @@ typedef enum {
 struct MpegSurroundDecoder {
   HANDLE_FDK_QMF_DOMAIN pQmfDomain;
   UCHAR mpsData[MPS_DATA_BUFFER_SIZE]; /* Buffer for MPS payload accross more
-                                        than one segment */
+                                      than one segment */
   INT mpsDataBits;                     /* Amount of bits in mpsData */
   /* MPEG Surround decoder */
   SPATIAL_SPECIFIC_CONFIG spatialSpecificConfig[1]; /* SSC delay line which is
-                                                     used during decoding */
+                                                   used during decoding */
   spatialDec *pSpatialDec;
   SPATIAL_SPECIFIC_CONFIG
   spatialSpecificConfigBackup; /* SSC used while parsing */
@@ -211,18 +211,18 @@ struct MpegSurroundDecoder {
   UCHAR mpegSurroundDecoderLevel;
   /* Run-time parameter */
   UCHAR mpegSurroundSscIsGlobalCfg; /* Flag telling that the SSC
-                                     (::spatialSpecificConfig) is a
-                                     out-of-band configuration. */
+                                   (::spatialSpecificConfig) is a
+                                   out-of-band configuration. */
   UCHAR mpegSurroundUseTimeInterface;
 
   SPATIAL_BS_FRAME
   bsFrames[1];         /* Bitstream Structs that contain data read from the
-                        SpatialFrame() bitstream element */
+                      SpatialFrame() bitstream element */
   BS_LL_STATE llState; /* Bit stream parser state memory */
   UCHAR bsFrameParse;  /* Current parse frame context index */
   UCHAR bsFrameDecode; /* Current decode/apply frame context index */
   UCHAR bsFrameDelay;  /* Amount of frames delay between parsing and processing.
-                        Required i.e. for interpolation error concealment. */
+                      Required i.e. for interpolation error concealment. */
 
   /* User prameters */
   SPATIALDEC_PARAM mpegSurroundUserParams;
@@ -1063,9 +1063,9 @@ mpegSurroundDecoder_ConfigureQmfDomain(
         &pMpegSurroundDecoder->spatialSpecificConfigBackup;
     if (sac_dec_interface == SAC_INTERFACE_TIME) {
       /* For SAC_INTERFACE_QMF these parameters are set by SBR. */
-      pGC->nBandsAnalysis_requested = mpegSurroundDecoder_GetNrOfQmfBands(
-          pSSC, coreSamplingRate); /* coreSamplingRate == outputSamplingRate for
-SAC_INTERFACE_TIME */
+      pGC->nBandsAnalysis_requested =
+          mpegSurroundDecoder_GetNrOfQmfBands(pSSC, coreSamplingRate); /* coreSamplingRate
+== outputSamplingRate for SAC_INTERFACE_TIME */
       pGC->nBandsSynthesis_requested = pGC->nBandsAnalysis_requested;
       pGC->nInputChannels_requested =
           fMax((UINT)pSSC->nInputChannels, (UINT)pGC->nInputChannels_requested);
@@ -1075,9 +1075,9 @@ SAC_INTERFACE_TIME */
   } else {
     if (sac_dec_interface == SAC_INTERFACE_TIME) {
       /* For SAC_INTERFACE_QMF these parameters are set by SBR. */
-      pGC->nBandsAnalysis_requested = mpegSurroundDecoder_GetNrOfQmfBands(
-          NULL, coreSamplingRate); /* coreSamplingRate == outputSamplingRate for
-SAC_INTERFACE_TIME */
+      pGC->nBandsAnalysis_requested =
+          mpegSurroundDecoder_GetNrOfQmfBands(NULL, coreSamplingRate); /* coreSamplingRate
+== outputSamplingRate for SAC_INTERFACE_TIME */
       pGC->nBandsSynthesis_requested = pGC->nBandsAnalysis_requested;
       pGC->nInputChannels_requested =
           pMpegSurroundDecoder->pSpatialDec->createParams.maxNumInputChannels;

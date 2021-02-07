@@ -799,7 +799,7 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
 
       if (channels >= 1) {
         FDK_ASSERT(1 == commonWindow); /* all checks for TNS do only work for
-                                  common windows (which is always set)*/
+                          common windows (which is always set)*/
         for (w = 0; w < nWindows[0]; w++) {
           if (isShortWindow[0])
             tnsActive[w] =
@@ -883,14 +883,14 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
                   pSfbEnergy[ch] + w * maxSfb[ch]);
             } else {
               nrgScaling[ch] = /* with tns, energy calculation can overflow; ->
-                    scaling */
+      scaling */
                   FDKaacEnc_CalcBandEnergyOptimLong(
                       psyData[ch]->mdctSpectrum, pSfbMaxScaleSpec[ch],
                       hThisPsyConf[ch]->sfbOffset, psyData[ch]->sfbActive,
                       pSfbEnergy[ch], pSfbEnergyLdData[ch]);
               tnsSpecShift = fixMax(tnsSpecShift, nrgScaling[ch]); /* nrgScaling
-                                                        is set only if nrg would
-                                                        have an overflow */
+                                          is set only if nrg would
+                                          have an overflow */
             }
           } /* if tnsActive */
         }
@@ -912,8 +912,8 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
             pSfbThreshold[ch][sfb] >>= (tnsSpecShift << 1);
           }
           psyData[ch]->mdctScale += tnsSpecShift; /* update mdctScale; not
-                                           necessary to update
-                                           sfbMaxScaleSpec */
+                                 necessary to update
+                                 sfbMaxScaleSpec */
         }
       } /* end channel loop */
 
@@ -1248,7 +1248,7 @@ AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
           psyData[ch]->sfbActive, &(hThisPsyConf[ch]->pnsConf),
           pnsData[ch]->pnsFlag, psyData[ch]->sfbEnergyLdData.Long,
           psyOutChannel[ch]->noiseNrg, /* this is the energy that will be
-                                    written to the bitstream */
+                              written to the bitstream */
           psyOutChannel[ch]->sfbThresholdLdData);
     }
   }

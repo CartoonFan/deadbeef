@@ -209,7 +209,7 @@ static int wmaplug_read(DB_fileinfo_t *_info, char *bytes, int size) {
       int res = 0;
       uint8_t
           audiobuf_mem[info->wfx.packet_size]; // FIXME: it's not a good idea to
-                                               // allocate that much on stack
+      // allocate that much on stack
       uint8_t *audiobuf = audiobuf_mem;
       int audiobufsize = 0;
       int packetlength = 0;

@@ -118,15 +118,15 @@ amm-info@iis.fraunhofer.de
 /** parameter set for one single patch */
 typedef struct {
   INT sourceStartBand; /*!< first band in lowbands where to take the samples
-                        from */
+                      from */
   INT sourceStopBand;  /*!< first band in lowbands which is not included in the
-                        patch anymore */
+                      patch anymore */
   INT guardStartBand;  /*!< first band in highbands to be filled with zeros in
-                        order to  reduce interferences between patches */
+                      order to  reduce interferences between patches */
   INT targetStartBand; /*!< first band in highbands to be filled with whitened
-                        lowband signal */
+                      lowband signal */
   INT targetBandOffs;  /*!< difference between 'startTargetBand' and
-                        'startSourceBand' */
+                      'startSourceBand' */
   INT numBandsInPatch; /*!< number of consecutive bands in this one patch */
 } PATCH_PARAM;
 
@@ -137,51 +137,51 @@ typedef struct {
   INT bufferLength;      /*!< Length of the r and i buffers. */
   INT stepSize;          /*!< Stride for the lpc estimate. */
   INT numberOfEstimates; /*!< The total number of estiamtes, available in the
-                          quotaMatrix.*/
+                        quotaMatrix.*/
   UINT numberOfEstimatesPerFrame; /*!< The number of estimates per frame
-                                   available in the quotaMatrix.*/
+                                 available in the quotaMatrix.*/
   INT lpcLength[2]; /*!< Segment length used for second order LPC analysis.*/
   INT nextSample;   /*!< Where to start the LPC analysis of the current frame.*/
   INT move; /*!< How many estimates to move in the quotaMatrix, when buffering.
              */
   INT frameStartIndex; /*!< The start index for the current frame in the r and i
-                        buffers. */
+                      buffers. */
   INT startIndexMatrix;       /*!< The start index for the current frame in the
-                               quotaMatrix. */
+                             quotaMatrix. */
   INT frameStartIndexInvfEst; /*!< The start index of the inverse filtering, not
-                               the same as the others, dependent on what
-                               decoder is used (buffer opt, or no buffer opt).
-                             */
+                             the same as the others, dependent on what
+                             decoder is used (buffer opt, or no buffer opt).
+                           */
   INT prevTransientFlag;  /*!< The transisent flag (from the transient detector)
-                           for the previous frame. */
+                         for the previous frame. */
   INT transientNextFrame; /*!< Flag to indicate that the transient will show up
-                           in the next frame. */
+                         in the next frame. */
   INT transientPosOffset; /*!< An offset value to match the transient pos as
-                           calculated by the transient detector with the
-                           actual position in the frame.*/
+                         calculated by the transient detector with the
+                         actual position in the frame.*/
 
   INT *signMatrix[MAX_NO_OF_ESTIMATES]; /*!< Matrix holding the sign of each
-                                         channe, i.e. indicating in what part
-                                         of a QMF channel a possible sine is.
-                                       */
+                                       channe, i.e. indicating in what part
+                                       of a QMF channel a possible sine is.
+                                     */
 
   FIXP_DBL *quotaMatrix[MAX_NO_OF_ESTIMATES]; /*!< Matrix holding the quota
-                                               values for all estimates, all
-                                               channels. */
+                                             values for all estimates, all
+                                             channels. */
 
   FIXP_DBL nrgVector[MAX_NO_OF_ESTIMATES]; /*!< Vector holding the averaged
-                                            energies for every QMF band. */
+                                          energies for every QMF band. */
   FIXP_DBL nrgVectorFreq[64]; /*!< Vector holding the averaged energies for
-                               every QMF channel */
+                             every QMF channel */
 
   SCHAR indexVector[64]; /*!< Index vector poINTing to the correct lowband
-                          channel, when indexing a highband channel, -1
-                          represents a guard band */
+                        channel, when indexing a highband channel, -1
+                        represents a guard band */
   PATCH_PARAM
   patchParam[MAX_NUM_PATCHES]; /*!< new parameter set for patching */
   INT guard;                   /*!< number of guardbands between every patch */
   INT shiftStartSb; /*!< lowest subband of source range to be included in the
-                     patches */
+                   patches */
   INT noOfPatches;  /*!< number of patches */
 
   SBR_MISSING_HARMONICS_DETECTOR

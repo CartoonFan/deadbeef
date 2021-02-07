@@ -1425,7 +1425,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
         }
         if (esc->m_downscaledSamplingFrequency != asc->m_samplingFrequency) {
           return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* ELDv2 w/ ELD downscaled
-                                             mode not allowed */
+                                   mode not allowed */
         }
         break;
       }
@@ -1450,7 +1450,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
       }
       if (esc->m_useLdQmfTimeAlign == 1) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* ELDv2 w/ ELD downscaled
-                                             mode not allowed */
+                                     mode not allowed */
       }
       break;
     }
@@ -1469,14 +1469,14 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
       dsFactor = asc->m_samplingFrequency / esc->m_downscaledSamplingFrequency;
       if (dsFactor != 1 && (dsFactor)&1) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* SBR needs an even downscale
-                                           factor */
+                                   factor */
       }
       if (dsFactor != 1 && dsFactor != 2 && dsFactor != 4) {
         dsFactor = 1; /* don't apply dsf for not yet supported even dsfs */
       }
       if ((INT)asc->m_samplesPerFrame % dsFactor != 0) {
         return TRANSPORTDEC_UNSUPPORTED_FORMAT; /* frameSize/dsf must be an
-                                           integer number */
+                                   integer number */
       }
     }
     eldExtLenSum = eldExtLenSum - FDKgetValidBits(hBs);
@@ -1713,7 +1713,7 @@ UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *asc,
   for (i = 0; i < numberOfElements; i++) {
     MP4_ELEMENT_ID usacElementType =
         (MP4_ELEMENT_ID)(FDKreadBits(hBs, 2) | USAC_ID_BIT); /* set USAC_ID_BIT
-                           to map usacElementType to MP4_ELEMENT_ID enum */
+                       to map usacElementType to MP4_ELEMENT_ID enum */
     usc->element[i].usacElementType = usacElementType;
 
     /* sanity check: update element counter */
@@ -1961,12 +1961,12 @@ static TRANSPORTDEC_ERROR UsacConfig_Parse(CSAudioSpecificConfig *asc,
   channelConfigurationIndex = FDKreadBits(hBs, 5);
   if (channelConfigurationIndex > 2) {
     return TRANSPORTDEC_PARSE_ERROR; /* only channelConfigurationIndex = [1,2]
-                                    are supported */
+                                are supported */
   }
 
   if (channelConfigurationIndex == 0) {
     return TRANSPORTDEC_PARSE_ERROR; /* only channelConfigurationIndex = [1,2]
-                                    are supported */
+                                are supported */
   }
   asc->m_channelConfiguration = channelConfigurationIndex;
 
@@ -2069,7 +2069,7 @@ AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig *self,
             bitsAvailable -= 16;
           }
           FDKpushFor(bs, sscLen); /* Skip SSC to be able to read the next
-                             extension if there is one. */
+                   extension if there is one. */
 
           bitsAvailable -= sscLen * 8;
         }
@@ -2295,7 +2295,7 @@ static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
   usc->element[elemIdx].m_stereoConfigIndex = 0;
 
   usc->m_usacNumElements = 1; /* Currently all extension elements are skipped
-                               -> only one SCE or CPE. */
+                             -> only one SCE or CPE. */
 
   switch (audioMode) {
   case 0: /* mono: ID_USAC_SCE */

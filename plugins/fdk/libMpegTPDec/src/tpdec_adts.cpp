@@ -335,7 +335,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
       if (oldPce.isValid &&
           (bs.sample_freq_index ==
            pAdts->bs.sample_freq_index) /* we could compare the complete fixed
-                                 header (bytes) here! */
+                       header (bytes) here! */
           && (bs.channel_config == pAdts->bs.channel_config) /* == 0 */
           &&
           (bs.mpeg_id ==

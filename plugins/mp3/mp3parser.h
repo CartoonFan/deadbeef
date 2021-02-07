@@ -57,12 +57,12 @@ typedef struct {
 typedef struct {
   // outputs
   int64_t packet_offs; // stream position of the packet corresponding to the
-                       // requested seek position
-  int64_t pcmsample;   // sample position corresponding to packet_offs
+  // requested seek position
+  int64_t pcmsample; // sample position corresponding to packet_offs
   int64_t npackets;
 
   int have_duration; // set to 1 if totalsamples has final value (e.g. from Xing
-                     // packet)
+  // packet)
   int64_t totalsamples; // total samples in the stream, or -1 for infinite
 
   int lastpacket_valid;
@@ -87,8 +87,8 @@ typedef struct {
 
   uint16_t lamepreset;
   uint32_t lame_musiclength; // file size from beginning of LAME info packet
-                             // until the last byte of packet with audio, as
-                             // encoded by Lame
+  // until the last byte of packet with audio, as
+  // encoded by Lame
 
   uint64_t fsize;
   uint64_t datasize;

@@ -255,11 +255,11 @@ AAC_ENCODER_ERROR FDKaacEnc_InitChannelMapping(CHANNEL_MODE mode,
   FDK_chMapDescr_init(&mapDescr, NULL, 0, (co == CH_ORDER_MPEG) ? 1 : 0);
   switch (mode) {
   case MODE_7_1_REAR_SURROUND: /* MODE_7_1_REAR_SURROUND is equivalent to
-                                  MODE_7_1_BACK */
+                                MODE_7_1_BACK */
     mapIdx = (INT)MODE_7_1_BACK;
     break;
   case MODE_7_1_FRONT_CENTER: /* MODE_7_1_FRONT_CENTER is equivalent to
-                                 MODE_1_2_2_2_1 */
+                               MODE_1_2_2_2_1 */
     mapIdx = (INT)MODE_1_2_2_2_1;
     break;
   default:

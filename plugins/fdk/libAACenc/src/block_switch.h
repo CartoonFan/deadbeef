@@ -137,10 +137,10 @@ typedef struct {
 
   FIXP_DBL
   windowNrg[2][BLOCK_SWITCH_WINDOWS]; /* time signal energy in Subwindows
-                                       (last and current) */
+                                     (last and current) */
   FIXP_DBL windowNrgF[2][BLOCK_SWITCH_WINDOWS]; /* filtered time signal energy
-                                                 in segments (last and
-                                                 current) */
+                                               in segments (last and
+                                               current) */
   FIXP_DBL accWindowNrg; /* recursively accumulated windowNrgF */
 
   FIXP_DBL iirStates[BLOCK_SWITCHING_IIR_LEN]; /* filter delay-line */

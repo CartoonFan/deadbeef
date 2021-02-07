@@ -94,8 +94,8 @@ typedef struct {
   int64_t embedded_numsamples;
   int embedded_samplerate;
   const char *cue_file_dir; // directory containing cue file or parent file
-                            // (FIXME: looks like a dupe with `dirname`)
-  const char *dirname;      // directory path being loaded
+  // (FIXME: looks like a dupe with `dirname`)
+  const char *dirname; // directory path being loaded
   struct dirent **namelist;
   int n;
   int ncuefiles;               // number of FILEs in cue
@@ -116,9 +116,9 @@ typedef struct {
 
   int64_t numsamples;
   int samplerate;
-  playItem_t *origin;   // current unsplit track, loaded from last FILE
-  int first_track;      // set to 1 immediately after loading a FILE, reset to 0
-                        // after processing first track
+  playItem_t *origin; // current unsplit track, loaded from last FILE
+  int first_track;    // set to 1 immediately after loading a FILE, reset to 0
+  // after processing first track
   const char *dec;      // decoder of the origin
   const char *filetype; // filetype of the origin
   playItem_t *prev;     // previous added track
@@ -126,7 +126,7 @@ typedef struct {
   const uint8_t *p;    // buffer ptr
   const char *charset; // detected charset
   int have_track; // wheter track info has been found, before encountering the
-                  // TRACK field
+  // TRACK field
   playItem_t
       *cuetracks[MAX_CUE_TRACKS]; // all loaded cue tracks after splitting
   int ntracks;                    // count of cuetracks

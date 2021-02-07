@@ -142,7 +142,7 @@ typedef enum {
  */
 typedef enum {
   DUCKER_AUTOMATIC, /**< FDKdecorrelateInit() chooses correct ducker type
-                     depending on provided parameters. */
+                   depending on provided parameters. */
   DUCKER_MPS,       /**< Force ducker type to MPS. */
   DUCKER_PS         /**< Force ducker type to PS. */
 } FDK_DUCKER_TYPE;
@@ -155,11 +155,11 @@ typedef enum {
   DELAY, /**< Reverb bands just contains delay elements and no allpass filters.
           */
   COMMON_REAL,  /**< Real filter coeffs, common filter coeffs within one reverb
-                 band */
+               band */
   COMMON_CPLX,  /**< Complex filter coeffs, common filter coeffs within one
-                 reverb band */
+               reverb band */
   INDEP_CPLX,   /**< Complex filter coeffs, independent filter coeffs for each
-                 hybrid band */
+               hybrid band */
   INDEP_CPLX_PS /**< PS optimized implementation of general INDEP_CPLX type */
 } REVBAND_FILT_TYPE;
 

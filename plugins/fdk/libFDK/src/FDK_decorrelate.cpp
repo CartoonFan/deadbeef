@@ -826,10 +826,10 @@ static INT DecorrFilterApplyCPLX_PS(
    * starting-index */
   FIXP_DBL *pDelayBuffer =
       &filter[start].DelayBufferCplx[reverbBandDelayBufferIndex]; /* increases
-                                                                   by 2 every
-                                                                   other call
-                                                                   of this
-                                                                   function */
+                                                                 by 2 every
+                                                                 other call
+                                                                 of this
+                                                                 function */
   /* determine the increment for this pointer to get to the correct position in
    * the delay buffer of the next filter */
   INT offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
@@ -1433,8 +1433,8 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
           for (; qs < qs_next; qs++) {
             *pOutputReal = fMult(*pOutputReal, duckGain);
             pOutputReal++; /* don't move in front of "=" above, because then the
-                  fract class treats it differently and provides
-                  wrong argument to fMult() (seen on win32/msvc8) */
+      fract class treats it differently and provides
+      wrong argument to fMult() (seen on win32/msvc8) */
             *pOutputImag = fMult(*pOutputImag, duckGain);
             pOutputImag++;
           }
@@ -1533,15 +1533,15 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
       return 1;
     hDecorrDec->REV_bandOffset =
         REV_bandOffset_MPS_HQ[decorrConfig]; /* reverb band layout is
-                                              inherited from MPS standard */
+                                          inherited from MPS standard */
     hDecorrDec->REV_filterOrder = REV_filterOrder_USAC;
     hDecorrDec->REV_delay = REV_delay_USAC;
     if (useFractDelay) {
       return 1; /* not yet supported */
     } else {
       hDecorrDec->REV_filtType = REV_filtType_MPS; /* the filter types are
-                                                  inherited from MPS
-                                                  standard */
+                                            inherited from MPS
+                                            standard */
     }
     /* bsDecorrConfig == 1 is worst case */
     errorCode = distributeBuffer(hDecorrDec, (509), (643));
@@ -1559,10 +1559,10 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
       return 1; /* actually just qmf bands and no hybrid bands */
     hDecorrDec->REV_bandOffset = REV_bandOffset_LD[decorrConfig];
     hDecorrDec->REV_filterOrder = REV_filterOrder_MPS; /* the filter orders
-                                                        are inherited from
-                                                        MPS standard */
+                                                    are inherited from
+                                                    MPS standard */
     hDecorrDec->REV_delay = REV_delay_MPS; /* the delays in each reverb band are
-                                            inherited from MPS standard */
+                                        inherited from MPS standard */
     hDecorrDec->REV_filtType = REV_filtType_LD;
     errorCode = distributeBuffer(hDecorrDec, (825), (373));
     break;

@@ -273,7 +273,7 @@ processDrcTime(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
   if ((delaySamples + offset) >
       (NUM_LNB_FRAMES - 2) *
           hGainDec->frameSize) /* if delaySamples is too big, NUM_LNB_FRAMES
-                                should be increased */
+                              should be increased */
     return DE_NOT_OK;
 
   err = _prepareLnbIndex(pActiveDrc, channelOffset, drcChannelOffset,
@@ -335,7 +335,7 @@ processDrcTime(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
           pLnb = &(
               pLinearNodeBuffer[pActiveDrc->lnbIndexForChannel[c][lnbIx] + b]);
         else /* lnbIndexForChannel = -1 means "no DRC processing", due to
-        drcInstructionsIndex < 0, drcSetId < 0 or channel group < 0 */
+drcInstructionsIndex < 0, drcSetId < 0 or channel group < 0 */
           pLnb = pDummyLnb;
 
         if (activeDrcIndex == hGainDec->channelGainActiveDrcIndex)
@@ -392,7 +392,7 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
   if ((delaySamples + offset) >
       (NUM_LNB_FRAMES - 2) *
           hGainDec->frameSize) /* if delaySamples is too big, NUM_LNB_FRAMES
-                                should be increased */
+                              should be increased */
     return DE_NOT_OK;
 
   switch (subbandDomainMode) {
@@ -440,7 +440,7 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
     return err;
 
   if (!pActiveDrc->subbandGainsReady) /* only for the first time per frame that
-                                       processDrcSubband is called */
+                                     processDrcSubband is called */
   {
     /* write subbandGains */
     for (g = 0; g < pInst->nDrcChannelGroups; g++) {

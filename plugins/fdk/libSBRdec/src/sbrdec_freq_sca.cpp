@@ -261,7 +261,7 @@ getStopBand(UINT fs,              /*!< Output sampling frequency */
 
   if (headerDataFlags & SBRDEC_QUAD_RATE) {
     return k2; /* skip other checks: (k2 - k0) must be <=
-              MAX_FREQ_COEFFS_QUAD_RATE for all fs */
+          MAX_FREQ_COEFFS_QUAD_RATE for all fs */
   }
   if (headerDataFlags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
     /* 1 <= difference <= 35; 42000 <= fs <= 96000 */

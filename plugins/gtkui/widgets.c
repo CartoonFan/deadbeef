@@ -80,7 +80,7 @@ typedef struct w_creator_s {
   const char *title; // set to NULL to avoid exposing this widget type to user
   uint32_t flags;
   int compat; // when this is set to 1 -- it's a backwards compatibility
-              // creator, and must be skipped in GUI
+  // creator, and must be skipped in GUI
   ddb_gtkui_widget_t *(*create_func)(void);
   struct w_creator_s *next;
 } w_creator_t;

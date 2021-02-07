@@ -341,13 +341,12 @@ static int in_sc68_stop(void) {
   return 0;
 }
 
-static const char
-    settings_dlg
-        [] = "property \"Default song length (in minutes)\" entry "
-             "c68.songlength 2;\n"                                   // 0..1440
-             "property \"Samplerate\" entry c68.samplerate 44100;\n" // 6000-50000
-             "property \"Skip when shorter than (sec)\" entry c68.skip_time "
-             "4;\n" // 4..86400
+static const char settings_dlg[] =
+    "property \"Default song length (in minutes)\" entry "
+    "c68.songlength 2;\n"                                   // 0..1440
+    "property \"Samplerate\" entry c68.samplerate 44100;\n" // 6000-50000
+    "property \"Skip when shorter than (sec)\" entry c68.skip_time "
+    "4;\n" // 4..86400
     ;
 
 // define plugin interface

@@ -64,7 +64,7 @@ typedef struct ddb_cover_query_s {
   void *user_data; // Arbitrary user-defined pointer
 
   uint32_t flags; // DDB_ARTWORK_FLAG_*; When 0 is passed, it will use the
-                  // global settings.
+  // global settings.
   // By default, it means that the files can be stored in disk cache,
   // and returned result is always a filename.
 
@@ -84,7 +84,7 @@ typedef struct ddb_cover_info_s {
   int cover_found; // set to 1 if the cover was found
 
   int refc; // Reference count, to allow sending the same cover to multiple
-            // callbacks
+  // callbacks
 
   char *type; // A type of image, e.g. "front" or "back" (can be NULL)
 

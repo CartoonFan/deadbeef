@@ -47,7 +47,7 @@ DB_functions_t *deadbeef;
 
 #define OUT_BUFFER_SIZE                                                        \
   1024 * 8 * 2 // AAC frame can be 1024 or 960 samples, up to 8 channels, 2
-               // bytes each
+// bytes each
 #define AAC_MAX_PACKET_SIZE                                                    \
   768 * 8 // setting max input packet size, to have some headroom
 
@@ -1003,8 +1003,8 @@ static int _mp4_insert(DB_playItem_t **after, const char *fname, DB_FILE *fp,
 
   // embedded chapters
   deadbeef->pl_lock(); // FIXME: the lock can be eliminated, if subtracks are
-                       // first appended "locally", and only appended to the
-                       // real playlist at the end
+  // first appended "locally", and only appended to the
+  // real playlist at the end
   if (chapters && num_chapters > 0) {
     DB_playItem_t *cue =
         aac_insert_with_chapters(plt, *after, it, chapters, num_chapters,

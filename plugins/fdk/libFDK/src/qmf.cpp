@@ -367,8 +367,8 @@ static void qmfForwardModulationHQ(
       const FIXP_QTW *sbr_t_cos;
       const FIXP_QTW *sbr_t_sin;
       const int len = L; /* was len = fMin(anaQmf->lsb, L) but in case of USAC
-                      the signal above lsb is actually needed in some
-                      cases (HBE?) */
+                the signal above lsb is actually needed in some
+                cases (HBE?) */
       sbr_t_cos = anaQmf->t_cos;
       sbr_t_sin = anaQmf->t_sin;
 

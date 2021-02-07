@@ -439,10 +439,10 @@ AAC_ENCODER_ERROR FDKaacEnc_InitTnsConfiguration(
 
     tC->confTab.acfSplit[HIFILT] =
         -1; /* signal Merged4to2QuartersAutoCorrelation in
-             FDKaacEnc_MergedAutoCorrelation*/
+         FDKaacEnc_MergedAutoCorrelation*/
     tC->confTab.acfSplit[LOFILT] =
         -1; /* signal Merged4to2QuartersAutoCorrelation in
-             FDKaacEnc_MergedAutoCorrelation */
+         FDKaacEnc_MergedAutoCorrelation */
 
     tC->confTab.filterEnabled[HIFILT] = 1;
     tC->confTab.filterEnabled[LOFILT] = 1;

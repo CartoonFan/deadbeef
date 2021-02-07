@@ -852,7 +852,7 @@ static size_t http_read(void *ptr, size_t size, size_t nmemb, DB_FILE *stream) {
           fp->status = STATUS_SEEK;
           deadbeef->mutex_unlock(fp->mutex);
           if (fp->track) { // don't touch streamer if the stream is not
-                           // assosiated with a track
+            // assosiated with a track
             deadbeef->streamer_reset(1);
             continue;
           }

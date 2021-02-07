@@ -339,7 +339,7 @@ extern DB_functions_t *deadbeef;
 
 - (void)addPluginActions {
 #if 0 // FIXME: this part of the menu needs to be rebuilt on each menu
-      // invocation
+    // invocation
     DB_playItem_t *track = NULL;
     int selcount = self.selectedCount;
 

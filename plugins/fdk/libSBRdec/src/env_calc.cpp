@@ -362,7 +362,7 @@ mapSineFlagsPvc(UCHAR *freqBandTable, /*!< Band borders (there's only 1 flag per
          * in this frame */
         sineMapped[i - lsb] =
             *sinusoidalPosPrev - PVC_NTIMESLOT; /* we are 16 sbr time slots
-                                           ahead of last frame now */
+                                   ahead of last frame now */
       }
     }
   }
@@ -431,7 +431,7 @@ aliasingReduction(FIXP_DBL *degreeAlias, /*!< estimated aliasing for each QMF
     FIXP_DBL groupGain; /* Total energy gain in group */
     SCHAR groupGain_e;
     FIXP_DBL compensation; /* Compensation factor for the energy change when
-                          applying modified gains */
+                      applying modified gains */
     SCHAR compensation_e;
 
     int startGroup = groupVector[2 * group];
@@ -1054,7 +1054,7 @@ void calculateSbrEnvelope(
   if (pvc_mode > 0) {
     /* iterate over SBR time slots starting with bordersPvc[i] */
     i = bordersPvc[0]; /* usually 0; can be >0 if switching from legacy SBR to
-                      PVC */
+                  PVC */
     i_stop = PVC_NTIMESLOT;
     FDK_ASSERT(bordersPvc[hFrameData->frameInfo.nEnvelopes] == PVC_NTIMESLOT);
   } else {
@@ -1076,8 +1076,8 @@ void calculateSbrEnvelope(
           hHeaderData->timeStep *
           i; /* Start-position in time (subband sample) for current envelope. */
       stop_pos = hHeaderData->timeStep * (i + 1); /* Stop-position in time
-                                               (subband sample) for
-                                               current envelope. */
+                                         (subband sample) for
+                                         current envelope. */
       freq_res =
           hFrameData->frameInfo
               .freqRes[0]; /* Frequency resolution for current envelope. */
@@ -1087,10 +1087,10 @@ void calculateSbrEnvelope(
     } else {
       start_pos =
           hHeaderData->timeStep * borders[i]; /* Start-position in time (subband
-                                           sample) for current envelope. */
+                                     sample) for current envelope. */
       stop_pos = hHeaderData->timeStep *
                  borders[i + 1]; /* Stop-position in time (subband sample) for
-                              current envelope. */
+                        current envelope. */
       freq_res =
           hFrameData->frameInfo
               .freqRes[i]; /* Frequency resolution for current envelope. */
@@ -1118,7 +1118,7 @@ void calculateSbrEnvelope(
       if (i >= hFrameData->frameInfo.bordersNoise[envNoise + 1]) {
         if (envNoise >= 0) {
           noiseLevels += noNoiseBands; /* The noise floor data is stored in a
-                                row [noiseFloor1 noiseFloor2...].*/
+                      row [noiseFloor1 noiseFloor2...].*/
         } else {
           /* leave trailing noise envelope of past frame */
           noNoiseBands = hFreq->nNfb;
@@ -1146,7 +1146,7 @@ void calculateSbrEnvelope(
          noise-floor).*/
       if (borders[i] == hFrameData->frameInfo.bordersNoise[envNoise + 1]) {
         noiseLevels += noNoiseBands; /* The noise floor data is stored in a row
-                                [noiseFloor1 noiseFloor2...].*/
+                        [noiseFloor1 noiseFloor2...].*/
         envNoise++;
       }
     }
@@ -1182,7 +1182,7 @@ void calculateSbrEnvelope(
     {
       UCHAR *table = pFreqBandTable[freq_res];
       UCHAR *pUiNoise = &pFreqBandTableNoise[1]; /*! Upper limit of the current
-                                              noise floor band. */
+                                        noise floor band. */
 
       FIXP_SGL *pNoiseLevels = noiseLevels;
 
@@ -1507,9 +1507,9 @@ void calculateSbrEnvelope(
           int shift = (int)(noise_e - final_e);
           if (!useLP)
             filtBufferNoiseShift = shift; /* shifting of
-                                 h_sbr_cal_env->filtBufferNoise[k]
-                                 will be applied in function
-                                 adjustTimeSlotHQ() */
+                     h_sbr_cal_env->filtBufferNoise[k]
+                     will be applied in function
+                     adjustTimeSlotHQ() */
           if (shift >= 0) {
             shift = fixMin(DFRACT_BITS - 1, shift);
             for (k = 0; k < noSubbands; k++) {
@@ -2139,7 +2139,7 @@ static void calcNrgPerSfb(
 
   int j, k, l, li, ui;
   FIXP_DBL sumAll, sumLine; /* Single precision would be sufficient,
-                           but overflow bits are required for accumulation */
+                         but overflow bits are required for accumulation */
 
   /* Divide by width of envelope later: */
   invWidth = FX_DBL2FX_SGL(GetInvInt(next_pos - start_pos));
@@ -2221,7 +2221,7 @@ static void calcNrgPerSfb(
         sum_e = input_e + 4 - shift; /* -4 to compensate right-shift */
       else
         sum_e = input_e + 4 + 1 - shift; /* -4 to compensate right-shift; +1 due
-                                    to missing imag. part */
+                            to missing imag. part */
 
       sum_e -= 2 * preShift;
     } /* maxVal!=0 */
@@ -2354,7 +2354,7 @@ calcAvgGain(ENV_CALC_NRGS *nrgs,
   FIXP_DBL *nrgRef =
       nrgs->nrgRef; /*!< Reference Energy according to envelope data */
   SCHAR *nrgRef_e = nrgs->nrgRef_e; /*!< Reference Energy according to envelope
-                                     data (exponent) */
+                                   data (exponent) */
   FIXP_DBL *nrgEst = nrgs->nrgEst;  /*!< Energy in transposed signal */
   SCHAR *nrgEst_e =
       nrgs->nrgEst_e; /*!< Energy in transposed signal (exponent) */

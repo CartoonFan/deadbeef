@@ -1595,13 +1595,11 @@ const UCHAR aMaxCwLen[MAX_CB] = {0,  11, 9,  20, 16, 13, 11, 14, 12, 17, 14,
  * 21  23  25  27  39  31 */
 /*                            CB:  0 1 2 3 4 5 6 7 8 9 10  12  14  16  18  20
  * 22  24  26  28  30       */
-const UCHAR
-    aDimCb[MAX_CB] =
-        {
-            2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}; /* codebook dimension
-                                                             - zero cb got a
-                                                                                                                 dimension of 2 */
+const UCHAR aDimCb[MAX_CB] = {
+    2, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}; /* codebook dimension
+                                                                                                            - zero cb got a
+                                                                                                                                                                dimension of 2 */
 
 /*                                                           11  13  15  17  19
  * 21  23  25  27  39  31 */

@@ -390,7 +390,7 @@ void CmidPlayer::midi_fm_percussion(int ch, unsigned char *inst) {
   midi_write_adlib(0x80 + opadd, inst[6]);
   midi_write_adlib(0xe0 + opadd, inst[8]);
   if (opadd < 0x13) // only output this for the modulator, not the carrier, as
-                    // it affects the entire channel
+    // it affects the entire channel
     midi_write_adlib(0xc0 + percussion_map[ch - 11], inst[10]);
 }
 
@@ -553,7 +553,7 @@ bool CmidPlayer::update() {
             if (vel != 0 && ch[c].inum >= 0 && ch[c].inum < 128) {
               if (adlib_mode == ADLIB_MELODIC ||
                   c < 12) // 11 == bass drum, handled like a normal instrument,
-                          // on == channel 6 thanks to percussion_map[] above
+                // on == channel 6 thanks to percussion_map[] above
                 midi_fm_instrument(on, ch[c].ins);
               else
                 midi_fm_percussion(c, ch[c].ins);

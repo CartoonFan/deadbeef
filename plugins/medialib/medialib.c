@@ -52,7 +52,7 @@ typedef struct ml_string_s {
   struct ml_string_s *next;
 
   ddb_medialib_item_t *coll_item; // The item associated with collection string,
-                                  // used while building a list
+  // used while building a list
   ddb_medialib_item_t *coll_item_tail; // Tail of the children list of
                                        // coll_item, used while building a list
 } ml_string_t;
@@ -134,9 +134,9 @@ typedef struct medialib_source_s {
   int scanner_terminate;
 
   ddb_playlist_t *ml_playlist; // this playlist contains the actual data of the
-                               // media library in plain list
+  // media library in plain list
   ml_db_t db; // this is the index, which can be rebuilt from the playlist at
-              // any given time
+  // any given time
   json_t *musicpaths_json;
   uintptr_t mutex;
   ddb_medialib_listener_t ml_listeners[MAX_LISTENERS];

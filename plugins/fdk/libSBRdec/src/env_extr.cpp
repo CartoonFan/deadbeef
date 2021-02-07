@@ -292,10 +292,10 @@ initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int sampleRateIn,
     hHeaderData->bs_data.stopFreq = 0;
     hHeaderData->bs_data.freqScale =
         0; /* previously 2; for ELD reduced delay bitstreams
-       /samplerates initializing of the sbr decoder instance fails if
-       freqScale is set to 2 because no master table can be generated; in
-       ELD reduced delay bitstreams this value is always 0; gets overwritten
-       when header is read */
+   /samplerates initializing of the sbr decoder instance fails if
+   freqScale is set to 2 because no master table can be generated; in
+   ELD reduced delay bitstreams this value is always 0; gets overwritten
+   when header is read */
     hHeaderData->bs_data.alterScale = 1;
     hHeaderData->bs_data.noise_bands = 2;
     hHeaderData->bs_data.limiterBands = 2;
@@ -1699,11 +1699,11 @@ checkFrameInfo(FRAME_INFO *pFrameInfo, /*!< pointer to frameInfo */
   if ((startPos < 0) || (startPos >= stopPos))
     return 0;
   if (startPos > maxPos - numberOfTimeSlots) /* First env. must start in or
-                                              directly after the overlap
-                                              buffer */
+                                            directly after the overlap
+                                            buffer */
     return 0;
   if (stopPos < numberOfTimeSlots) /* One complete frame must be ready for
-                                    output after processing */
+                                  output after processing */
     return 0;
   if (stopPos > maxPos)
     return 0;

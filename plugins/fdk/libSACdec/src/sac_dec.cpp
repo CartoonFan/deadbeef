@@ -773,7 +773,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
 
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
         outputScale += self->clipProtectGainSF__FDK; /* consider clip protection
-                                                scaling at synthesis qmf */
+                                        scaling at synthesis qmf */
       }
 
       scale = outputScale;
@@ -864,7 +864,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
   self->prevTimeSlot = -1;
   self->curTimeSlot =
       MAX_TIME_SLOTS + 1; /* Initialize with a invalid value to trigger
-                           concealment if first frame has no valid data. */
+                         concealment if first frame has no valid data. */
   self->curPs = 0;
 
   subbandTPInit(self->hStpDec);
@@ -1262,7 +1262,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
       SpatialDecCreateX(self,
                         self->hybInputReal__FDK, /* input: hybInput(Real/Imag),
-                                              hybResidual(Real/Imag) */
+                                        hybResidual(Real/Imag) */
                         self->hybInputImag__FDK, pxReal, pxImag);
 
       {
@@ -1313,8 +1313,8 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
       if ((self->tempShapeConfig == 2) && (!isTwoChMode(self->upmixType))) {
         SpatialDecReshapeBBEnv(self, frame, ts); /* input: reshapeBBEnvState,
-                                            hybOutput(Real/Imag)(Dry/Wet),
-                                            hybInput(Real/Imag) */
+                                    hybOutput(Real/Imag)(Dry/Wet),
+                                    hybInput(Real/Imag) */
       } /* output: hybOutput(Real/Imag)Dry */
 
       /* Merge parts of the dry and wet QMF buffers. */
@@ -1428,7 +1428,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
   if ((self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_USAC) &&
       (self->stereoConfigIndex > 1)) {
     numInputChannels = 1; /* Do not count residual channel as input channel. It
-                         is handled seperately. */
+                     is handled seperately. */
   }
 
   /* Check if input amount of channels is consistent */

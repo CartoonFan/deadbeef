@@ -53,7 +53,7 @@
 #define RENDERMAX (200)
 #define RINGMAX                                                                \
   (256) // should be nearest power of two that's at least one greater than
-        // RENDERMAX
+// RENDERMAX
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -310,7 +310,7 @@ struct YAM_CHAN {
   sint8 sampler_dir;
   uint8 sampler_looptype;
   sint32 sampler_invert; // bits 15-31 = invert sign bit, bits 0-14 = invert
-                         // other bits
+  // other bits
   uint8 pcms;
   uint32 sampleaddr;
   sint32 loopstart;
@@ -2102,7 +2102,7 @@ uint32 EMU_CALL yam_aica_load_reg(void *state, uint32 a, uint32 mask) {
     d = 0;
     break;     // ChnInfoReq, always seems to return 0 when read
   case 0x2810: // PlayStatus
-               //    if(YAMSTATE->out_pending > 100) yam_flush(YAMSTATE);
+    //    if(YAMSTATE->out_pending > 100) yam_flush(YAMSTATE);
     if (YAMSTATE->out_pending > 0)
       yam_flush(YAMSTATE);
     {
@@ -2614,7 +2614,7 @@ static uint32 generate_samples(struct YAM_STATE *state, struct YAM_CHAN *chan,
         smp >>=
             0x1A -
             chan->mdl; // ex. for MDL=0xF, sample range corresponds to +/- 64 pi
-                       // (32=2^5 cycles) so shift by 11 (16-5 == 0x1A-0xF)
+        // (32=2^5 cycles) so shift by 11 (16-5 == 0x1A-0xF)
         readnextsample(state, chan, smp, 0);
         readnextsample(state, chan, smp + 1, 0);
       }
@@ -3141,8 +3141,9 @@ static void dynacompile(struct YAM_STATE *state) {
   //
   C(0x60) // pusha
   C(0x89)
-  C(0xCF)                                    // mov edi, ecx
-      C(0x8B) C(0xAF) C32(STATEOFS(mdec_ct)) // mov ebp,[edi+<OFS32:mdec_ct>]
+  C(0xCF) // mov edi, ecx
+  C(0x8B)
+  C(0xAF) C32(STATEOFS(mdec_ct)) // mov ebp,[edi+<OFS32:mdec_ct>]
       C(0x8B) C(0xB7)
           C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov esi,[edi+<OFS32:acc>]
       // 16 bytes
@@ -3162,7 +3163,8 @@ static void dynacompile(struct YAM_STATE *state) {
       //
       if (need_tra) {
         C(0x8D)
-        C(0x4D) C(mpro->t_0rrrrrrr) // lea ecx,[ebp+<BYTE:TRA>]
+        C(0x4D)
+        C(mpro->t_0rrrrrrr)         // lea ecx,[ebp+<BYTE:TRA>]
             C(0x83) C(0xE1) C(0x7F) // and ecx,7Fh
       }
       // 6 bytes max
@@ -3173,8 +3175,8 @@ static void dynacompile(struct YAM_STATE *state) {
       case 0x00: // FRC_REG
         C(0x8B)
         C(0x87)
-            C32(STATEOFS(yychoice[YYCHOICE_FRC_REG])) // mov eax,[edi+yychoice0]
-            break;
+        C32(STATEOFS(yychoice[YYCHOICE_FRC_REG])) // mov eax,[edi+yychoice0]
+        break;
       case 0x04: // COEF
       {
         sint32 coef = state->coef[mpro->c_0rrrrrrr];
@@ -3183,13 +3185,13 @@ static void dynacompile(struct YAM_STATE *state) {
       case 0x08: // Y_REG_H
         C(0x8B)
         C(0x87)
-            C32(STATEOFS(yychoice[YYCHOICE_Y_REG_H])) // mov eax,[edi+yychoice2]
-            break;
+        C32(STATEOFS(yychoice[YYCHOICE_Y_REG_H])) // mov eax,[edi+yychoice2]
+        break;
       case 0x0C: // Y_REG_L
         C(0x8B)
         C(0x87)
-            C32(STATEOFS(yychoice[YYCHOICE_Y_REG_L])) // mov eax,[edi+yychoice3]
-            break;
+        C32(STATEOFS(yychoice[YYCHOICE_Y_REG_L])) // mov eax,[edi+yychoice3]
+        break;
       }
       // 6 bytes max
       //
@@ -3200,12 +3202,12 @@ static void dynacompile(struct YAM_STATE *state) {
         C(0xAC) C(0x8F) C32(STATEOFS(temp)) // imul dword ptr [edi+ecx*4+temp]
       } else {
         C(0xF7)
-        C(0xAF) C32(
-            STATEOFS(inputs[mpro->i_00rrrrrr])) // imul dword ptr
-                                                // [edi+<OFS32:INPUTS+4*IRA>]
+        C(0xAF) C32(STATEOFS(inputs[mpro->i_00rrrrrr])) // imul dword ptr
+        // [edi+<OFS32:INPUTS+4*IRA>]
       }
       C(0x0F)
-      C(0xAC) C(0xD0) C(0x0C) // shrd eax,edx,12
+      C(0xAC)
+      C(0xD0) C(0x0C) // shrd eax,edx,12
           // 11 bytes max
           //
           // Add B if necessary
@@ -3214,16 +3216,16 @@ static void dynacompile(struct YAM_STATE *state) {
         if (mpro->negb == 0) {
           if ((mpro->__kisxzbon & 0x04) == 0) {
             C(0x03)
-            C(0x84) C(0x8F)
-                C32(STATEOFS(temp)) // add eax,[edi+ecx*4+<OFS32:temp>]
+            C(0x84)
+            C(0x8F) C32(STATEOFS(temp)) // add eax,[edi+ecx*4+<OFS32:temp>]
           } else {
             C(0x01) C(0xF0) // add eax,esi
           }
         } else {
           if ((mpro->__kisxzbon & 0x04) == 0) {
             C(0x2B)
-            C(0x84) C(0x8F)
-                C32(STATEOFS(temp)) // sub eax,[edi+ecx*4+<OFS32:temp>]
+            C(0x84)
+            C(0x8F) C32(STATEOFS(temp)) // sub eax,[edi+ecx*4+<OFS32:temp>]
           } else {
             C(0x29) C(0xF0) // sub eax,esi
           }
@@ -3237,7 +3239,8 @@ static void dynacompile(struct YAM_STATE *state) {
     //
     if (mpro->m_wrAFyyYh & 2) {
       C(0x8B)
-      C(0x97) C32(STATEOFS(
+      C(0x97)
+      C32(STATEOFS(
           inputs[mpro->i_00rrrrrr])) // mov edx, [edi+<OFS32:INPUTS+4*IRA>]
           C(0xC1) C(0xFA) C(0x0B)    // sar edx,11
           C(0x89) C(0x97) C32(STATEOFS(
@@ -3256,27 +3259,31 @@ static void dynacompile(struct YAM_STATE *state) {
     if (ins_uses_shifted[i]) {
       if ((mpro->__kisxzbon & 0x20) == 0) { // no saturate
         C(0x89)
-        C(0xF2)                                           // mov edx,esi
-            C(0xC1) C(0xE2) C(8 + (mpro->m_wrAFyyYh & 1)) // shl edx,<BYTE:8+sh>
-            C(0xC1) C(0xFA) C(0x08)                       // sar edx,8
-                                                          // 8 bytes max
-      } else {                                            // saturate
-        if ((mpro->m_wrAFyyYh & 1) == 0) {                // NOT shifting left
+        C(0xF2) // mov edx,esi
+        C(0xC1)
+        C(0xE2) C(8 + (mpro->m_wrAFyyYh & 1)) // shl edx,<BYTE:8+sh>
+            C(0xC1) C(0xFA) C(0x08)           // sar edx,8
+                                              // 8 bytes max
+      } else {                                // saturate
+        if ((mpro->m_wrAFyyYh & 1) == 0) {    // NOT shifting left
           C(0x8D)
-          C(0x96) C32(0x00800000)             // lea edx,[esi+800000h]
+          C(0x96)
+          C32(0x00800000)                     // lea edx,[esi+800000h]
               C(0xF7) C(0xC2) C32(0xFF000000) // test edx,0FF000000h
               C(0x89) C(0xF2)                 // mov edx,esi
                                               // 14 bytes max
         } else {                              // shifting left
           C(0x8D)
-          C(0x94) C(0x36) C32(0x00800000)     // lea edx,[esi+esi+800000h]
+          C(0x94)
+          C(0x36) C32(0x00800000)             // lea edx,[esi+esi+800000h]
               C(0xF7) C(0xC2) C32(0xFF000000) // test edx,0FF000000h
               C(0x8D) C(0x14) C(0x36)         // lea edx,[esi+esi]
                                               // 16 bytes max
         }
         C(0x74)
-        C(0x09)                             // je +9bytes
-            C(0xC1) C(0xFA) C(0x1F)         // sar edx,1Fh
+        C(0x09) // je +9bytes
+        C(0xC1)
+        C(0xFA) C(0x1F)                     // sar edx,1Fh
             C(0x81) C(0xF2) C32(0x007FFFFF) // xor edx,7FFFFFh
                                             // 27 bytes max
       }
@@ -3294,16 +3301,16 @@ static void dynacompile(struct YAM_STATE *state) {
     //
     if (mpro->m_wrAFyyYh & 0x10) {
       C(0x89)
-      C(0xD0)                            // mov eax,edx
-          if (mpro->__kisxzbon & 0x40) { // interpolate mode
-        C(0x25) C32(0x00000FFF)          // and eax,0FFFh
+      C(0xD0)                        // mov eax,edx
+      if (mpro->__kisxzbon & 0x40) { // interpolate mode
+        C(0x25) C32(0x00000FFF)      // and eax,0FFFh
+      } else {
+        // non-interpolate mode
+        C(0xC1) C(0xF8) C(0x0B) // sar eax,11
       }
-      else {
-          // non-interpolate mode
-          C(0xC1) C(0xF8) C(0x0B) // sar eax,11
-      } C(0x89) C(0x87)
-          C32(STATEOFS(
-              yychoice[YYCHOICE_FRC_REG])) // mov [edi+<OFS32:yychoice0>],eax
+      C(0x89)
+      C(0x87) C32(STATEOFS(
+          yychoice[YYCHOICE_FRC_REG])) // mov [edi+<OFS32:yychoice0>],eax
     }
     // 13 bytes max
     //
@@ -3311,7 +3318,8 @@ static void dynacompile(struct YAM_STATE *state) {
     //
     if ((mpro->t_Twwwwwww & 0x80) == 0) {
       C(0x8D)
-      C(0x4D) C(mpro->t_Twwwwwww) // lea ecx,[ebp+<BYTE:TWA>]
+      C(0x4D)
+      C(mpro->t_Twwwwwww)         // lea ecx,[ebp+<BYTE:TWA>]
           C(0x83) C(0xE1) C(0x7F) // and ecx,7Fh
           C(0x89) C(0x94) C(0x8F)
               C32(STATEOFS(temp)) // mov [edi+ecx*4+<OFS32:temp>],edx
@@ -3322,8 +3330,9 @@ static void dynacompile(struct YAM_STATE *state) {
     //
     if ((mpro->e_000Twwww & 0x10) == 0) {
       C(0x89)
-      C(0xD0)                     // mov eax,edx
-          C(0xC1) C(0xF8) C(0x08) // sar eax,8
+      C(0xD0) // mov eax,edx
+      C(0xC1)
+      C(0xF8) C(0x08) // sar eax,8
           C(0x89) C(0x87) C32(STATEOFS(
               efreg[mpro->e_000Twwww])) // mov [edi+<OFS32:EFREG+4*EWA>],eax
     }
@@ -3340,7 +3349,8 @@ static void dynacompile(struct YAM_STATE *state) {
       madrsnx &= 0xFFFF;
       if (mpro->tablemask == 0) {
         C(0x8D)
-        C(0x9D) C32(madrsnx) // lea ebx,[ebp+<DWORD:MADRS+NXADR>]
+        C(0x9D)
+        C32(madrsnx) // lea ebx,[ebp+<DWORD:MADRS+NXADR>]
             if (mpro->adrmask != 0){
                 C(0x03) C(0x9F)
                     C32(STATEOFS(adrs_reg)) // add ebx,[edi+<OFS32:adrs_reg>]
@@ -3349,15 +3359,17 @@ static void dynacompile(struct YAM_STATE *state) {
       } else {
         C(0xBB)
         C32(madrsnx) // mov ebx,<DWORD:MADRS+NXADR masked by 0xFFFF>
-            if (mpro->adrmask != 0) {
+        if (mpro->adrmask != 0) {
           C(0x03)
-          C(0x9F) C32(STATEOFS(adrs_reg))     // add ebx,[edi+<OFS32:adrs_reg>]
+          C(0x9F)
+          C32(STATEOFS(adrs_reg))             // add ebx,[edi+<OFS32:adrs_reg>]
               C(0x81) C(0xE3) C32(0x0000FFFF) // and ebx,0FFFFh
         }
         // 17 bytes max
       }
       C(0x81)
-      C(0xC3) C32(state->rbp / 2)                  // add ebx,<DWORD:rbp/2>
+      C(0xC3)
+      C32(state->rbp / 2)                          // add ebx,<DWORD:rbp/2>
           C(0x81) C(0xE3) C32(state->ram_mask / 2) // and ebx,<DWORD:RAMMASK/2>
           if ((state->mem_word_address_xor / 2) != 0) {
         C(0x83)
@@ -3371,18 +3383,18 @@ static void dynacompile(struct YAM_STATE *state) {
     if (mpro->m_wrAFyyYh & 0x20) {
       if (mpro->__kisxzbon & 0x40) { // interpolate mode
         C(0x89)
-        C(0xD0)                     // mov eax,edx
-            C(0xC1) C(0xF8) C(0x0C) // sar eax,12
+        C(0xD0)                 // mov eax,edx
+        C(0xC1) C(0xF8) C(0x0C) // sar eax,12
       } else {
         C(0x8B)
-        C(0x87) C32(STATEOFS(
+        C(0x87)
+        C32(STATEOFS(
             inputs[mpro->i_00rrrrrr])) // mov eax,[edi+<OFS32:INPUTS+4*IRA>]
             C(0xC1) C(0xF8) C(0x10)    // sar eax,16
       }
       C(0x25)
-      C32(0x00000FFF) // and eax,0FFFh
-          C(0x89) C(0x87)
-              C32(STATEOFS(adrs_reg)) // mov [edi+<OFS32:adrs_reg>],eax
+      C32(0x00000FFF)                         // and eax,0FFFh
+      C(0x89) C(0x87) C32(STATEOFS(adrs_reg)) // mov [edi+<OFS32:adrs_reg>],eax
     }
     // 20 bytes max
     //
@@ -3392,20 +3404,22 @@ static void dynacompile(struct YAM_STATE *state) {
     if ((i & 1) && (mpro->m_wrAFyyYh & 0x40)) {
       if ((mpro->__kisxzbon & 0x02) == 0) { // NOFL=0
         C(0x0F)
-        C(0xBF) C(0x8C) C(0x1B)
+        C(0xBF)
+        C(0x8C) C(0x1B)
             C32(state->ram_ptr) // movsx ecx, word ptr [ebx+ebx+<DWORD:RAMPTR>]
             C(0xE8) C32CALL(float16_to_int24) // call float16_to_int24
                                               // 13 bytes max
       } else {                                // NOFL=1:
         C(0x0F)
-        C(0xBF) C(0x84) C(0x1B)
+        C(0xBF)
+        C(0x84) C(0x1B)
             C32(state->ram_ptr) // movsx eax, word ptr [ebx+ebx+<DWORD:RAMPTR>]
             C(0xC1) C(0xE0) C(0x08) // shl eax,8
                                     // 11 bytes max
       }
       C(0x89)
-      C(0x87) C32(
-          STATEOFS(mem_in_data[(i + 2) & 3])) // mov [edi+<OFS32:meminptr>],eax
+      C(0x87)
+      C32(STATEOFS(mem_in_data[(i + 2) & 3])) // mov [edi+<OFS32:meminptr>],eax
                                               // 19 bytes max
                                               //
       // Or, if MWT is set, write edx to ebx*2:
@@ -3414,14 +3428,16 @@ static void dynacompile(struct YAM_STATE *state) {
     } else if ((i & 1) && (mpro->m_wrAFyyYh & 0x80)) {
       if ((mpro->__kisxzbon & 0x02) == 0) { // NOFL=0
         C(0x89)
-        C(0xD1)                               // mov ecx,edx
-            C(0xE8) C32CALL(int24_to_float16) // call int24_to_float16
+        C(0xD1) // mov ecx,edx
+        C(0xE8)
+        C32CALL(int24_to_float16) // call int24_to_float16
             C(0x66) C(0x89) C(0x84) C(0x1B)
                 C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],ax
                                     // 15 bytes max
       } else {                      // NOFL=1:
         C(0xC1)
-        C(0xFA) C(0x08) // sar edx,8
+        C(0xFA)
+        C(0x08) // sar edx,8
             C(0x66) C(0x89) C(0x94) C(0x1B)
                 C32(state->ram_ptr) // mov [ebx+ebx+<DWORD:RAMPTR>],dx
                                     // 11 bytes max
@@ -3436,9 +3452,10 @@ static void dynacompile(struct YAM_STATE *state) {
     if ((i & 1) && ((mpro->i_0T0wwwww & 0x40) == 0)) {
       C(0x8B)
       C(0x97)
-          C32(STATEOFS(mem_in_data[i & 3])) // mov edx, [edi+<OFS32:memindata>]
-          C(0x89) C(0x97) C32(STATEOFS(
-              inputs[mpro->i_0T0wwwww])) // mov [edi+<OFS32:INPUTS+4*IWA>],edx
+      C32(STATEOFS(mem_in_data[i & 3])) // mov edx, [edi+<OFS32:memindata>]
+      C(0x89)
+      C(0x97) C32(STATEOFS(
+          inputs[mpro->i_0T0wwwww])) // mov [edi+<OFS32:INPUTS+4*IWA>],edx
     }
     // 12 bytes max ODD LINES ONLY
   }
@@ -3446,9 +3463,10 @@ static void dynacompile(struct YAM_STATE *state) {
   // Suffix
   //
   C(0x89)
-  C(0xB7) C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov [edi+<OFS32:acc>],esi
-      C(0x61)                                     // popa
-      C(0xC3)                                     // retn
+  C(0xB7)
+  C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov [edi+<OFS32:acc>],esi
+      C(0x61)                             // popa
+      C(0xC3)                             // retn
       // 8 bytes
       //
       // Set valid flag

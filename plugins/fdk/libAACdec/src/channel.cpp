@@ -585,8 +585,8 @@ AAC_DECODER_ERROR CChannelElement_Read(
       /* Set active sfb codebook indexes to HCB_ESC to make them "active" */
       CChannel_CodebookTableInit(
           pAacDecoderChannelInfo[ch]); /*  equals ReadSectionData(self,
-                                      bs) in float soft. block.c
-                                      line: ~599 */
+                                bs) in float soft. block.c
+                                line: ~599 */
       /* Note: The missing "break" is intentional here, since we need to call
        * CBlock_ReadScaleFactorData(). */
       FDK_FALLTHROUGH;
@@ -606,9 +606,9 @@ AAC_DECODER_ERROR CChannelElement_Read(
               hBs,
               &pAacDecoderChannelInfo[ch]->pDynData->specificTo.aac.PulseData,
               pSamplingRateInfo->ScaleFactorBands_Long, /* pulse data is only
-                                                   allowed to be
-                                                   present in long
-                                                   blocks! */
+                                         allowed to be
+                                         present in long
+                                         blocks! */
               (void *)&pAacDecoderChannelInfo[ch]->icsInfo,
               frame_length) != 0) {
         error = AAC_DEC_DECODE_FRAME_ERROR;

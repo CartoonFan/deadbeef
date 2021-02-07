@@ -1317,7 +1317,7 @@ resetLppTransposer(
   int numBandsInPatch;
 
   int lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
-                            terms*/
+                          terms*/
   int xoverOffset = highBandStartSb -
                     lsb; /* Calculate distance in QMF bands between k0 and kx */
   int startFreqHz;
@@ -1325,7 +1325,7 @@ resetLppTransposer(
   int desiredBorder;
 
   usb = fixMin(usb, v_k_master[numMaster]); /* Avoid endless loops (compare with
-                                             float code). */
+                                           float code). */
 
   /*
    * Plausibility check

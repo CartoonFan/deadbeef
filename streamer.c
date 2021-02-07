@@ -108,11 +108,11 @@ static float playtime;           // total playtime of playing track
 static time_t started_timestamp; // result of calling time(NULL)
 static playItem_t *streaming_track;
 static playItem_t *last_played; // this is the last track that was played,
-                                // should avoid setting this to NULL
+// should avoid setting this to NULL
 
 static ddb_waveformat_t
     prev_output_format; // last format that was sent to output via
-                        // streamer_set_output_format
+// streamer_set_output_format
 static ddb_waveformat_t
     last_block_fmt; // input file format corresponding to the current output
 

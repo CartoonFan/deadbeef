@@ -106,10 +106,10 @@ static const char *frame_mapping[] = {
     "TCON", "TCO", "Genre", "composer", "TCOM", "TCOM", "TCM", "Composer",
     "year", "TYER", "TDRC", "TYE",
     "Year", // NOTE: TDRC and TYER are slightly different, and are converted on
-            // read/write
+    // read/write
     "track", "TRCK", "TRCK", "TRK",
     "Track", // NOTE: this is special case when writing id3v2
-             // misc id3v2 fields
+    // misc id3v2 fields
     // these might or might not have appropriate fields in every tag type
     "BAND", "TPE2", "TPE2", "TP2", NULL, "ENCODER", "TENC", "TENC", "TEN", NULL,
     "BEATS_PER_MINUTE", "TBPM", "TBPM", "TBP", NULL, "PLAYLIST_DELAY", "TDLY",
@@ -3666,7 +3666,7 @@ static int junk_id3v2_load_rva2(int version_major, playItem_t *it,
       pl_set_item_replaygain(it, DDB_REPLAYGAIN_ALBUMPEAK,
                              (float)peak_val /
                                  32767.0); /* NOTE: this is a guess based on
-                                              mp3gain 1.5.2 written tags */
+                                            mp3gain 1.5.2 written tags */
     }
   } else if (!strcasecmp(rva_desc, "track")) {
     if (!pl_find_meta(it, ddb_internal_rg_keys[DDB_REPLAYGAIN_TRACKGAIN])) {
@@ -3997,10 +3997,11 @@ static int junk_id3v2_set_metadata_from_frame(playItem_t *it,
 
   // parse basic 2.3/2.4 text frames
   // const char *text_frames[] = { "TPE1", "TPE2", "TPOS", "TIT2", "TALB",
-  // "TCOP", "TCON", "TENC", "TPE3", "TCOM", "TRCK", "TYER", "TDRC", NULL }; char
+  // "TCOP", "TCON", "TENC", "TPE3", "TCOM", "TRCK", "TYER", "TDRC", NULL };
+  // char
   // **text_holders[] = { &artist, &band, &disc, &title, &album, &copyright,
-  // &genre, &vendor, &performer, &composer, &track, version_major == 3 ? &year :
-  // NULL,  version_major == 4 ? &year : NULL, };
+  // &genre, &vendor, &performer, &composer, &track, version_major == 3 ? &year
+  // : NULL,  version_major == 4 ? &year : NULL, };
   if (version_major == 3 || version_major == 4) {
     if (strcmp(frameid, "TXXX")) {
       for (int f = 0; frame_mapping[f]; f += FRAME_MAPPINGS) {
