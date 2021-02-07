@@ -469,20 +469,20 @@ template <class T>
 inline void FDKmemcpy_flex(T *const dst, const INT dstStride,
                            const T *const src, const INT srcStride,
                            const INT nSamples) {
-    int i;
+  int i;
 
-    for (i = 0; i < nSamples; i++) {
-        dst[i * dstStride] = src[i * srcStride];
-    }
+  for (i = 0; i < nSamples; i++) {
+    dst[i * dstStride] = src[i * srcStride];
+  }
 }
 
 template <class T>
 inline void FDKmemset_flex(T *const x, const T c, const INT nSamples) {
-    int i;
+  int i;
 
-    for (i = 0; i < nSamples; i++) {
-        x[i] = c;
-    }
+  for (i = 0; i < nSamples; i++) {
+    x[i] = c;
+  }
 }
 
 #endif /* SACENC_VECTORFUNCTIONS_H */

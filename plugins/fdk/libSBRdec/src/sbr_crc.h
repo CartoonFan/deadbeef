@@ -126,9 +126,9 @@ crc8: x^8+x^2+x+x+1
 #define SBR_CRC_RANGE 0x03FF
 
 typedef struct {
-    USHORT crcState;
-    USHORT crcMask;
-    USHORT crcPoly;
+  USHORT crcState;
+  USHORT crcMask;
+  USHORT crcPoly;
 } CRC_BUFFER;
 
 typedef CRC_BUFFER *HANDLE_CRC;

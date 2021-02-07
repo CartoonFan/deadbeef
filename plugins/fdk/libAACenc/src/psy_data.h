@@ -115,55 +115,55 @@ amm-info@iis.fraunhofer.de
  * with pfloat). */
 
 typedef shouldBeUnion {
-    FIXP_DBL Long[MAX_GROUPED_SFB];
-    FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
+  FIXP_DBL Long[MAX_GROUPED_SFB];
+  FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
 }
 SFB_THRESHOLD;
 
 typedef shouldBeUnion {
-    FIXP_DBL Long[MAX_GROUPED_SFB];
-    FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
+  FIXP_DBL Long[MAX_GROUPED_SFB];
+  FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
 }
 SFB_ENERGY;
 
 typedef shouldBeUnion {
-    FIXP_DBL Long[MAX_GROUPED_SFB];
-    FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
+  FIXP_DBL Long[MAX_GROUPED_SFB];
+  FIXP_DBL Short[TRANS_FAC][MAX_SFB_SHORT];
 }
 SFB_LD_ENERGY;
 
 typedef shouldBeUnion {
-    INT Long[MAX_GROUPED_SFB];
-    INT Short[TRANS_FAC][MAX_SFB_SHORT];
+  INT Long[MAX_GROUPED_SFB];
+  INT Short[TRANS_FAC][MAX_SFB_SHORT];
 }
 SFB_MAX_SCALE;
 
 typedef struct {
-    INT_PCM *psyInputBuffer;
-    FIXP_DBL overlapAddBuffer[3 * 512 / 2];
+  INT_PCM *psyInputBuffer;
+  FIXP_DBL overlapAddBuffer[3 * 512 / 2];
 
-    mdct_t mdctPers;                               /* MDCT persistent data */
-    BLOCK_SWITCHING_CONTROL blockSwitchingControl; /* block switching */
-    FIXP_DBL sfbThresholdnm1[MAX_SFB];             /* FDKaacEnc_PreEchoControl */
-    INT mdctScalenm1; /* scale of last block's mdct (FDKaacEnc_PreEchoControl) */
-    INT calcPreEcho;
-    INT isLFE;
+  mdct_t mdctPers;                               /* MDCT persistent data */
+  BLOCK_SWITCHING_CONTROL blockSwitchingControl; /* block switching */
+  FIXP_DBL sfbThresholdnm1[MAX_SFB];             /* FDKaacEnc_PreEchoControl */
+  INT mdctScalenm1; /* scale of last block's mdct (FDKaacEnc_PreEchoControl) */
+  INT calcPreEcho;
+  INT isLFE;
 } PSY_STATIC;
 
 typedef struct {
-    FIXP_DBL *mdctSpectrum;
-    SFB_THRESHOLD sfbThreshold;    /* adapt                                  */
-    SFB_ENERGY sfbEnergy;          /* sfb energies                           */
-    SFB_LD_ENERGY sfbEnergyLdData; /* sfb energies in ldData format          */
-    SFB_MAX_SCALE sfbMaxScaleSpec;
-    SFB_ENERGY sfbEnergyMS; /* mid/side sfb energies                  */
-    FIXP_DBL sfbEnergyMSLdData[MAX_GROUPED_SFB]; /* mid/side sfb energies in
-                                              ldData format */
-    SFB_ENERGY sfbSpreadEnergy;
-    INT mdctScale; /* exponent of data in mdctSpectrum       */
-    INT groupedSfbOffset[MAX_GROUPED_SFB + 1];
-    INT sfbActive;
-    INT lowpassLine;
+  FIXP_DBL *mdctSpectrum;
+  SFB_THRESHOLD sfbThreshold;    /* adapt                                  */
+  SFB_ENERGY sfbEnergy;          /* sfb energies                           */
+  SFB_LD_ENERGY sfbEnergyLdData; /* sfb energies in ldData format          */
+  SFB_MAX_SCALE sfbMaxScaleSpec;
+  SFB_ENERGY sfbEnergyMS; /* mid/side sfb energies                  */
+  FIXP_DBL sfbEnergyMSLdData[MAX_GROUPED_SFB]; /* mid/side sfb energies in
+                                            ldData format */
+  SFB_ENERGY sfbSpreadEnergy;
+  INT mdctScale; /* exponent of data in mdctSpectrum       */
+  INT groupedSfbOffset[MAX_GROUPED_SFB + 1];
+  INT sfbActive;
+  INT lowpassLine;
 } PSY_DATA;
 
 #endif /* PSY_DATA_H */

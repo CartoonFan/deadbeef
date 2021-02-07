@@ -115,7 +115,7 @@ amm-info@iis.fraunhofer.de
 void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer */
               int T0,         /* input : integer pitch lag */
               int frac        /* input : fraction of lag   */
-             );
+);
 
 /**
  * \brief Compute the adaptive codebook excitation v(n) in case of
@@ -123,6 +123,6 @@ void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer */
  * \param exc points to adaptive codebook of current subframe (input/output)
  */
 void Pred_lt4_postfilter(FIXP_DBL exc[] /* in/out: excitation buffer */
-                        );
+);
 
 #endif /* USACDEC_ACE_LTP_H */

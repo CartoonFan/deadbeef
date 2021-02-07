@@ -120,16 +120,16 @@ amm-info@iis.fraunhofer.de
  * location.
  */
 typedef enum {
-    /* Internal */
-    SECT_DATA_L1 = 0x2000,
-    SECT_DATA_L2,
-    SECT_DATA_L1_A,
-    SECT_DATA_L1_B,
-    SECT_CONSTDATA_L1,
+  /* Internal */
+  SECT_DATA_L1 = 0x2000,
+  SECT_DATA_L2,
+  SECT_DATA_L1_A,
+  SECT_DATA_L1_B,
+  SECT_CONSTDATA_L1,
 
-    /* External */
-    SECT_DATA_EXTERN = 0x4000,
-    SECT_CONSTDATA_EXTERN
+  /* External */
+  SECT_DATA_EXTERN = 0x4000,
+  SECT_CONSTDATA_EXTERN
 
 } MEMORY_SECTION;
 

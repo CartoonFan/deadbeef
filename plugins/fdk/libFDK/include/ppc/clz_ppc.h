@@ -106,9 +106,9 @@ amm-info@iis.fraunhofer.de
 #define FUNCTION_fixnormz_D
 
 inline INT fixnormz_D(LONG value) {
-    INT result;
-    __asm__("cntlzw %0, %1" : "=r"(result) : "r"(value));
-    return result;
+  INT result;
+  __asm__("cntlzw %0, %1" : "=r"(result) : "r"(value));
+  return result;
 }
 
 #endif /* __powerpc__ && (__GNUC__ || __xlC__) */

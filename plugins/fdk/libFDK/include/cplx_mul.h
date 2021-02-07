@@ -124,8 +124,8 @@ amm-info@iis.fraunhofer.de
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                          const FIXP_DBL a_Im, const FIXP_SGL b_Re,
                          const FIXP_SGL b_Im) {
-    *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
-    *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
+  *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
+  *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
 }
 #endif
 
@@ -135,15 +135,15 @@ inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_SGL a_Re,
                          const FIXP_SGL a_Im, const FIXP_SGL b_Re,
                          const FIXP_SGL b_Im) {
-    *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
-    *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
+  *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
+  *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
 }
 
 inline void cplxMultDiv2(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
                          const FIXP_SGL a_Im, const FIXP_SGL b_Re,
                          const FIXP_SGL b_Im) {
-    *c_Re = FX_DBL2FX_SGL(fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im));
-    *c_Im = FX_DBL2FX_SGL(fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re));
+  *c_Re = FX_DBL2FX_SGL(fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im));
+  *c_Im = FX_DBL2FX_SGL(fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re));
 }
 #endif
 
@@ -152,7 +152,7 @@ inline void cplxMultDiv2(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
 
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                          const FIXP_DBL a_Im, const FIXP_SPK w) {
-    cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
 
@@ -161,12 +161,12 @@ inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_SGL a_Re,
                          const FIXP_SGL a_Im, const FIXP_SPK w) {
-    cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 
 inline void cplxMultDiv2(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
                          const FIXP_SGL a_Im, const FIXP_SPK w) {
-    cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
 
@@ -176,8 +176,8 @@ inline void cplxMultDiv2(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
 inline void cplxMultSubDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                             const FIXP_DBL a_Im, const FIXP_SGL b_Re,
                             const FIXP_SGL b_Im) {
-    *c_Re -= fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
-    *c_Im -= fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
+  *c_Re -= fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
+  *c_Im -= fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
 }
 #endif
 
@@ -187,8 +187,8 @@ inline void cplxMultSubDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                          const FIXP_DBL a_Im, const FIXP_DBL b_Re,
                          const FIXP_DBL b_Im) {
-    *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
-    *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
+  *c_Re = fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
+  *c_Im = fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
 }
 #endif
 
@@ -197,7 +197,7 @@ inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 
 inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                          const FIXP_DBL a_Im, const FIXP_DPK w) {
-    cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
 
@@ -207,8 +207,8 @@ inline void cplxMultDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 inline void cplxMultSubDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                             const FIXP_DBL a_Im, const FIXP_DBL b_Re,
                             const FIXP_DBL b_Im) {
-    *c_Re -= fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
-    *c_Im -= fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
+  *c_Re -= fMultDiv2(a_Re, b_Re) - fMultDiv2(a_Im, b_Im);
+  *c_Im -= fMultDiv2(a_Re, b_Im) + fMultDiv2(a_Im, b_Re);
 }
 #endif
 
@@ -221,14 +221,14 @@ inline void cplxMultSubDiv2(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                      const FIXP_DBL a_Im, const FIXP_SGL b_Re,
                      const FIXP_SGL b_Im) {
-    *c_Re = fMult(a_Re, b_Re) - fMult(a_Im, b_Im);
-    *c_Im = fMult(a_Re, b_Im) + fMult(a_Im, b_Re);
+  *c_Re = fMult(a_Re, b_Re) - fMult(a_Im, b_Im);
+  *c_Im = fMult(a_Re, b_Im) + fMult(a_Im, b_Re);
 }
 inline void cplxMult(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
                      const FIXP_SGL a_Im, const FIXP_SGL b_Re,
                      const FIXP_SGL b_Im) {
-    *c_Re = FX_DBL2FX_SGL(fMult(a_Re, b_Re) - fMult(a_Im, b_Im));
-    *c_Im = FX_DBL2FX_SGL(fMult(a_Re, b_Im) + fMult(a_Im, b_Re));
+  *c_Re = FX_DBL2FX_SGL(fMult(a_Re, b_Re) - fMult(a_Im, b_Im));
+  *c_Im = FX_DBL2FX_SGL(fMult(a_Re, b_Im) + fMult(a_Im, b_Re));
 }
 #endif
 
@@ -237,7 +237,7 @@ inline void cplxMult(FIXP_SGL *c_Re, FIXP_SGL *c_Im, const FIXP_SGL a_Re,
 
 inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                      const FIXP_DBL a_Im, const FIXP_SPK w) {
-    cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
 
@@ -247,8 +247,8 @@ inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                      const FIXP_DBL a_Im, const FIXP_DBL b_Re,
                      const FIXP_DBL b_Im) {
-    *c_Re = fMult(a_Re, b_Re) - fMult(a_Im, b_Im);
-    *c_Im = fMult(a_Re, b_Im) + fMult(a_Im, b_Re);
+  *c_Re = fMult(a_Re, b_Re) - fMult(a_Im, b_Im);
+  *c_Im = fMult(a_Re, b_Im) + fMult(a_Im, b_Re);
 }
 #endif
 
@@ -256,7 +256,7 @@ inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
 #define FUNCTION_cplxMult_32x32
 inline void cplxMult(FIXP_DBL *c_Re, FIXP_DBL *c_Im, const FIXP_DBL a_Re,
                      const FIXP_DBL a_Im, const FIXP_DPK w) {
-    cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
+  cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
 

@@ -109,50 +109,50 @@ amm-info@iis.fraunhofer.de
 
 typedef enum {
 
-    SAC_DECODER,
-    SAOC_DECODER,
-    USAC_DECODER
+  SAC_DECODER,
+  SAOC_DECODER,
+  USAC_DECODER
 
 } DECODER_TYPE;
 
 typedef enum {
-    t_CLD,
-    t_ICC,
-    t_IPD,
-    t_OLD,
-    t_IOC,
-    t_NRG,
-    t_DCLD,
-    t_DMG,
-    t_PDG
+  t_CLD,
+  t_ICC,
+  t_IPD,
+  t_OLD,
+  t_IOC,
+  t_NRG,
+  t_DCLD,
+  t_DMG,
+  t_PDG
 
 } DATA_TYPE;
 
 typedef enum {
 
-    BACKWARDS = 0x0,
-    FORWARDS = 0x1
+  BACKWARDS = 0x0,
+  FORWARDS = 0x1
 
 } DIRECTION;
 
 typedef enum {
 
-    DIFF_FREQ = 0x0,
-    DIFF_TIME = 0x1
+  DIFF_FREQ = 0x0,
+  DIFF_TIME = 0x1
 
 } DIFF_TYPE;
 
 typedef enum {
 
-    HUFF_1D = 0x0,
-    HUFF_2D = 0x1
+  HUFF_1D = 0x0,
+  HUFF_2D = 0x1
 
 } CODING_SCHEME;
 
 typedef enum {
 
-    FREQ_PAIR = 0x0,
-    TIME_PAIR = 0x1
+  FREQ_PAIR = 0x0,
+  TIME_PAIR = 0x1
 
 } PAIRING;
 

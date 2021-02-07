@@ -107,26 +107,26 @@ amm-info@iis.fraunhofer.de
 
 #if defined(FUNCTION_scramble)
 inline void scramble(FIXP_DBL *x, INT n) {
-    INT m, j;
-    int ldn = 1;
-    do {
-        ldn++;
-    } while ((1 << ldn) < n);
+  INT m, j;
+  int ldn = 1;
+  do {
+    ldn++;
+  } while ((1 << ldn) < n);
 
-    for (m = 1, j = 0; m < n - 1; m++) {
-        j = __builtin_mips_bitrev(m) >> (16 - ldn);
+  for (m = 1, j = 0; m < n - 1; m++) {
+    j = __builtin_mips_bitrev(m) >> (16 - ldn);
 
-        if (j > m) {
-            FIXP_DBL tmp;
-            tmp = x[2 * m];
-            x[2 * m] = x[2 * j];
-            x[2 * j] = tmp;
+    if (j > m) {
+      FIXP_DBL tmp;
+      tmp = x[2 * m];
+      x[2 * m] = x[2 * j];
+      x[2 * j] = tmp;
 
-            tmp = x[2 * m + 1];
-            x[2 * m + 1] = x[2 * j + 1];
-            x[2 * j + 1] = tmp;
-        }
+      tmp = x[2 * m + 1];
+      x[2 * m + 1] = x[2 * j + 1];
+      x[2 * j + 1] = tmp;
     }
+  }
 }
 #endif
 
