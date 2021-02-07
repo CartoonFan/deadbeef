@@ -135,13 +135,13 @@ typedef enum {
 typedef enum {
   TT_UNKNOWN = -1, /**< Unknown format.            */
   TT_MP4_RAW = 0,  /**< "as is" access units (packet based since there is
-            obviously no sync layer) */
+          obviously no sync layer) */
   TT_MP4_ADIF = 1, /**< ADIF bitstream format.     */
   TT_MP4_ADTS = 2, /**< ADTS bitstream format.     */
 
   TT_MP4_LATM_MCP1 = 6, /**< Audio Mux Elements with muxConfigPresent = 1 */
   TT_MP4_LATM_MCP0 = 7, /**< Audio Mux Elements with muxConfigPresent = 0, out
-                 of band StreamMuxConfig */
+               of band StreamMuxConfig */
 
   TT_MP4_LOAS = 10, /**< Audio Sync Stream.         */
 
@@ -379,33 +379,33 @@ typedef struct {
   AUDIO_OBJECT_TYPE extAOT;  /**< Extension Audio Object Type (SBR). */
   CHANNEL_MODE channelMode;  /**< Channel mode.                      */
   UCHAR channelConfigZero;   /**< Use channel config zero + pce although a
-                      standard channel config could be signaled. */
+                    standard channel config could be signaled. */
   INT samplingRate;          /**< Sampling rate.                     */
   INT extSamplingRate;       /**< Extended samplerate (SBR).         */
   INT downscaleSamplingRate; /**< Downscale sampling rate (ELD downscaled mode)
                               */
   INT bitRate;               /**< Average bitrate.                   */
   int samplesPerFrame; /**< Number of PCM samples per codec frame and audio
-                channel. */
+              channel. */
   int noChannels;      /**< Number of audio channels.          */
   int bitsFrame;
   int nSubFrames; /**< Amount of encoder subframes. 1 means no subframing. */
   int BSACnumOfSubFrame; /**< The number of the sub-frames which are grouped and
-                  transmitted in a super-frame (BSAC). */
+                transmitted in a super-frame (BSAC). */
   int BSAClayerLength; /**< The average length of the large-step layers in bytes
-                (BSAC).                            */
+              (BSAC).                            */
   UINT flags;          /**< flags */
   UCHAR matrixMixdownA; /**< Matrix mixdown index to put into PCE. Default value
-                 0 means no mixdown coefficient, valid values are 1-4
-                 which correspond to matrix_mixdown_idx 0-3. */
+               0 means no mixdown coefficient, valid values are 1-4
+               which correspond to matrix_mixdown_idx 0-3. */
   UCHAR headerPeriod;   /**< Frame period for sending in band configuration
-                 buffers in the transport layer. */
+               buffers in the transport layer. */
 
   UCHAR stereoConfigIndex;       /**< USAC MPS stereo mode */
   UCHAR sbrMode;                 /**< USAC SBR mode */
   SBR_PS_SIGNALING sbrSignaling; /**< 0: implicit signaling, 1: backwards
-                          compatible explicit signaling, 2:
-                          hierarcical explicit signaling */
+                        compatible explicit signaling, 2:
+                        hierarcical explicit signaling */
 
   UCHAR rawConfig[64]; /**< raw codec specific config as bit stream */
   int rawConfigBits;   /**< Size of rawConfig in bits */
@@ -425,7 +425,7 @@ typedef enum {
   ID_CCE = 2,   /**< Coupling Channel Element.              */
   ID_LFE = 3,   /**< LFE Channel Element.                   */
   ID_DSE = 4,   /**< Currently one Data Stream Element for ancillary data is
-         supported. */
+       supported. */
   ID_PCE = 5,   /**< Program Config Element.                */
   ID_FIL = 6,   /**< Fill Element.                          */
   ID_END = 7,   /**< Arnie (End Element = Terminator).      */
@@ -781,16 +781,16 @@ static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO *info,
  */
 typedef struct FDK_bufDescr {
   void **ppBase;  /*!< Pointer to an array containing buffer base addresses.
-             Set to NULL for buffer requirement info. */
+           Set to NULL for buffer requirement info. */
   UINT *pBufSize; /*!< Pointer to an array containing the number of elements
-           that can be placed in the specific buffer. */
+         that can be placed in the specific buffer. */
   UINT *pEleSize; /*!< Pointer to an array containing the element size for each
-           buffer in bytes. That is mostly the number returned by the
-           sizeof() operator for the data type used for the specific
-           buffer. */
+         buffer in bytes. That is mostly the number returned by the
+         sizeof() operator for the data type used for the specific
+         buffer. */
   UINT *pBufType; /*!< Pointer to an array of bit fields containing a
-                   description for each buffer. See XXX below for more
-                   details.  */
+                 description for each buffer. See XXX below for more
+                 details.  */
   UINT numBufs;   /*!< Total number of buffers. */
 
 } FDK_bufDescr;

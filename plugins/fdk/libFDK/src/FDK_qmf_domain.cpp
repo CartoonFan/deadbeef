@@ -855,9 +855,8 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
       hqd->QmfDomainIn[i].workBuf_nTimeSlots = hgc->nQmfTimeSlots_requested;
     }
 
-    hgc->nQmfProcChannels =
-        hgc->nQmfProcChannels_requested; /* keep highest value encountered so
-                        far as allocated */
+    hgc->nQmfProcChannels = hgc->nQmfProcChannels_requested; /* keep highest
+                                        value encountered so far as allocated */
 
     hasChanged = 1;
   }

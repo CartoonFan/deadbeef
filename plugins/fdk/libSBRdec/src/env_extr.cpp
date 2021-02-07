@@ -1699,11 +1699,11 @@ checkFrameInfo(FRAME_INFO *pFrameInfo, /*!< pointer to frameInfo */
   if ((startPos < 0) || (startPos >= stopPos))
     return 0;
   if (startPos > maxPos - numberOfTimeSlots) /* First env. must start in or
-                                      directly after the overlap
-                                      buffer */
+                                    directly after the overlap
+                                    buffer */
     return 0;
   if (stopPos < numberOfTimeSlots) /* One complete frame must be ready for
-                            output after processing */
+                          output after processing */
     return 0;
   if (stopPos > maxPos)
     return 0;

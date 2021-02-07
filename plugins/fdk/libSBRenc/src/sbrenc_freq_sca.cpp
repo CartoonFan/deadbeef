@@ -456,7 +456,7 @@ INT FDKsbrEnc_UpdateFreqScale(UCHAR *v_k_master, INT *h_num_bands, const INT k0,
       warp = FL2FXCONST_DBL(1.0f / 2.6f); /* 1.0/(1.3*2.0); */
 
     if (4 * k2 >= 9 * k0) /*two or more regions (how many times the basis band
-         is copied)*/
+     is copied)*/
     {
       k1 = 2 * k0;
 

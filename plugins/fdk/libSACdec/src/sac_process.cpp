@@ -658,8 +658,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
           activParamBands = 1;
         } else {
           if (self->pActivM2ParamBands[MAX_M2_INPUT * row + col]) /* table with
-      activ and inactiv bands exists for
-      current configuration */
+activ and inactiv bands exists for
+current configuration */
             activParamBands = 1;
           else
             activParamBands = 0;
@@ -730,8 +730,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
           activParamBands = 1;
         } else {
           if (self->pActivM2ParamBands[MAX_M2_INPUT * row + col]) /* table with
-      activ and inactiv bands exists for
-      current configuration */
+activ and inactiv bands exists for
+current configuration */
             activParamBands = 1;
           else
             activParamBands = 0;

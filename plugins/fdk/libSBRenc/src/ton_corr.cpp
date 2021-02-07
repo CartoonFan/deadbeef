@@ -377,7 +377,7 @@ void FDKsbrEnc_TonCorrParamExtr(
     UINT sbrSyntaxFlags) {
   INT band;
   INT transientFlag = transientInfo[1]; /*!< Flag indicating if a transient is
-                                 present in the current frame. */
+                               present in the current frame. */
   INT transientPos = transientInfo[0];  /*!< Position of the transient.*/
   INT transientFrame, transientFrameInvfEst;
   INVF_MODE *infVecPtr;
@@ -524,7 +524,7 @@ static INT resetPatch(
   INT lsb =
       v_k_master[0]; /* Lowest subband related to the synthesis filterbank */
   INT usb = v_k_master[numMaster]; /* Stop subband related to the synthesis
-                            filterbank */
+                          filterbank */
   INT xoverOffset =
       highBandStartSb -
       v_k_master[0]; /* Calculate distance in subbands between k0 and kx */
@@ -769,18 +769,18 @@ INT FDKsbrEnc_InitTonCorrParamExtr(
   hTonCorr->nextSample = LPC_ORDER; /* firstSample */
   hTonCorr->move = hTonCorr->numberOfEstimates -
                    hTonCorr->numberOfEstimatesPerFrame; /* Number of estimates
-                                                 to move when
-                                                 buffering.*/
+                                               to move when
+                                               buffering.*/
   if (hTonCorr->move < 0) {
     return -1;
   }
   hTonCorr->startIndexMatrix =
       hTonCorr->numberOfEstimates -
       hTonCorr->numberOfEstimatesPerFrame; /* Where to store the latest
-                                    estimations in the tonality
-                                    Matrix.*/
+                                  estimations in the tonality
+                                  Matrix.*/
   hTonCorr->frameStartIndex = 0; /* Where in the tonality matrix the current
-                          frame (to be sent to the decoder) starts. */
+                        frame (to be sent to the decoder) starts. */
   hTonCorr->prevTransientFlag = 0;
   hTonCorr->transientNextFrame = 0;
 

@@ -449,8 +449,8 @@ UINT HcrDecoder(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
   if ((pHcr->decInOut.errorLog & HCR_FATAL_PCW_ERROR_MASK) != 0) {
     return (pHcr->decInOut.errorLog); /* sideinfo is massively corrupt, return
-                     from HCR without having decoded
-                     anything */
+                 from HCR without having decoded
+                 anything */
   }
 
   DeriveNumberOfExtendedSortedSectionsInSets(
@@ -733,7 +733,7 @@ static void HcrSortCodebookAndNumCodewordInSection(H_HCR_INFO pHcr) {
   }
   pHcr->sectionInfo.numSortedSection =
       numSection - numZeroSection; /* numSortedSection contains no zero or
-                            intensity section */
+                          intensity section */
   pCodebook = pHcr->decInOut.pCodebook;
 
   /* sort priorities of the codebooks in array pSortedCdebook[] */
@@ -1038,17 +1038,17 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
            pNumExtendedSortedSectionsInSets[numExtendedSortedSectionsInSetsIdx];
        extSortSec != 0; extSortSec--) {
     codebook = pExtendedSortedCodebook[extendedSortedCodebookIdx]; /* get
-                                                  codebook for this
-                                                  extended sorted
-                                                  section and increment
-                                                  ptr to cb of next
-                                                  ext. sort sec */
+                                              codebook for this
+                                              extended sorted
+                                              section and increment
+                                              ptr to cb of next
+                                              ext. sort sec */
     extendedSortedCodebookIdx++;
     if (extendedSortedCodebookIdx >= (MAX_SFB_HCR + MAX_HCR_SETS)) {
       return;
     }
     dimension = pCbDimension[codebook]; /* get dimension of codebook of this
-                       extended sort. sec. */
+                   extended sort. sec. */
     pCurrentTree =
         aHuffTable[codebook]; /* convert codebook to pointer to QSCs */
     pQuantValBase =
@@ -1345,7 +1345,7 @@ static const SCHAR *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
 
   /* decode PCW_BODY */
   treeNode = *pCurrentTree; /* get first node of current tree belonging to
-                     current codebook */
+                   current codebook */
 
   /* decode whole PCW-codeword-body */
   while (1) {
@@ -1369,7 +1369,7 @@ static const SCHAR *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
   }
 
   pQuantVal = pQuantValBase + branchValue; /* update pointer to valid first of 2
-                                    or 4 quantized values */
+                                  or 4 quantized values */
 
   return pQuantVal;
 }

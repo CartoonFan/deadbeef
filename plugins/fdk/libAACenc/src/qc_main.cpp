@@ -411,9 +411,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE *hQC, struct QC_INIT *init,
       (init->bitrate / init->channelMapping->nChannelsEff) <
           AACENC_DZQ_BR_THR &&
       init->isLowDelay != 0) /* watch out here: init->bitrate is the bitrate
-              "minus" the standard SBR bitrate (=2500kbps) --> for
-              the FDK the OFFSTE tuning should start somewhere below
-              32000kbps-2500kbps ... so everything is fine here */
+        "minus" the standard SBR bitrate (=2500kbps) --> for
+        the FDK the OFFSTE tuning should start somewhere below
+        32000kbps-2500kbps ... so everything is fine here */
   {
     hQC->dZoneQuantEnable = 1;
   } else {
@@ -425,9 +425,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCInit(QC_STATE *hQC, struct QC_INIT *init,
       init->sampleRate, /* output sample rate */
       init->bitrate,    /* total bitrate */
       init->isLowDelay, /* if set, calc bits2PE factor
-                 depending on samplerate */
+               depending on samplerate */
       init->bitResMode  /* for a small bitreservoir, the pe
-                 correction is calc'd differently */
+               correction is calc'd differently */
       ,
       hQC->dZoneQuantEnable, init->bitDistributionMode, hQC->vbrQualFactor);
 
@@ -1000,7 +1000,7 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE *RESTRICT hQC, PSY_OUT **psyOut,
             /*-------------------------------------------- */
 
           } while (!constraintsFulfilled[c][i]); /* does not regard bit
-  consumption */
+consumption */
 
           /*-------------------------------------------- */
           /*-------------------------------------------- */

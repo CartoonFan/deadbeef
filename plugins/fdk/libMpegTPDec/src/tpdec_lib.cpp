@@ -144,29 +144,29 @@ struct TRANSPORTDEC {
   transportdec_parser_t parser; /* Format specific parser structs. */
 
   CSAudioSpecificConfig asc[(1 * 1) + 1]; /* Audio specific config from the last
-                                   config found. One additional
-                                   CSAudioSpecificConfig is used
-                                   temporarily for parsing. */
+                                 config found. One additional
+                                 CSAudioSpecificConfig is used
+                                 temporarily for parsing. */
   CCtrlCFGChange ctrlCFGChange[(1 * 1)];  /* Controls config change */
 
   UINT globalFramePos;      /* Global transport frame reference bit position. */
   UINT accessUnitAnchor[1]; /* Current access unit start bit position. */
   INT auLength[1];          /* Length of current access unit. */
   INT numberOfRawDataBlocks; /* Current number of raw data blocks contained
-                      remaining from the current transport frame. */
+                    remaining from the current transport frame. */
   UINT avgBitRate; /* Average bit rate used for frame loss estimation. */
   UINT lastValidBufferFullness; /* Last valid buffer fullness value for frame
-                         loss estimation */
+                       loss estimation */
   INT remainder; /* Reminder in division during lost access unit estimation. */
   INT missingAccessUnits; /* Estimated missing access units. */
   UINT burstPeriod;       /* Data burst period in mili seconds. */
   UINT holdOffFrames;     /* Amount of frames that were already hold off due to
-                   buffer fullness condition not being met. */
+                 buffer fullness condition not being met. */
   UINT flags;             /* Flags. */
   INT targetLayout;       /* CICP target layout. */
   UINT *pLoudnessInfoSetPosition; /* Reference and start position (bits) and
-                           length (bytes) of loudnessInfoSet within
-                           rsv603daConfig.  */
+                         length (bytes) of loudnessInfoSet within
+                         rsv603daConfig.  */
 };
 
 /* Flag bitmasks for "flags" member of struct TRANSPORTDEC */
@@ -1068,7 +1068,7 @@ static TRANSPORTDEC_ERROR synchronization(HANDLE_TRANSPORTDEC hTp,
   INT syncLength; /* Length of sync word in bits */
   UINT syncWord;  /* Sync word to be found */
   UINT syncMask;  /* Mask for sync word (for adding one bit, so comprising one
-           bit less) */
+         bit less) */
   C_ALLOC_SCRATCH_START(contextFirstFrame, transportdec_parser_t, 1);
 
   totalBits = (INT)FDKgetValidBits(hBs);

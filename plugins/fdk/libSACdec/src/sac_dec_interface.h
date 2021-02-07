@@ -202,36 +202,36 @@ typedef enum {
   MPEGS_INIT_NONE = 0x00000000, /*!< Indicates no initialization */
 
   MPEGS_INIT_CONFIG = 0x00000010, /*!< Indicates a configuration change due to
-                           SSC value changes */
+                         SSC value changes */
 
   MPEGS_INIT_STATES_ANA_QMF_FILTER =
       0x00000100, /*!< Controls the initialization of the analysis qmf filter
-           states */
+         states */
   MPEGS_INIT_STATES_SYN_QMF_FILTER =
       0x00000200, /*!< Controls the initialization of the synthesis qmf filter
-           states */
+         states */
   MPEGS_INIT_STATES_ANA_HYB_FILTER = 0x00000400, /*!< Controls the
-                                          initialization of the
-                                          analysis hybrid filter
-                                          states */
+                                        initialization of the
+                                        analysis hybrid filter
+                                        states */
   MPEGS_INIT_STATES_DECORRELATOR =
       0x00000800, /*!< Controls the initialization of the decorrelator states */
   MPEGS_INIT_STATES_M1M2 = 0x00002000, /*!< Controls the initialization of the
-                                history in m1 and m2 parameter
-                                calculation */
+                              history in m1 and m2 parameter
+                              calculation */
   MPEGS_INIT_STATES_GES = 0x00004000,  /*!< Controls the initialization of the
-                                history in the ges calculation */
+                              history in the ges calculation */
   MPEGS_INIT_STATES_REVERB =
       0x00008000, /*!< Controls the initialization of the reverb states */
   MPEGS_INIT_STATES_PARAM = 0x00020000, /*!< Controls the initialization of the
-                                 history of all other parameter */
+                               history of all other parameter */
   MPEGS_INIT_STATES_ERROR_CONCEALMENT =
       0x00080000, /*!< Controls the initialization of the error concealment
-           module state */
+         module state */
   MPEGS_INIT_PARAMS_ERROR_CONCEALMENT = 0x00200000 /*!< Controls the
-                                            initialization of the
-                                            whole error concealment
-                                            parameter set */
+                                          initialization of the
+                                          whole error concealment
+                                          parameter set */
 
 } MPEGS_INIT_CTRL_FLAGS;
 

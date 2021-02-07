@@ -345,10 +345,10 @@ actual bitrate  */
       INT stopB = -1;  /* bitrate entry in table that is the next-higher to
 actual bitrate */
       FIXP_DBL startPF = FL2FXCONST_DBL(0.0f); /* bits2PE factor entry in table
-                    that is the next-lower to actual bits2PE factor  */
+              that is the next-lower to actual bits2PE factor  */
       FIXP_DBL stopPF = FL2FXCONST_DBL(0.0f);  /* bits2PE factor entry in table
-                    that is the next-higher to
-                    actual bits2PE factor */
+              that is the next-higher to
+              actual bits2PE factor */
       FIXP_DBL slope = FL2FXCONST_DBL(
           0.0f); /* the slope from the start bits2Pe entry to the next one */
       const int qualityIdx = (invQuant == 0) ? 0 : 1;
@@ -1128,7 +1128,7 @@ FDKaacEnc_reduceThresholdsVBR(QC_OUT_CHANNEL *const qcOutChannel[(2)],
   FIXP_DBL chaosMeasureAvg;
   INT groupCnt;               /* loop counter */
   FIXP_DBL redVal[TRANS_FAC]; /* reduction values; in short-block case one
-                       redVal for each group */
+                     redVal for each group */
   QC_OUT_CHANNEL *qcOutChan = NULL;
   const PSY_OUT_CHANNEL *psyOutChan = NULL;
 
@@ -1216,11 +1216,11 @@ FDKaacEnc_reduceThresholdsVBR(QC_OUT_CHANNEL *const qcOutChannel[(2)],
       groupEnergy =
           fMult(groupEnergy,
                 invInt[psyOutChannel[0]->groupLen[groupCnt]]); /* correction
-                      of group energy */
+                of group energy */
       groupEnergy = fixMin(groupEnergy, frameEnergy >> WIN_TYPE_SCALE); /* do
-                                             not allow an higher
-                                             redVal as calculated
-                                             framewise */
+                                       not allow an higher
+                                       redVal as calculated
+                                       framewise */
 
       groupEnergy >>=
           2; /* 2*WIN_TYPE_SCALE = 6 => 6+2 = 8 ==> 8/4 = int number */

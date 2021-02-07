@@ -129,7 +129,7 @@ typedef enum {
   SACENC_MEMORY_ERROR = 0x00000800, /*!< Memory allocation failed. */
   SACENC_INIT_ERROR = 0x00008000,   /*!< General initialization error. */
   SACENC_ENCODE_ERROR = 0x00080000, /*!< The encoding process was interrupted by
-                             an unexpected error. */
+                           an unexpected error. */
   SACENC_PARAM_ERROR = 0x00800000,  /*!< Invalid runtime parameter. */
   SACENC_UNSUPPORTED_PARAMETER = 0x00800001, /*!< Parameter not available. */
   SACENC_INVALID_CONFIG = 0x00800002,        /*!< Configuration not provided. */
@@ -186,40 +186,40 @@ typedef enum {
  */
 typedef enum {
   SACENC_LOWDELAY, /*!< Configure lowdelay MPEG Surround.
-              - 0: Disable Lowdelay. (default)
-              - 1: Enable Lowdelay.
-              - 2: Enable Lowdelay including keep frame. */
+            - 0: Disable Lowdelay. (default)
+            - 1: Enable Lowdelay.
+            - 2: Enable Lowdelay including keep frame. */
 
   SACENC_ENC_MODE, /*!< Configure encoder tree mode. See ::MP4SPACEENC_MODE for
-            available values. */
+          available values. */
 
   SACENC_SAMPLERATE, /*!< Configure encoder sampling rate. */
 
   SACENC_FRAME_TIME_SLOTS, /*!< Configure number of slots per spatial frame. */
 
   SACENC_PARAM_BANDS, /*!< Configure number of parameter bands. See
-               ::MP4SPACEENC_BANDS_CONFIG for available values. */
+             ::MP4SPACEENC_BANDS_CONFIG for available values. */
 
   SACENC_TIME_DOM_DMX, /*!< Configure time domain downmix.
-                  - 0: No time domain downmix. (default)
-                  - 1: Static time domain downmix.
-                  - 2: Enhanced time domain downmix, stereo to mono
-                only. */
+                - 0: No time domain downmix. (default)
+                - 1: Static time domain downmix.
+                - 2: Enhanced time domain downmix, stereo to mono
+              only. */
 
   SACENC_DMX_GAIN, /*!< Configure downmix gain. See ::MP4SPACEENC_DMX_GAIN for
-            available values. */
+          available values. */
 
   SACENC_COARSE_QUANT, /*!< Use coarse parameter quantization.
-                  - 0: No (default)
-                  - 1: Yes */
+                - 0: No (default)
+                - 1: Yes */
 
   SACENC_QUANT_MODE, /*!< Configure quanitzation mode. See
-              ::MP4SPACEENC_QUANTMODE for available values. */
+            ::MP4SPACEENC_QUANTMODE for available values. */
 
   SACENC_TIME_ALIGNMENT, /*!< Configure time alignment in samples. */
 
   SACENC_INDEPENDENCY_COUNT, /*!< Configure the independency count. (count == 0
-                      means independencyFlag == 1) */
+                    means independencyFlag == 1) */
 
   SACENC_INDEPENDENCY_FACTOR, /*!< How often should we set the independency flag
                                */
@@ -246,11 +246,11 @@ typedef struct {
   INT nTotalInputChannels; /*!< Number of expected audio input channels. */
   INT nDmxDelay;           /*!< Delay of the downmixed signal. */
   INT nCodecDelay;         /*!< Delay of the whole en-/decoded signal, including
-                    core-coder delay. */
+                  core-coder delay. */
   INT nDecoderDelay;       /*!< Delay added by the MP4SPACE decoder. */
   INT nPayloadDelay;       /*!< Delay of the payload. */
   INT nDiscardOutFrames; /*!< Number of dmx frames to discard for alignment with
-                  bitstream. */
+                bitstream. */
 
   MPEG4SPACEENC_SSCBUF
   *pSscBuf; /*!< Pointer to Spatial Specific Config structure. */
@@ -267,13 +267,13 @@ typedef struct MP4SPACE_ENCODER *HANDLE_MP4SPACE_ENCODER;
  */
 typedef struct {
   INT nInputSamples; /*!< Number of valid input audio samples (multiple of input
-              channels). */
+            channels). */
   UINT inputBufferSizePerChannel; /*!< Size of input buffer (input audio
-                           samples) per channel. */
+                         samples) per channel. */
   UINT isInputInterleaved; /*!< Indicates if input audio samples are represented
-                    in blocks or interleaved:
-                      - 0 : in blocks.
-                      - 1 : interleaved. */
+                  in blocks or interleaved:
+                    - 0 : in blocks.
+                    - 1 : interleaved. */
 
 } SACENC_InArgs;
 
@@ -282,11 +282,11 @@ typedef struct {
  */
 typedef struct {
   INT nOutputBits;    /*!< Number of valid payload bits generated during
-               FDK_sacenc_encode(). */
+             FDK_sacenc_encode(). */
   INT nOutputSamples; /*!< Number of valid output audio samples generated during
-               FDK_sacenc_encode(). */
+             FDK_sacenc_encode(). */
   UINT nSamplesConsumed; /*!< Number of input audio samples consumed in
-                  FDK_sacenc_encode(). */
+                FDK_sacenc_encode(). */
 
 } SACENC_OutArgs;
 

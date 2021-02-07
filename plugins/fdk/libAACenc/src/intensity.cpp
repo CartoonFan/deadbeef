@@ -152,29 +152,29 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   FIXP_DBL corr_thresh; /*!< Only set an IS seed it left/right channel
-                 correlation is above corr_thresh */
+               correlation is above corr_thresh */
 
   FIXP_DBL total_error_thresh; /*!< When expanding the IS region to more SFBs
-                        only accept an error that is not more than
-                        'total_error_thresh' overall. */
+                      only accept an error that is not more than
+                      'total_error_thresh' overall. */
 
   FIXP_DBL local_error_thresh; /*!< When expanding the IS region to more SFBs
-                        only accept an error that is not more than
-                        'local_error_thresh' for the current SFB. */
+                      only accept an error that is not more than
+                      'local_error_thresh' for the current SFB. */
 
   FIXP_DBL direction_deviation_thresh; /*!< The maximum allowed change of the
-                                intensity direction (unit: IS scale)
-                              */
+                              intensity direction (unit: IS scale)
+                            */
 
   FIXP_DBL is_region_min_loudness; /*!< IS regions need to have a minimal
-                            percentage of the overall loudness, e.g.
-                            0.06 == 6% */
+                          percentage of the overall loudness, e.g.
+                          0.06 == 6% */
 
   INT min_is_sfbs; /*!< Only perform IS if 'min_is_sfbs' neighboring SFBs can be
-            processed */
+          processed */
 
   FIXP_DBL left_right_ratio_threshold; /*!< No IS if the panning angle is not
-                                far from the middle, MS will do */
+                              far from the middle, MS will do */
 
 } INTENSITY_PARAMETERS;
 

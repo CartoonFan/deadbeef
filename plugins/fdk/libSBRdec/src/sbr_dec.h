@@ -153,7 +153,7 @@ typedef struct {
 
 #endif
   FIXP_DBL **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
-                  hQmfHBESlotsReal */
+                hQmfHBESlotsReal */
 
   FIXP_DBL **hQmfHBESlotsReal;
   FIXP_DBL **hQmfHBESlotsImag;

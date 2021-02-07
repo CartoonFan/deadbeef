@@ -945,9 +945,9 @@ QmfTransposerCreate(HANDLE_HBE_TRANSPOSER *hQmfTransposer, const int frameSize,
       hQmfTran->noCols =
           (8 * frameSize / 3) / QMF_SYNTH_CHANNELS; /* 32 for 24:64 */
     } else {
-      hQmfTran->noCols = (bSbr41 + 1) * 2 * frameSize /
-                         QMF_SYNTH_CHANNELS; /* 32 for 32:64 and 64 for 16:64 ->
-                  identical to sbrdec->no_cols */
+      hQmfTran->noCols =
+          (bSbr41 + 1) * 2 * frameSize / QMF_SYNTH_CHANNELS; /* 32 for 32:64 and
+                            64 for 16:64 -> identical to sbrdec->no_cols */
     }
 
     hQmfTran->noChannels = frameSize / hQmfTran->noCols;
@@ -1219,9 +1219,9 @@ inline void scaleUp(FIXP_DBL *real_m, FIXP_DBL *imag_m, INT *_e) {
   reserve = CntLeadingZeros((INT(*real_m) ^ INT((*real_m >> 31))) |
                             (INT(*imag_m) ^ INT((*imag_m >> 31)))) -
             1;
-  reserve = fMax(reserve - 1,
-                 0); /* Leave one bit headroom such that (real_m^2 + imag_m^2)
-              does not overflow later if both are 0x80000000. */
+  reserve =
+      fMax(reserve - 1, 0); /* Leave one bit headroom such that (real_m^2 +
+                   imag_m^2) does not overflow later if both are 0x80000000. */
   reserve = fMin(reserve, *_e);
   FDK_ASSERT(reserve >= 0);
   *real_m <<= reserve;
@@ -1717,8 +1717,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           sign = -1;
 
           sourceband = 2 * band / stretch - qmfOffset; /* consistent with the
-        already computed for
-        stretch = 3,4. */
+already computed for
+stretch = 3,4. */
           FDK_ASSERT(sourceband >= 0);
 
           FIXP_DBL sqmag0R_F =
@@ -2031,10 +2031,10 @@ center */
 
             gammaOutReal_m[0] =
                 fMult(tmpReal_m, cos_twid) - fMult(tmpImag_m, sin_twid); /* sum
-                should be <= 1 because of sin/cos multiplication */
+    should be <= 1 because of sin/cos multiplication */
             gammaOutImag_m[0] =
                 fMult(tmpImag_m, cos_twid) + fMult(tmpReal_m, sin_twid); /* sum
-                should be <= 1 because of sin/cos multiplication */
+    should be <= 1 because of sin/cos multiplication */
 
             /* wingain */
             for (k = 0; k < 2; k++) {
@@ -2148,11 +2148,11 @@ j*2+(slotOffset-offset)  */
           ppQmfBufferOutReal_F[i][band] =
               fMult(tmpR, cos_F[band]) -
               fMult(tmpI, (-cos_F[64 - band - 1])); /* sum should be <= 1
-     because of sin/cos
-     multiplication */
+because of sin/cos
+multiplication */
           ppQmfBufferOutImag_F[i][band] = fMult(tmpR, (-cos_F[64 - band - 1])) +
                                           fMult(tmpI, cos_F[band]); /* sum
-                     should by <= 1 because of sin/cos multiplication */
+           should by <= 1 because of sin/cos multiplication */
         }
       }
     } else {
@@ -2165,8 +2165,8 @@ j*2+(slotOffset-offset)  */
           ppQmfBufferOutReal_F[i + ov_len][band] =
               fMult(tmpR, cos_F[band]) -
               fMult(tmpI, (-cos_F[64 - band - 1])); /* sum should be <= 1
-     because of sin/cos
-     multiplication */
+because of sin/cos
+multiplication */
           ppQmfBufferOutImag_F[i + ov_len][band] =
               fMult(tmpR, (-cos_F[64 - band - 1])) +
               fMult(tmpI, cos_F[band]); /* sum should by <= 1 because of sin/cos

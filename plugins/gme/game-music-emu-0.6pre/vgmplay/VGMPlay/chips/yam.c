@@ -3148,11 +3148,11 @@ static void dynacompile(struct YAM_STATE *state) {
   C(0x8B)
   C(0xB7)
   C32(STATEOFS(xzbchoice[XZBCHOICE_ACC])) // mov esi,[edi+<OFS32:acc>]
-      // 16 bytes
-      //
-      // Each instruction
-      //
-      for (i = 0; i < 128; i++) {
+  // 16 bytes
+  //
+  // Each instruction
+  //
+  for (i = 0; i < 128; i++) {
     struct MPRO *mpro = state->mpro + i;
     //
     // If we need to compute the new accumulator, do so (to EAX)
@@ -3249,7 +3249,8 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0xFA)
       C(0x0B) // sar edx,11
       C(0x89)
-      C(0x97) C32(STATEOFS(
+      C(0x97)
+      C32(STATEOFS(
           yychoice[YYCHOICE_Y_REG_H])) // mov [edi+<OFS32:yychoice2>],edx
           C(0x8B) C(0x97) C32(STATEOFS(
               inputs[mpro->i_00rrrrrr]))  // mov edx, [edi+<OFS32:INPUTS+4*IRA>]
@@ -3288,9 +3289,9 @@ static void dynacompile(struct YAM_STATE *state) {
           C32(0x00800000) // lea edx,[esi+esi+800000h]
           C(0xF7)
           C(0xC2)
-          C32(0xFF000000)             // test edx,0FF000000h
-              C(0x8D) C(0x14) C(0x36) // lea edx,[esi+esi]
-                                      // 16 bytes max
+          C32(0xFF000000)         // test edx,0FF000000h
+          C(0x8D) C(0x14) C(0x36) // lea edx,[esi+esi]
+                                  // 16 bytes max
         }
         C(0x74)
         C(0x09) // je +9bytes

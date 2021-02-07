@@ -134,7 +134,7 @@ typedef struct {
   PSENC_STEREO_BANDS_CONFIG nStereoBands;
   PSENC_NENV_CONFIG nEnvelopes;
   LONG iidQuantErrorThreshold; /* quantization threshold to switch between
-                        coarse and fine iid quantization */
+                      coarse and fine iid quantization */
 
 } psTuningTable_t;
 

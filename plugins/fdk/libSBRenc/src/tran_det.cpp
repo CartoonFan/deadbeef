@@ -238,7 +238,7 @@ even */
 
   if (energyTotal_e & 1) {
     energyTotal_e += 1; /* for a defined square result exponent, the exponent
-       has to be even */
+   has to be even */
     EnergyTotal >>= 1;
   }
 
@@ -579,9 +579,9 @@ static void extractTransientCandidates(
 
   endCond = noCols; /* Amount of new transient values to be calculated. */
   startEnerg = (tran_off - 3) >> YBufferSzShift; /* >>YBufferSzShift because of
-                                          amount of energy values. -3
-                                          because of neighbors being
-                                          watched. */
+                                        amount of energy values. -3
+                                        because of neighbors being
+                                        watched. */
   endEnerg =
       ((noCols + (YBufferWriteOffset << YBufferSzShift)) - 1) >>
       YBufferSzShift; /* YBufferSzShift shifts because of half energy values. */

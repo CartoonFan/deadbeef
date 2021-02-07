@@ -122,24 +122,24 @@ typedef struct {
   SBR_CHANNEL *pSbrChannel[SBRDEC_MAX_CH_PER_ELEMENT];
   TRANSPOSER_SETTINGS
   transposerSettings; /* Common transport settings for each individual
-               channel of an element */
+             channel of an element */
   HANDLE_FDK_BITSTREAM hBs;
 
   MP4_ELEMENT_ID
   elementID;     /* Element ID set during initialization. Can be used for
-          concealment */
+        concealment */
   int nChannels; /* Number of elements output channels (=2 in case of PS) */
 
   UCHAR frameErrorFlag[(1) + 1]; /* Frame error status (for every slot in the
-                          delay line). Will be copied into header at
-                          the very beginning of decodeElement()
-                          routine. */
+                        delay line). Will be copied into header at
+                        the very beginning of decodeElement()
+                        routine. */
 
   UCHAR useFrameSlot; /* Index which defines which slot will be decoded/filled
-               next (used with additional delay) */
+             next (used with additional delay) */
   UCHAR useHeaderSlot[(1) + 1]; /* Index array that provides the link between
-                         header and frame data (important when
-                         processing with additional delay). */
+                       header and frame data (important when
+                       processing with additional delay). */
 } SBR_DECODER_ELEMENT;
 
 struct SBR_DECODER_INSTANCE {
@@ -156,18 +156,18 @@ struct SBR_DECODER_INSTANCE {
   int numSbrElements;
   int numSbrChannels;
   INT sampleRateIn;  /* SBR decoder input sampling rate; might be different than
-              the transposer input sampling rate. */
+            the transposer input sampling rate. */
   INT sampleRateOut; /* Sampling rate of the SBR decoder output audio samples.
                       */
   USHORT codecFrameSize;
   UCHAR synDownsampleFac;
   INT downscaleFactor;
   UCHAR numDelayFrames; /* The current number of additional delay frames used
-                 for processing. */
+               for processing. */
   UCHAR harmonicSBR;
   UCHAR
   numFlushedFrames; /* The variable counts the number of frames which are
-             flushed consecutively. */
+           flushed consecutively. */
 
   UINT flags;
 };

@@ -829,13 +829,13 @@ static int CConcealment_ApplyNoise(
     /* set dummy window parameters */
     pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
     pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid
-                        WindowShape (required for F/T transform) */
+                WindowShape (required for F/T transform) */
     pIcsInfo->WindowSequence =
         CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
     pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for
-                              next frame (spectrum in
-                              concealment buffer can't
-                              be used at all) */
+                      next frame (spectrum in
+                      concealment buffer can't
+                      be used at all) */
 
     /* mute spectral data */
     FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));
@@ -1088,13 +1088,13 @@ CConcealment_ApplyInter(CConcealmentInfo *pConcealmentInfo,
     /* set dummy window parameters */
     pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
     pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid
-                        WindowShape (required for F/T transform) */
+                WindowShape (required for F/T transform) */
     pIcsInfo->WindowSequence =
         CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
     pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for
-                              next frame (spectrum in
-                              concealment buffer can't
-                              be used at all) */
+                      next frame (spectrum in
+                      concealment buffer can't
+                      be used at all) */
 
     /* mute spectral data */
     FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));

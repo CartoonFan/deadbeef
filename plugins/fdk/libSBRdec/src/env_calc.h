@@ -112,9 +112,9 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   FIXP_DBL filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
-                                      smoothing) */
+                                    smoothing) */
   FIXP_DBL filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
-                                      (required for smoothing) */
+                                    (required for smoothing) */
   SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
   SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
 

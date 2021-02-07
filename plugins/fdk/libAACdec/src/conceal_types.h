@@ -170,9 +170,9 @@ typedef struct {
     [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used
     by FadeOut mode */
   int winGrpOffset[2]; /* State for signal fade-out of frames with more than one
-                window/subframe */
+              window/subframe */
   int attGrpOffset[2]; /* State for faster signal fade-out of frames with
-                transient signal parts */
+              transient signal parts */
 
   SCHAR lastRenderMode;
 

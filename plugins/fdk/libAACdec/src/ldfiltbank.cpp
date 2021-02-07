@@ -215,7 +215,7 @@ int InvMdctTransformLowDelay_fdk(FIXP_DBL *mdctData, const int mdctData_e,
   FIXP_DBL gain = (FIXP_DBL)0;
   int scale = mdctData_e + MDCT_OUT_HEADROOM -
               LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside
-                      multE2_DinvF_fdk() below */
+                    multE2_DinvF_fdk() below */
   int i;
 
   /* Select LD window slope */

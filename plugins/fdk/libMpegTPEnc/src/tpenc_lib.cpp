@@ -130,8 +130,8 @@ struct TRANSPORTENC {
   INT bsBufferSize;
 
   INT pceFrameCounter; /*!< Indicates frame period when PCE must be written in
-                raw_data_block. -1 means not to write a PCE in
-                raw_dat_block. */
+              raw_data_block. -1 means not to write a PCE in
+              raw_dat_block. */
   union {
     STRUCT_ADTS adts;
 
@@ -461,7 +461,7 @@ TRANSPORTENC_ERROR transportEnc_WriteAccessUnit(HANDLE_TRANSPORTENC hTp,
 
   if (hTp->pceFrameCounter != -1) {
     hTp->pceFrameCounter++; /* Update pceFrameCounter only if PCE writing is
-           active. */
+       active. */
   }
 
   return err;
@@ -539,8 +539,8 @@ INT transportEnc_GetStaticBits(HANDLE_TRANSPORTENC hTp, int auBits) {
         hTp->config.channelMode, hTp->config.matrixMixdownA,
         3);             /* Consider 3 bits ID signalling in alignment */
     auBits += nPceBits; /* Adapt required raw_data_block bit consumtpion for AU
-       length information e.g. in LATM/LOAS configuration.
-     */
+   length information e.g. in LATM/LOAS configuration.
+ */
   }
 
   switch (hTp->transportFmt) {
