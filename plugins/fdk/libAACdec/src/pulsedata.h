@@ -109,11 +109,11 @@ amm-info@iis.fraunhofer.de
 #define N_MAX_LINES 4
 
 typedef struct {
-    UCHAR PulseDataPresent;
-    UCHAR NumberPulse;
-    UCHAR PulseStartBand;
-    UCHAR PulseOffset[N_MAX_LINES];
-    UCHAR PulseAmp[N_MAX_LINES];
+  UCHAR PulseDataPresent;
+  UCHAR NumberPulse;
+  UCHAR PulseStartBand;
+  UCHAR PulseOffset[N_MAX_LINES];
+  UCHAR PulseAmp[N_MAX_LINES];
 } CPulseData;
 
 /**

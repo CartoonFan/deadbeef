@@ -245,32 +245,32 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
  */
 FDK_INLINE
 int EvaluatePower43(FIXP_DBL *pValue, UINT lsb) {
-    FIXP_DBL value;
-    UINT freeBits;
-    UINT exponent;
+  FIXP_DBL value;
+  UINT freeBits;
+  UINT exponent;
 
-    value = *pValue;
-    freeBits = fNormz(value);
-    exponent = DFRACT_BITS - freeBits;
-    FDK_ASSERT(exponent < 14);
+  value = *pValue;
+  freeBits = fNormz(value);
+  exponent = DFRACT_BITS - freeBits;
+  FDK_ASSERT(exponent < 14);
 
-    UINT x = (((int)value << freeBits) >> 19);
-    UINT tableIndex = (x & 0x0FFF) >> 4;
-    FIXP_DBL invQVal;
+  UINT x = (((int)value << freeBits) >> 19);
+  UINT tableIndex = (x & 0x0FFF) >> 4;
+  FIXP_DBL invQVal;
 
-    x = x & 0x0F;
+  x = x & 0x0F;
 
-    UINT r0 = (LONG)InverseQuantTable[tableIndex + 0];
-    UINT r1 = (LONG)InverseQuantTable[tableIndex + 1];
-    USHORT nx = 16 - x;
-    UINT temp = (r0)*nx + (r1)*x;
-    invQVal = (FIXP_DBL)temp;
+  UINT r0 = (LONG)InverseQuantTable[tableIndex + 0];
+  UINT r1 = (LONG)InverseQuantTable[tableIndex + 1];
+  USHORT nx = 16 - x;
+  UINT temp = (r0)*nx + (r1)*x;
+  invQVal = (FIXP_DBL)temp;
 
-    FDK_ASSERT(lsb < 4);
-    *pValue = fMultDiv2(invQVal, MantissaTable[lsb][exponent]);
+  FDK_ASSERT(lsb < 4);
+  *pValue = fMultDiv2(invQVal, MantissaTable[lsb][exponent]);
 
-    /* + 1 compensates fMultDiv2(). */
-    return ExponentTable[lsb][exponent] + 1;
+  /* + 1 compensates fMultDiv2(). */
+  return ExponentTable[lsb][exponent] + 1;
 }
 
 /* Recalculate gain */
@@ -281,12 +281,12 @@ FIXP_DBL get_gain(const FIXP_DBL *x, const FIXP_DBL *y, int n);
  * scale (factor % 4) value.
  */
 FDK_INLINE int GetScaleFromValue(FIXP_DBL value, unsigned int lsb) {
-    if (value != (FIXP_DBL)0) {
-        int scale = EvaluatePower43(&value, lsb);
-        return CntLeadingZeros(value) - scale - 2;
-    } else
-        return 0; /* Return zero, because its useless to scale a zero value, saves
- workload and avoids scaling overshifts. */
+  if (value != (FIXP_DBL)0) {
+    int scale = EvaluatePower43(&value, lsb);
+    return CntLeadingZeros(value) - scale - 2;
+  } else
+    return 0; /* Return zero, because its useless to scale a zero value, saves
+workload and avoids scaling overshifts. */
 }
 
 /*!
@@ -301,46 +301,46 @@ inline int CBlock_DecodeHuffmanWord(
     HANDLE_FDK_BITSTREAM bs,        /*!< pointer to bitstream */
     const CodeBookDescription *hcb) /*!< pointer to codebook description */
 {
-    UINT val;
-    UINT index = 0;
-    const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
+  UINT val;
+  UINT index = 0;
+  const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
-    while (1) {
-        val = CodeBook[index]
-              [FDKreadBits(bs, HuffmanBits)]; /* Expensive memory access */
+  while (1) {
+    val = CodeBook[index]
+                  [FDKreadBits(bs, HuffmanBits)]; /* Expensive memory access */
 
-        if ((val & 1) == 0) {
-            index = val >> 2;
-            continue;
-        } else {
-            if (val & 2) {
-                FDKpushBackCache(bs, 1);
-            }
+    if ((val & 1) == 0) {
+      index = val >> 2;
+      continue;
+    } else {
+      if (val & 2) {
+        FDKpushBackCache(bs, 1);
+      }
 
-            val >>= 2;
-            break;
-        }
+      val >>= 2;
+      break;
     }
+  }
 
-    return val;
+  return val;
 }
 inline int CBlock_DecodeHuffmanWordCB(
     HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
     const USHORT (
         *CodeBook)[HuffmanEntries]) /*!< pointer to codebook description */
 {
-    UINT index = 0;
+  UINT index = 0;
 
-    while (1) {
-        index = CodeBook[index][FDKread2Bits(bs)]; /* Expensive memory access */
-        if (index & 1)
-            break;
-        index >>= 2;
-    }
-    if (index & 2) {
-        FDKpushBackCache(bs, 1);
-    }
-    return index >> 2;
+  while (1) {
+    index = CodeBook[index][FDKread2Bits(bs)]; /* Expensive memory access */
+    if (index & 1)
+      break;
+    index >>= 2;
+  }
+  if (index & 2) {
+    FDKpushBackCache(bs, 1);
+  }
+  return index >> 2;
 }
 
 #endif /* #ifndef BLOCK_H */

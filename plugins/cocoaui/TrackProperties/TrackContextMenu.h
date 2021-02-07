@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)update:(ddb_playlist_t *)playlist;
 - (void)updateWithTrackList:(ddb_playItem_t *_Nullable *_Nonnull)tracks
-    count:(NSUInteger)count
-    playlist:(nullable ddb_playlist_t *)plt;
+                      count:(NSUInteger)count
+                   playlist:(nullable ddb_playlist_t *)plt;
 
 @end
 

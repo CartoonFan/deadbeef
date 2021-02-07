@@ -108,25 +108,25 @@ amm-info@iis.fraunhofer.de
 #if defined(__ARM_ARCH_6__)
 
 inline static INT shiftRightSat(INT src, int scale) {
-    INT result;
-    asm("ssat %0,%2,%0;\n"
+  INT result;
+  asm("ssat %0,%2,%0;\n"
 
-        : "=&r"(result)
-        : "r"(src >> scale), "M"(SAMPLE_BITS));
+      : "=&r"(result)
+      : "r"(src >> scale), "M"(SAMPLE_BITS));
 
-    return result;
+  return result;
 }
 
 #define SATURATE_INT_PCM_RIGHT_SHIFT(src, scale) shiftRightSat(src, scale)
 
 inline static INT shiftLeftSat(INT src, int scale) {
-    INT result;
-    asm("ssat %0,%2,%0;\n"
+  INT result;
+  asm("ssat %0,%2,%0;\n"
 
-        : "=&r"(result)
-        : "r"(src << scale), "M"(SAMPLE_BITS));
+      : "=&r"(result)
+      : "r"(src << scale), "M"(SAMPLE_BITS));
 
-    return result;
+  return result;
 }
 
 #define SATURATE_INT_PCM_LEFT_SHIFT(src, scale) shiftLeftSat(src, scale)
@@ -139,12 +139,12 @@ inline static INT shiftLeftSat(INT src, int scale) {
 #ifdef FUNCTION_scaleValueInPlace
 inline void scaleValueInPlace(FIXP_DBL *value, /*!< Value */
                               INT scalefactor  /*!< Scalefactor */
-                             ) {
-    INT newscale;
-    if ((newscale = scalefactor) >= 0)
-        *value <<= newscale;
-    else
-        *value >>= -newscale;
+) {
+  INT newscale;
+  if ((newscale = scalefactor) >= 0)
+    *value <<= newscale;
+  else
+    *value >>= -newscale;
 }
 #endif /* #ifdef FUNCTION_scaleValueInPlace */
 

@@ -110,11 +110,11 @@ amm-info@iis.fraunhofer.de
 typedef enum { DM_REGULAR_DELAY = 0, DM_LOW_DELAY = 1 } DELAY_MODE;
 
 typedef enum {
-    DE_OK = 0,
-    DE_NOT_OK = -100,
-    DE_PARAM_OUT_OF_RANGE,
-    DE_PARAM_INVALID,
-    DE_MEMORY_ERROR
+  DE_OK = 0,
+  DE_NOT_OK = -100,
+  DE_PARAM_OUT_OF_RANGE,
+  DE_PARAM_INVALID,
+  DE_MEMORY_ERROR
 } DRC_ERROR;
 
 typedef enum { SDM_OFF, SDM_QMF64, SDM_QMF71, SDM_STFT256 } SUBBAND_DOMAIN_MODE;

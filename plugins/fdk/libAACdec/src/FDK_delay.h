@@ -109,9 +109,9 @@ amm-info@iis.fraunhofer.de
  * Structure representing one delay element for multiple channels.
  */
 typedef struct {
-    INT_PCM *delay_line; /*!< Pointer which stores allocated delay line. */
-    USHORT delay;        /*!< Delay required in samples (per channel). */
-    UCHAR num_channels;  /*!< Number of channels to delay. */
+  INT_PCM *delay_line; /*!< Pointer which stores allocated delay line. */
+  USHORT delay;        /*!< Delay required in samples (per channel). */
+  UCHAR num_channels;  /*!< Number of channels to delay. */
 } FDK_SignalDelay;
 
 /**

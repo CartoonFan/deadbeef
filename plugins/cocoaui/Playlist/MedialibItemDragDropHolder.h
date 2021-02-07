@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MedialibItemDragDropHolder
     : NSObject <NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
 
-  @property(nullable, nonatomic, readonly) ddb_playItem_t *playItem;
+@property(nullable, nonatomic, readonly) ddb_playItem_t *playItem;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithItem:(ddb_playItem_t *_Nullable)item

@@ -144,10 +144,10 @@ extern const FIXP_WTB LowDelaySynthesis128[384];
 extern const FIXP_WTB LowDelaySynthesis120[360];
 
 typedef struct {
-    const SHORT *sfbOffsetLong;
-    const SHORT *sfbOffsetShort;
-    UCHAR numberOfSfbLong;
-    UCHAR numberOfSfbShort;
+  const SHORT *sfbOffsetLong;
+  const SHORT *sfbOffsetShort;
+  UCHAR numberOfSfbLong;
+  UCHAR numberOfSfbShort;
 } SFB_INFO;
 
 extern const SFB_INFO sfbOffsetTables[5][16];
@@ -156,10 +156,10 @@ extern const SFB_INFO sfbOffsetTables[5][16];
 enum { HuffmanBits = 2, HuffmanEntries = (1 << HuffmanBits) };
 
 typedef struct {
-    const USHORT (*CodeBook)[HuffmanEntries];
-    UCHAR Dimension;
-    UCHAR numBits;
-    UCHAR Offset;
+  const USHORT (*CodeBook)[HuffmanEntries];
+  UCHAR Dimension;
+  UCHAR numBits;
+  UCHAR Offset;
 } CodeBookDescription;
 
 extern const CodeBookDescription AACcodeBookDescriptionTable[13];
@@ -211,7 +211,7 @@ extern const UCHAR channelMappingTableWAV[15][8];
 
 /* Lookup tables for elements in ER bitstream */
 extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
-[AACDEC_CH_ELEMENTS_TAB_SIZE];
+                                       [AACDEC_CH_ELEMENTS_TAB_SIZE];
 
 #define SF_FNA_COEFFS                                                          \
   1 /* Compile-time prescaler for MDST-filter coefficients. */

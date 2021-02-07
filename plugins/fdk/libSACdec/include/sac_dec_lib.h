@@ -117,23 +117,23 @@ extern "C" {
  * \brief  MPEG Surround input data interface mode.
  **/
 typedef enum {
-    SAC_INTERFACE_QMF =
-        0, /*!< Use QMF domain interface for the input downmix audio.  */
-    SAC_INTERFACE_TIME, /*!< Use time domain interface for the input downmix
-                 audio. */
-    SAC_INTERFACE_AUTO  /*!<          */
+  SAC_INTERFACE_QMF =
+      0, /*!< Use QMF domain interface for the input downmix audio.  */
+  SAC_INTERFACE_TIME, /*!< Use time domain interface for the input downmix
+               audio. */
+  SAC_INTERFACE_AUTO  /*!<          */
 } SAC_INPUT_CONFIG;
 
 /**
  * \brief  MPEG Surround output mode.
  **/
 typedef enum {
-    SACDEC_OUT_MODE_NORMAL =
-        0, /*!< Normal multi channel processing without output restrictions. */
-    SACDEC_OUT_MODE_BINAURAL, /*!< Two channel output with binaural processsing.
+  SACDEC_OUT_MODE_NORMAL =
+      0, /*!< Normal multi channel processing without output restrictions. */
+  SACDEC_OUT_MODE_BINAURAL, /*!< Two channel output with binaural processsing.
                              */
-    SACDEC_OUT_MODE_STEREO,   /*!< Always two channel output mode.   */
-    SACDEC_OUT_MODE_6CHANNEL  /*!< Always process with 5.1 channel output.  */
+  SACDEC_OUT_MODE_STEREO,   /*!< Always two channel output mode.   */
+  SACDEC_OUT_MODE_6CHANNEL  /*!< Always process with 5.1 channel output.  */
 } SAC_DEC_OUTPUT_MODE;
 
 /**
@@ -142,20 +142,20 @@ typedef enum {
  *SAC_UPMIX_TYPE_BINAURAL.
  **/
 typedef enum {
-    SAC_BINAURAL_HRTF_KEMAR = 0,
-    SAC_BINAURAL_HRTF_VAST,
-    SAC_BINAURAL_HRTF_MPSVT,
-    SAC_BINAURAL_SINGLE_HRTFS
+  SAC_BINAURAL_HRTF_KEMAR = 0,
+  SAC_BINAURAL_HRTF_VAST,
+  SAC_BINAURAL_HRTF_MPSVT,
+  SAC_BINAURAL_SINGLE_HRTFS
 } SAC_BINAURAL_HRTF_MODEL;
 
 /**
  * \brief  MPEG Surround decoder instance available.
  **/
 typedef enum {
-    SAC_INSTANCE_NOT_FULL_AVAILABLE =
-        0, /*!< MPEG Surround decoder instance not full available. */
-    SAC_INSTANCE_FULL_AVAILABLE /*!< MPEG Surround decoder instance full
-                         available. */
+  SAC_INSTANCE_NOT_FULL_AVAILABLE =
+      0, /*!< MPEG Surround decoder instance not full available. */
+  SAC_INSTANCE_FULL_AVAILABLE /*!< MPEG Surround decoder instance full
+                       available. */
 } SAC_INSTANCE_AVAIL;
 
 /**
@@ -165,89 +165,89 @@ typedef enum {
  * following parameters.
  */
 typedef enum {
-    SACDEC_OUTPUT_MODE = 0x0001, /*!< Set MPEG Surround decoder output mode. See
-                          SAC_DEC_OUTPUT_MODE. */
-    SACDEC_BLIND_ENABLE =
-        0x0002, /*!< Multi channel output without MPEG Surround side info.    */
-    SACDEC_PARTIALLY_COMPLEX =
-        0x0003,                /*!< Set partially complex flag for MPEG Surround.
-                           0: Use complex valued QMF data.
-                           1: Use real valued QMF data (low power mode) */
-    SACDEC_INTERFACE = 0x0004, /*!< Select signal input interface for MPEG
-                            Surround. Switch time interface off:  0
-                            Switch time interface on:   1 */
-    SACDEC_BS_DELAY = 0x0005,  /*!< Select bit stream delay for MPEG Surround.
-                            Switch bit stream delay off:  0
-                            Switch bit stream delay on:   1 */
-    SACDEC_BINAURAL_QUALITY = 0x0102,  /*!< Set binaural quality for MPEG Surround
-                                  binaural mode.  0: Low Complexity,
-                                  1: High Quality */
-    SACDEC_BINAURAL_DISTANCE = 0x0103, /*!< Set perceived distance for binaural
-                                playback (binaural mode only). The valid
-                                values  range from 0 to 100. Where 100
-                                corresponds to the farthest perceived
-                                distance. */
-    SACDEC_BINAURAL_DIALOG_CLARITY =
-        0x0104, /*!< Set dialog clarity (for binaural playback).
-           The valid values range from 0 to 100. */
-    SACDEC_BINAURAL_FRONT_ANGLE = 0x0105, /*!< Set angle between the virtual front
-                                   speaker pair (binaural mode only).
-                                     The valid range is from 0 to 180
-                                   angular degrees. */
-    SACDEC_BINAURAL_BACK_ANGLE = 0x0106,  /*!< Set angle between the virtual back
-                                   speaker pair (binaural mode only).  The
-                                   valid range is from 0 to 180 angular
-                                   degrees. */
-    SACDEC_BINAURAL_PRESET = 0x0107, /*!< Set a virtual speaker setup preset for
-                              binaural playback (binaural mode only).
-                              This meta-parameter implicitly modifies
-                              the following parameters:
-                                  SACDEC_BINAURAL_DISTANCE,
-                                  SACDEC_BINAURAL_DIALOG_CLARITY,
-                                  SACDEC_BINAURAL_FRONT_ANGLE and
-                                  SACDEC_BINAURAL_BACK_ANGLE.
-                                The following presets are available:
-                                  1: Dry room
-                                  2: Living room (default)
-                                  3: Cinema */
+  SACDEC_OUTPUT_MODE = 0x0001, /*!< Set MPEG Surround decoder output mode. See
+                        SAC_DEC_OUTPUT_MODE. */
+  SACDEC_BLIND_ENABLE =
+      0x0002, /*!< Multi channel output without MPEG Surround side info.    */
+  SACDEC_PARTIALLY_COMPLEX =
+      0x0003,                /*!< Set partially complex flag for MPEG Surround.
+                         0: Use complex valued QMF data.
+                         1: Use real valued QMF data (low power mode) */
+  SACDEC_INTERFACE = 0x0004, /*!< Select signal input interface for MPEG
+                          Surround. Switch time interface off:  0
+                          Switch time interface on:   1 */
+  SACDEC_BS_DELAY = 0x0005,  /*!< Select bit stream delay for MPEG Surround.
+                          Switch bit stream delay off:  0
+                          Switch bit stream delay on:   1 */
+  SACDEC_BINAURAL_QUALITY = 0x0102,  /*!< Set binaural quality for MPEG Surround
+                                binaural mode.  0: Low Complexity,
+                                1: High Quality */
+  SACDEC_BINAURAL_DISTANCE = 0x0103, /*!< Set perceived distance for binaural
+                              playback (binaural mode only). The valid
+                              values  range from 0 to 100. Where 100
+                              corresponds to the farthest perceived
+                              distance. */
+  SACDEC_BINAURAL_DIALOG_CLARITY =
+      0x0104, /*!< Set dialog clarity (for binaural playback).
+         The valid values range from 0 to 100. */
+  SACDEC_BINAURAL_FRONT_ANGLE = 0x0105, /*!< Set angle between the virtual front
+                                 speaker pair (binaural mode only).
+                                   The valid range is from 0 to 180
+                                 angular degrees. */
+  SACDEC_BINAURAL_BACK_ANGLE = 0x0106,  /*!< Set angle between the virtual back
+                                 speaker pair (binaural mode only).  The
+                                 valid range is from 0 to 180 angular
+                                 degrees. */
+  SACDEC_BINAURAL_PRESET = 0x0107, /*!< Set a virtual speaker setup preset for
+                            binaural playback (binaural mode only).
+                            This meta-parameter implicitly modifies
+                            the following parameters:
+                                SACDEC_BINAURAL_DISTANCE,
+                                SACDEC_BINAURAL_DIALOG_CLARITY,
+                                SACDEC_BINAURAL_FRONT_ANGLE and
+                                SACDEC_BINAURAL_BACK_ANGLE.
+                              The following presets are available:
+                                1: Dry room
+                                2: Living room (default)
+                                3: Cinema */
 
-    SACDEC_BS_INTERRUPTION =
-        0x0200, /*!< If the given value is unequal to 0 hint the MPEG Surround
-         decoder that the next input data is discontinuous, because of
-         frame loss, seeking, etc. Announce the decoder that the
-         bitstream data was interrupted (fSync = 0). This will cause the
-         surround decoder not to parse any new bitstream data until a
-         new header with a valid Spatial Specific Config and a
-         independently decodable frame is found. Specially important
-         when the MPEG Surround data is split accross several frames
-         (for example in the case of AAC-LC downmix with 1024
-         framelength and 2048 surround frame length) and a discontinuity
-         in the bitstream data occurs. If fSync is 1, assume that MPEG
-         Surround data is in sync (out of band config for example). */
-    SACDEC_CLEAR_HISTORY = 0x0201, /*!< If the given value is unequal to 0 clear
-                            all internal states (delay lines, QMF
-                            states, ...) of the MPEG Surround decoder.
-                            This will cause a discontinuity in the audio
-                            output signal. */
+  SACDEC_BS_INTERRUPTION =
+      0x0200, /*!< If the given value is unequal to 0 hint the MPEG Surround
+       decoder that the next input data is discontinuous, because of
+       frame loss, seeking, etc. Announce the decoder that the
+       bitstream data was interrupted (fSync = 0). This will cause the
+       surround decoder not to parse any new bitstream data until a
+       new header with a valid Spatial Specific Config and a
+       independently decodable frame is found. Specially important
+       when the MPEG Surround data is split accross several frames
+       (for example in the case of AAC-LC downmix with 1024
+       framelength and 2048 surround frame length) and a discontinuity
+       in the bitstream data occurs. If fSync is 1, assume that MPEG
+       Surround data is in sync (out of band config for example). */
+  SACDEC_CLEAR_HISTORY = 0x0201, /*!< If the given value is unequal to 0 clear
+                          all internal states (delay lines, QMF
+                          states, ...) of the MPEG Surround decoder.
+                          This will cause a discontinuity in the audio
+                          output signal. */
 
-    SACDEC_CONCEAL_NUM_KEEP_FRAMES =
-        0x0301, /*!< Error concealment: The Number of frames the module keeps the
-         last spatial image before fading to the particular spatial
-         scenario starts. The default is 10 frames. */
-    SACDEC_CONCEAL_FADE_OUT_SLOPE_LENGTH =
-        0x0302, /*!< Error concealment: Length of the slope (in frames) the module
-         creates to fade from the last spatial scenario to the
-         particular default scenario (downmix) in case of consecutive
-         errors. Default is 5. */
-    SACDEC_CONCEAL_FADE_IN_SLOPE_LENGTH =
-        0x0303, /*!< Error concealment: Length of the slope (in frames) the module
-         creates to fade from the default spatial scenario (downmix) to
-         the current scenario after fade-out. Default parameter value
-         is 5. */
-    SACDEC_CONCEAL_NUM_RELEASE_FRAMES =
-        0x0304 /*!< Error concealment: The number of error free frames before the
-        module starts fading from default to the current spatial
-        scenario. Default parameter value is 3 frames. */
+  SACDEC_CONCEAL_NUM_KEEP_FRAMES =
+      0x0301, /*!< Error concealment: The Number of frames the module keeps the
+       last spatial image before fading to the particular spatial
+       scenario starts. The default is 10 frames. */
+  SACDEC_CONCEAL_FADE_OUT_SLOPE_LENGTH =
+      0x0302, /*!< Error concealment: Length of the slope (in frames) the module
+       creates to fade from the last spatial scenario to the
+       particular default scenario (downmix) in case of consecutive
+       errors. Default is 5. */
+  SACDEC_CONCEAL_FADE_IN_SLOPE_LENGTH =
+      0x0303, /*!< Error concealment: Length of the slope (in frames) the module
+       creates to fade from the default spatial scenario (downmix) to
+       the current scenario after fade-out. Default parameter value
+       is 5. */
+  SACDEC_CONCEAL_NUM_RELEASE_FRAMES =
+      0x0304 /*!< Error concealment: The number of error free frames before the
+      module starts fading from default to the current spatial
+      scenario. Default parameter value is 3 frames. */
 } SACDEC_PARAM;
 
 #define PCM_MPS INT_PCM
