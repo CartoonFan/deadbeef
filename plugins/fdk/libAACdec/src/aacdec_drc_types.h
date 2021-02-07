@@ -113,9 +113,9 @@ amm-info@iis.fraunhofer.de
  * \brief DRC module global data types
  */
 typedef enum {
-  UNKNOWN_PAYLOAD = 0,
-  MPEG_DRC_EXT_DATA = 1,
-  DVB_DRC_ANC_DATA = 2
+    UNKNOWN_PAYLOAD = 0,
+    MPEG_DRC_EXT_DATA = 1,
+    DVB_DRC_ANC_DATA = 2
 
 } AACDEC_DRC_PAYLOAD_TYPE;
 
@@ -123,93 +123,93 @@ typedef enum {
  * \brief Options for parameter handling / presentation mode
  */
 typedef enum {
-  DISABLED_PARAMETER_HANDLING = -1, /*!< DRC parameter handling disabled, all
+    DISABLED_PARAMETER_HANDLING = -1, /*!< DRC parameter handling disabled, all
                                    parameters are applied as requested. */
-  ENABLED_PARAMETER_HANDLING =
-      0, /*!< Apply changes to requested DRC parameters to prevent clipping */
-  DRC_PRESENTATION_MODE_1 = 1, /*!< DRC Presentation mode 1*/
-  DRC_PRESENTATION_MODE_2 = 2  /*!< DRC Presentation mode 2*/
+    ENABLED_PARAMETER_HANDLING =
+        0, /*!< Apply changes to requested DRC parameters to prevent clipping */
+    DRC_PRESENTATION_MODE_1 = 1, /*!< DRC Presentation mode 1*/
+    DRC_PRESENTATION_MODE_2 = 2  /*!< DRC Presentation mode 2*/
 
 } AACDEC_DRC_PARAMETER_HANDLING;
 
 typedef struct {
-  UINT expiryCount;
-  UINT numBands;
-  USHORT bandTop[MAX_DRC_BANDS];
-  SHORT drcInterpolationScheme;
-  UCHAR drcValue[MAX_DRC_BANDS];
-  SCHAR drcDataType;
+    UINT expiryCount;
+    UINT numBands;
+    USHORT bandTop[MAX_DRC_BANDS];
+    SHORT drcInterpolationScheme;
+    UCHAR drcValue[MAX_DRC_BANDS];
+    SCHAR drcDataType;
 
 } CDrcChannelData;
 
 typedef struct {
-  UINT excludedChnsMask;
-  SCHAR progRefLevel;
-  SCHAR presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
+    UINT excludedChnsMask;
+    SCHAR progRefLevel;
+    SCHAR presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
                  (reserved). */
-  SCHAR pceInstanceTag;
+    SCHAR pceInstanceTag;
 
-  CDrcChannelData channelData;
+    CDrcChannelData channelData;
 
 } CDrcPayload;
 
 typedef struct {
-  /* DRC parameters: Latest user requests */
-  FIXP_DBL usrCut;
-  FIXP_DBL usrBoost;
-  UCHAR usrApplyHeavyCompression;
+    /* DRC parameters: Latest user requests */
+    FIXP_DBL usrCut;
+    FIXP_DBL usrBoost;
+    UCHAR usrApplyHeavyCompression;
 
-  /* DRC parameters: Currently used, possibly changed by
-   * aacDecoder_drcParameterHandling */
-  FIXP_DBL cut;         /* attenuation scale factor */
-  FIXP_DBL boost;       /* boost scale factor  */
-  SCHAR targetRefLevel; /* target reference level for loudness normalization */
-  UCHAR applyHeavyCompression; /* heavy compression (DVB) flag */
+    /* DRC parameters: Currently used, possibly changed by
+     * aacDecoder_drcParameterHandling */
+    FIXP_DBL cut;         /* attenuation scale factor */
+    FIXP_DBL boost;       /* boost scale factor  */
+    SCHAR targetRefLevel; /* target reference level for loudness normalization */
+    UCHAR applyHeavyCompression; /* heavy compression (DVB) flag */
 
-  UINT expiryFrame;
-  UCHAR bsDelayEnable;
-  UCHAR applyDigitalNorm;
+    UINT expiryFrame;
+    UCHAR bsDelayEnable;
+    UCHAR applyDigitalNorm;
 
-  AACDEC_DRC_PARAMETER_HANDLING defaultPresentationMode;
-  UCHAR encoderTargetLevel;
+    AACDEC_DRC_PARAMETER_HANDLING defaultPresentationMode;
+    UCHAR encoderTargetLevel;
 
 } CDrcParams;
 
 typedef struct {
-  CDrcParams params; /* Module parameters that can be set by user (via SetParam
+    CDrcParams params; /* Module parameters that can be set by user (via SetParam
                       API function) */
 
-  UCHAR enable;      /* Switch that controls dynamic range processing */
-  UCHAR digitalNorm; /* Switch to en-/disable reference level normalization in
+    UCHAR enable;      /* Switch that controls dynamic range processing */
+    UCHAR digitalNorm; /* Switch to en-/disable reference level normalization in
                     digital domain */
 
-  UCHAR update; /* Flag indicating the change of a user or bitstream parameter
+    UCHAR update; /* Flag indicating the change of a user or bitstream parameter
                which affects aacDecoder_drcParameterHandling */
-  INT numOutChannels;     /* Number of output channels */
-  INT prevAacNumChannels; /* Previous number of channels of aac bitstream, used
+    INT numOutChannels;     /* Number of output channels */
+    INT prevAacNumChannels; /* Previous number of channels of aac bitstream, used
                          for update flag */
 
-  USHORT numPayloads; /* The number of DRC data payload elements found within
+    USHORT numPayloads; /* The number of DRC data payload elements found within
                      frame */
-  USHORT
-  numThreads;         /* The number of DRC data threads extracted from the found
+    USHORT
+    numThreads;         /* The number of DRC data threads extracted from the found
                      payload elements */
-  SCHAR progRefLevel; /* Program reference level for all channels */
-  UCHAR progRefLevelPresent; /* Program reference level found in bitstream */
+    SCHAR progRefLevel; /* Program reference level for all channels */
+    UCHAR progRefLevelPresent; /* Program reference level found in bitstream */
 
-  UINT prlExpiryCount; /* Counter that can be used to monitor the life time of
+    UINT prlExpiryCount; /* Counter that can be used to monitor the life time of
                       the program reference level. */
 
-  SCHAR presMode; /* Presentation mode as defined in ETSI TS 101 154 */
-  UCHAR dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
+    SCHAR presMode; /* Presentation mode as defined in ETSI TS 101 154 */
+    UCHAR dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
                             is present or not */
-  UINT dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
+    UINT dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
                             position in the bitstream (only one per frame) */
-  UINT drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
+    UINT drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
                                            positions in the bitstream */
 
-  UCHAR
-  uniDrcPrecedence; /* Flag for signalling that uniDrc is active and takes
+    UCHAR
+    uniDrcPrecedence; /* Flag for signalling that uniDrc is active and takes
                    precedence over legacy DRC */
 
 } CDrcInfo;

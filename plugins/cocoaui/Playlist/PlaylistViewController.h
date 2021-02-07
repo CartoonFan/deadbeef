@@ -27,15 +27,15 @@
 #import <Cocoa/Cocoa.h>
 
 typedef struct {
-  char *title;
-  int type; // predefined col type
-  char *format;
-  int size;
-  int alignment;
-  int set_text_color;
-  uint8_t text_color[4];
-  char *bytecode;
-  int sort_order;
+    char *title;
+    int type; // predefined col type
+    char *format;
+    int size;
+    int alignment;
+    int set_text_color;
+    uint8_t text_color[4];
+    char *bytecode;
+    int sort_order;
 } plt_col_info_t;
 
 @interface PlaylistViewController : DesignableViewController

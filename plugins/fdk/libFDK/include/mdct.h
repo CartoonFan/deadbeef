@@ -124,10 +124,10 @@ amm-info@iis.fraunhofer.de
 #define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
 
 typedef enum {
-  BLOCK_LONG = 0, /* normal long block */
-  BLOCK_START,    /* long start block */
-  BLOCK_SHORT,    /* 8 short blocks sequence */
-  BLOCK_STOP      /* long stop block*/
+    BLOCK_LONG = 0, /* normal long block */
+    BLOCK_START,    /* long start block */
+    BLOCK_SHORT,    /* 8 short blocks sequence */
+    BLOCK_STOP      /* long stop block*/
 } BLOCK_TYPE;
 
 typedef enum { SHAPE_SINE = 0, SHAPE_KBD, SHAPE_LOL } WINDOW_SHAPE;
@@ -136,23 +136,23 @@ typedef enum { SHAPE_SINE = 0, SHAPE_KBD, SHAPE_LOL } WINDOW_SHAPE;
  * \brief MDCT persistent data
  */
 typedef struct {
-  union {
-    FIXP_DBL *freq;
-    FIXP_DBL *time;
-  } overlap; /**< Pointer to overlap memory */
+    union {
+        FIXP_DBL *freq;
+        FIXP_DBL *time;
+    } overlap; /**< Pointer to overlap memory */
 
-  const FIXP_WTP *prev_wrs; /**< pointer to previous right window slope  */
-  int prev_tl;              /**< previous transform length */
-  int prev_nr;              /**< previous right window offset */
-  int prev_fr;              /**< previous right window slope length */
-  int ov_offset;            /**< overlap time data fill level */
-  int ov_size;              /**< Overlap buffer size in words */
+    const FIXP_WTP *prev_wrs; /**< pointer to previous right window slope  */
+    int prev_tl;              /**< previous transform length */
+    int prev_nr;              /**< previous right window offset */
+    int prev_fr;              /**< previous right window slope length */
+    int ov_offset;            /**< overlap time data fill level */
+    int ov_size;              /**< Overlap buffer size in words */
 
-  int prevAliasSymmetry;
-  int prevPrevAliasSymmetry;
+    int prevAliasSymmetry;
+    int prevPrevAliasSymmetry;
 
-  FIXP_DBL *pFacZir;
-  FIXP_DBL *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
+    FIXP_DBL *pFacZir;
+    FIXP_DBL *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
                       transition) */
 } mdct_t;
 

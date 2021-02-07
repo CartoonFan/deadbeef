@@ -109,29 +109,29 @@ amm-info@iis.fraunhofer.de
 #define TRANSPORTENC_INBUF_SIZE 8192
 
 typedef enum {
-  TRANSPORTENC_OK = 0,             /*!< All fine.             */
-  TRANSPORTENC_NO_MEM,             /*!< Out of memory.             */
-  TRANSPORTENC_UNKOWN_ERROR = 1,   /*!< Unknown error (embarrasing).   */
-  TRANSPORTENC_INVALID_PARAMETER,  /*!< An invalid parameter was passed to a
+    TRANSPORTENC_OK = 0,             /*!< All fine.             */
+    TRANSPORTENC_NO_MEM,             /*!< Out of memory.             */
+    TRANSPORTENC_UNKOWN_ERROR = 1,   /*!< Unknown error (embarrasing).   */
+    TRANSPORTENC_INVALID_PARAMETER,  /*!< An invalid parameter was passed to a
                                   function .          */
-  TRANSPORTENC_UNSUPPORTED_FORMAT, /*!< Unsupported transport format. */
-  TRANSPORTENC_NOT_ENOUGH_BITS,    /*!< Out of bits. Provide more bits and try
+    TRANSPORTENC_UNSUPPORTED_FORMAT, /*!< Unsupported transport format. */
+    TRANSPORTENC_NOT_ENOUGH_BITS,    /*!< Out of bits. Provide more bits and try
                                   again.            */
 
-  TRANSPORTENC_INVALID_CONFIG, /*!< Error in configuration.               */
-  TRANSPORTENC_LATM_INVALID_NR_OF_SUBFRAMES, /*!< LATM: number of subframes out
+    TRANSPORTENC_INVALID_CONFIG, /*!< Error in configuration.               */
+    TRANSPORTENC_LATM_INVALID_NR_OF_SUBFRAMES, /*!< LATM: number of subframes out
                                             of range.                  */
-  TRANSPORTENC_LOAS_NOT_AVAILABLE, /*!< LOAS format not supported.           */
-  TRANSPORTENC_INVALID_LATM_ALIGNMENT, /*!< AudioMuxElement length not aligned
+    TRANSPORTENC_LOAS_NOT_AVAILABLE, /*!< LOAS format not supported.           */
+    TRANSPORTENC_INVALID_LATM_ALIGNMENT, /*!< AudioMuxElement length not aligned
                                       to 1 byte.            */
 
-  TRANSPORTENC_INVALID_TRANSMISSION_FRAME_LENGTH, /*!< Invalid transmission
+    TRANSPORTENC_INVALID_TRANSMISSION_FRAME_LENGTH, /*!< Invalid transmission
                                                  frame length (< 0). */
-  TRANSPORTENC_INVALID_CELP_FRAME_LENGTH, /*!< Invalid CELP frame length found
+    TRANSPORTENC_INVALID_CELP_FRAME_LENGTH, /*!< Invalid CELP frame length found
                                          (>= 62).                 */
-  TRANSPORTENC_INVALID_FRAME_BITS, /*!< Frame bits is not 40 and not 80. */
-  TRANSPORTENC_INVALID_AOT,        /*!< Unknown AOT found.        */
-  TRANSPORTENC_INVALID_AU_LENGTH   /*!< Invalid Access Unit length (not
+    TRANSPORTENC_INVALID_FRAME_BITS, /*!< Frame bits is not 40 and not 80. */
+    TRANSPORTENC_INVALID_AOT,        /*!< Unknown AOT found.        */
+    TRANSPORTENC_INVALID_AU_LENGTH   /*!< Invalid Access Unit length (not
                                   byte-aligned).           */
 
 } TRANSPORTENC_ERROR;
@@ -226,7 +226,7 @@ TRANSPORTENC_ERROR transportEnc_Init(HANDLE_TRANSPORTENC hTpEnc,
  * \return              Error code.
  */
 TRANSPORTENC_ERROR transportEnc_AddOtherDataBits(HANDLE_TRANSPORTENC hTpEnc,
-                                                 const int nBits);
+        const int nBits);
 
 /**
  * \brief      Get transport encoder bitstream.
@@ -260,9 +260,9 @@ void transportEnc_Close(HANDLE_TRANSPORTENC *phTp);
  * \return                      Error code.
  */
 TRANSPORTENC_ERROR transportEnc_WriteAccessUnit(HANDLE_TRANSPORTENC hTp,
-                                                INT total_bits,
-                                                int bufferFullness,
-                                                int noConsideredChannels);
+        INT total_bits,
+        int bufferFullness,
+        int noConsideredChannels);
 
 /**
  * \brief        Inform the transportEnc layer that writing of access unit has
@@ -279,7 +279,7 @@ TRANSPORTENC_ERROR transportEnc_WriteAccessUnit(HANDLE_TRANSPORTENC hTp,
  * \return       Error code.
  */
 TRANSPORTENC_ERROR transportEnc_EndAccessUnit(HANDLE_TRANSPORTENC hTp,
-                                              int *pBits);
+        int *pBits);
 
 /*
  * \brief         Get a payload frame.
@@ -290,7 +290,7 @@ TRANSPORTENC_ERROR transportEnc_EndAccessUnit(HANDLE_TRANSPORTENC hTp,
  * \return        Error code.
  */
 TRANSPORTENC_ERROR transportEnc_GetFrame(HANDLE_TRANSPORTENC hTpEnc,
-                                         int *nbytes);
+        int *nbytes);
 
 /* ADTS CRC support */
 

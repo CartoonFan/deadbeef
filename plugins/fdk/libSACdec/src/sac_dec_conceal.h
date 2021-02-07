@@ -107,11 +107,11 @@ amm-info@iis.fraunhofer.de
 
 /* Modules dynamic parameters: */
 typedef enum {
-  SAC_DEC_CONCEAL_METHOD = 0,
-  SAC_DEC_CONCEAL_NUM_KEEP_FRAMES,
-  SAC_DEC_CONCEAL_FADE_OUT_SLOPE_LENGTH,
-  SAC_DEC_CONCEAL_FADE_IN_SLOPE_LENGTH,
-  SAC_DEC_CONCEAL_NUM_RELEASE_FRAMES
+    SAC_DEC_CONCEAL_METHOD = 0,
+    SAC_DEC_CONCEAL_NUM_KEEP_FRAMES,
+    SAC_DEC_CONCEAL_FADE_OUT_SLOPE_LENGTH,
+    SAC_DEC_CONCEAL_FADE_IN_SLOPE_LENGTH,
+    SAC_DEC_CONCEAL_NUM_RELEASE_FRAMES
 
 } SAC_DEC_CONCEAL_PARAM;
 
@@ -119,8 +119,8 @@ typedef enum {
 /* sac_dec_interface.h                                 */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - */
 typedef enum {
-  SAC_DEC_CONCEAL_WITH_ZERO_VALUED_OUTPUT = 0,
-  SAC_DEC_CONCEAL_BY_FADING_PARAMETERS = 1
+    SAC_DEC_CONCEAL_WITH_ZERO_VALUED_OUTPUT = 0,
+    SAC_DEC_CONCEAL_BY_FADING_PARAMETERS = 1
 
 } SpatialDecConcealmentMethod;
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -133,32 +133,32 @@ typedef enum {
 #define MPEGS_CONCEAL_DEFAULT_NUM_RELEASE_FRAMES (3)
 
 typedef enum {
-  SpatialDecConcealState_Init = 0,
-  SpatialDecConcealState_Ok,
-  SpatialDecConcealState_Keep,
-  SpatialDecConcealState_FadeToDefault,
-  SpatialDecConcealState_Default,
-  SpatialDecConcealState_FadeFromDefault
+    SpatialDecConcealState_Init = 0,
+    SpatialDecConcealState_Ok,
+    SpatialDecConcealState_Keep,
+    SpatialDecConcealState_FadeToDefault,
+    SpatialDecConcealState_Default,
+    SpatialDecConcealState_FadeFromDefault
 
 } SpatialDecConcealmentState;
 
 typedef struct {
-  SpatialDecConcealmentMethod method;
+    SpatialDecConcealmentMethod method;
 
-  UINT numKeepFrames;
-  UINT numFadeOutFrames;
-  UINT numFadeInFrames;
-  UINT numReleaseFrames;
+    UINT numKeepFrames;
+    UINT numFadeOutFrames;
+    UINT numFadeInFrames;
+    UINT numReleaseFrames;
 
 } SpatialDecConcealmentParams;
 
 typedef struct {
-  SpatialDecConcealmentParams concealParams; /* User set params */
-  SpatialDecConcealmentState
-      concealState; /* State of internal state machine (fade-in/out etc) */
+    SpatialDecConcealmentParams concealParams; /* User set params */
+    SpatialDecConcealmentState
+    concealState; /* State of internal state machine (fade-in/out etc) */
 
-  UINT cntStateFrames; /* Counter for fade-in/out handling */
-  UINT cntValidFrames; /* Counter for the number of consecutive good frames*/
+    UINT cntStateFrames; /* Counter for fade-in/out handling */
+    UINT cntValidFrames; /* Counter for the number of consecutive good frames*/
 
 } SpatialDecConcealmentInfo;
 
@@ -181,7 +181,7 @@ void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
                                        const int frameOk);
 
 SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *info,
-                                            const SAC_DEC_CONCEAL_PARAM param,
-                                            const INT value);
+        const SAC_DEC_CONCEAL_PARAM param,
+        const INT value);
 
 #endif /* SAC_DEC_CONCEAL_H */

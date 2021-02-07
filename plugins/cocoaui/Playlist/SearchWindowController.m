@@ -25,6 +25,6 @@
 @implementation SearchWindowController
 
 - (void)reset {
-  [self.viewController reset];
+    [self.viewController reset];
 }
 @end

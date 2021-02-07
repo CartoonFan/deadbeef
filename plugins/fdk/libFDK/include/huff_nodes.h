@@ -106,140 +106,140 @@ amm-info@iis.fraunhofer.de
 #include "genericStds.h"
 
 typedef struct {
-  SHORT nodeTab[39][2];
+    SHORT nodeTab[39][2];
 
 } HUFF_RES_NODES;
 
 /* 1D Nodes */
 typedef struct {
-  SHORT nodeTab[30][2];
+    SHORT nodeTab[30][2];
 
 } HUFF_CLD_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[7][2];
+    SHORT nodeTab[7][2];
 
 } HUFF_ICC_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[50][2];
+    SHORT nodeTab[50][2];
 
 } HUFF_CPC_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[15][2];
+    SHORT nodeTab[15][2];
 
 } HUFF_OLD_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[63][2];
+    SHORT nodeTab[63][2];
 
 } HUFF_NRG_NOD_1D;
 
 /* 2D Nodes */
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
-  SHORT lav9[99][2];
+    SHORT lav3[15][2];
+    SHORT lav5[35][2];
+    SHORT lav7[63][2];
+    SHORT lav9[99][2];
 
 } HUFF_CLD_NOD_2D;
 
 typedef struct {
-  SHORT lav1[3][2];
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
+    SHORT lav1[3][2];
+    SHORT lav3[15][2];
+    SHORT lav5[35][2];
+    SHORT lav7[63][2];
 
 } HUFF_ICC_NOD_2D;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav6[48][2];
-  SHORT lav9[99][2];
-  SHORT lav12[168][2];
+    SHORT lav3[15][2];
+    SHORT lav6[48][2];
+    SHORT lav9[99][2];
+    SHORT lav12[168][2];
 
 } HUFF_OLD_NOD_2D;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
-  SHORT lav9[99][2];
+    SHORT lav3[15][2];
+    SHORT lav5[35][2];
+    SHORT lav7[63][2];
+    SHORT lav9[99][2];
 
 } HUFF_NRG_NOD_2D_df;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav6[48][2];
-  SHORT lav9[99][2];
-  SHORT lav12[168][2];
+    SHORT lav3[15][2];
+    SHORT lav6[48][2];
+    SHORT lav9[99][2];
+    SHORT lav12[168][2];
 
 } HUFF_NRG_NOD_2D_dt;
 
 typedef struct {
-  HUFF_NRG_NOD_2D_df df[2];
-  HUFF_NRG_NOD_2D_dt dt[2];
-  HUFF_NRG_NOD_2D_df dp[2];
+    HUFF_NRG_NOD_2D_df df[2];
+    HUFF_NRG_NOD_2D_dt dt[2];
+    HUFF_NRG_NOD_2D_df dp[2];
 
 } HUFF_NRG_NOD_2D;
 
 /* Complete bs Parameter Nodes */
 typedef struct {
-  const HUFF_CLD_NOD_1D *h1D[3];
-  const HUFF_CLD_NOD_2D *h2D[3][2];
+    const HUFF_CLD_NOD_1D *h1D[3];
+    const HUFF_CLD_NOD_2D *h2D[3][2];
 
 } HUFF_CLD_NODES;
 
 typedef struct {
-  const HUFF_ICC_NOD_1D *h1D[3];
-  const HUFF_ICC_NOD_2D *h2D[3][2];
+    const HUFF_ICC_NOD_1D *h1D[3];
+    const HUFF_ICC_NOD_2D *h2D[3][2];
 
 } HUFF_ICC_NODES;
 
 typedef struct {
-  const HUFF_OLD_NOD_1D *h1D[3];
-  const HUFF_OLD_NOD_2D *h2D[3][2];
+    const HUFF_OLD_NOD_1D *h1D[3];
+    const HUFF_OLD_NOD_2D *h2D[3][2];
 
 } HUFF_OLD_NODES;
 
 typedef struct {
-  const HUFF_NRG_NOD_1D *h1D[3];
-  const HUFF_NRG_NOD_2D *h2D;
+    const HUFF_NRG_NOD_1D *h1D[3];
+    const HUFF_NRG_NOD_2D *h2D;
 
 } HUFF_NRG_NODES;
 
 /* parameter instance */
 typedef struct {
-  SHORT cld[30][2];
-  SHORT icc[7][2];
-  SHORT ipd[7][2];
-  SHORT old[15][2];
-  SHORT nrg[63][2];
+    SHORT cld[30][2];
+    SHORT icc[7][2];
+    SHORT ipd[7][2];
+    SHORT old[15][2];
+    SHORT nrg[63][2];
 } HUFF_PT0_NODES;
 
 typedef struct {
-  SHORT nodeTab[3][2];
+    SHORT nodeTab[3][2];
 
 } HUFF_LAV_NODES;
 
 /* USAC specific */
 typedef struct {
-  SHORT nodeTab[7][2];
+    SHORT nodeTab[7][2];
 
 } HUFF_IPD_NOD_1D;
 
 typedef struct {
-  SHORT lav1[3][2];
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
+    SHORT lav1[3][2];
+    SHORT lav3[15][2];
+    SHORT lav5[35][2];
+    SHORT lav7[63][2];
 
 } HUFF_IPD_NOD_2D;
 
 typedef struct {
-  HUFF_IPD_NOD_1D h1D[3];
-  HUFF_IPD_NOD_2D h2D[3][2];
+    HUFF_IPD_NOD_1D h1D[3];
+    HUFF_IPD_NOD_2D h2D[3][2];
 
 } HUFF_IPD_NODES;
 

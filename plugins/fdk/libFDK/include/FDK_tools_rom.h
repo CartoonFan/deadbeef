@@ -237,7 +237,7 @@ extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin_downsamp32[32];
 extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos64[64];
 extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin64[64];
 extern RAM_ALIGN const FIXP_PFT
-    qmf_pfilt640[QMF640_PFT_TABLE_SIZE + QMF_NO_POLY];
+qmf_pfilt640[QMF640_PFT_TABLE_SIZE + QMF_NO_POLY];
 extern RAM_ALIGN const FIXP_PFT qmf_pfilt640_vector[640];
 
 extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos40[40];
@@ -295,59 +295,59 @@ extern RAM_ALIGN const FIXP_PFT qmf_mpsldfb_640[QMF640_MPSLDFB_PFT_TABLE_SIZE];
  * Raw Data Block list items.
  */
 typedef enum {
-  element_instance_tag,
-  common_window, /* -> decision for link_sequence */
-  global_gain,
-  ics_info, /* ics_reserved_bit, window_sequence, window_shape, max_sfb,
+    element_instance_tag,
+    common_window, /* -> decision for link_sequence */
+    global_gain,
+    ics_info, /* ics_reserved_bit, window_sequence, window_shape, max_sfb,
            scale_factor_grouping, predictor_data_present, ltp_data_present,
            ltp_data */
-  max_sfb,
-  ms,                         /* ms_mask_present, ms_used */
-  /*predictor_data_present,*/ /* part of ics_info */
-  ltp_data_present,
-  ltp_data,
-  section_data,
-  scale_factor_data,
-  pulse, /* pulse_data_present, pulse_data  */
-  tns_data_present,
-  tns_data,
-  gain_control_data_present,
-  gain_control_data,
-  esc1_hcr,
-  esc2_rvlc,
-  spectral_data,
+    max_sfb,
+    ms,                         /* ms_mask_present, ms_used */
+    /*predictor_data_present,*/ /* part of ics_info */
+    ltp_data_present,
+    ltp_data,
+    section_data,
+    scale_factor_data,
+    pulse, /* pulse_data_present, pulse_data  */
+    tns_data_present,
+    tns_data,
+    gain_control_data_present,
+    gain_control_data,
+    esc1_hcr,
+    esc2_rvlc,
+    spectral_data,
 
-  scale_factor_data_usac,
-  core_mode, /* -> decision for link_sequence */
-  common_tw,
-  lpd_channel_stream,
-  tw_data,
-  noise,
-  ac_spectral_data,
-  fac_data,
-  tns_active, /* introduced in MPEG-D usac CD */
-  tns_data_present_usac,
-  common_max_sfb,
+    scale_factor_data_usac,
+    core_mode, /* -> decision for link_sequence */
+    common_tw,
+    lpd_channel_stream,
+    tw_data,
+    noise,
+    ac_spectral_data,
+    fac_data,
+    tns_active, /* introduced in MPEG-D usac CD */
+    tns_data_present_usac,
+    common_max_sfb,
 
-  coupled_elements,   /* only for CCE parsing */
-  gain_element_lists, /* only for CCE parsing */
+    coupled_elements,   /* only for CCE parsing */
+    gain_element_lists, /* only for CCE parsing */
 
-  /* Non data list items */
-  adtscrc_start_reg1,
-  adtscrc_start_reg2,
-  adtscrc_end_reg1,
-  adtscrc_end_reg2,
-  drmcrc_start_reg,
-  drmcrc_end_reg,
-  next_channel,
-  next_channel_loop,
-  link_sequence,
-  end_of_sequence
+    /* Non data list items */
+    adtscrc_start_reg1,
+    adtscrc_start_reg2,
+    adtscrc_end_reg1,
+    adtscrc_end_reg2,
+    drmcrc_start_reg,
+    drmcrc_end_reg,
+    next_channel,
+    next_channel_loop,
+    link_sequence,
+    end_of_sequence
 } rbd_id_t;
 
 struct element_list {
-  const rbd_id_t *id;
-  const struct element_list *next[2];
+    const rbd_id_t *id;
+    const struct element_list *next[2];
 };
 
 typedef struct element_list element_list_t;
@@ -361,36 +361,36 @@ typedef struct element_list element_list_t;
  * \return element_list_t parser guidance structure.
  */
 const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
-                                              SCHAR epConfig, UCHAR nChannels,
-                                              UCHAR layer, UINT elFlags);
+        SCHAR epConfig, UCHAR nChannels,
+        UCHAR layer, UINT elFlags);
 
 typedef enum {
-  /* n.a. */
-  FDK_FORMAT_1_0 = 1,     /* mono */
-  FDK_FORMAT_2_0 = 2,     /* stereo */
-  FDK_FORMAT_3_0_FC = 3,  /* 3/0.0 */
-  FDK_FORMAT_3_1_0 = 4,   /* 3/1.0 */
-  FDK_FORMAT_5_0 = 5,     /* 3/2.0 */
-  FDK_FORMAT_5_1 = 6,     /* 5.1 */
-  FDK_FORMAT_7_1_ALT = 7, /* 5/2.1 ALT */
-  /* 8 n.a.*/
-  FDK_FORMAT_3_0_RC = 9, /* 2/1.0 */
-  FDK_FORMAT_2_2_0 = 10, /* 2/2.0 */
-  FDK_FORMAT_6_1 = 11,   /* 3/3.1 */
-  FDK_FORMAT_7_1 = 12,   /* 3/4.1 */
-  FDK_FORMAT_22_2 = 13,  /* 22.2 */
-  FDK_FORMAT_5_2_1 = 14, /* 5/2.1*/
-  FDK_FORMAT_5_5_2 = 15, /* 5/5.2 */
-  FDK_FORMAT_9_1 = 16,   /* 5/4.1 */
-  FDK_FORMAT_6_5_1 = 17, /* 6/5.1 */
-  FDK_FORMAT_6_7_1 = 18, /* 6/7.1 */
-  FDK_FORMAT_5_6_1 = 19, /* 5/6.1 */
-  FDK_FORMAT_7_6_1 = 20, /* 7/6.1 */
-  FDK_FORMAT_IN_LISTOFCHANNELS = 21,
-  FDK_FORMAT_OUT_LISTOFCHANNELS = 22,
-  /* 20 formats + In & Out list of channels */
-  FDK_NFORMATS = 23,
-  FDK_FORMAT_FAIL = -1
+    /* n.a. */
+    FDK_FORMAT_1_0 = 1,     /* mono */
+    FDK_FORMAT_2_0 = 2,     /* stereo */
+    FDK_FORMAT_3_0_FC = 3,  /* 3/0.0 */
+    FDK_FORMAT_3_1_0 = 4,   /* 3/1.0 */
+    FDK_FORMAT_5_0 = 5,     /* 3/2.0 */
+    FDK_FORMAT_5_1 = 6,     /* 5.1 */
+    FDK_FORMAT_7_1_ALT = 7, /* 5/2.1 ALT */
+    /* 8 n.a.*/
+    FDK_FORMAT_3_0_RC = 9, /* 2/1.0 */
+    FDK_FORMAT_2_2_0 = 10, /* 2/2.0 */
+    FDK_FORMAT_6_1 = 11,   /* 3/3.1 */
+    FDK_FORMAT_7_1 = 12,   /* 3/4.1 */
+    FDK_FORMAT_22_2 = 13,  /* 22.2 */
+    FDK_FORMAT_5_2_1 = 14, /* 5/2.1*/
+    FDK_FORMAT_5_5_2 = 15, /* 5/5.2 */
+    FDK_FORMAT_9_1 = 16,   /* 5/4.1 */
+    FDK_FORMAT_6_5_1 = 17, /* 6/5.1 */
+    FDK_FORMAT_6_7_1 = 18, /* 6/7.1 */
+    FDK_FORMAT_5_6_1 = 19, /* 5/6.1 */
+    FDK_FORMAT_7_6_1 = 20, /* 7/6.1 */
+    FDK_FORMAT_IN_LISTOFCHANNELS = 21,
+    FDK_FORMAT_OUT_LISTOFCHANNELS = 22,
+    /* 20 formats + In & Out list of channels */
+    FDK_NFORMATS = 23,
+    FDK_FORMAT_FAIL = -1
 } FDK_converter_formatid_t;
 
 extern const INT format_nchan[FDK_NFORMATS + 9 - 2];

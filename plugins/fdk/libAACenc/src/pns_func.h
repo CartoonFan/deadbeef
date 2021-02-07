@@ -131,9 +131,9 @@ void FDKaacEnc_PreProcessPnsChannelPair(
     PNS_DATA *pnsDataRight);
 
 void FDKaacEnc_PostProcessPnsChannelPair(const INT sfbActive,
-                                         PNS_CONFIG *pnsConf,
-                                         PNS_DATA *pnsDataLeft,
-                                         PNS_DATA *pnsDataRight, INT *msMask,
-                                         INT *msDigest);
+        PNS_CONFIG *pnsConf,
+        PNS_DATA *pnsDataLeft,
+        PNS_DATA *pnsDataRight, INT *msMask,
+        INT *msDigest);
 
 #endif /* PNS_FUNC_H */
