@@ -17,12 +17,12 @@
 @implementation WeakRefWrapper
 
 - (instancetype)initWithObject:(id)object {
-    self = [super init];
-    if (self == nil) {
-        return nil;
-    }
-    self.object = object;
-    return self;
+  self = [super init];
+  if (self == nil) {
+    return nil;
+  }
+  self.object = object;
+  return self;
 }
 
 @end

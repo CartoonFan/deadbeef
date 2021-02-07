@@ -137,8 +137,7 @@ static const USHORT crcLookup_16_15_2_0[256] = {
     0x0246, 0x024c, 0x8249, 0x0258, 0x825d, 0x8257, 0x0252, 0x0270, 0x8275,
     0x827f, 0x027a, 0x826b, 0x026e, 0x0264, 0x8261, 0x0220, 0x8225, 0x822f,
     0x022a, 0x823b, 0x023e, 0x0234, 0x8231, 0x8213, 0x0216, 0x021c, 0x8219,
-    0x0208, 0x820d, 0x8207, 0x0202
-};
+    0x0208, 0x820d, 0x8207, 0x0202};
 
 /**
  * \brief  This table defines precalculated lookup tables for crc polynom  x^16
@@ -173,8 +172,7 @@ static const USHORT crcLookup_16_12_5_0[256] = {
     0xed0f, 0xdd6c, 0xcd4d, 0xbdaa, 0xad8b, 0x9de8, 0x8dc9, 0x7c26, 0x6c07,
     0x5c64, 0x4c45, 0x3ca2, 0x2c83, 0x1ce0, 0x0cc1, 0xef1f, 0xff3e, 0xcf5d,
     0xdf7c, 0xaf9b, 0xbfba, 0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74,
-    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
-};
+    0x2e93, 0x3eb2, 0x0ed1, 0x1ef0};
 
 /**
  * \brief  This table defines precalculated lookup tables for crc polynom  x^16
@@ -229,95 +227,95 @@ static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
 
 void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const UINT crcPoly,
                 const UINT crcStartValue, const UINT crcLen) {
-    /* crc polynom example:
-    x^16 + x^15 + x^5 + x^0        (1) 1000 0000 0010 0001 -> 0x8021
-    x^16 + x^15 + x^2 + x^0        (1) 1000 0000 0000 0101 -> 0x8005
-    x^16 + x^12 + x^5 + x^0        (1) 0001 0000 0010 0001 -> 0x1021
-    x^8 + x^4 + x^3 + x^2 + x^0              (1) 0001 1101 -> 0x001d */
+  /* crc polynom example:
+  x^16 + x^15 + x^5 + x^0        (1) 1000 0000 0010 0001 -> 0x8021
+  x^16 + x^15 + x^2 + x^0        (1) 1000 0000 0000 0101 -> 0x8005
+  x^16 + x^12 + x^5 + x^0        (1) 0001 0000 0010 0001 -> 0x1021
+  x^8 + x^4 + x^3 + x^2 + x^0              (1) 0001 1101 -> 0x001d */
 
-    hCrcInfo->crcLen = crcLen;
-    hCrcInfo->crcPoly = crcPoly;
-    hCrcInfo->startValue = crcStartValue;
-    hCrcInfo->crcMask = (crcLen) ? (1 << (crcLen - 1)) : 0;
+  hCrcInfo->crcLen = crcLen;
+  hCrcInfo->crcPoly = crcPoly;
+  hCrcInfo->startValue = crcStartValue;
+  hCrcInfo->crcMask = (crcLen) ? (1 << (crcLen - 1)) : 0;
 
-    FDKcrcReset(hCrcInfo);
+  FDKcrcReset(hCrcInfo);
 
-    hCrcInfo->pCrcLookup =
-        0; /* Preset 0 for "crcLen" != 16 or unknown 16-bit polynoms "crcPoly" */
+  hCrcInfo->pCrcLookup =
+      0; /* Preset 0 for "crcLen" != 16 or unknown 16-bit polynoms "crcPoly" */
 
-    if (hCrcInfo->crcLen == 16) {
-        switch (crcPoly) {
-        case 0x8021:
-            hCrcInfo->pCrcLookup = crcLookup_16_15_5_0;
-            break;
-        case 0x8005:
-            hCrcInfo->pCrcLookup = crcLookup_16_15_2_0;
-            break;
-        case 0x1021:
-            hCrcInfo->pCrcLookup = crcLookup_16_12_5_0;
-            break;
-        case 0x001d:
-        default:
-            /* no lookup table */
-            break;
-        }
+  if (hCrcInfo->crcLen == 16) {
+    switch (crcPoly) {
+    case 0x8021:
+      hCrcInfo->pCrcLookup = crcLookup_16_15_5_0;
+      break;
+    case 0x8005:
+      hCrcInfo->pCrcLookup = crcLookup_16_15_2_0;
+      break;
+    case 0x1021:
+      hCrcInfo->pCrcLookup = crcLookup_16_12_5_0;
+      break;
+    case 0x001d:
+    default:
+      /* no lookup table */
+      break;
     }
+  }
 }
 
 void FDKcrcReset(HANDLE_FDK_CRCINFO hCrcInfo) {
-    int i;
+  int i;
 
-    hCrcInfo->crcValue = hCrcInfo->startValue;
+  hCrcInfo->crcValue = hCrcInfo->startValue;
 
-    for (i = 0; i < MAX_CRC_REGS; i++) {
-        hCrcInfo->crcRegData[i].isActive = 0;
-    }
-    hCrcInfo->regStart = 0;
-    hCrcInfo->regStop = 0;
+  for (i = 0; i < MAX_CRC_REGS; i++) {
+    hCrcInfo->crcRegData[i].isActive = 0;
+  }
+  hCrcInfo->regStart = 0;
+  hCrcInfo->regStop = 0;
 }
 
 INT FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
                    const INT mBits) {
-    int reg = hCrcInfo->regStart;
+  int reg = hCrcInfo->regStart;
 
-    FDK_ASSERT(hCrcInfo->crcRegData[reg].isActive == 0);
-    hCrcInfo->crcRegData[reg].isActive = 1;
-    hCrcInfo->crcRegData[reg].maxBits = mBits;
-    hCrcInfo->crcRegData[reg].validBits = (INT)FDKgetValidBits(hBs);
-    hCrcInfo->crcRegData[reg].bitBufCntBits = 0;
+  FDK_ASSERT(hCrcInfo->crcRegData[reg].isActive == 0);
+  hCrcInfo->crcRegData[reg].isActive = 1;
+  hCrcInfo->crcRegData[reg].maxBits = mBits;
+  hCrcInfo->crcRegData[reg].validBits = (INT)FDKgetValidBits(hBs);
+  hCrcInfo->crcRegData[reg].bitBufCntBits = 0;
 
-    hCrcInfo->regStart = (hCrcInfo->regStart + 1) % MAX_CRC_REGS;
+  hCrcInfo->regStart = (hCrcInfo->regStart + 1) % MAX_CRC_REGS;
 
-    return (reg);
+  return (reg);
 }
 
 INT FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
                  const INT reg) {
-    FDK_ASSERT((reg == (INT)hCrcInfo->regStop) &&
-               (hCrcInfo->crcRegData[reg].isActive == 1));
+  FDK_ASSERT((reg == (INT)hCrcInfo->regStop) &&
+             (hCrcInfo->crcRegData[reg].isActive == 1));
 
-    if (hBs->ConfigCache == BS_WRITER) {
-        hCrcInfo->crcRegData[reg].bitBufCntBits =
-            (INT)FDKgetValidBits(hBs) - hCrcInfo->crcRegData[reg].validBits;
-    } else {
-        hCrcInfo->crcRegData[reg].bitBufCntBits =
-            hCrcInfo->crcRegData[reg].validBits - (INT)FDKgetValidBits(hBs);
-    }
+  if (hBs->ConfigCache == BS_WRITER) {
+    hCrcInfo->crcRegData[reg].bitBufCntBits =
+        (INT)FDKgetValidBits(hBs) - hCrcInfo->crcRegData[reg].validBits;
+  } else {
+    hCrcInfo->crcRegData[reg].bitBufCntBits =
+        hCrcInfo->crcRegData[reg].validBits - (INT)FDKgetValidBits(hBs);
+  }
 
-    if (hCrcInfo->crcRegData[reg].maxBits == 0) {
-        hCrcInfo->crcRegData[reg].maxBits = hCrcInfo->crcRegData[reg].bitBufCntBits;
-    }
+  if (hCrcInfo->crcRegData[reg].maxBits == 0) {
+    hCrcInfo->crcRegData[reg].maxBits = hCrcInfo->crcRegData[reg].bitBufCntBits;
+  }
 
-    crcCalc(hCrcInfo, hBs, reg);
+  crcCalc(hCrcInfo, hBs, reg);
 
-    hCrcInfo->crcRegData[reg].isActive = 0;
-    hCrcInfo->regStop = (hCrcInfo->regStop + 1) % MAX_CRC_REGS;
+  hCrcInfo->crcRegData[reg].isActive = 0;
+  hCrcInfo->regStop = (hCrcInfo->regStop + 1) % MAX_CRC_REGS;
 
-    return 0;
+  return 0;
 }
 
 USHORT FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo) {
-    return (hCrcInfo->crcValue & (((hCrcInfo->crcMask - 1) << 1) + 1));
+  return (hCrcInfo->crcValue & (((hCrcInfo->crcMask - 1) << 1) + 1));
 }
 
 /**
@@ -337,28 +335,28 @@ USHORT FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo) {
 static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
                                USHORT crcPoly, HANDLE_FDK_BITSTREAM hBs,
                                INT nBits) {
-    int i;
-    USHORT crc = *pCrc; /* get crc value */
+  int i;
+  USHORT crc = *pCrc; /* get crc value */
 
-    if (hBs != NULL) {
-        for (i = 0; (i < nBits); i++) {
-            USHORT tmp = FDKreadBit(hBs); // process single bit
-            tmp ^= ((crc & crcMask) ? 1 : 0);
-            if (tmp != 0)
-                tmp = crcPoly;
-            crc <<= 1;
-            crc ^= tmp;
-        }
-    } else {
-        for (i = 0; (i < nBits); i++) {
-            USHORT tmp = (crc & crcMask) ? crcPoly : 0; // process single bit
-            crc <<= 1;
-            crc ^= tmp;
-        }
+  if (hBs != NULL) {
+    for (i = 0; (i < nBits); i++) {
+      USHORT tmp = FDKreadBit(hBs); // process single bit
+      tmp ^= ((crc & crcMask) ? 1 : 0);
+      if (tmp != 0)
+        tmp = crcPoly;
+      crc <<= 1;
+      crc ^= tmp;
     }
-    *pCrc = crc; /* update crc value */
+  } else {
+    for (i = 0; (i < nBits); i++) {
+      USHORT tmp = (crc & crcMask) ? crcPoly : 0; // process single bit
+      crc <<= 1;
+      crc ^= tmp;
+    }
+  }
+  *pCrc = crc; /* update crc value */
 
-    return nBits;
+  return nBits;
 }
 
 /**
@@ -378,39 +376,39 @@ static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
 
 static inline INT calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
                                 HANDLE_FDK_BITSTREAM hBs, INT nBytes) {
-    int i;
-    USHORT crc = *pCrc; /* get crc value */
+  int i;
+  USHORT crc = *pCrc; /* get crc value */
 
-    if (hBs != NULL) {
-        ULONG data;
-        INT bits;
-        for (i = 0; i < (nBytes >> 2); i++) {
-            data = (ULONG)FDKreadBits(hBs, 32);
-            crc =
-                (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 24))) & 0xFF];
-            crc =
-                (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 16))) & 0xFF];
-            crc =
-                (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 8))) & 0xFF];
-            crc =
-                (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 0))) & 0xFF];
-        }
-        bits = (nBytes & 3) << 3;
-        if (bits > 0) {
-            data = (ULONG)FDKreadBits(hBs, bits);
-            for (bits -= 8; bits >= 0; bits -= 8)
-                crc = (crc << 8) ^
-                      pCrcLookup[((crc >> 8) ^ (USHORT)(data >> bits)) & 0xFF];
-        }
-    } else {
-        for (i = 0; i < nBytes; i++) {
-            crc = (crc << 8) ^ pCrcLookup[(crc >> 8) & 0xFF];
-        }
+  if (hBs != NULL) {
+    ULONG data;
+    INT bits;
+    for (i = 0; i < (nBytes >> 2); i++) {
+      data = (ULONG)FDKreadBits(hBs, 32);
+      crc =
+          (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 24))) & 0xFF];
+      crc =
+          (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 16))) & 0xFF];
+      crc =
+          (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 8))) & 0xFF];
+      crc =
+          (crc << 8) ^ pCrcLookup[((crc >> 8) ^ ((USHORT)(data >> 0))) & 0xFF];
     }
+    bits = (nBytes & 3) << 3;
+    if (bits > 0) {
+      data = (ULONG)FDKreadBits(hBs, bits);
+      for (bits -= 8; bits >= 0; bits -= 8)
+        crc = (crc << 8) ^
+              pCrcLookup[((crc >> 8) ^ (USHORT)(data >> bits)) & 0xFF];
+    }
+  } else {
+    for (i = 0; i < nBytes; i++) {
+      crc = (crc << 8) ^ pCrcLookup[(crc >> 8) & 0xFF];
+    }
+  }
 
-    *pCrc = crc; /* update crc value */
+  *pCrc = crc; /* update crc value */
 
-    return (nBytes);
+  return (nBytes);
 }
 
 /**
@@ -428,55 +426,55 @@ static inline INT calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
  */
 static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
                     const INT reg) {
-    USHORT crc = hCrcInfo->crcValue;
-    CCrcRegData *rD = &hCrcInfo->crcRegData[reg];
-    FDK_BITSTREAM bsReader;
+  USHORT crc = hCrcInfo->crcValue;
+  CCrcRegData *rD = &hCrcInfo->crcRegData[reg];
+  FDK_BITSTREAM bsReader;
 
-    if (hBs->ConfigCache == BS_READER) {
-        bsReader = *hBs;
-        FDKpushBiDirectional(&bsReader,
-                             -(rD->validBits - (INT)FDKgetValidBits(&bsReader)));
-    } else {
-        FDKinitBitStream(&bsReader, hBs->hBitBuf.Buffer, hBs->hBitBuf.bufSize,
-                         hBs->hBitBuf.ValidBits, BS_READER);
-        FDKpushBiDirectional(&bsReader, rD->validBits);
+  if (hBs->ConfigCache == BS_READER) {
+    bsReader = *hBs;
+    FDKpushBiDirectional(&bsReader,
+                         -(rD->validBits - (INT)FDKgetValidBits(&bsReader)));
+  } else {
+    FDKinitBitStream(&bsReader, hBs->hBitBuf.Buffer, hBs->hBitBuf.bufSize,
+                     hBs->hBitBuf.ValidBits, BS_READER);
+    FDKpushBiDirectional(&bsReader, rD->validBits);
+  }
+
+  int bits, rBits;
+  rBits = (rD->maxBits >= 0) ? rD->maxBits : -rD->maxBits; /* ramaining bits */
+  if ((rD->maxBits > 0) && ((rD->bitBufCntBits >> 3 << 3) < rBits)) {
+    bits = rD->bitBufCntBits;
+  } else {
+    bits = rBits;
+  }
+
+  int words = bits >> 3;  /* processing bytes */
+  int mBits = bits & 0x7; /* modulo bits */
+
+  if (hCrcInfo->pCrcLookup) {
+    rBits -= (calcCrc_Bytes(&crc, hCrcInfo->pCrcLookup, &bsReader, words) << 3);
+  } else {
+    rBits -= calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, &bsReader,
+                          words << 3);
+  }
+
+  /* remaining valid bits*/
+  if (mBits != 0) {
+    rBits -= calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, &bsReader,
+                          mBits);
+  }
+
+  if (rBits != 0) {
+    /* zero bytes */
+    if ((hCrcInfo->pCrcLookup) && (rBits > 8)) {
+      rBits -=
+          (calcCrc_Bytes(&crc, hCrcInfo->pCrcLookup, NULL, rBits >> 3) << 3);
     }
-
-    int bits, rBits;
-    rBits = (rD->maxBits >= 0) ? rD->maxBits : -rD->maxBits; /* ramaining bits */
-    if ((rD->maxBits > 0) && ((rD->bitBufCntBits >> 3 << 3) < rBits)) {
-        bits = rD->bitBufCntBits;
-    } else {
-        bits = rBits;
-    }
-
-    int words = bits >> 3;  /* processing bytes */
-    int mBits = bits & 0x7; /* modulo bits */
-
-    if (hCrcInfo->pCrcLookup) {
-        rBits -= (calcCrc_Bytes(&crc, hCrcInfo->pCrcLookup, &bsReader, words) << 3);
-    } else {
-        rBits -= calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, &bsReader,
-                              words << 3);
-    }
-
-    /* remaining valid bits*/
-    if (mBits != 0) {
-        rBits -= calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, &bsReader,
-                              mBits);
-    }
-
+    /* remaining zero bits */
     if (rBits != 0) {
-        /* zero bytes */
-        if ((hCrcInfo->pCrcLookup) && (rBits > 8)) {
-            rBits -=
-                (calcCrc_Bytes(&crc, hCrcInfo->pCrcLookup, NULL, rBits >> 3) << 3);
-        }
-        /* remaining zero bits */
-        if (rBits != 0) {
-            calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, NULL, rBits);
-        }
+      calcCrc_Bits(&crc, hCrcInfo->crcMask, hCrcInfo->crcPoly, NULL, rBits);
     }
+  }
 
-    hCrcInfo->crcValue = crc;
+  hCrcInfo->crcValue = crc;
 }

@@ -83,10 +83,10 @@
 #define HGAINMAX ((13 + HGAINVLCBITS - 1) / HGAINVLCBITS)
 
 typedef struct CoefVLCTable {
-    int n;                     /* total number of codes */
-    const uint32_t *huffcodes; /* VLC bit values */
-    const uint8_t *huffbits;   /* VLC bit size */
-    const uint16_t *levels;    /* table to build run/level tables */
+  int n;                     /* total number of codes */
+  const uint32_t *huffcodes; /* VLC bit values */
+  const uint8_t *huffbits;   /* VLC bit size */
+  const uint16_t *levels;    /* table to build run/level tables */
 } CoefVLCTable;
 
 /* Define MEM_ALIGN_ATTR which may be used to align e.g. buffers for faster
@@ -106,83 +106,83 @@ typedef struct CoefVLCTable {
 #endif
 
 typedef struct WMADecodeContext {
-    GetBitContext gb;
+  GetBitContext gb;
 
-    int nb_block_sizes; /* number of block sizes */
+  int nb_block_sizes; /* number of block sizes */
 
-    int sample_rate;
-    int nb_channels;
-    int bit_rate;
-    int version; /* 1 = 0x160 (WMAV1), 2 = 0x161 (WMAV2) */
-    int block_align;
-    int use_bit_reservoir;
-    int use_variable_block_len;
-    int use_exp_vlc;      /* exponent coding: 0 = lsp, 1 = vlc + delta */
-    int use_noise_coding; /* true if perceptual noise is added */
-    int byte_offset_bits;
-    VLC exp_vlc;
-    int exponent_sizes[BLOCK_NB_SIZES];
-    uint16_t exponent_bands[BLOCK_NB_SIZES][25];
-    int high_band_start[BLOCK_NB_SIZES]; /* index of first coef in high band */
-    int coefs_start;                     /* first coded coef */
-    int coefs_end[BLOCK_NB_SIZES];       /* max number of coded coefficients */
-    int exponent_high_sizes[BLOCK_NB_SIZES];
-    int exponent_high_bands[BLOCK_NB_SIZES][HIGH_BAND_MAX_SIZE];
-    VLC hgain_vlc;
+  int sample_rate;
+  int nb_channels;
+  int bit_rate;
+  int version; /* 1 = 0x160 (WMAV1), 2 = 0x161 (WMAV2) */
+  int block_align;
+  int use_bit_reservoir;
+  int use_variable_block_len;
+  int use_exp_vlc;      /* exponent coding: 0 = lsp, 1 = vlc + delta */
+  int use_noise_coding; /* true if perceptual noise is added */
+  int byte_offset_bits;
+  VLC exp_vlc;
+  int exponent_sizes[BLOCK_NB_SIZES];
+  uint16_t exponent_bands[BLOCK_NB_SIZES][25];
+  int high_band_start[BLOCK_NB_SIZES]; /* index of first coef in high band */
+  int coefs_start;                     /* first coded coef */
+  int coefs_end[BLOCK_NB_SIZES];       /* max number of coded coefficients */
+  int exponent_high_sizes[BLOCK_NB_SIZES];
+  int exponent_high_bands[BLOCK_NB_SIZES][HIGH_BAND_MAX_SIZE];
+  VLC hgain_vlc;
 
-    /* coded values in high bands */
-    int high_band_coded[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
-    int high_band_values[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
+  /* coded values in high bands */
+  int high_band_coded[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
+  int high_band_values[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
 
-    /* there are two possible tables for spectral coefficients */
-    VLC coef_vlc[2];
-    uint16_t *run_table[2];
-    uint16_t *level_table[2];
-    /* frame info */
-    int frame_len;      /* frame length in samples */
-    int frame_len_bits; /* frame_len = 1 << frame_len_bits */
+  /* there are two possible tables for spectral coefficients */
+  VLC coef_vlc[2];
+  uint16_t *run_table[2];
+  uint16_t *level_table[2];
+  /* frame info */
+  int frame_len;      /* frame length in samples */
+  int frame_len_bits; /* frame_len = 1 << frame_len_bits */
 
-    /* block info */
-    int reset_block_lengths;
-    int block_len_bits;                  /* log2 of current block length */
-    int next_block_len_bits;             /* log2 of next block length */
-    int prev_block_len_bits;             /* log2 of prev block length */
-    int block_len;                       /* block length in samples */
-    int block_num;                       /* block number in current frame */
-    int block_pos;                       /* current position in frame */
-    uint8_t ms_stereo;                   /* true if mid/side stereo mode */
-    uint8_t channel_coded[MAX_CHANNELS]; /* true if channel is coded */
-    int exponents_bsize[MAX_CHANNELS];   // log2 ratio frame/exp. length
-    fixed32 exponents[MAX_CHANNELS][BLOCK_MAX_SIZE] MEM_ALIGN_ATTR;
-    fixed32 max_exponent[MAX_CHANNELS];
-    int16_t coefs1[MAX_CHANNELS][BLOCK_MAX_SIZE];
-    fixed32 coefs[MAX_CHANNELS][BLOCK_MAX_SIZE];
-    fixed32 *windows[BLOCK_NB_SIZES];
-    /* output buffer for one frame and the last for IMDCT windowing */
-    fixed32 frame_out[MAX_CHANNELS][BLOCK_MAX_SIZE * 2];
+  /* block info */
+  int reset_block_lengths;
+  int block_len_bits;                  /* log2 of current block length */
+  int next_block_len_bits;             /* log2 of next block length */
+  int prev_block_len_bits;             /* log2 of prev block length */
+  int block_len;                       /* block length in samples */
+  int block_num;                       /* block number in current frame */
+  int block_pos;                       /* current position in frame */
+  uint8_t ms_stereo;                   /* true if mid/side stereo mode */
+  uint8_t channel_coded[MAX_CHANNELS]; /* true if channel is coded */
+  int exponents_bsize[MAX_CHANNELS];   // log2 ratio frame/exp. length
+  fixed32 exponents[MAX_CHANNELS][BLOCK_MAX_SIZE] MEM_ALIGN_ATTR;
+  fixed32 max_exponent[MAX_CHANNELS];
+  int16_t coefs1[MAX_CHANNELS][BLOCK_MAX_SIZE];
+  fixed32 coefs[MAX_CHANNELS][BLOCK_MAX_SIZE];
+  fixed32 *windows[BLOCK_NB_SIZES];
+  /* output buffer for one frame and the last for IMDCT windowing */
+  fixed32 frame_out[MAX_CHANNELS][BLOCK_MAX_SIZE * 2];
 
-    /* last frame info */
-    uint8_t last_superframe[MAX_CODED_SUPERFRAME_SIZE +
-                                                      4] MEM_ALIGN_ATTR; /* padding added */
-    int last_bitoffset;
-    int last_superframe_len;
-    fixed32 *noise_table;
-    int noise_index;
-    fixed32
-    noise_mult; /* XXX: suppress that and integrate it in the noise array */
-    /* lsp_to_curve tables */
-    fixed32 lsp_cos_table[BLOCK_MAX_SIZE] MEM_ALIGN_ATTR;
-    void *lsp_pow_m_table1;
-    void *lsp_pow_m_table2;
+  /* last frame info */
+  uint8_t last_superframe[MAX_CODED_SUPERFRAME_SIZE +
+                          4] MEM_ALIGN_ATTR; /* padding added */
+  int last_bitoffset;
+  int last_superframe_len;
+  fixed32 *noise_table;
+  int noise_index;
+  fixed32
+      noise_mult; /* XXX: suppress that and integrate it in the noise array */
+  /* lsp_to_curve tables */
+  fixed32 lsp_cos_table[BLOCK_MAX_SIZE] MEM_ALIGN_ATTR;
+  void *lsp_pow_m_table1;
+  void *lsp_pow_m_table2;
 
-    /* State of current superframe decoding */
-    int bit_offset;
-    int nb_frames;
-    int current_frame;
+  /* State of current superframe decoding */
+  int bit_offset;
+  int nb_frames;
+  int current_frame;
 
 #ifdef TRACE
 
-    int frame_count;
+  int frame_count;
 #endif
 } WMADecodeContext;
 

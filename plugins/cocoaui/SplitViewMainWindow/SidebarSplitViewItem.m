@@ -10,7 +10,7 @@
 @implementation SidebarSplitViewItem
 
 - (NSSplitViewItemBehavior)behavior {
-    return NSSplitViewItemBehaviorSidebar;
+  return NSSplitViewItemBehaviorSidebar;
 }
 
 @end

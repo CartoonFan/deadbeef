@@ -139,56 +139,50 @@ amm-info@iis.fraunhofer.de
 #include <string.h>
 
 void FDKprintf(const char *szFmt, ...) {
-    va_list ap;
-    va_start(ap, szFmt);
-    vprintf(szFmt, ap);
-    va_end(ap);
+  va_list ap;
+  va_start(ap, szFmt);
+  vprintf(szFmt, ap);
+  va_end(ap);
 }
 
 void FDKprintfErr(const char *szFmt, ...) {
-    va_list ap;
-    va_start(ap, szFmt);
-    vfprintf(stderr, szFmt, ap);
-    va_end(ap);
+  va_list ap;
+  va_start(ap, szFmt);
+  vfprintf(stderr, szFmt, ap);
+  va_end(ap);
 }
 
-int FDKgetchar(void) {
-    return getchar();
-}
+int FDKgetchar(void) { return getchar(); }
 
 INT FDKfprintf(FDKFILE *stream, const char *format, ...) {
-    INT chars = 0;
-    va_list ap;
-    va_start(ap, format);
-    chars += vfprintf((FILE *)stream, format, ap);
-    va_end(ap);
-    return chars;
+  INT chars = 0;
+  va_list ap;
+  va_start(ap, format);
+  chars += vfprintf((FILE *)stream, format, ap);
+  va_end(ap);
+  return chars;
 }
 
 INT FDKsprintf(char *str, const char *format, ...) {
-    INT chars = 0;
-    va_list ap;
-    va_start(ap, format);
-    chars += vsprintf(str, format, ap);
-    va_end(ap);
-    return chars;
+  INT chars = 0;
+  va_list ap;
+  va_start(ap, format);
+  chars += vsprintf(str, format, ap);
+  va_end(ap);
+  return chars;
 }
 
 /************************************************************************************************/
 
 /************************************************************************************************/
 
-char *FDKstrchr(char *s, INT c) {
-    return strchr(s, c);
-}
+char *FDKstrchr(char *s, INT c) { return strchr(s, c); }
 const char *FDKstrstr(const char *haystack, const char *needle) {
-    return strstr(haystack, needle);
+  return strstr(haystack, needle);
 }
-char *FDKstrcpy(char *dest, const char *src) {
-    return strcpy(dest, src);
-}
+char *FDKstrcpy(char *dest, const char *src) { return strcpy(dest, src); }
 char *FDKstrncpy(char *dest, const char *src, UINT n) {
-    return strncpy(dest, src, n);
+  return strncpy(dest, src, n);
 }
 
 /*************************************************************************
@@ -196,47 +190,45 @@ char *FDKstrncpy(char *dest, const char *src, UINT n) {
  *************************************************************************/
 
 void *FDKcalloc(const UINT n, const UINT size) {
-    void *ptr;
+  void *ptr;
 
-    ptr = calloc(n, size);
+  ptr = calloc(n, size);
 
-    return ptr;
+  return ptr;
 }
 
 void *FDKmalloc(const UINT size) {
-    void *ptr;
+  void *ptr;
 
-    ptr = malloc(size);
+  ptr = malloc(size);
 
-    return ptr;
+  return ptr;
 }
 
-void FDKfree(void *ptr) {
-    free((INT *)ptr);
-}
+void FDKfree(void *ptr) { free((INT *)ptr); }
 
 void *FDKaalloc(const UINT size, const UINT alignment) {
-    void *addr, *result = NULL;
-    addr = FDKcalloc(1, size + alignment +
-                     (UINT)sizeof(void *)); /* Malloc and clear memory. */
+  void *addr, *result = NULL;
+  addr = FDKcalloc(1, size + alignment +
+                          (UINT)sizeof(void *)); /* Malloc and clear memory. */
 
-    if (addr != NULL) {
-        result = ALIGN_PTR((unsigned char *)addr +
-                           sizeof(void *)); /* Get aligned memory base address. */
-        *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
-        C_ALLOC_ALIGNED_REGISTER(result, size);
-    }
+  if (addr != NULL) {
+    result = ALIGN_PTR((unsigned char *)addr +
+                       sizeof(void *)); /* Get aligned memory base address. */
+    *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
+    C_ALLOC_ALIGNED_REGISTER(result, size);
+  }
 
-    return result; /* Return aligned address.          */
+  return result; /* Return aligned address.          */
 }
 
 void FDKafree(void *ptr) {
-    void *addr;
-    addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
+  void *addr;
+  addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
 
-    C_ALLOC_ALIGNED_UNREGISTER(ptr);
+  C_ALLOC_ALIGNED_UNREGISTER(ptr);
 
-    FDKfree(addr); /* Free malloc'ed memory area.      */
+  FDKfree(addr); /* Free malloc'ed memory area.      */
 }
 
 /*--------------------------------------------------------------------------*
@@ -247,36 +239,34 @@ void FDKafree(void *ptr) {
  * FDKcalloc_L
  *--------------------------------------------------------------------------*/
 void *FDKcalloc_L(const UINT dim, const UINT size, MEMORY_SECTION s) {
-    return FDKcalloc(dim, size);
+  return FDKcalloc(dim, size);
 }
 
-void FDKfree_L(void *p) {
-    FDKfree(p);
-}
+void FDKfree_L(void *p) { FDKfree(p); }
 
 void *FDKaalloc_L(const UINT size, const UINT alignment, MEMORY_SECTION s) {
-    void *addr, *result = NULL;
-    addr = FDKcalloc_L(1, size + alignment + (UINT)sizeof(void *),
-                       s); /* Malloc and clear memory.         */
+  void *addr, *result = NULL;
+  addr = FDKcalloc_L(1, size + alignment + (UINT)sizeof(void *),
+                     s); /* Malloc and clear memory.         */
 
-    if (addr != NULL) {
-        result = ALIGN_PTR((unsigned char *)addr +
-                           sizeof(void *)); /* Get aligned memory base address. */
-        *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
-        C_ALLOC_ALIGNED_REGISTER(result, size);
-    }
+  if (addr != NULL) {
+    result = ALIGN_PTR((unsigned char *)addr +
+                       sizeof(void *)); /* Get aligned memory base address. */
+    *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
+    C_ALLOC_ALIGNED_REGISTER(result, size);
+  }
 
-    return result; /* Return aligned address.          */
+  return result; /* Return aligned address.          */
 }
 
 void FDKafree_L(void *ptr) {
-    void *addr;
+  void *addr;
 
-    addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
+  addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
 
-    C_ALLOC_ALIGNED_UNREGISTER(ptr);
+  C_ALLOC_ALIGNED_UNREGISTER(ptr);
 
-    FDKfree_L(addr); /* Free malloc'ed memory area.      */
+  FDKfree_L(addr); /* Free malloc'ed memory area.      */
 }
 
 /*---------------------------------------------------------------------------------------
@@ -285,161 +275,145 @@ void FDKafree_L(void *ptr) {
  *              - compiled with FDK_DEBUG will give you warnings
  *---------------------------------------------------------------------------------------*/
 void FDKmemcpy(void *dst, const void *src, const UINT size) {
-    /* -- check for overlapping memory areas -- */
-    FDK_ASSERT(((const unsigned char *)dst - (const unsigned char *)src) >=
-               (ptrdiff_t)size ||
-               ((const unsigned char *)src - (const unsigned char *)dst) >=
-               (ptrdiff_t)size);
+  /* -- check for overlapping memory areas -- */
+  FDK_ASSERT(((const unsigned char *)dst - (const unsigned char *)src) >=
+                 (ptrdiff_t)size ||
+             ((const unsigned char *)src - (const unsigned char *)dst) >=
+                 (ptrdiff_t)size);
 
-    /* do the copy */
-    memcpy(dst, src, size);
+  /* do the copy */
+  memcpy(dst, src, size);
 }
 
 void FDKmemmove(void *dst, const void *src, const UINT size) {
-    memmove(dst, src, size);
+  memmove(dst, src, size);
 }
 
 void FDKmemset(void *memPtr, const INT value, const UINT size) {
-    memset(memPtr, value, size);
+  memset(memPtr, value, size);
 }
 
-void FDKmemclear(void *memPtr, const UINT size) {
-    FDKmemset(memPtr, 0, size);
-}
+void FDKmemclear(void *memPtr, const UINT size) { FDKmemset(memPtr, 0, size); }
 
-UINT FDKstrlen(const char *s) {
-    return (UINT)strlen(s);
-}
+UINT FDKstrlen(const char *s) { return (UINT)strlen(s); }
 
 /* Compare function wrappers */
 INT FDKmemcmp(const void *s1, const void *s2, const UINT size) {
-    return memcmp(s1, s2, size);
+  return memcmp(s1, s2, size);
 }
-INT FDKstrcmp(const char *s1, const char *s2) {
-    return strcmp(s1, s2);
-}
+INT FDKstrcmp(const char *s1, const char *s2) { return strcmp(s1, s2); }
 INT FDKstrncmp(const char *s1, const char *s2, const UINT size) {
-    return strncmp(s1, s2, size);
+  return strncmp(s1, s2, size);
 }
 
 int IS_LITTLE_ENDIAN(void) {
-    int __dummy = 1;
-    return (*((UCHAR *)(&(__dummy))));
+  int __dummy = 1;
+  return (*((UCHAR *)(&(__dummy))));
 }
 
 UINT TO_LITTLE_ENDIAN(UINT val) {
-    return IS_LITTLE_ENDIAN()
-           ? val
-           : (((val & 0xff) << 24) | ((val & 0xff00) << 8) |
-              ((val & 0xff0000) >> 8) | ((val & 0xff000000) >> 24));
+  return IS_LITTLE_ENDIAN()
+             ? val
+             : (((val & 0xff) << 24) | ((val & 0xff00) << 8) |
+                ((val & 0xff0000) >> 8) | ((val & 0xff000000) >> 24));
 }
 
 /* ==================== FILE I/O ====================== */
 
 FDKFILE *FDKfopen(const char *filename, const char *mode) {
-    return fopen(filename, mode);
+  return fopen(filename, mode);
 }
-INT FDKfclose(FDKFILE *fp) {
-    return fclose((FILE *)fp);
-}
+INT FDKfclose(FDKFILE *fp) { return fclose((FILE *)fp); }
 INT FDKfseek(FDKFILE *fp, LONG OFFSET, int WHENCE) {
-    return fseek((FILE *)fp, OFFSET, WHENCE);
+  return fseek((FILE *)fp, OFFSET, WHENCE);
 }
-INT FDKftell(FDKFILE *fp) {
-    return ftell((FILE *)fp);
-}
-INT FDKfflush(FDKFILE *fp) {
-    return fflush((FILE *)fp);
-}
+INT FDKftell(FDKFILE *fp) { return ftell((FILE *)fp); }
+INT FDKfflush(FDKFILE *fp) { return fflush((FILE *)fp); }
 const INT FDKSEEK_SET = SEEK_SET;
 const INT FDKSEEK_CUR = SEEK_CUR;
 const INT FDKSEEK_END = SEEK_END;
 
 UINT FDKfwrite(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp) {
-    return (UINT)fwrite(ptrf, size, nmemb, (FILE *)fp);
+  return (UINT)fwrite(ptrf, size, nmemb, (FILE *)fp);
 }
 UINT FDKfread(void *dst, INT size, UINT nmemb, FDKFILE *fp) {
-    return (UINT)fread(dst, size, nmemb, (FILE *)fp);
+  return (UINT)fread(dst, size, nmemb, (FILE *)fp);
 }
 char *FDKfgets(void *dst, INT size, FDKFILE *fp) {
-    return fgets((char *)dst, size, (FILE *)fp);
+  return fgets((char *)dst, size, (FILE *)fp);
 }
-void FDKrewind(FDKFILE *fp) {
-    FDKfseek((FILE *)fp, 0, FDKSEEK_SET);
-}
+void FDKrewind(FDKFILE *fp) { FDKfseek((FILE *)fp, 0, FDKSEEK_SET); }
 
 UINT FDKfwrite_EL(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp) {
-    if (IS_LITTLE_ENDIAN()) {
-        FDKfwrite(ptrf, size, nmemb, fp);
-    } else {
-        UINT n;
-        INT s;
+  if (IS_LITTLE_ENDIAN()) {
+    FDKfwrite(ptrf, size, nmemb, fp);
+  } else {
+    UINT n;
+    INT s;
 
-        const UCHAR *ptr = (const UCHAR *)ptrf;
+    const UCHAR *ptr = (const UCHAR *)ptrf;
 
-        for (n = 0; n < nmemb; n++) {
-            for (s = size - 1; s >= 0; s--) {
-                FDKfwrite(ptr + s, 1, 1, fp);
-            }
-            ptr = ptr + size;
-        }
+    for (n = 0; n < nmemb; n++) {
+      for (s = size - 1; s >= 0; s--) {
+        FDKfwrite(ptr + s, 1, 1, fp);
+      }
+      ptr = ptr + size;
     }
-    return nmemb;
+  }
+  return nmemb;
 }
 
 UINT FDKfread_EL(void *dst, INT size, UINT nmemb, FDKFILE *fp) {
-    UINT n, s0, s1, err;
-    UCHAR tmp, *ptr;
-    UCHAR tmp24[3];
+  UINT n, s0, s1, err;
+  UCHAR tmp, *ptr;
+  UCHAR tmp24[3];
 
-    /* Enforce alignment of 24 bit data. */
-    if (size == 3) {
-        ptr = (UCHAR *)dst;
-        for (n = 0; n < nmemb; n++) {
-            if ((err = FDKfread(tmp24, 1, 3, fp)) != 3) {
-                return err;
-            }
-            *ptr++ = tmp24[0];
-            *ptr++ = tmp24[1];
-            *ptr++ = tmp24[2];
-            /* Sign extension */
-            if (tmp24[2] & 0x80) {
-                *ptr++ = 0xff;
-            } else {
-                *ptr++ = 0;
-            }
-        }
-        err = nmemb;
-        size = sizeof(LONG);
-    } else {
-        if ((err = FDKfread(dst, size, nmemb, fp)) != nmemb) {
-            return err;
-        }
+  /* Enforce alignment of 24 bit data. */
+  if (size == 3) {
+    ptr = (UCHAR *)dst;
+    for (n = 0; n < nmemb; n++) {
+      if ((err = FDKfread(tmp24, 1, 3, fp)) != 3) {
+        return err;
+      }
+      *ptr++ = tmp24[0];
+      *ptr++ = tmp24[1];
+      *ptr++ = tmp24[2];
+      /* Sign extension */
+      if (tmp24[2] & 0x80) {
+        *ptr++ = 0xff;
+      } else {
+        *ptr++ = 0;
+      }
     }
-    if (!IS_LITTLE_ENDIAN() && size > 1) {
-        ptr = (UCHAR *)dst;
-        for (n = 0; n < nmemb; n++) {
-            for (s0 = 0, s1 = size - 1; s0 < s1; s0++, s1--) {
-                tmp = ptr[s0];
-                ptr[s0] = ptr[s1];
-                ptr[s1] = tmp;
-            }
-            ptr += size;
-        }
+    err = nmemb;
+    size = sizeof(LONG);
+  } else {
+    if ((err = FDKfread(dst, size, nmemb, fp)) != nmemb) {
+      return err;
     }
-    return err;
+  }
+  if (!IS_LITTLE_ENDIAN() && size > 1) {
+    ptr = (UCHAR *)dst;
+    for (n = 0; n < nmemb; n++) {
+      for (s0 = 0, s1 = size - 1; s0 < s1; s0++, s1--) {
+        tmp = ptr[s0];
+        ptr[s0] = ptr[s1];
+        ptr[s1] = tmp;
+      }
+      ptr += size;
+    }
+  }
+  return err;
 }
 
-INT FDKfeof(FDKFILE *fp) {
-    return feof((FILE *)fp);
-}
+INT FDKfeof(FDKFILE *fp) { return feof((FILE *)fp); }
 
 /* Global initialization/cleanup */
 
 void FDKprintDisclaimer(void) {
-    FDKprintf(
-        "This program is protected by copyright law and international treaties.\n"
-        "Any reproduction or distribution of this program, or any portion\n"
-        "of it, may result in severe civil and criminal penalties, and will be\n"
-        "prosecuted to the maximum extent possible under law.\n\n");
+  FDKprintf(
+      "This program is protected by copyright law and international treaties.\n"
+      "Any reproduction or distribution of this program, or any portion\n"
+      "of it, may result in severe civil and criminal penalties, and will be\n"
+      "prosecuted to the maximum extent possible under law.\n\n");
 }

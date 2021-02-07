@@ -123,42 +123,42 @@ void FDKaacEnc_CalculateFullTonality(FIXP_DBL *RESTRICT spectrum,
                                      FIXP_DBL *RESTRICT sfbEnergyLD64,
                                      FIXP_SGL *RESTRICT sfbTonality, INT sfbCnt,
                                      const INT *sfbOffset, INT usePns) {
-    INT j;
-    INT numberOfLines = sfbOffset[sfbCnt];
+  INT j;
+  INT numberOfLines = sfbOffset[sfbCnt];
 
-    if (usePns) {
-        C_ALLOC_SCRATCH_START(chaosMeasurePerLine, FIXP_DBL, (1024))
+  if (usePns) {
+    C_ALLOC_SCRATCH_START(chaosMeasurePerLine, FIXP_DBL, (1024))
 
-        /* calculate chaos measure */
-        FDKaacEnc_CalculateChaosMeasure(spectrum, numberOfLines,
-                                        chaosMeasurePerLine);
+    /* calculate chaos measure */
+    FDKaacEnc_CalculateChaosMeasure(spectrum, numberOfLines,
+                                    chaosMeasurePerLine);
 
-        /* smooth ChaosMeasure */
-        FIXP_DBL left = chaosMeasurePerLine[0];
-        FIXP_DBL right;
-        for (j = 1; j < (numberOfLines - 1); j += 2) {
-            right = chaosMeasurePerLine[j];
-            right = right - (right >> 2);
-            left = right + (left >> 2);
-            chaosMeasurePerLine[j] = left; /* 0.25 left + 0.75 right */
+    /* smooth ChaosMeasure */
+    FIXP_DBL left = chaosMeasurePerLine[0];
+    FIXP_DBL right;
+    for (j = 1; j < (numberOfLines - 1); j += 2) {
+      right = chaosMeasurePerLine[j];
+      right = right - (right >> 2);
+      left = right + (left >> 2);
+      chaosMeasurePerLine[j] = left; /* 0.25 left + 0.75 right */
 
-            right = chaosMeasurePerLine[j + 1];
-            right = right - (right >> 2);
-            left = right + (left >> 2);
-            chaosMeasurePerLine[j + 1] = left;
-        }
-        if (j == (numberOfLines - 1)) {
-            right = chaosMeasurePerLine[j];
-            right = right - (right >> 2);
-            left = right + (left >> 2);
-            chaosMeasurePerLine[j] = left;
-        }
-
-        FDKaacEnc_CalcSfbTonality(spectrum, sfbMaxScaleSpec, chaosMeasurePerLine,
-                                  sfbTonality, sfbCnt, sfbOffset, sfbEnergyLD64);
-
-        C_ALLOC_SCRATCH_END(chaosMeasurePerLine, FIXP_DBL, (1024))
+      right = chaosMeasurePerLine[j + 1];
+      right = right - (right >> 2);
+      left = right + (left >> 2);
+      chaosMeasurePerLine[j + 1] = left;
     }
+    if (j == (numberOfLines - 1)) {
+      right = chaosMeasurePerLine[j];
+      right = right - (right >> 2);
+      left = right + (left >> 2);
+      chaosMeasurePerLine[j] = left;
+    }
+
+    FDKaacEnc_CalcSfbTonality(spectrum, sfbMaxScaleSpec, chaosMeasurePerLine,
+                              sfbTonality, sfbCnt, sfbOffset, sfbEnergyLD64);
+
+    C_ALLOC_SCRATCH_END(chaosMeasurePerLine, FIXP_DBL, (1024))
+  }
 }
 
 /*****************************************************************************
@@ -178,42 +178,42 @@ static void FDKaacEnc_CalcSfbTonality(FIXP_DBL *RESTRICT spectrum,
                                       FIXP_SGL *RESTRICT sfbTonality,
                                       INT sfbCnt, const INT *RESTRICT sfbOffset,
                                       FIXP_DBL *RESTRICT sfbEnergyLD64) {
-    INT i;
+  INT i;
 
-    for (i = 0; i < sfbCnt; i++) {
-        FIXP_DBL chaosMeasureSfbLD64;
-        INT shiftBits =
-            fixMax(0, sfbMaxScaleSpec[i] -
-                   4); /* max sfbWidth = 96 ; 2^7=128 => 7/2 = 4 (spc*spc) */
+  for (i = 0; i < sfbCnt; i++) {
+    FIXP_DBL chaosMeasureSfbLD64;
+    INT shiftBits =
+        fixMax(0, sfbMaxScaleSpec[i] -
+                      4); /* max sfbWidth = 96 ; 2^7=128 => 7/2 = 4 (spc*spc) */
 
-        INT j;
-        FIXP_DBL chaosMeasureSfb = FL2FXCONST_DBL(0.0);
+    INT j;
+    FIXP_DBL chaosMeasureSfb = FL2FXCONST_DBL(0.0);
 
-        /* calc chaosMeasurePerSfb */
-        for (j = (sfbOffset[i + 1] - sfbOffset[i]) - 1; j >= 0; j--) {
-            FIXP_DBL tmp = (*spectrum++) << shiftBits;
-            FIXP_DBL lineNrg = fMultDiv2(tmp, tmp);
-            chaosMeasureSfb = fMultAddDiv2(chaosMeasureSfb, lineNrg, *chaosMeasure++);
-        }
-
-        /* calc tonalityPerSfb */
-        if (chaosMeasureSfb != FL2FXCONST_DBL(0.0)) {
-            /* add ld(convtone)/64 and 2/64 bec.fMultDiv2 */
-            chaosMeasureSfbLD64 = CalcLdData((chaosMeasureSfb)) - sfbEnergyLD64[i];
-            chaosMeasureSfbLD64 += FL2FXCONST_DBL(3.0f / 64) -
-                                   ((FIXP_DBL)(shiftBits) << (DFRACT_BITS - 6));
-
-            if (chaosMeasureSfbLD64 >
-                    FL2FXCONST_DBL(-0.0519051)) /* > ld(0.05)+ld(2) */
-            {
-                if (chaosMeasureSfbLD64 <= FL2FXCONST_DBL(0.0))
-                    sfbTonality[i] =
-                        FX_DBL2FX_SGL(fMultDiv2(chaosMeasureSfbLD64, normlog) << 7);
-                else
-                    sfbTonality[i] = FL2FXCONST_SGL(0.0);
-            } else
-                sfbTonality[i] = (FIXP_SGL)MAXVAL_SGL;
-        } else
-            sfbTonality[i] = (FIXP_SGL)MAXVAL_SGL;
+    /* calc chaosMeasurePerSfb */
+    for (j = (sfbOffset[i + 1] - sfbOffset[i]) - 1; j >= 0; j--) {
+      FIXP_DBL tmp = (*spectrum++) << shiftBits;
+      FIXP_DBL lineNrg = fMultDiv2(tmp, tmp);
+      chaosMeasureSfb = fMultAddDiv2(chaosMeasureSfb, lineNrg, *chaosMeasure++);
     }
+
+    /* calc tonalityPerSfb */
+    if (chaosMeasureSfb != FL2FXCONST_DBL(0.0)) {
+      /* add ld(convtone)/64 and 2/64 bec.fMultDiv2 */
+      chaosMeasureSfbLD64 = CalcLdData((chaosMeasureSfb)) - sfbEnergyLD64[i];
+      chaosMeasureSfbLD64 += FL2FXCONST_DBL(3.0f / 64) -
+                             ((FIXP_DBL)(shiftBits) << (DFRACT_BITS - 6));
+
+      if (chaosMeasureSfbLD64 >
+          FL2FXCONST_DBL(-0.0519051)) /* > ld(0.05)+ld(2) */
+      {
+        if (chaosMeasureSfbLD64 <= FL2FXCONST_DBL(0.0))
+          sfbTonality[i] =
+              FX_DBL2FX_SGL(fMultDiv2(chaosMeasureSfbLD64, normlog) << 7);
+        else
+          sfbTonality[i] = FL2FXCONST_SGL(0.0);
+      } else
+        sfbTonality[i] = (FIXP_SGL)MAXVAL_SGL;
+    } else
+      sfbTonality[i] = (FIXP_SGL)MAXVAL_SGL;
+  }
 }

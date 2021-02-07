@@ -116,26 +116,26 @@ amm-info@iis.fraunhofer.de
 #define FUNCTION_fixmadddiv2_DD
 #ifdef FUNCTION_fixmadddiv2_DD
 inline FIXP_DBL fixmadddiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
-    INT64 result;
-    asm("smull  %x0,  %w1,  %w2;    \n"
-        "asr    %x0,  %x0,  #32;    \n"
-        "add    %w0, %w3,  %w0;    \n"
-        : "=&r"(result)
-        : "r"(a), "r"(b), "r"(x));
-    return (INT)result;
+  INT64 result;
+  asm("smull  %x0,  %w1,  %w2;    \n"
+      "asr    %x0,  %x0,  #32;    \n"
+      "add    %w0, %w3,  %w0;    \n"
+      : "=&r"(result)
+      : "r"(a), "r"(b), "r"(x));
+  return (INT)result;
 }
 #endif /* #ifdef FUNCTION_fixmadddiv2_DD */
 
 #define FUNCTION_fixmsubdiv2_DD
 #ifdef FUNCTION_fixmsubdiv2_DD
 inline FIXP_DBL fixmsubdiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
-    INT64 result;
-    asm("smull  %x0,  %w1, %w2;     \n"
-        "asr    %x0,  %x0,  #32;     \n"
-        "sub    %w0, %w3, %w0;     \n"
-        : "=&r"(result)
-        : "r"(a), "r"(b), "r"(x));
-    return (INT)result;
+  INT64 result;
+  asm("smull  %x0,  %w1, %w2;     \n"
+      "asr    %x0,  %x0,  #32;     \n"
+      "sub    %w0, %w3, %w0;     \n"
+      : "=&r"(result)
+      : "r"(a), "r"(b), "r"(x));
+  return (INT)result;
 }
 #endif /* #ifdef FUNCTION_fixmsubdiv2_DD */
 
@@ -143,18 +143,18 @@ inline FIXP_DBL fixmsubdiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
 #define FUNCTION_fixmadddiv2_DD
 #ifdef FUNCTION_fixmadddiv2_DD
 inline FIXP_DBL fixmadddiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
-    INT result;
-    asm("smmla %0, %1, %2, %3;\n" : "=r"(result) : "r"(a), "r"(b), "r"(x));
-    return result;
+  INT result;
+  asm("smmla %0, %1, %2, %3;\n" : "=r"(result) : "r"(a), "r"(b), "r"(x));
+  return result;
 }
 #endif /* #ifdef FUNCTION_fixmadddiv2_DD */
 
 #define FUNCTION_fixmsubdiv2_DD
 #ifdef FUNCTION_fixmsubdiv2_DD
 inline FIXP_DBL fixmsubdiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
-    INT result;
-    asm("smmls %0, %1, %2, %3;\n" : "=r"(result) : "r"(a), "r"(b), "r"(x));
-    return result;
+  INT result;
+  asm("smmls %0, %1, %2, %3;\n" : "=r"(result) : "r"(a), "r"(b), "r"(x));
+  return result;
 }
 #endif /* #ifdef FUNCTION_fixmsubdiv2_DD */
 
@@ -162,10 +162,10 @@ inline FIXP_DBL fixmsubdiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
 #define FUNCTION_fixmadddiv2_DD
 #ifdef FUNCTION_fixmadddiv2_DD
 inline FIXP_DBL fixmadddiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
-    INT discard = 0;
-    INT result = x;
-    asm("smlal %0, %1, %2, %3;\n" : "+r"(discard), "+r"(result) : "r"(a), "r"(b));
-    return result;
+  INT discard = 0;
+  INT result = x;
+  asm("smlal %0, %1, %2, %3;\n" : "+r"(discard), "+r"(result) : "r"(a), "r"(b));
+  return result;
 }
 #endif /* #ifdef FUNCTION_fixmadddiv2_DD */
 #endif
@@ -175,9 +175,9 @@ inline FIXP_DBL fixmadddiv2_DD(FIXP_DBL x, const FIXP_DBL a, const FIXP_DBL b) {
 #define FUNCTION_fixmadddiv2_DS
 #ifdef FUNCTION_fixmadddiv2_DS
 inline FIXP_DBL fixmadddiv2_DS(FIXP_DBL x, const FIXP_DBL a, const FIXP_SGL b) {
-    INT result;
-    asm("smlawb %0, %1, %2, %3 " : "=r"(result) : "r"(a), "r"(b), "r"(x));
-    return result;
+  INT result;
+  asm("smlawb %0, %1, %2, %3 " : "=r"(result) : "r"(a), "r"(b), "r"(x));
+  return result;
 }
 #endif /* #ifdef FUNCTION_fixmadddiv2_DS */
 
@@ -192,7 +192,7 @@ inline FIXP_DBL fixmadddiv2_DS(FIXP_DBL x, const FIXP_DBL a, const FIXP_SGL b) {
 #ifdef FUNCTION_fixmsubdiv2BitExact_DD
 inline FIXP_DBL fixmsubdiv2BitExact_DD(FIXP_DBL x, const FIXP_DBL a,
                                        const FIXP_DBL b) {
-    return x - fixmuldiv2BitExact_DD(a, b);
+  return x - fixmuldiv2BitExact_DD(a, b);
 }
 #endif /* #ifdef FUNCTION_fixmsubdiv2BitExact_DD */
 
@@ -205,7 +205,7 @@ inline FIXP_DBL fixmsubdiv2BitExact_DD(FIXP_DBL x, const FIXP_DBL a,
 #ifdef FUNCTION_fixmsubdiv2BitExact_DS
 inline FIXP_DBL fixmsubdiv2BitExact_DS(FIXP_DBL x, const FIXP_DBL a,
                                        const FIXP_SGL b) {
-    return x - fixmuldiv2BitExact_DS(a, b);
+  return x - fixmuldiv2BitExact_DS(a, b);
 }
 #endif /* #ifdef FUNCTION_fixmsubdiv2BitExact_DS */
 

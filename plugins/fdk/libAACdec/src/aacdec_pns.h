@@ -108,16 +108,16 @@ amm-info@iis.fraunhofer.de
 #define NO_OFBANDS ((8 * 16))
 
 typedef struct {
-    UCHAR correlated[NO_OFBANDS];
+  UCHAR correlated[NO_OFBANDS];
 } CPnsInterChannelData;
 
 typedef struct {
-    CPnsInterChannelData *pPnsInterChannelData;
-    UCHAR pnsUsed[NO_OFBANDS];
-    int CurrentEnergy;
-    UCHAR PnsActive;
-    INT *currentSeed;
-    INT *randomSeed;
+  CPnsInterChannelData *pPnsInterChannelData;
+  UCHAR pnsUsed[NO_OFBANDS];
+  int CurrentEnergy;
+  UCHAR PnsActive;
+  INT *currentSeed;
+  INT *randomSeed;
 } CPnsData;
 
 void CPns_UpdateNoiseState(CPnsData *pPnsData, INT *currentSeed,

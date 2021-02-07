@@ -108,12 +108,10 @@ amm-info@iis.fraunhofer.de
    drcInterpolationScheme that is read from the bitstream with 4 bit. */
 static const UCHAR winBorderToColMappingTab[2][16] = {
     /*-1, 0, 1, 2,  3,  4,  5,  6,  7,  8 */
-    {   0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 32, 32, 32, 32, 32,
-        32
-    }, /* 1024 framing */
-    {   0, 0, 4, 8, 11, 15, 19, 23, 26, 30, 30, 30, 30, 30, 30,
-        30
-    } /*  960 framing */
+    {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 32, 32, 32, 32, 32,
+     32}, /* 1024 framing */
+    {0, 0, 4, 8, 11, 15, 19, 23, 26, 30, 30, 30, 30, 30, 30,
+     30} /*  960 framing */
 };
 
 /*!
@@ -124,35 +122,35 @@ static const UCHAR winBorderToColMappingTab[2][16] = {
   \return none
 */
 void sbrDecoder_drcInitChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
-    int band;
+  int band;
 
-    if (hDrcData == NULL) {
-        return;
-    }
+  if (hDrcData == NULL) {
+    return;
+  }
 
-    for (band = 0; band < (64); band++) {
-        hDrcData->prevFact_mag[band] = FL2FXCONST_DBL(0.5f);
-    }
+  for (band = 0; band < (64); band++) {
+    hDrcData->prevFact_mag[band] = FL2FXCONST_DBL(0.5f);
+  }
 
-    for (band = 0; band < SBRDEC_MAX_DRC_BANDS; band++) {
-        hDrcData->currFact_mag[band] = FL2FXCONST_DBL(0.5f);
-        hDrcData->nextFact_mag[band] = FL2FXCONST_DBL(0.5f);
-    }
+  for (band = 0; band < SBRDEC_MAX_DRC_BANDS; band++) {
+    hDrcData->currFact_mag[band] = FL2FXCONST_DBL(0.5f);
+    hDrcData->nextFact_mag[band] = FL2FXCONST_DBL(0.5f);
+  }
 
-    hDrcData->prevFact_exp = 1;
-    hDrcData->currFact_exp = 1;
-    hDrcData->nextFact_exp = 1;
+  hDrcData->prevFact_exp = 1;
+  hDrcData->currFact_exp = 1;
+  hDrcData->nextFact_exp = 1;
 
-    hDrcData->numBandsCurr = 1;
-    hDrcData->numBandsNext = 1;
+  hDrcData->numBandsCurr = 1;
+  hDrcData->numBandsNext = 1;
 
-    hDrcData->winSequenceCurr = 0;
-    hDrcData->winSequenceNext = 0;
+  hDrcData->winSequenceCurr = 0;
+  hDrcData->winSequenceNext = 0;
 
-    hDrcData->drcInterpolationSchemeCurr = 0;
-    hDrcData->drcInterpolationSchemeNext = 0;
+  hDrcData->drcInterpolationSchemeCurr = 0;
+  hDrcData->drcInterpolationSchemeNext = 0;
 
-    hDrcData->enable = 0;
+  hDrcData->enable = 0;
 }
 
 /*!
@@ -163,27 +161,27 @@ void sbrDecoder_drcInitChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
   \return none
 */
 void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
-    if (hDrcData == NULL) {
-        return;
-    }
-    if (hDrcData->enable != 1) {
-        return;
-    }
+  if (hDrcData == NULL) {
+    return;
+  }
+  if (hDrcData->enable != 1) {
+    return;
+  }
 
-    /* swap previous data */
-    FDKmemcpy(hDrcData->currFact_mag, hDrcData->nextFact_mag,
-              SBRDEC_MAX_DRC_BANDS * sizeof(FIXP_DBL));
+  /* swap previous data */
+  FDKmemcpy(hDrcData->currFact_mag, hDrcData->nextFact_mag,
+            SBRDEC_MAX_DRC_BANDS * sizeof(FIXP_DBL));
 
-    hDrcData->currFact_exp = hDrcData->nextFact_exp;
+  hDrcData->currFact_exp = hDrcData->nextFact_exp;
 
-    hDrcData->numBandsCurr = hDrcData->numBandsNext;
+  hDrcData->numBandsCurr = hDrcData->numBandsNext;
 
-    FDKmemcpy(hDrcData->bandTopCurr, hDrcData->bandTopNext,
-              SBRDEC_MAX_DRC_BANDS * sizeof(USHORT));
+  FDKmemcpy(hDrcData->bandTopCurr, hDrcData->bandTopNext,
+            SBRDEC_MAX_DRC_BANDS * sizeof(USHORT));
 
-    hDrcData->drcInterpolationSchemeCurr = hDrcData->drcInterpolationSchemeNext;
+  hDrcData->drcInterpolationSchemeCurr = hDrcData->drcInterpolationSchemeNext;
 
-    hDrcData->winSequenceCurr = hDrcData->winSequenceNext;
+  hDrcData->winSequenceCurr = hDrcData->winSequenceNext;
 }
 
 /*!
@@ -201,285 +199,285 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
 void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                              FIXP_DBL *qmfRealSlot, FIXP_DBL *qmfImagSlot,
                              int col, int numQmfSubSamples, int maxShift) {
-    const UCHAR *winBorderToColMap;
+  const UCHAR *winBorderToColMap;
 
-    int band, bottomMdct, topMdct, bin, useLP;
-    int indx = numQmfSubSamples - (numQmfSubSamples >> 1) - 10; /* l_border */
-    int frameLenFlag = (numQmfSubSamples == 30) ? 1 : 0;
-    int frameSize = (frameLenFlag == 1) ? 960 : 1024;
+  int band, bottomMdct, topMdct, bin, useLP;
+  int indx = numQmfSubSamples - (numQmfSubSamples >> 1) - 10; /* l_border */
+  int frameLenFlag = (numQmfSubSamples == 30) ? 1 : 0;
+  int frameSize = (frameLenFlag == 1) ? 960 : 1024;
 
-    const FIXP_DBL *fact_mag = NULL;
-    INT fact_exp = 0;
-    UINT numBands = 0;
-    USHORT *bandTop = NULL;
-    int shortDrc = 0;
+  const FIXP_DBL *fact_mag = NULL;
+  INT fact_exp = 0;
+  UINT numBands = 0;
+  USHORT *bandTop = NULL;
+  int shortDrc = 0;
 
-    FIXP_DBL alphaValue = FL2FXCONST_DBL(0.0f);
+  FIXP_DBL alphaValue = FL2FXCONST_DBL(0.0f);
 
-    if (hDrcData == NULL) {
-        return;
+  if (hDrcData == NULL) {
+    return;
+  }
+  if (hDrcData->enable != 1) {
+    return;
+  }
+
+  winBorderToColMap = winBorderToColMappingTab[frameLenFlag];
+
+  useLP = (qmfImagSlot == NULL) ? 1 : 0;
+
+  col += indx;
+  bottomMdct = 0;
+
+  /* get respective data and calc interpolation factor */
+  if (col < (numQmfSubSamples >> 1)) {    /* first half of current frame */
+    if (hDrcData->winSequenceCurr != 2) { /* long window */
+      int j = col + (numQmfSubSamples >> 1);
+
+      if (hDrcData->drcInterpolationSchemeCurr == 0) {
+        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
+
+        alphaValue = (FIXP_DBL)(j * k);
+      } else {
+        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeCurr]) {
+          alphaValue = (FIXP_DBL)MAXVAL_DBL;
+        }
+      }
+    } else { /* short windows */
+      shortDrc = 1;
     }
-    if (hDrcData->enable != 1) {
-        return;
-    }
 
-    winBorderToColMap = winBorderToColMappingTab[frameLenFlag];
+    fact_mag = hDrcData->currFact_mag;
+    fact_exp = hDrcData->currFact_exp;
+    numBands = hDrcData->numBandsCurr;
+    bandTop = hDrcData->bandTopCurr;
+  } else if (col < numQmfSubSamples) {    /* second half of current frame */
+    if (hDrcData->winSequenceNext != 2) { /* next: long window */
+      int j = col - (numQmfSubSamples >> 1);
 
-    useLP = (qmfImagSlot == NULL) ? 1 : 0;
+      if (hDrcData->drcInterpolationSchemeNext == 0) {
+        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
-    col += indx;
-    bottomMdct = 0;
-
-    /* get respective data and calc interpolation factor */
-    if (col < (numQmfSubSamples >> 1)) {    /* first half of current frame */
-        if (hDrcData->winSequenceCurr != 2) { /* long window */
-            int j = col + (numQmfSubSamples >> 1);
-
-            if (hDrcData->drcInterpolationSchemeCurr == 0) {
-                INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
-
-                alphaValue = (FIXP_DBL)(j * k);
-            } else {
-                if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeCurr]) {
-                    alphaValue = (FIXP_DBL)MAXVAL_DBL;
-                }
-            }
-        } else { /* short windows */
-            shortDrc = 1;
+        alphaValue = (FIXP_DBL)(j * k);
+      } else {
+        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
+          alphaValue = (FIXP_DBL)MAXVAL_DBL;
         }
+      }
 
-        fact_mag = hDrcData->currFact_mag;
-        fact_exp = hDrcData->currFact_exp;
-        numBands = hDrcData->numBandsCurr;
-        bandTop = hDrcData->bandTopCurr;
-    } else if (col < numQmfSubSamples) {    /* second half of current frame */
-        if (hDrcData->winSequenceNext != 2) { /* next: long window */
-            int j = col - (numQmfSubSamples >> 1);
-
-            if (hDrcData->drcInterpolationSchemeNext == 0) {
-                INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
-
-                alphaValue = (FIXP_DBL)(j * k);
-            } else {
-                if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
-                    alphaValue = (FIXP_DBL)MAXVAL_DBL;
-                }
-            }
-
-            fact_mag = hDrcData->nextFact_mag;
-            fact_exp = hDrcData->nextFact_exp;
-            numBands = hDrcData->numBandsNext;
-            bandTop = hDrcData->bandTopNext;
-        } else {                                /* next: short windows */
-            if (hDrcData->winSequenceCurr != 2) { /* current: long window */
-                alphaValue = (FIXP_DBL)0;
-
-                fact_mag = hDrcData->nextFact_mag;
-                fact_exp = hDrcData->nextFact_exp;
-                numBands = hDrcData->numBandsNext;
-                bandTop = hDrcData->bandTopNext;
-            } else { /* current: short windows */
-                shortDrc = 1;
-
-                fact_mag = hDrcData->currFact_mag;
-                fact_exp = hDrcData->currFact_exp;
-                numBands = hDrcData->numBandsCurr;
-                bandTop = hDrcData->bandTopCurr;
-            }
-        }
-    } else {                                /* first half of next frame */
-        if (hDrcData->winSequenceNext != 2) { /* long window */
-            int j = col - (numQmfSubSamples >> 1);
-
-            if (hDrcData->drcInterpolationSchemeNext == 0) {
-                INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
-
-                alphaValue = (FIXP_DBL)(j * k);
-            } else {
-                if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
-                    alphaValue = (FIXP_DBL)MAXVAL_DBL;
-                }
-            }
-        } else { /* short windows */
-            shortDrc = 1;
-        }
+      fact_mag = hDrcData->nextFact_mag;
+      fact_exp = hDrcData->nextFact_exp;
+      numBands = hDrcData->numBandsNext;
+      bandTop = hDrcData->bandTopNext;
+    } else {                                /* next: short windows */
+      if (hDrcData->winSequenceCurr != 2) { /* current: long window */
+        alphaValue = (FIXP_DBL)0;
 
         fact_mag = hDrcData->nextFact_mag;
         fact_exp = hDrcData->nextFact_exp;
         numBands = hDrcData->numBandsNext;
         bandTop = hDrcData->bandTopNext;
+      } else { /* current: short windows */
+        shortDrc = 1;
 
-        col -= numQmfSubSamples;
+        fact_mag = hDrcData->currFact_mag;
+        fact_exp = hDrcData->currFact_exp;
+        numBands = hDrcData->numBandsCurr;
+        bandTop = hDrcData->bandTopCurr;
+      }
+    }
+  } else {                                /* first half of next frame */
+    if (hDrcData->winSequenceNext != 2) { /* long window */
+      int j = col - (numQmfSubSamples >> 1);
+
+      if (hDrcData->drcInterpolationSchemeNext == 0) {
+        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
+
+        alphaValue = (FIXP_DBL)(j * k);
+      } else {
+        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
+          alphaValue = (FIXP_DBL)MAXVAL_DBL;
+        }
+      }
+    } else { /* short windows */
+      shortDrc = 1;
     }
 
-    /* process bands */
-    for (band = 0; band < (int)numBands; band++) {
-        int bottomQmf, topQmf;
+    fact_mag = hDrcData->nextFact_mag;
+    fact_exp = hDrcData->nextFact_exp;
+    numBands = hDrcData->numBandsNext;
+    bandTop = hDrcData->bandTopNext;
 
-        FIXP_DBL drcFact_mag = (FIXP_DBL)MAXVAL_DBL;
+    col -= numQmfSubSamples;
+  }
 
-        topMdct = (bandTop[band] + 1) << 2;
+  /* process bands */
+  for (band = 0; band < (int)numBands; band++) {
+    int bottomQmf, topQmf;
 
-        if (!shortDrc) { /* long window */
-            if (frameLenFlag) {
-                /* 960 framing */
-                bottomQmf = fMultIfloor((FIXP_DBL)0x4444445, bottomMdct);
-                topQmf = fMultIfloor((FIXP_DBL)0x4444445, topMdct);
+    FIXP_DBL drcFact_mag = (FIXP_DBL)MAXVAL_DBL;
 
-                topMdct = 30 * topQmf;
-            } else {
-                /* 1024 framing */
-                topMdct &= ~0x1f;
+    topMdct = (bandTop[band] + 1) << 2;
 
-                bottomQmf = bottomMdct >> 5;
-                topQmf = topMdct >> 5;
-            }
+    if (!shortDrc) { /* long window */
+      if (frameLenFlag) {
+        /* 960 framing */
+        bottomQmf = fMultIfloor((FIXP_DBL)0x4444445, bottomMdct);
+        topQmf = fMultIfloor((FIXP_DBL)0x4444445, topMdct);
 
-            if (band == ((int)numBands - 1)) {
-                topQmf = (64);
-            }
+        topMdct = 30 * topQmf;
+      } else {
+        /* 1024 framing */
+        topMdct &= ~0x1f;
 
-            for (bin = bottomQmf; bin < topQmf; bin++) {
-                FIXP_DBL drcFact1_mag = hDrcData->prevFact_mag[bin];
-                FIXP_DBL drcFact2_mag = fact_mag[band];
+        bottomQmf = bottomMdct >> 5;
+        topQmf = topMdct >> 5;
+      }
 
-                /* normalize scale factors */
-                if (hDrcData->prevFact_exp < maxShift) {
-                    drcFact1_mag >>= maxShift - hDrcData->prevFact_exp;
-                }
-                if (fact_exp < maxShift) {
-                    drcFact2_mag >>= maxShift - fact_exp;
-                }
+      if (band == ((int)numBands - 1)) {
+        topQmf = (64);
+      }
 
-                /* interpolate */
-                if (alphaValue == (FIXP_DBL)0) {
-                    drcFact_mag = drcFact1_mag;
-                } else if (alphaValue == (FIXP_DBL)MAXVAL_DBL) {
-                    drcFact_mag = drcFact2_mag;
-                } else {
-                    drcFact_mag =
-                        fMult(alphaValue, drcFact2_mag) +
-                        fMult(((FIXP_DBL)MAXVAL_DBL - alphaValue), drcFact1_mag);
-                }
+      for (bin = bottomQmf; bin < topQmf; bin++) {
+        FIXP_DBL drcFact1_mag = hDrcData->prevFact_mag[bin];
+        FIXP_DBL drcFact2_mag = fact_mag[band];
 
-                /* apply scaling */
-                qmfRealSlot[bin] = fMult(qmfRealSlot[bin], drcFact_mag);
-                if (!useLP) {
-                    qmfImagSlot[bin] = fMult(qmfImagSlot[bin], drcFact_mag);
-                }
-
-                /* save previous factors */
-                if (col == (numQmfSubSamples >> 1) - 1) {
-                    hDrcData->prevFact_mag[bin] = fact_mag[band];
-                }
-            }
-        } else { /* short windows */
-            unsigned startWinIdx, stopWinIdx;
-            int startCol, stopCol;
-            FIXP_DBL invFrameSizeDiv8 =
-                (frameLenFlag) ? (FIXP_DBL)0x1111112 : (FIXP_DBL)0x1000000;
-
-            /* limit top at the frame borders */
-            if (topMdct < 0) {
-                topMdct = 0;
-            }
-            if (topMdct >= frameSize) {
-                topMdct = frameSize - 1;
-            }
-
-            if (frameLenFlag) {
-                /*  960 framing */
-                topMdct = fMultIfloor((FIXP_DBL)0x78000000,
-                                      fMultIfloor((FIXP_DBL)0x22222223, topMdct) << 2);
-
-                startWinIdx = fMultIfloor(invFrameSizeDiv8, bottomMdct) +
-                              1; /* winBorderToColMap table has offset of 1 */
-                stopWinIdx = fMultIceil(invFrameSizeDiv8 - (FIXP_DBL)1, topMdct) + 1;
-            } else {
-                /* 1024 framing */
-                topMdct &= ~0x03;
-
-                startWinIdx = fMultIfloor(invFrameSizeDiv8, bottomMdct) + 1;
-                stopWinIdx = fMultIceil(invFrameSizeDiv8, topMdct) + 1;
-            }
-
-            /* startCol is truncated to the nearest corresponding start subsample in
-               the QMF of the short window bottom is present in:*/
-            startCol = (int)winBorderToColMap[startWinIdx];
-
-            /* stopCol is rounded upwards to the nearest corresponding stop subsample
-               in the QMF of the short window top is present in. */
-            stopCol = (int)winBorderToColMap[stopWinIdx];
-
-            bottomQmf = fMultIfloor(invFrameSizeDiv8,
-                                    ((bottomMdct % (numQmfSubSamples << 2)) << 5));
-            topQmf = fMultIfloor(invFrameSizeDiv8,
-                                 ((topMdct % (numQmfSubSamples << 2)) << 5));
-
-            /* extend last band */
-            if (band == ((int)numBands - 1)) {
-                topQmf = (64);
-                stopCol = numQmfSubSamples;
-                stopWinIdx = 10;
-            }
-
-            if (topQmf == 0) {
-                if (frameLenFlag) {
-                    FIXP_DBL rem = fMult(invFrameSizeDiv8,
-                                         (FIXP_DBL)(topMdct << (DFRACT_BITS - 12)));
-                    if ((LONG)rem & (LONG)0x1F) {
-                        stopWinIdx -= 1;
-                        stopCol = (int)winBorderToColMap[stopWinIdx];
-                    }
-                }
-                topQmf = (64);
-            }
-
-            /* save previous factors */
-            if (stopCol == numQmfSubSamples) {
-                int tmpBottom = bottomQmf;
-
-                if ((int)winBorderToColMap[8] > startCol) {
-                    tmpBottom = 0; /* band starts in previous short window */
-                }
-
-                for (bin = tmpBottom; bin < topQmf; bin++) {
-                    hDrcData->prevFact_mag[bin] = fact_mag[band];
-                }
-            }
-
-            /* apply */
-            if ((col >= startCol) && (col < stopCol)) {
-                if (col >= (int)winBorderToColMap[startWinIdx + 1]) {
-                    bottomQmf = 0; /* band starts in previous short window */
-                }
-                if (col < (int)winBorderToColMap[stopWinIdx - 1]) {
-                    topQmf = (64); /* band ends in next short window */
-                }
-
-                drcFact_mag = fact_mag[band];
-
-                /* normalize scale factor */
-                if (fact_exp < maxShift) {
-                    drcFact_mag >>= maxShift - fact_exp;
-                }
-
-                /* apply scaling */
-                for (bin = bottomQmf; bin < topQmf; bin++) {
-                    qmfRealSlot[bin] = fMult(qmfRealSlot[bin], drcFact_mag);
-                    if (!useLP) {
-                        qmfImagSlot[bin] = fMult(qmfImagSlot[bin], drcFact_mag);
-                    }
-                }
-            }
+        /* normalize scale factors */
+        if (hDrcData->prevFact_exp < maxShift) {
+          drcFact1_mag >>= maxShift - hDrcData->prevFact_exp;
+        }
+        if (fact_exp < maxShift) {
+          drcFact2_mag >>= maxShift - fact_exp;
         }
 
-        bottomMdct = topMdct;
-    } /* end of bands loop */
+        /* interpolate */
+        if (alphaValue == (FIXP_DBL)0) {
+          drcFact_mag = drcFact1_mag;
+        } else if (alphaValue == (FIXP_DBL)MAXVAL_DBL) {
+          drcFact_mag = drcFact2_mag;
+        } else {
+          drcFact_mag =
+              fMult(alphaValue, drcFact2_mag) +
+              fMult(((FIXP_DBL)MAXVAL_DBL - alphaValue), drcFact1_mag);
+        }
 
-    if (col == (numQmfSubSamples >> 1) - 1) {
-        hDrcData->prevFact_exp = fact_exp;
+        /* apply scaling */
+        qmfRealSlot[bin] = fMult(qmfRealSlot[bin], drcFact_mag);
+        if (!useLP) {
+          qmfImagSlot[bin] = fMult(qmfImagSlot[bin], drcFact_mag);
+        }
+
+        /* save previous factors */
+        if (col == (numQmfSubSamples >> 1) - 1) {
+          hDrcData->prevFact_mag[bin] = fact_mag[band];
+        }
+      }
+    } else { /* short windows */
+      unsigned startWinIdx, stopWinIdx;
+      int startCol, stopCol;
+      FIXP_DBL invFrameSizeDiv8 =
+          (frameLenFlag) ? (FIXP_DBL)0x1111112 : (FIXP_DBL)0x1000000;
+
+      /* limit top at the frame borders */
+      if (topMdct < 0) {
+        topMdct = 0;
+      }
+      if (topMdct >= frameSize) {
+        topMdct = frameSize - 1;
+      }
+
+      if (frameLenFlag) {
+        /*  960 framing */
+        topMdct = fMultIfloor((FIXP_DBL)0x78000000,
+                              fMultIfloor((FIXP_DBL)0x22222223, topMdct) << 2);
+
+        startWinIdx = fMultIfloor(invFrameSizeDiv8, bottomMdct) +
+                      1; /* winBorderToColMap table has offset of 1 */
+        stopWinIdx = fMultIceil(invFrameSizeDiv8 - (FIXP_DBL)1, topMdct) + 1;
+      } else {
+        /* 1024 framing */
+        topMdct &= ~0x03;
+
+        startWinIdx = fMultIfloor(invFrameSizeDiv8, bottomMdct) + 1;
+        stopWinIdx = fMultIceil(invFrameSizeDiv8, topMdct) + 1;
+      }
+
+      /* startCol is truncated to the nearest corresponding start subsample in
+         the QMF of the short window bottom is present in:*/
+      startCol = (int)winBorderToColMap[startWinIdx];
+
+      /* stopCol is rounded upwards to the nearest corresponding stop subsample
+         in the QMF of the short window top is present in. */
+      stopCol = (int)winBorderToColMap[stopWinIdx];
+
+      bottomQmf = fMultIfloor(invFrameSizeDiv8,
+                              ((bottomMdct % (numQmfSubSamples << 2)) << 5));
+      topQmf = fMultIfloor(invFrameSizeDiv8,
+                           ((topMdct % (numQmfSubSamples << 2)) << 5));
+
+      /* extend last band */
+      if (band == ((int)numBands - 1)) {
+        topQmf = (64);
+        stopCol = numQmfSubSamples;
+        stopWinIdx = 10;
+      }
+
+      if (topQmf == 0) {
+        if (frameLenFlag) {
+          FIXP_DBL rem = fMult(invFrameSizeDiv8,
+                               (FIXP_DBL)(topMdct << (DFRACT_BITS - 12)));
+          if ((LONG)rem & (LONG)0x1F) {
+            stopWinIdx -= 1;
+            stopCol = (int)winBorderToColMap[stopWinIdx];
+          }
+        }
+        topQmf = (64);
+      }
+
+      /* save previous factors */
+      if (stopCol == numQmfSubSamples) {
+        int tmpBottom = bottomQmf;
+
+        if ((int)winBorderToColMap[8] > startCol) {
+          tmpBottom = 0; /* band starts in previous short window */
+        }
+
+        for (bin = tmpBottom; bin < topQmf; bin++) {
+          hDrcData->prevFact_mag[bin] = fact_mag[band];
+        }
+      }
+
+      /* apply */
+      if ((col >= startCol) && (col < stopCol)) {
+        if (col >= (int)winBorderToColMap[startWinIdx + 1]) {
+          bottomQmf = 0; /* band starts in previous short window */
+        }
+        if (col < (int)winBorderToColMap[stopWinIdx - 1]) {
+          topQmf = (64); /* band ends in next short window */
+        }
+
+        drcFact_mag = fact_mag[band];
+
+        /* normalize scale factor */
+        if (fact_exp < maxShift) {
+          drcFact_mag >>= maxShift - fact_exp;
+        }
+
+        /* apply scaling */
+        for (bin = bottomQmf; bin < topQmf; bin++) {
+          qmfRealSlot[bin] = fMult(qmfRealSlot[bin], drcFact_mag);
+          if (!useLP) {
+            qmfImagSlot[bin] = fMult(qmfImagSlot[bin], drcFact_mag);
+          }
+        }
+      }
     }
+
+    bottomMdct = topMdct;
+  } /* end of bands loop */
+
+  if (col == (numQmfSubSamples >> 1) - 1) {
+    hDrcData->prevFact_exp = fact_exp;
+  }
 }
 
 /*!
@@ -496,35 +494,35 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
                          FIXP_DBL **QmfBufferReal, FIXP_DBL **QmfBufferImag,
                          int numQmfSubSamples, int *scaleFactor) {
-    int col;
-    int maxShift = 0;
+  int col;
+  int maxShift = 0;
 
-    if (hDrcData == NULL) {
-        return;
-    }
-    if (hDrcData->enable == 0) {
-        return; /* Avoid changing the scaleFactor even though the processing is
+  if (hDrcData == NULL) {
+    return;
+  }
+  if (hDrcData->enable == 0) {
+    return; /* Avoid changing the scaleFactor even though the processing is
 disabled. */
-    }
+  }
 
-    /* get max scale factor */
-    if (hDrcData->prevFact_exp > maxShift) {
-        maxShift = hDrcData->prevFact_exp;
-    }
-    if (hDrcData->currFact_exp > maxShift) {
-        maxShift = hDrcData->currFact_exp;
-    }
-    if (hDrcData->nextFact_exp > maxShift) {
-        maxShift = hDrcData->nextFact_exp;
-    }
+  /* get max scale factor */
+  if (hDrcData->prevFact_exp > maxShift) {
+    maxShift = hDrcData->prevFact_exp;
+  }
+  if (hDrcData->currFact_exp > maxShift) {
+    maxShift = hDrcData->currFact_exp;
+  }
+  if (hDrcData->nextFact_exp > maxShift) {
+    maxShift = hDrcData->nextFact_exp;
+  }
 
-    for (col = 0; col < numQmfSubSamples; col++) {
-        FIXP_DBL *qmfSlotReal = QmfBufferReal[col];
-        FIXP_DBL *qmfSlotImag = (QmfBufferImag == NULL) ? NULL : QmfBufferImag[col];
+  for (col = 0; col < numQmfSubSamples; col++) {
+    FIXP_DBL *qmfSlotReal = QmfBufferReal[col];
+    FIXP_DBL *qmfSlotImag = (QmfBufferImag == NULL) ? NULL : QmfBufferImag[col];
 
-        sbrDecoder_drcApplySlot(hDrcData, qmfSlotReal, qmfSlotImag, col,
-                                numQmfSubSamples, maxShift);
-    }
+    sbrDecoder_drcApplySlot(hDrcData, qmfSlotReal, qmfSlotImag, col,
+                            numQmfSubSamples, maxShift);
+  }
 
-    *scaleFactor += maxShift;
+  *scaleFactor += maxShift;
 }

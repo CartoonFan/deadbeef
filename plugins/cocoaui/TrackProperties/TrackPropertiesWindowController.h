@@ -27,9 +27,9 @@
 
 @interface TrackPropertiesWindowController
     : NSWindowController <NSWindowDelegate, NSTableViewDelegate,
-      NSTableViewDataSource>
+                          NSTableViewDataSource>
 
-  @property(nonatomic) ddb_playlist_t *playlist;
+@property(nonatomic) ddb_playlist_t *playlist;
 @property(nonatomic) NSArray<MediaLibraryItem *> *mediaLibraryItems;
 
 @property(unsafe_unretained) BOOL modified;

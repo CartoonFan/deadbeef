@@ -131,94 +131,94 @@ amm-info@iis.fraunhofer.de
  * Decorrelator types.
  */
 typedef enum {
-    DECORR_MPS,  /**< Decorrelator type used by MPS LP/HQ */
-    DECORR_PS,   /**< Decorrelator type used by HEAACv2 and MPS LP */
-    DECORR_USAC, /**< Decorrelator type used by USAC */
-    DECORR_LD    /**< Decorrelator type used by MPS Low Delay */
+  DECORR_MPS,  /**< Decorrelator type used by MPS LP/HQ */
+  DECORR_PS,   /**< Decorrelator type used by HEAACv2 and MPS LP */
+  DECORR_USAC, /**< Decorrelator type used by USAC */
+  DECORR_LD    /**< Decorrelator type used by MPS Low Delay */
 } FDK_DECORR_TYPE;
 
 /**
  * Ducker types.
  */
 typedef enum {
-    DUCKER_AUTOMATIC, /**< FDKdecorrelateInit() chooses correct ducker type
-             depending on provided parameters. */
-    DUCKER_MPS,       /**< Force ducker type to MPS. */
-    DUCKER_PS         /**< Force ducker type to PS. */
+  DUCKER_AUTOMATIC, /**< FDKdecorrelateInit() chooses correct ducker type
+           depending on provided parameters. */
+  DUCKER_MPS,       /**< Force ducker type to MPS. */
+  DUCKER_PS         /**< Force ducker type to PS. */
 } FDK_DUCKER_TYPE;
 
 /**
  * Reverb band types.
  */
 typedef enum {
-    NOT_EXIST, /**< Mark reverb band as non-existing (number of bands = 0). */
-    DELAY, /**< Reverb bands just contains delay elements and no allpass filters.
+  NOT_EXIST, /**< Mark reverb band as non-existing (number of bands = 0). */
+  DELAY, /**< Reverb bands just contains delay elements and no allpass filters.
           */
-    COMMON_REAL,  /**< Real filter coeffs, common filter coeffs within one reverb
-         band */
-    COMMON_CPLX,  /**< Complex filter coeffs, common filter coeffs within one
-         reverb band */
-    INDEP_CPLX,   /**< Complex filter coeffs, independent filter coeffs for each
-         hybrid band */
-    INDEP_CPLX_PS /**< PS optimized implementation of general INDEP_CPLX type */
+  COMMON_REAL,  /**< Real filter coeffs, common filter coeffs within one reverb
+       band */
+  COMMON_CPLX,  /**< Complex filter coeffs, common filter coeffs within one
+       reverb band */
+  INDEP_CPLX,   /**< Complex filter coeffs, independent filter coeffs for each
+       hybrid band */
+  INDEP_CPLX_PS /**< PS optimized implementation of general INDEP_CPLX type */
 } REVBAND_FILT_TYPE;
 
 typedef struct DECORR_DEC *HANDLE_DECORR_DEC;
 
 typedef struct DUCKER_INSTANCE {
-    int hybridBands;
-    int parameterBands;
-    int partiallyComplex;
-    FDK_DUCKER_TYPE duckerType;
+  int hybridBands;
+  int parameterBands;
+  int partiallyComplex;
+  FDK_DUCKER_TYPE duckerType;
 
-    const UCHAR *qs_next;
-    const UCHAR *mapProcBands2HybBands;
-    const UCHAR *mapHybBands2ProcBands;
-    /* interleaved     SmoothDirectNrg[] and SmoothReverbNrg[],
-       non-interleaved SmoothDirectNrg[] in case of parametric stereo */
-    FIXP_MPS SmoothDirRevNrg[2 * (28)];
+  const UCHAR *qs_next;
+  const UCHAR *mapProcBands2HybBands;
+  const UCHAR *mapHybBands2ProcBands;
+  /* interleaved     SmoothDirectNrg[] and SmoothReverbNrg[],
+     non-interleaved SmoothDirectNrg[] in case of parametric stereo */
+  FIXP_MPS SmoothDirRevNrg[2 * (28)];
 
-    /*
-      parametric stereo
-    */
-    FIXP_MPS peakDecay[(28)];
-    FIXP_MPS peakDiff[(28)];
-    FIXP_DBL maxValDirectData;
-    FIXP_DBL maxValReverbData;
-    SCHAR scaleDirectNrg;
-    SCHAR scaleReverbNrg;
-    SCHAR scaleSmoothDirRevNrg;
-    SCHAR headroomSmoothDirRevNrg;
+  /*
+    parametric stereo
+  */
+  FIXP_MPS peakDecay[(28)];
+  FIXP_MPS peakDiff[(28)];
+  FIXP_DBL maxValDirectData;
+  FIXP_DBL maxValReverbData;
+  SCHAR scaleDirectNrg;
+  SCHAR scaleReverbNrg;
+  SCHAR scaleSmoothDirRevNrg;
+  SCHAR headroomSmoothDirRevNrg;
 
 } DUCKER_INSTANCE;
 
 typedef struct DECORR_FILTER_INSTANCE {
-    FIXP_MPS *stateCplx;
-    FIXP_DBL *DelayBufferCplx;
+  FIXP_MPS *stateCplx;
+  FIXP_DBL *DelayBufferCplx;
 
-    const FIXP_DECORR *numeratorReal;
-    const FIXP_STP *coeffsPacked;
-    const FIXP_DECORR *denominatorReal;
+  const FIXP_DECORR *numeratorReal;
+  const FIXP_STP *coeffsPacked;
+  const FIXP_DECORR *denominatorReal;
 } DECORR_FILTER_INSTANCE;
 
 typedef struct DECORR_DEC {
-    INT L_stateBufferCplx;
-    FIXP_DBL *stateBufferCplx;
-    INT L_delayBufferCplx;
-    FIXP_DBL *delayBufferCplx;
+  INT L_stateBufferCplx;
+  FIXP_DBL *stateBufferCplx;
+  INT L_delayBufferCplx;
+  FIXP_DBL *delayBufferCplx;
 
-    const REVBAND_FILT_TYPE *REV_filtType;
-    const UCHAR *REV_bandOffset;
-    const UCHAR *REV_delay;
-    const SCHAR *REV_filterOrder;
-    INT reverbBandDelayBufferIndex[(4)];
-    UCHAR stateBufferOffset[(3)];
+  const REVBAND_FILT_TYPE *REV_filtType;
+  const UCHAR *REV_bandOffset;
+  const UCHAR *REV_delay;
+  const SCHAR *REV_filterOrder;
+  INT reverbBandDelayBufferIndex[(4)];
+  UCHAR stateBufferOffset[(3)];
 
-    DECORR_FILTER_INSTANCE Filter[(71)];
-    DUCKER_INSTANCE ducker;
+  DECORR_FILTER_INSTANCE Filter[(71)];
+  DUCKER_INSTANCE ducker;
 
-    int numbins;
-    int partiallyComplex;
+  int numbins;
+  int partiallyComplex;
 } DECORR_DEC;
 
 /**

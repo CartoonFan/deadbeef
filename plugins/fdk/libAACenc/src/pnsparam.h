@@ -120,20 +120,20 @@ amm-info@iis.fraunhofer.de
 #define IS_LOW_COMPLEXITY (1 << 5)
 
 typedef struct {
-    /* PNS start band */
-    short startSfb;
+  /* PNS start band */
+  short startSfb;
 
-    /* detection algorithm flags */
-    USHORT detectionAlgorithmFlags;
+  /* detection algorithm flags */
+  USHORT detectionAlgorithmFlags;
 
-    /* Parameters for detection */
-    FIXP_DBL refPower;
-    FIXP_DBL refTonality;
-    INT tnsGainThreshold;
-    INT tnsPNSGainThreshold;
-    INT minSfbWidth;
-    FIXP_SGL powDistPSDcurve[MAX_GROUPED_SFB];
-    FIXP_SGL gapFillThr;
+  /* Parameters for detection */
+  FIXP_DBL refPower;
+  FIXP_DBL refTonality;
+  INT tnsGainThreshold;
+  INT tnsPNSGainThreshold;
+  INT minSfbWidth;
+  FIXP_SGL powDistPSDcurve[MAX_GROUPED_SFB];
+  FIXP_SGL gapFillThr;
 } NOISEPARAMS;
 
 int FDKaacEnc_lookUpPnsUse(int bitRate, int sampleRate, int numChan,

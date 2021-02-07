@@ -117,30 +117,30 @@ amm-info@iis.fraunhofer.de
 #define PNS_PCM_BITS 9
 
 typedef struct {
-    INT codeBook;
-    INT sfbStart;
-    INT sfbCnt;
-    INT sectionBits; /* huff + si ! */
+  INT codeBook;
+  INT sfbStart;
+  INT sfbCnt;
+  INT sectionBits; /* huff + si ! */
 } SECTION_INFO;
 
 typedef struct {
-    INT blockType;
-    INT noOfGroups;
-    INT sfbCnt;
-    INT maxSfbPerGroup;
-    INT sfbPerGroup;
-    INT noOfSections;
-    SECTION_INFO huffsection[MAX_SECTIONS];
-    INT sideInfoBits; /* sectioning bits       */
-    INT huffmanBits;  /* huffman    coded bits */
-    INT scalefacBits; /* scalefac   coded bits */
-    INT noiseNrgBits; /* noiseEnergy coded bits */
-    INT firstScf;     /* first scf to be coded */
+  INT blockType;
+  INT noOfGroups;
+  INT sfbCnt;
+  INT maxSfbPerGroup;
+  INT sfbPerGroup;
+  INT noOfSections;
+  SECTION_INFO huffsection[MAX_SECTIONS];
+  INT sideInfoBits; /* sectioning bits       */
+  INT huffmanBits;  /* huffman    coded bits */
+  INT scalefacBits; /* scalefac   coded bits */
+  INT noiseNrgBits; /* noiseEnergy coded bits */
+  INT firstScf;     /* first scf to be coded */
 } SECTION_DATA;
 
 struct BITCNTR_STATE {
-    INT *bitLookUp;
-    INT *mergeGainLookUp;
+  INT *bitLookUp;
+  INT *mergeGainLookUp;
 };
 
 INT FDKaacEnc_BCNew(BITCNTR_STATE **phBC, UCHAR *dynamic_RAM);

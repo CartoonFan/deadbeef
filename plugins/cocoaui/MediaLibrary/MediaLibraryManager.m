@@ -20,23 +20,23 @@ extern DB_functions_t *deadbeef;
 @implementation MediaLibraryManager
 
 - (instancetype)init {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
+  self = [super init];
+  if (!self) {
+    return nil;
+  }
 
-    _medialibPlugin = (DB_mediasource_t *)deadbeef->plug_get_for_id("medialib");
-    _source = self.medialibPlugin->create_source("deadbeef");
+  _medialibPlugin = (DB_mediasource_t *)deadbeef->plug_get_for_id("medialib");
+  _source = self.medialibPlugin->create_source("deadbeef");
 
-    return self;
+  return self;
 }
 
 - (void)dealloc {
-    if (_source) {
-        _medialibPlugin->free_source(_source);
-        _source = NULL;
-    }
-    _medialibPlugin = NULL;
+  if (_source) {
+    _medialibPlugin->free_source(_source);
+    _source = NULL;
+  }
+  _medialibPlugin = NULL;
 }
 
 @end

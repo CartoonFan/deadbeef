@@ -112,69 +112,69 @@ amm-info@iis.fraunhofer.de
 typedef struct s_drcdec_selection_process *HANDLE_DRC_SELECTION_PROCESS;
 
 typedef enum {
-    DRCDEC_SELECTION_PROCESS_NO_ERROR = 0,
+  DRCDEC_SELECTION_PROCESS_NO_ERROR = 0,
 
-    DRCDEC_SELECTION_PROCESS_WARNING = -1000,
+  DRCDEC_SELECTION_PROCESS_WARNING = -1000,
 
-    DRCDEC_SELECTION_PROCESS_NOT_OK = -2000,
-    DRCDEC_SELECTION_PROCESS_OUTOFMEMORY,
-    DRCDEC_SELECTION_PROCESS_INVALID_HANDLE,
-    DRCDEC_SELECTION_PROCESS_NOT_SUPPORTED,
-    DRCDEC_SELECTION_PROCESS_INVALID_PARAM,
-    DRCDEC_SELECTION_PROCESS_PARAM_OUT_OF_RANGE
+  DRCDEC_SELECTION_PROCESS_NOT_OK = -2000,
+  DRCDEC_SELECTION_PROCESS_OUTOFMEMORY,
+  DRCDEC_SELECTION_PROCESS_INVALID_HANDLE,
+  DRCDEC_SELECTION_PROCESS_NOT_SUPPORTED,
+  DRCDEC_SELECTION_PROCESS_INVALID_PARAM,
+  DRCDEC_SELECTION_PROCESS_PARAM_OUT_OF_RANGE
 
 } DRCDEC_SELECTION_PROCESS_RETURN;
 
 typedef enum {
-    SEL_PROC_TEST_TIME_DOMAIN = -100,
-    SEL_PROC_TEST_QMF_DOMAIN,
-    SEL_PROC_TEST_STFT_DOMAIN,
+  SEL_PROC_TEST_TIME_DOMAIN = -100,
+  SEL_PROC_TEST_QMF_DOMAIN,
+  SEL_PROC_TEST_STFT_DOMAIN,
 
-    SEL_PROC_CODEC_MODE_UNDEFINED = -1,
-    SEL_PROC_MPEG_4_AAC,
-    SEL_PROC_MPEG_D_USAC,
-    SEL_PROC_MPEG_H_3DA
+  SEL_PROC_CODEC_MODE_UNDEFINED = -1,
+  SEL_PROC_MPEG_4_AAC,
+  SEL_PROC_MPEG_D_USAC,
+  SEL_PROC_MPEG_H_3DA
 } SEL_PROC_CODEC_MODE;
 
 typedef enum {
-    /* set and get user param */
-    SEL_PROC_LOUDNESS_NORMALIZATION_ON,
-    /* get only user param */
-    SEL_PROC_DYNAMIC_RANGE_CONTROL_ON,
-    /* set only user params */
-    SEL_PROC_TARGET_LOUDNESS,
-    SEL_PROC_EFFECT_TYPE,
-    SEL_PROC_EFFECT_TYPE_FALLBACK_CODE,
-    SEL_PROC_LOUDNESS_MEASUREMENT_METHOD,
-    SEL_PROC_DOWNMIX_ID,
-    SEL_PROC_TARGET_LAYOUT,
-    SEL_PROC_TARGET_CHANNEL_COUNT,
-    SEL_PROC_BASE_CHANNEL_COUNT,
-    SEL_PROC_SAMPLE_RATE,
-    SEL_PROC_BOOST,
-    SEL_PROC_COMPRESS
+  /* set and get user param */
+  SEL_PROC_LOUDNESS_NORMALIZATION_ON,
+  /* get only user param */
+  SEL_PROC_DYNAMIC_RANGE_CONTROL_ON,
+  /* set only user params */
+  SEL_PROC_TARGET_LOUDNESS,
+  SEL_PROC_EFFECT_TYPE,
+  SEL_PROC_EFFECT_TYPE_FALLBACK_CODE,
+  SEL_PROC_LOUDNESS_MEASUREMENT_METHOD,
+  SEL_PROC_DOWNMIX_ID,
+  SEL_PROC_TARGET_LAYOUT,
+  SEL_PROC_TARGET_CHANNEL_COUNT,
+  SEL_PROC_BASE_CHANNEL_COUNT,
+  SEL_PROC_SAMPLE_RATE,
+  SEL_PROC_BOOST,
+  SEL_PROC_COMPRESS
 } SEL_PROC_USER_PARAM;
 
 typedef struct s_selection_process_output {
-    FIXP_DBL outputPeakLevelDb;           /* e = 7 */
-    FIXP_DBL loudnessNormalizationGainDb; /* e = 7 */
-    FIXP_DBL outputLoudness;              /* e = 7 */
+  FIXP_DBL outputPeakLevelDb;           /* e = 7 */
+  FIXP_DBL loudnessNormalizationGainDb; /* e = 7 */
+  FIXP_DBL outputLoudness;              /* e = 7 */
 
-    UCHAR numSelectedDrcSets;
-    SCHAR selectedDrcSetIds[MAX_ACTIVE_DRCS];
-    UCHAR selectedDownmixIds[MAX_ACTIVE_DRCS];
+  UCHAR numSelectedDrcSets;
+  SCHAR selectedDrcSetIds[MAX_ACTIVE_DRCS];
+  UCHAR selectedDownmixIds[MAX_ACTIVE_DRCS];
 
-    UCHAR activeDownmixId;
-    UCHAR baseChannelCount;
-    UCHAR targetChannelCount;
-    SCHAR targetLayout;
-    UCHAR downmixMatrixPresent;
-    FIXP_DBL downmixMatrix[8][8]; /* e = 2 */
+  UCHAR activeDownmixId;
+  UCHAR baseChannelCount;
+  UCHAR targetChannelCount;
+  SCHAR targetLayout;
+  UCHAR downmixMatrixPresent;
+  FIXP_DBL downmixMatrix[8][8]; /* e = 2 */
 
-    FIXP_SGL boost;    /* e = 1 */
-    FIXP_SGL compress; /* e = 1 */
+  FIXP_SGL boost;    /* e = 1 */
+  FIXP_SGL compress; /* e = 1 */
 
-    FIXP_DBL mixingLevel; /* e = 7 */
+  FIXP_DBL mixingLevel; /* e = 7 */
 
 } SEL_PROC_OUTPUT, *HANDLE_SEL_PROC_OUTPUT;
 
