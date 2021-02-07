@@ -105,17 +105,17 @@ amm-info@iis.fraunhofer.de
 #define SACENC_NLC_ENC_H
 
 /* Includes ******************************************************************/
-#include "sacenc_const.h"
 #include "FDK_bitstream.h"
 #include "sacenc_bitstream.h"
+#include "sacenc_const.h"
 
 /* Defines *******************************************************************/
 #define MAXBANDS MAX_NUM_BINS /* maximum number of frequency bands */
 
 /* Data Types ****************************************************************/
 typedef enum {
-    t_CLD,
-    t_ICC
+  t_CLD,
+  t_ICC
 
 } DATA_TYPE;
 

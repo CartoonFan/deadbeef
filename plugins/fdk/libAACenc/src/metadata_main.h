@@ -104,21 +104,21 @@ amm-info@iis.fraunhofer.de
 #define METADATA_MAIN_H
 
 /* Includes ******************************************************************/
-#include "aacenc_lib.h"
 #include "aacenc.h"
+#include "aacenc_lib.h"
 
 /* Defines *******************************************************************/
 
 /* Data Types ****************************************************************/
 
 typedef enum {
-    METADATA_OK = 0x0000, /*!< No error happened. All fine. */
-    METADATA_INVALID_HANDLE =
-        0x0020, /*!< Handle passed to function call was invalid. */
-    METADATA_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
-    METADATA_INIT_ERROR = 0x0040,   /*!< General initialization error. */
-    METADATA_ENCODE_ERROR =
-        0x0060 /*!< The encoding process was interrupted by an unexpected error.
+  METADATA_OK = 0x0000, /*!< No error happened. All fine. */
+  METADATA_INVALID_HANDLE =
+      0x0020, /*!< Handle passed to function call was invalid. */
+  METADATA_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
+  METADATA_INIT_ERROR = 0x0040,   /*!< General initialization error. */
+  METADATA_ENCODE_ERROR =
+      0x0060 /*!< The encoding process was interrupted by an unexpected error.
               */
 
 } FDK_METADATA_ERROR;
@@ -139,8 +139,9 @@ typedef struct FDK_METADATA_ENCODER *HANDLE_FDK_METADATA_ENCODER;
  *          - METADATA_OK, on succes.
  *          - METADATA_INVALID_HANDLE, METADATA_MEMORY_ERROR, on failure.
  */
-FDK_METADATA_ERROR FDK_MetadataEnc_Open(
-    HANDLE_FDK_METADATA_ENCODER *phMetadataEnc, const UINT maxChannels);
+FDK_METADATA_ERROR
+FDK_MetadataEnc_Open(HANDLE_FDK_METADATA_ENCODER *phMetadataEnc,
+                     const UINT maxChannels);
 
 /**
  * \brief  Initialize a Meta Data instance.
@@ -192,12 +193,13 @@ FDK_METADATA_ERROR FDK_MetadataEnc_Init(
  *          - METADATA_OK, on succes.
  *          - METADATA_INVALID_HANDLE, METADATA_ENCODE_ERROR, on failure.
  */
-FDK_METADATA_ERROR FDK_MetadataEnc_Process(
-    HANDLE_FDK_METADATA_ENCODER hMetadataEnc, INT_PCM *const pAudioSamples,
-    const UINT audioSamplesBufSize, const INT nAudioSamples,
-    const AACENC_MetaData *const pMetadata,
-    AACENC_EXT_PAYLOAD **ppMetaDataExtPayload, UINT *nMetaDataExtensions,
-    INT *matrix_mixdown_idx);
+FDK_METADATA_ERROR
+FDK_MetadataEnc_Process(HANDLE_FDK_METADATA_ENCODER hMetadataEnc,
+                        INT_PCM *const pAudioSamples,
+                        const UINT audioSamplesBufSize, const INT nAudioSamples,
+                        const AACENC_MetaData *const pMetadata,
+                        AACENC_EXT_PAYLOAD **ppMetaDataExtPayload,
+                        UINT *nMetaDataExtensions, INT *matrix_mixdown_idx);
 
 /**
  * \brief  Close the Meta Data instance.
@@ -211,8 +213,8 @@ FDK_METADATA_ERROR FDK_MetadataEnc_Process(
  *          - METADATA_OK, on succes.
  *          - METADATA_INVALID_HANDLE, on failure.
  */
-FDK_METADATA_ERROR FDK_MetadataEnc_Close(
-    HANDLE_FDK_METADATA_ENCODER *phMetaData);
+FDK_METADATA_ERROR
+FDK_MetadataEnc_Close(HANDLE_FDK_METADATA_ENCODER *phMetaData);
 
 /**
  * \brief  Get Meta Data Encoder delay.

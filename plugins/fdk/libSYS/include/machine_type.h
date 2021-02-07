@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 
 #include <stddef.h> /* Needed to define size_t */
 
-#if defined(__ANDROID__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 4) && \
+#if defined(__ANDROID__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 4) &&        \
     (__GNUC_GNU_INLINE__ == 1)
 typedef unsigned long long uint64_t;
 #include <sys/types.h>
@@ -209,9 +209,9 @@ typedef unsigned long long UINT64;
 #endif
 #endif
 
-#if ((defined(__i686__) || defined(__i586__) || defined(__i386__) ||  \
-      defined(__x86_64__)) ||                                         \
-     (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64)))) && \
+#if ((defined(__i686__) || defined(__i586__) || defined(__i386__) ||           \
+      defined(__x86_64__)) ||                                                  \
+     (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64)))) &&          \
     !defined(FDK_ASSERT_ENABLE)
 #define FDK_ASSERT_ENABLE
 #endif
@@ -308,16 +308,16 @@ it. Hence, a fully platform-independant way to use alignment is not supported.
 /*!
  * \brief  This macro aligns a given address depending on ::ALIGNMENT_DEFAULT.
  */
-#define ALIGN_PTR(a)                                      \
-  ((void *)((unsigned char *)(a) +                        \
-            ((((INT)ALIGNMENT_DEFAULT -                   \
-               ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
+#define ALIGN_PTR(a)                                                           \
+  ((void *)((unsigned char *)(a) +                                             \
+            ((((INT)ALIGNMENT_DEFAULT -                                        \
+               ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) &                      \
               (ALIGNMENT_DEFAULT - 1)))))
 
 /* Alignment macro for libSYS heap implementation */
 #define ALIGNMENT_EXTRES (ALIGNMENT_DEFAULT)
-#define ALGN_SIZE_EXTRES(a)                                               \
-  ((a) + (((INT)ALIGNMENT_EXTRES - ((INT)(a) & (ALIGNMENT_EXTRES - 1))) & \
+#define ALGN_SIZE_EXTRES(a)                                                    \
+  ((a) + (((INT)ALIGNMENT_EXTRES - ((INT)(a) & (ALIGNMENT_EXTRES - 1))) &      \
           (ALIGNMENT_EXTRES - 1)))
 
 /*!

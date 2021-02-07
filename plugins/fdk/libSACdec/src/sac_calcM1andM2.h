@@ -118,12 +118,12 @@ amm-info@iis.fraunhofer.de
    upmix type Scaling is compensated later in synthesis qmf filterbank */
 #define SCALE_DATA_APPLY_M2 (1)
 
-SACDEC_ERROR initM1andM2(spatialDec* self, int initStatesFlag,
+SACDEC_ERROR initM1andM2(spatialDec *self, int initStatesFlag,
                          int configChanged);
 
-int SpatialDecGetResidualIndex(spatialDec* self, int row);
+int SpatialDecGetResidualIndex(spatialDec *self, int row);
 
-SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int ps,
-                                        const SPATIAL_BS_FRAME* frame);
+SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec *self, int ps,
+                                        const SPATIAL_BS_FRAME *frame);
 
 #endif /* SAC_CALCM1ANDM2_H */

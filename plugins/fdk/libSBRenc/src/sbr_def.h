@@ -132,11 +132,11 @@ amm-info@iis.fraunhofer.de
 #define ILOG2 1.442695041f  /* 1/LOG2 */
 #define RELAXATION_FLOAT (1e-6f)
 #define RELAXATION (FL2FXCONST_DBL(RELAXATION_FLOAT))
-#define RELAXATION_FRACT \
+#define RELAXATION_FRACT                                                       \
   (FL2FXCONST_DBL(0.524288f)) /* 0.524288f is fractional part of RELAXATION */
 #define RELAXATION_SHIFT (19)
-#define RELAXATION_LD64                                 \
-  (FL2FXCONST_DBL(0.31143075889f)) /* (ld64(RELAXATION) \
+#define RELAXATION_LD64                                                        \
+  (FL2FXCONST_DBL(0.31143075889f)) /* (ld64(RELAXATION)                        \
                                     */
 
 /************  Definitions ***************/
@@ -258,19 +258,19 @@ amm-info@iis.fraunhofer.de
 typedef enum { SBR_AMP_RES_1_5 = 0, SBR_AMP_RES_3_0 } AMP_RES;
 
 typedef enum {
-    XPOS_MDCT,
-    XPOS_MDCT_CROSS,
-    XPOS_LC,
-    XPOS_RESERVED,
-    XPOS_SWITCHED /* not a real choice but used here to control behaviour */
+  XPOS_MDCT,
+  XPOS_MDCT_CROSS,
+  XPOS_LC,
+  XPOS_RESERVED,
+  XPOS_SWITCHED /* not a real choice but used here to control behaviour */
 } XPOS_MODE;
 
 typedef enum {
-    INVF_OFF = 0,
-    INVF_LOW_LEVEL,
-    INVF_MID_LEVEL,
-    INVF_HIGH_LEVEL,
-    INVF_SWITCHED /* not a real choice but used here to control behaviour */
+  INVF_OFF = 0,
+  INVF_LOW_LEVEL,
+  INVF_MID_LEVEL,
+  INVF_HIGH_LEVEL,
+  INVF_SWITCHED /* not a real choice but used here to control behaviour */
 } INVF_MODE;
 
 #endif

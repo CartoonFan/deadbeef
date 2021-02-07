@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef USACDEC_FAC_H
 #define USACDEC_FAC_H
 
-#include "channelinfo.h"
 #include "FDK_bitstream.h"
+#include "channelinfo.h"
 
 /**
  * \brief Get the address of a memory area of the spectral data memory were the

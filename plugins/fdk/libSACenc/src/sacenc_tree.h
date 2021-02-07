@@ -105,37 +105,37 @@ amm-info@iis.fraunhofer.de
 #define SACENC_TREE_H
 
 /* Includes ******************************************************************/
+#include "sacenc_bitstream.h"
 #include "sacenc_framewindowing.h"
 #include "sacenc_lib.h"
-#include "sacenc_bitstream.h"
 
 /* Defines *******************************************************************/
 
 /* Data Types ****************************************************************/
 typedef enum {
-    SPACETREE_INVALID_MODE = 0,
-    SPACETREE_212 = 8
+  SPACETREE_INVALID_MODE = 0,
+  SPACETREE_212 = 8
 
 } SPACETREE_MODE;
 
 typedef struct SPACE_TREE *HANDLE_SPACE_TREE;
 
 typedef struct {
-    UCHAR nParamBands;
-    UCHAR bUseCoarseQuantTtoCld;
-    UCHAR bUseCoarseQuantTtoIcc;
-    QUANTMODE quantMode;
-    SPACETREE_MODE mode;
+  UCHAR nParamBands;
+  UCHAR bUseCoarseQuantTtoCld;
+  UCHAR bUseCoarseQuantTtoIcc;
+  QUANTMODE quantMode;
+  SPACETREE_MODE mode;
 
-    UCHAR nChannelsInMax;
-    UCHAR nHybridBandsMax;
+  UCHAR nChannelsInMax;
+  UCHAR nHybridBandsMax;
 
 } SPACE_TREE_SETUP;
 
 typedef struct {
-    UCHAR nOttBoxes;
-    UCHAR nInChannels;
-    UCHAR nOutChannels;
+  UCHAR nOttBoxes;
+  UCHAR nInChannels;
+  UCHAR nOutChannels;
 
 } SPACE_TREE_DESCRIPTION;
 
@@ -163,6 +163,6 @@ FDK_SACENC_ERROR fdk_sacenc_spaceTree_GetDescription(
     SPACE_TREE_DESCRIPTION *pSpaceTreeDescription);
 
 INT fdk_sacenc_spaceTree_Hybrid2ParamBand(const INT nParamBands,
-        const INT nHybridBand);
+                                          const INT nHybridBand);
 
 #endif /* SACENC_TREE_H */

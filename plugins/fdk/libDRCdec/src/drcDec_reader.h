@@ -103,9 +103,9 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_READER_H
 #define DRCDEC_READER_H
 
-#include "drcDecoder.h"
-#include "drcDec_types.h"
 #include "FDK_bitstream.h"
+#include "drcDec_types.h"
+#include "drcDecoder.h"
 
 DRC_ERROR
 drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,

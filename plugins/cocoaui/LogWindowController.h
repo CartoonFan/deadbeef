@@ -23,10 +23,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface LogWindowController : NSWindowController<NSWindowDelegate>
+@interface LogWindowController : NSWindowController <NSWindowDelegate>
 
-@property (unsafe_unretained) IBOutlet NSTextView *textView;
-@property (unsafe_unretained) IBOutlet NSClipView *clipView;
+@property(unsafe_unretained) IBOutlet NSTextView *textView;
+@property(unsafe_unretained) IBOutlet NSClipView *clipView;
 
 - (IBAction)clearAction:(id)sender;
 

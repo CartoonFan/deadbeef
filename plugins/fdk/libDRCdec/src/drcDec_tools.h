@@ -103,44 +103,45 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_TOOLS_H
 #define DRCDEC_TOOLS_H
 
-#include "drcDec_types.h"
 #include "drcDec_selectionProcess.h"
+#include "drcDec_types.h"
 
 int getDeltaTmin(const int sampleRate);
 
-DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location);
+DRC_COEFFICIENTS_UNI_DRC *
+selectDrcCoefficients(HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location);
 
-DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId);
+DRC_INSTRUCTIONS_UNI_DRC *
+selectDrcInstructions(HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId);
 
-DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int downmixId);
+DOWNMIX_INSTRUCTIONS *
+selectDownmixInstructions(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+                          const int downmixId);
 
 DRC_ERROR
 deriveDrcChannelGroups(
     const int drcSetEffect,                                    /* in */
     const int channelCount,                                    /* in */
-    const SCHAR* gainSetIndex,                                 /* in */
-    const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
-    UCHAR* nDrcChannelGroups,                                  /* out */
-    SCHAR* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
-    SCHAR* groupForChannel, /* out */
-    DUCKING_MODIFICATION* duckingModificationForChannelGroup); /* out */
+    const SCHAR *gainSetIndex,                                 /* in */
+    const DUCKING_MODIFICATION *duckingModificationForChannel, /* in */
+    UCHAR *nDrcChannelGroups,                                  /* out */
+    SCHAR *uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
+    SCHAR *groupForChannel, /* out */
+    DUCKING_MODIFICATION *duckingModificationForChannelGroup); /* out */
 
 FIXP_DBL
-dB2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e);
+dB2lin(const FIXP_DBL dB_m, const int dB_e, int *pLin_e);
 
 FIXP_DBL
-lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e);
+lin2dB(const FIXP_DBL lin_m, const int lin_e, int *pDb_e);
 
 FIXP_DBL
-approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e);
+approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int *pLin_e);
 
 int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                                   const int downmixId);
 
 FIXP_DBL
-getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount);
+getDownmixOffset(DOWNMIX_INSTRUCTIONS *pDown, int baseChannelCount);
 
 #endif

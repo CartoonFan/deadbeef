@@ -6,15 +6,15 @@
 //  Copyright © 2020 Alexey Yakovenko. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "deadbeef.h"
 #include "medialib.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MediaLibraryManager : NSObject
 
-@property (nonatomic,readonly) ddb_mediasource_source_t source;
+@property(nonatomic, readonly) ddb_mediasource_source_t source;
 
 @end
 

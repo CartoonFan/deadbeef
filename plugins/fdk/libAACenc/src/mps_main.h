@@ -104,19 +104,19 @@ amm-info@iis.fraunhofer.de
 #define MPS_MAIN_H
 
 /* Includes ******************************************************************/
-#include "aacenc.h"
 #include "FDK_audio.h"
+#include "aacenc.h"
 #include "machine_type.h"
 
 /* Defines *******************************************************************/
 typedef enum {
-    MPS_ENCODER_OK = 0x0000, /*!< No error happened. All fine. */
-    MPS_ENCODER_INVALID_HANDLE =
-        0x0020, /*!< Handle passed to function call was invalid. */
-    MPS_ENCODER_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
-    MPS_ENCODER_INIT_ERROR = 0x0040,   /*!< General initialization error. */
-    MPS_ENCODER_ENCODE_ERROR =
-        0x0060 /*!< The encoding process was interrupted by an unexpected error.
+  MPS_ENCODER_OK = 0x0000, /*!< No error happened. All fine. */
+  MPS_ENCODER_INVALID_HANDLE =
+      0x0020, /*!< Handle passed to function call was invalid. */
+  MPS_ENCODER_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
+  MPS_ENCODER_INIT_ERROR = 0x0040,   /*!< General initialization error. */
+  MPS_ENCODER_ENCODE_ERROR =
+      0x0060 /*!< The encoding process was interrupted by an unexpected error.
               */
 
 } MPS_ENCODER_ERROR;
@@ -213,7 +213,7 @@ MPS_ENCODER_ERROR FDK_MpegsEnc_Process(HANDLE_MPS_ENCODER hMpsEnc,
  * \return                      Number of written bits.
  */
 INT FDK_MpegsEnc_WriteSpatialSpecificConfig(HANDLE_MPS_ENCODER hMpsEnc,
-        HANDLE_FDK_BITSTREAM hBs);
+                                            HANDLE_FDK_BITSTREAM hBs);
 
 /**
  * \brief  Get closest valid bitrate supported by given config.

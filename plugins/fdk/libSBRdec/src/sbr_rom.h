@@ -107,12 +107,12 @@ amm-info@iis.fraunhofer.de
 #ifndef SBR_ROM_H
 #define SBR_ROM_H
 
-#include "sbrdecoder.h"
 #include "env_extr.h"
 #include "qmf.h"
+#include "sbrdecoder.h"
 
 #define INV_INT_TABLE_SIZE 49
-#define SBR_NF_NO_RANDOM_VAL \
+#define SBR_NF_NO_RANDOM_VAL                                                   \
   512 /*!< Size of random number array for noise floor */
 
 /*
@@ -138,9 +138,9 @@ extern const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16];
 */
 #define NUM_WHFACTOR_TABLE_ENTRIES 9
 extern const USHORT
-FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
+    FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
 extern const FIXP_DBL
-FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];
+    FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];
 
 /*
   Envelope Adjustor
@@ -213,4 +213,4 @@ extern const UCHAR FDK_sbrDecoder_aNoIccBins[3];
 #define INV_TABLE_SIZE (1 << INV_TABLE_BITS)
 extern const FIXP_SGL FDK_sbrDecoder_invTable[INV_TABLE_SIZE];
 
-#endif  // SBR_ROM_H
+#endif // SBR_ROM_H

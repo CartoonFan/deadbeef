@@ -21,17 +21,12 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-int
-cocoautil_get_resources_path (char *s, int size);
+int cocoautil_get_resources_path(char *s, int size);
 
-int
-cocoautil_get_plugins_path (char *s, int size);
+int cocoautil_get_plugins_path(char *s, int size);
 
-void
-cocoautil_backtrace (void);
+void cocoautil_backtrace(void);
 
-int
-cocoautil_get_library_path (char *s, int size);
+int cocoautil_get_library_path(char *s, int size);
 
-int
-cocoautil_get_application_support_path (char *s, int size);
+int cocoautil_get_application_support_path(char *s, int size);

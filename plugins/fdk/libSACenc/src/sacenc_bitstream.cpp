@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 #include "sacenc_bitstream.h"
 #include "sacenc_const.h"
 
-#include "genericStds.h"
 #include "common_fix.h"
+#include "genericStds.h"
 
 #include "FDK_matrixCalloc.h"
 #include "sacenc_nlc_enc.h"
@@ -118,419 +118,418 @@ amm-info@iis.fraunhofer.de
 
 /* Data Types ****************************************************************/
 typedef struct {
-    SCHAR cld_old[SACENC_MAX_NUM_BOXES][MAX_NUM_BINS];
-    SCHAR icc_old[SACENC_MAX_NUM_BOXES][MAX_NUM_BINS];
-    UCHAR quantCoarseCldPrev[SACENC_MAX_NUM_BOXES][MAX_NUM_PARAMS];
-    UCHAR quantCoarseIccPrev[SACENC_MAX_NUM_BOXES][MAX_NUM_PARAMS];
+  SCHAR cld_old[SACENC_MAX_NUM_BOXES][MAX_NUM_BINS];
+  SCHAR icc_old[SACENC_MAX_NUM_BOXES][MAX_NUM_BINS];
+  UCHAR quantCoarseCldPrev[SACENC_MAX_NUM_BOXES][MAX_NUM_PARAMS];
+  UCHAR quantCoarseIccPrev[SACENC_MAX_NUM_BOXES][MAX_NUM_PARAMS];
 
 } PREV_OTTDATA;
 
 typedef struct {
-    PREV_OTTDATA prevOttData;
+  PREV_OTTDATA prevOttData;
 
 } STATIC_SPATIALFRAME;
 
 typedef struct BSF_INSTANCE {
-    SPATIALSPECIFICCONFIG spatialSpecificConfig;
-    SPATIALFRAME frame;
-    STATIC_SPATIALFRAME prevFrameData;
+  SPATIALSPECIFICCONFIG spatialSpecificConfig;
+  SPATIALFRAME frame;
+  STATIC_SPATIALFRAME prevFrameData;
 
 } BSF_INSTANCE;
 
 /* Constants *****************************************************************/
 static const INT SampleRateTable[MAX_SAMPLING_FREQUENCY_INDEX] = {
     96000, 88200, 64000, 48000, 44100, 32000, 24000,
-    22050, 16000, 12000, 11025, 8000,  7350
-};
+    22050, 16000, 12000, 11025, 8000,  7350};
 
 static const UCHAR FreqResBinTable_LD[MAX_FREQ_RES_INDEX] = {0, 23, 15, 12,
-                                                             9, 7,  5,  4
-                                                            };
+                                                             9, 7,  5,  4};
 static const UCHAR FreqResStrideTable_LD[] = {1, 2, 5, 23};
 
 /* Function / Class Declarations *********************************************/
 
 /* Function / Class Definition ***********************************************/
-static FDK_SACENC_ERROR DuplicateLosslessData(
-    const INT startBox, const INT stopBox,
-    const LOSSLESSDATA *const hLosslessDataFrom, const INT setFrom,
-    LOSSLESSDATA *const hLosslessDataTo, const INT setTo) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+static FDK_SACENC_ERROR
+DuplicateLosslessData(const INT startBox, const INT stopBox,
+                      const LOSSLESSDATA *const hLosslessDataFrom,
+                      const INT setFrom, LOSSLESSDATA *const hLosslessDataTo,
+                      const INT setTo) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((NULL == hLosslessDataFrom) || (NULL == hLosslessDataTo)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int i;
+  if ((NULL == hLosslessDataFrom) || (NULL == hLosslessDataTo)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int i;
 
-        for (i = startBox; i < stopBox; i++) {
-            hLosslessDataTo->bsXXXDataMode[i][setTo] =
-                hLosslessDataFrom->bsXXXDataMode[i][setFrom];
-            hLosslessDataTo->bsDataPair[i][setTo] =
-                hLosslessDataFrom->bsDataPair[i][setFrom];
-            hLosslessDataTo->bsQuantCoarseXXX[i][setTo] =
-                hLosslessDataFrom->bsQuantCoarseXXX[i][setFrom];
-            hLosslessDataTo->bsFreqResStrideXXX[i][setTo] =
-                hLosslessDataFrom->bsFreqResStrideXXX[i][setFrom];
-        }
+    for (i = startBox; i < stopBox; i++) {
+      hLosslessDataTo->bsXXXDataMode[i][setTo] =
+          hLosslessDataFrom->bsXXXDataMode[i][setFrom];
+      hLosslessDataTo->bsDataPair[i][setTo] =
+          hLosslessDataFrom->bsDataPair[i][setFrom];
+      hLosslessDataTo->bsQuantCoarseXXX[i][setTo] =
+          hLosslessDataFrom->bsQuantCoarseXXX[i][setFrom];
+      hLosslessDataTo->bsFreqResStrideXXX[i][setTo] =
+          hLosslessDataFrom->bsFreqResStrideXXX[i][setFrom];
     }
-    return error;
+  }
+  return error;
 }
 
-FDK_SACENC_ERROR fdk_sacenc_duplicateParameterSet(
-    const SPATIALFRAME *const hFrom, const INT setFrom, SPATIALFRAME *const hTo,
-    const INT setTo) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+FDK_SACENC_ERROR
+fdk_sacenc_duplicateParameterSet(const SPATIALFRAME *const hFrom,
+                                 const INT setFrom, SPATIALFRAME *const hTo,
+                                 const INT setTo) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((NULL == hFrom) || (NULL == hTo)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int box;
-        /* Only Copy Parameter Set selective stuff */
+  if ((NULL == hFrom) || (NULL == hTo)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int box;
+    /* Only Copy Parameter Set selective stuff */
 
-        /* OTT-Data */
-        for (box = 0; box < SACENC_MAX_NUM_BOXES; box++) {
-            FDKmemcpy(hTo->ottData.cld[box][setTo], hFrom->ottData.cld[box][setFrom],
-                      sizeof(hFrom->ottData.cld[0][0]));
-            FDKmemcpy(hTo->ottData.icc[box][setTo], hFrom->ottData.icc[box][setFrom],
-                      sizeof(hFrom->ottData.icc[0][0]));
-        }
+    /* OTT-Data */
+    for (box = 0; box < SACENC_MAX_NUM_BOXES; box++) {
+      FDKmemcpy(hTo->ottData.cld[box][setTo], hFrom->ottData.cld[box][setFrom],
+                sizeof(hFrom->ottData.cld[0][0]));
+      FDKmemcpy(hTo->ottData.icc[box][setTo], hFrom->ottData.icc[box][setFrom],
+                sizeof(hFrom->ottData.icc[0][0]));
+    }
 
-        /* LOSSLESSDATA */
-        DuplicateLosslessData(0, SACENC_MAX_NUM_BOXES, &hFrom->CLDLosslessData,
-                              setFrom, &hTo->CLDLosslessData, setTo);
-        DuplicateLosslessData(0, SACENC_MAX_NUM_BOXES, &hFrom->ICCLosslessData,
-                              setFrom, &hTo->ICCLosslessData, setTo);
+    /* LOSSLESSDATA */
+    DuplicateLosslessData(0, SACENC_MAX_NUM_BOXES, &hFrom->CLDLosslessData,
+                          setFrom, &hTo->CLDLosslessData, setTo);
+    DuplicateLosslessData(0, SACENC_MAX_NUM_BOXES, &hFrom->ICCLosslessData,
+                          setFrom, &hTo->ICCLosslessData, setTo);
 
-    } /* valid handle */
+  } /* valid handle */
 
-    return error;
+  return error;
 }
 
 /* set frame defaults */
 static void clearFrame(SPATIALFRAME *const pFrame) {
-    FDKmemclear(pFrame, sizeof(SPATIALFRAME));
+  FDKmemclear(pFrame, sizeof(SPATIALFRAME));
 
-    pFrame->bsIndependencyFlag = 1;
-    pFrame->framingInfo.numParamSets = 1;
+  pFrame->bsIndependencyFlag = 1;
+  pFrame->framingInfo.numParamSets = 1;
 }
 
 static void fine2coarse(SCHAR *const data, const DATA_TYPE dataType,
                         const INT startBand, const INT numBands) {
-    int i;
-    if (dataType == t_CLD) {
-        for (i = startBand; i < startBand + numBands; i++) {
-            data[i] /= 2;
-        }
-    } else {
-        for (i = startBand; i < startBand + numBands; i++) {
-            data[i] >>= 1;
-        }
+  int i;
+  if (dataType == t_CLD) {
+    for (i = startBand; i < startBand + numBands; i++) {
+      data[i] /= 2;
     }
+  } else {
+    for (i = startBand; i < startBand + numBands; i++) {
+      data[i] >>= 1;
+    }
+  }
 }
 
 static void coarse2fine(SCHAR *const data, const DATA_TYPE dataType,
                         const INT startBand, const INT numBands) {
-    int i;
+  int i;
 
+  for (i = startBand; i < startBand + numBands; i++) {
+    data[i] <<= 1;
+  }
+
+  if (dataType == t_CLD) {
     for (i = startBand; i < startBand + numBands; i++) {
-        data[i] <<= 1;
+      if (data[i] == -14) {
+        data[i] = -15;
+      } else if (data[i] == 14) {
+        data[i] = 15;
+      }
     }
-
-    if (dataType == t_CLD) {
-        for (i = startBand; i < startBand + numBands; i++) {
-            if (data[i] == -14) {
-                data[i] = -15;
-            } else if (data[i] == 14) {
-                data[i] = 15;
-            }
-        }
-    } /* (dataType == t_CLD) */
+  } /* (dataType == t_CLD) */
 }
 
 static UCHAR getBsFreqResStride(const INT index) {
-    const UCHAR *pFreqResStrideTable = NULL;
-    int freqResStrideTableSize = 0;
+  const UCHAR *pFreqResStrideTable = NULL;
+  int freqResStrideTableSize = 0;
 
-    pFreqResStrideTable = FreqResStrideTable_LD;
-    freqResStrideTableSize =
-        sizeof(FreqResStrideTable_LD) / sizeof(*FreqResStrideTable_LD);
+  pFreqResStrideTable = FreqResStrideTable_LD;
+  freqResStrideTableSize =
+      sizeof(FreqResStrideTable_LD) / sizeof(*FreqResStrideTable_LD);
 
-    return (((NULL != pFreqResStrideTable) && (index >= 0) &&
-             (index < freqResStrideTableSize))
-            ? pFreqResStrideTable[index]
-            : 1);
+  return (((NULL != pFreqResStrideTable) && (index >= 0) &&
+           (index < freqResStrideTableSize))
+              ? pFreqResStrideTable[index]
+              : 1);
 }
 
 /* write data to bitstream */
-static void ecData(HANDLE_FDK_BITSTREAM bitstream,
-                   SCHAR data[MAX_NUM_PARAMS][MAX_NUM_BINS],
-                   SCHAR oldData[MAX_NUM_BINS],
-                   UCHAR quantCoarseXXXprev[MAX_NUM_PARAMS],
-                   LOSSLESSDATA *const losslessData, const DATA_TYPE dataType,
-                   const INT paramIdx, const INT numParamSets,
-                   const INT independencyFlag, const INT startBand,
-                   const INT stopBand, const INT defaultValue) {
-    int ps, pb, strOffset, pbStride, dataBands, i;
-    int aStrides[MAX_NUM_BINS + 1] = {0};
-    SHORT cmpIdxData[2][MAX_NUM_BINS] = {{0}};
-    SHORT cmpOldData[MAX_NUM_BINS] = {0};
+static void
+ecData(HANDLE_FDK_BITSTREAM bitstream, SCHAR data[MAX_NUM_PARAMS][MAX_NUM_BINS],
+       SCHAR oldData[MAX_NUM_BINS], UCHAR quantCoarseXXXprev[MAX_NUM_PARAMS],
+       LOSSLESSDATA *const losslessData, const DATA_TYPE dataType,
+       const INT paramIdx, const INT numParamSets, const INT independencyFlag,
+       const INT startBand, const INT stopBand, const INT defaultValue) {
+  int ps, pb, strOffset, pbStride, dataBands, i;
+  int aStrides[MAX_NUM_BINS + 1] = {0};
+  SHORT cmpIdxData[2][MAX_NUM_BINS] = {{0}};
+  SHORT cmpOldData[MAX_NUM_BINS] = {0};
 
-    /* bsXXXDataMode */
-    if (independencyFlag || (losslessData->bsQuantCoarseXXX[paramIdx][0] !=
-                             quantCoarseXXXprev[paramIdx])) {
+  /* bsXXXDataMode */
+  if (independencyFlag || (losslessData->bsQuantCoarseXXX[paramIdx][0] !=
+                           quantCoarseXXXprev[paramIdx])) {
+    losslessData->bsXXXDataMode[paramIdx][0] = FINECOARSE;
+  } else {
+    losslessData->bsXXXDataMode[paramIdx][0] = KEEP;
+    for (i = startBand; i < stopBand; i++) {
+      if (data[0][i] != oldData[i]) {
         losslessData->bsXXXDataMode[paramIdx][0] = FINECOARSE;
+        break;
+      }
+    }
+  }
+
+  FDKwriteBits(bitstream, losslessData->bsXXXDataMode[paramIdx][0], 2);
+
+  for (ps = 1; ps < numParamSets; ps++) {
+    if (losslessData->bsQuantCoarseXXX[paramIdx][ps] !=
+        losslessData->bsQuantCoarseXXX[paramIdx][ps - 1]) {
+      losslessData->bsXXXDataMode[paramIdx][ps] = FINECOARSE;
     } else {
-        losslessData->bsXXXDataMode[paramIdx][0] = KEEP;
-        for (i = startBand; i < stopBand; i++) {
-            if (data[0][i] != oldData[i]) {
-                losslessData->bsXXXDataMode[paramIdx][0] = FINECOARSE;
-                break;
-            }
+      losslessData->bsXXXDataMode[paramIdx][ps] = KEEP;
+      for (i = startBand; i < stopBand; i++) {
+        if (data[ps][i] != data[ps - 1][i]) {
+          losslessData->bsXXXDataMode[paramIdx][ps] = FINECOARSE;
+          break;
         }
+      }
     }
 
-    FDKwriteBits(bitstream, losslessData->bsXXXDataMode[paramIdx][0], 2);
+    FDKwriteBits(bitstream, losslessData->bsXXXDataMode[paramIdx][ps], 2);
+  } /* for ps */
 
-    for (ps = 1; ps < numParamSets; ps++) {
-        if (losslessData->bsQuantCoarseXXX[paramIdx][ps] !=
-                losslessData->bsQuantCoarseXXX[paramIdx][ps - 1]) {
-            losslessData->bsXXXDataMode[paramIdx][ps] = FINECOARSE;
+  /* Create data pairs if possible */
+  for (ps = 0; ps < (numParamSets - 1); ps++) {
+    if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE) {
+      /* Check if next parameter set is FINCOARSE */
+      if (losslessData->bsXXXDataMode[paramIdx][ps + 1] == FINECOARSE) {
+        /* We have to check if ps and ps+1 use the same bsXXXQuantMode */
+        /* and also have the same stride */
+        if ((losslessData->bsQuantCoarseXXX[paramIdx][ps + 1] ==
+             losslessData->bsQuantCoarseXXX[paramIdx][ps]) &&
+            (losslessData->bsFreqResStrideXXX[paramIdx][ps + 1] ==
+             losslessData->bsFreqResStrideXXX[paramIdx][ps])) {
+          losslessData->bsDataPair[paramIdx][ps] = 1;
+          losslessData->bsDataPair[paramIdx][ps + 1] = 1;
+
+          /* We have a data pair -> Jump to the ps after next ps*/
+          ps++;
+          continue;
+        }
+      }
+      /* dataMode of next ps is not FINECOARSE or does not use the same
+       * bsXXXQuantMode/stride */
+      /* -> no dataPair possible */
+      losslessData->bsDataPair[paramIdx][ps] = 0;
+
+      /* Initialize ps after next ps to Zero (only important for the last
+       * parameter set) */
+      losslessData->bsDataPair[paramIdx][ps + 1] = 0;
+    } else {
+      /* No FINECOARSE -> no data pair possible */
+      losslessData->bsDataPair[paramIdx][ps] = 0;
+
+      /* Initialize ps after next ps to Zero (only important for the last
+       * parameter set) */
+      losslessData->bsDataPair[paramIdx][ps + 1] = 0;
+    }
+  } /* for ps */
+
+  for (ps = 0; ps < numParamSets; ps++) {
+    if (losslessData->bsXXXDataMode[paramIdx][ps] == DEFAULT) {
+      /* Prepare old data */
+      for (i = startBand; i < stopBand; i++) {
+        oldData[i] = defaultValue;
+      }
+      quantCoarseXXXprev[paramIdx] = 0; /* Default data are always fine */
+    }
+
+    if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE) {
+      FDKwriteBits(bitstream, losslessData->bsDataPair[paramIdx][ps], 1);
+      FDKwriteBits(bitstream, losslessData->bsQuantCoarseXXX[paramIdx][ps], 1);
+      FDKwriteBits(bitstream, losslessData->bsFreqResStrideXXX[paramIdx][ps],
+                   2);
+
+      if (losslessData->bsQuantCoarseXXX[paramIdx][ps] !=
+          quantCoarseXXXprev[paramIdx]) {
+        if (quantCoarseXXXprev[paramIdx]) {
+          coarse2fine(oldData, dataType, startBand, stopBand - startBand);
         } else {
-            losslessData->bsXXXDataMode[paramIdx][ps] = KEEP;
-            for (i = startBand; i < stopBand; i++) {
-                if (data[ps][i] != data[ps - 1][i]) {
-                    losslessData->bsXXXDataMode[paramIdx][ps] = FINECOARSE;
-                    break;
-                }
-            }
+          fine2coarse(oldData, dataType, startBand, stopBand - startBand);
         }
+      }
 
-        FDKwriteBits(bitstream, losslessData->bsXXXDataMode[paramIdx][ps], 2);
-    } /* for ps */
+      /* Handle strides */
+      pbStride =
+          getBsFreqResStride(losslessData->bsFreqResStrideXXX[paramIdx][ps]);
+      dataBands = (stopBand - startBand - 1) / pbStride + 1;
 
-    /* Create data pairs if possible */
-    for (ps = 0; ps < (numParamSets - 1); ps++) {
-        if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE) {
-            /* Check if next parameter set is FINCOARSE */
-            if (losslessData->bsXXXDataMode[paramIdx][ps + 1] == FINECOARSE) {
-                /* We have to check if ps and ps+1 use the same bsXXXQuantMode */
-                /* and also have the same stride */
-                if ((losslessData->bsQuantCoarseXXX[paramIdx][ps + 1] ==
-                        losslessData->bsQuantCoarseXXX[paramIdx][ps]) &&
-                        (losslessData->bsFreqResStrideXXX[paramIdx][ps + 1] ==
-                         losslessData->bsFreqResStrideXXX[paramIdx][ps])) {
-                    losslessData->bsDataPair[paramIdx][ps] = 1;
-                    losslessData->bsDataPair[paramIdx][ps + 1] = 1;
+      aStrides[0] = startBand;
+      for (pb = 1; pb <= dataBands; pb++) {
+        aStrides[pb] = aStrides[pb - 1] + pbStride;
+      }
 
-                    /* We have a data pair -> Jump to the ps after next ps*/
-                    ps++;
-                    continue;
-                }
-            }
-            /* dataMode of next ps is not FINECOARSE or does not use the same
-             * bsXXXQuantMode/stride */
-            /* -> no dataPair possible */
-            losslessData->bsDataPair[paramIdx][ps] = 0;
+      strOffset = 0;
+      while (aStrides[dataBands] > stopBand) {
+        if (strOffset < dataBands) {
+          strOffset++;
+        }
+        for (i = strOffset; i <= dataBands; i++) {
+          aStrides[i]--;
+        }
+      } /* while */
 
-            /* Initialize ps after next ps to Zero (only important for the last
-             * parameter set) */
-            losslessData->bsDataPair[paramIdx][ps + 1] = 0;
+      for (pb = 0; pb < dataBands; pb++) {
+        cmpOldData[startBand + pb] = oldData[aStrides[pb]];
+        cmpIdxData[0][startBand + pb] = data[ps][aStrides[pb]];
+
+        if (losslessData->bsDataPair[paramIdx][ps]) {
+          cmpIdxData[1][startBand + pb] = data[ps + 1][aStrides[pb]];
+        }
+      } /* for pb*/
+
+      /* Finally encode */
+      if (losslessData->bsDataPair[paramIdx][ps]) {
+        fdk_sacenc_ecDataPairEnc(bitstream, cmpIdxData, cmpOldData, dataType, 0,
+                                 startBand, dataBands,
+                                 losslessData->bsQuantCoarseXXX[paramIdx][ps],
+                                 independencyFlag && (ps == 0));
+      } else {
+        fdk_sacenc_ecDataSingleEnc(bitstream, cmpIdxData, cmpOldData, dataType,
+                                   0, startBand, dataBands,
+                                   losslessData->bsQuantCoarseXXX[paramIdx][ps],
+                                   independencyFlag && (ps == 0));
+      }
+
+      /* Overwrite old data */
+      for (i = startBand; i < stopBand; i++) {
+        if (losslessData->bsDataPair[paramIdx][ps]) {
+          oldData[i] = data[ps + 1][i];
         } else {
-            /* No FINECOARSE -> no data pair possible */
-            losslessData->bsDataPair[paramIdx][ps] = 0;
-
-            /* Initialize ps after next ps to Zero (only important for the last
-             * parameter set) */
-            losslessData->bsDataPair[paramIdx][ps + 1] = 0;
+          oldData[i] = data[ps][i];
         }
-    } /* for ps */
+      }
 
-    for (ps = 0; ps < numParamSets; ps++) {
-        if (losslessData->bsXXXDataMode[paramIdx][ps] == DEFAULT) {
-            /* Prepare old data */
-            for (i = startBand; i < stopBand; i++) {
-                oldData[i] = defaultValue;
-            }
-            quantCoarseXXXprev[paramIdx] = 0; /* Default data are always fine */
-        }
+      quantCoarseXXXprev[paramIdx] =
+          losslessData->bsQuantCoarseXXX[paramIdx][ps];
 
-        if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE) {
-            FDKwriteBits(bitstream, losslessData->bsDataPair[paramIdx][ps], 1);
-            FDKwriteBits(bitstream, losslessData->bsQuantCoarseXXX[paramIdx][ps], 1);
-            FDKwriteBits(bitstream, losslessData->bsFreqResStrideXXX[paramIdx][ps],
-                         2);
+      /* Jump forward if we have encoded a data pair */
+      if (losslessData->bsDataPair[paramIdx][ps]) {
+        ps++;
+      }
 
-            if (losslessData->bsQuantCoarseXXX[paramIdx][ps] !=
-                    quantCoarseXXXprev[paramIdx]) {
-                if (quantCoarseXXXprev[paramIdx]) {
-                    coarse2fine(oldData, dataType, startBand, stopBand - startBand);
-                } else {
-                    fine2coarse(oldData, dataType, startBand, stopBand - startBand);
-                }
-            }
-
-            /* Handle strides */
-            pbStride =
-                getBsFreqResStride(losslessData->bsFreqResStrideXXX[paramIdx][ps]);
-            dataBands = (stopBand - startBand - 1) / pbStride + 1;
-
-            aStrides[0] = startBand;
-            for (pb = 1; pb <= dataBands; pb++) {
-                aStrides[pb] = aStrides[pb - 1] + pbStride;
-            }
-
-            strOffset = 0;
-            while (aStrides[dataBands] > stopBand) {
-                if (strOffset < dataBands) {
-                    strOffset++;
-                }
-                for (i = strOffset; i <= dataBands; i++) {
-                    aStrides[i]--;
-                }
-            } /* while */
-
-            for (pb = 0; pb < dataBands; pb++) {
-                cmpOldData[startBand + pb] = oldData[aStrides[pb]];
-                cmpIdxData[0][startBand + pb] = data[ps][aStrides[pb]];
-
-                if (losslessData->bsDataPair[paramIdx][ps]) {
-                    cmpIdxData[1][startBand + pb] = data[ps + 1][aStrides[pb]];
-                }
-            } /* for pb*/
-
-            /* Finally encode */
-            if (losslessData->bsDataPair[paramIdx][ps]) {
-                fdk_sacenc_ecDataPairEnc(bitstream, cmpIdxData, cmpOldData, dataType, 0,
-                                         startBand, dataBands,
-                                         losslessData->bsQuantCoarseXXX[paramIdx][ps],
-                                         independencyFlag && (ps == 0));
-            } else {
-                fdk_sacenc_ecDataSingleEnc(bitstream, cmpIdxData, cmpOldData, dataType,
-                                           0, startBand, dataBands,
-                                           losslessData->bsQuantCoarseXXX[paramIdx][ps],
-                                           independencyFlag && (ps == 0));
-            }
-
-            /* Overwrite old data */
-            for (i = startBand; i < stopBand; i++) {
-                if (losslessData->bsDataPair[paramIdx][ps]) {
-                    oldData[i] = data[ps + 1][i];
-                } else {
-                    oldData[i] = data[ps][i];
-                }
-            }
-
-            quantCoarseXXXprev[paramIdx] =
-                losslessData->bsQuantCoarseXXX[paramIdx][ps];
-
-            /* Jump forward if we have encoded a data pair */
-            if (losslessData->bsDataPair[paramIdx][ps]) {
-                ps++;
-            }
-
-        } /* if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE ) */
-    }   /* for ps */
+    } /* if (losslessData->bsXXXDataMode[paramIdx][ps] == FINECOARSE ) */
+  }   /* for ps */
 }
 
 /****************************************************************************/
 /* Bitstream formatter interface functions                                  */
 /****************************************************************************/
 static FDK_SACENC_ERROR getBsFreqResIndex(const INT numBands,
-        INT *const pbsFreqResIndex) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+                                          INT *const pbsFreqResIndex) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == pbsFreqResIndex) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        const UCHAR *pFreqResBinTable = FreqResBinTable_LD;
-        int i;
-        *pbsFreqResIndex = -1;
+  if (NULL == pbsFreqResIndex) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    const UCHAR *pFreqResBinTable = FreqResBinTable_LD;
+    int i;
+    *pbsFreqResIndex = -1;
 
-        for (i = 0; i < MAX_FREQ_RES_INDEX; i++) {
-            if (numBands == pFreqResBinTable[i]) {
-                *pbsFreqResIndex = i;
-                break;
-            }
-        }
-        if (*pbsFreqResIndex < 0 || *pbsFreqResIndex >= MAX_FREQ_RES_INDEX) {
-            error = SACENC_INVALID_CONFIG;
-        }
+    for (i = 0; i < MAX_FREQ_RES_INDEX; i++) {
+      if (numBands == pFreqResBinTable[i]) {
+        *pbsFreqResIndex = i;
+        break;
+      }
     }
-    return error;
+    if (*pbsFreqResIndex < 0 || *pbsFreqResIndex >= MAX_FREQ_RES_INDEX) {
+      error = SACENC_INVALID_CONFIG;
+    }
+  }
+  return error;
 }
 
-static FDK_SACENC_ERROR getSamplingFrequencyIndex(
-    const INT bsSamplingFrequency, INT *const pbsSamplingFrequencyIndex) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+static FDK_SACENC_ERROR
+getSamplingFrequencyIndex(const INT bsSamplingFrequency,
+                          INT *const pbsSamplingFrequencyIndex) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == pbsSamplingFrequencyIndex) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int i;
-        *pbsSamplingFrequencyIndex = SAMPLING_FREQUENCY_INDEX_ESCAPE;
+  if (NULL == pbsSamplingFrequencyIndex) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int i;
+    *pbsSamplingFrequencyIndex = SAMPLING_FREQUENCY_INDEX_ESCAPE;
 
-        for (i = 0; i < MAX_SAMPLING_FREQUENCY_INDEX; i++) {
-            if (bsSamplingFrequency == SampleRateTable[i]) { /*spatial sampling rate*/
-                *pbsSamplingFrequencyIndex = i;
-                break;
-            }
-        }
+    for (i = 0; i < MAX_SAMPLING_FREQUENCY_INDEX; i++) {
+      if (bsSamplingFrequency == SampleRateTable[i]) { /*spatial sampling rate*/
+        *pbsSamplingFrequencyIndex = i;
+        break;
+      }
     }
-    return error;
+  }
+  return error;
 }
 
 /* destroy encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_destroySpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+FDK_SACENC_ERROR
+fdk_sacenc_destroySpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((selfPtr == NULL) || (*selfPtr == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        if (*selfPtr != NULL) {
-            FDK_FREE_MEMORY_1D(*selfPtr);
-        }
+  if ((selfPtr == NULL) || (*selfPtr == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    if (*selfPtr != NULL) {
+      FDK_FREE_MEMORY_1D(*selfPtr);
     }
-    return error;
+  }
+  return error;
 }
 
 /* create encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_createSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE *selfPtr) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+FDK_SACENC_ERROR
+fdk_sacenc_createSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE *selfPtr) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == selfPtr) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        /* allocate encoder struct */
-        FDK_ALLOCATE_MEMORY_1D(*selfPtr, 1, BSF_INSTANCE);
-    }
-    return error;
+  if (NULL == selfPtr) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    /* allocate encoder struct */
+    FDK_ALLOCATE_MEMORY_1D(*selfPtr, 1, BSF_INSTANCE);
+  }
+  return error;
 
 bail:
-    fdk_sacenc_destroySpatialBitstreamEncoder(selfPtr);
-    return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
+  fdk_sacenc_destroySpatialBitstreamEncoder(selfPtr);
+  return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
 }
 
 /* init encoder instance */
-FDK_SACENC_ERROR fdk_sacenc_initSpatialBitstreamEncoder(
-    HANDLE_BSF_INSTANCE selfPtr) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+FDK_SACENC_ERROR
+fdk_sacenc_initSpatialBitstreamEncoder(HANDLE_BSF_INSTANCE selfPtr) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (selfPtr == NULL) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        /* init/clear */
-        clearFrame(&selfPtr->frame);
+  if (selfPtr == NULL) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    /* init/clear */
+    clearFrame(&selfPtr->frame);
 
-    } /* valid handle */
-    return error;
+  } /* valid handle */
+  return error;
 }
 
 /* get SpatialSpecificConfig struct */
-SPATIALSPECIFICCONFIG *fdk_sacenc_getSpatialSpecificConfig(
-    HANDLE_BSF_INSTANCE selfPtr) {
-    return ((selfPtr == NULL) ? NULL : &(selfPtr->spatialSpecificConfig));
+SPATIALSPECIFICCONFIG *
+fdk_sacenc_getSpatialSpecificConfig(HANDLE_BSF_INSTANCE selfPtr) {
+  return ((selfPtr == NULL) ? NULL : &(selfPtr->spatialSpecificConfig));
 }
 
 /* write SpatialSpecificConfig to stream */
@@ -538,145 +537,146 @@ FDK_SACENC_ERROR fdk_sacenc_writeSpatialSpecificConfig(
     SPATIALSPECIFICCONFIG *const spatialSpecificConfig,
     UCHAR *const pOutputBuffer, const INT outputBufferSize,
     INT *const pnOutputBits) {
-    FDK_SACENC_ERROR error = SACENC_OK;
-    INT bsSamplingFrequencyIndex = 0;
-    INT bsFreqRes = 0;
+  FDK_SACENC_ERROR error = SACENC_OK;
+  INT bsSamplingFrequencyIndex = 0;
+  INT bsFreqRes = 0;
 
-    if ((spatialSpecificConfig == NULL) || (pOutputBuffer == NULL) ||
-            (pnOutputBits == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        FDK_BITSTREAM bitstream;
+  if ((spatialSpecificConfig == NULL) || (pOutputBuffer == NULL) ||
+      (pnOutputBits == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    FDK_BITSTREAM bitstream;
 
-        /* Find FreqRes */
-        if (SACENC_OK != (error = getBsFreqResIndex(spatialSpecificConfig->numBands,
-                                  &bsFreqRes)))
-            goto bail;
+    /* Find FreqRes */
+    if (SACENC_OK != (error = getBsFreqResIndex(spatialSpecificConfig->numBands,
+                                                &bsFreqRes)))
+      goto bail;
 
-        /* Find SamplingFrequencyIndex */
-        if (SACENC_OK != (error = getSamplingFrequencyIndex(
-                                      spatialSpecificConfig->bsSamplingFrequency,
-                                      &bsSamplingFrequencyIndex)))
-            goto bail;
+    /* Find SamplingFrequencyIndex */
+    if (SACENC_OK != (error = getSamplingFrequencyIndex(
+                          spatialSpecificConfig->bsSamplingFrequency,
+                          &bsSamplingFrequencyIndex)))
+      goto bail;
 
-        /* bind extern buffer to bitstream handle */
-        FDKinitBitStream(&bitstream, pOutputBuffer, outputBufferSize, 0, BS_WRITER);
+    /* bind extern buffer to bitstream handle */
+    FDKinitBitStream(&bitstream, pOutputBuffer, outputBufferSize, 0, BS_WRITER);
 
-        /****************************************************************************/
-        /* write to bitstream */
+    /****************************************************************************/
+    /* write to bitstream */
 
-        FDKwriteBits(&bitstream, bsSamplingFrequencyIndex, 4);
+    FDKwriteBits(&bitstream, bsSamplingFrequencyIndex, 4);
 
-        if (bsSamplingFrequencyIndex == 15) {
-            FDKwriteBits(&bitstream, spatialSpecificConfig->bsSamplingFrequency, 24);
-        }
+    if (bsSamplingFrequencyIndex == 15) {
+      FDKwriteBits(&bitstream, spatialSpecificConfig->bsSamplingFrequency, 24);
+    }
 
-        FDKwriteBits(&bitstream, spatialSpecificConfig->bsFrameLength, 5);
+    FDKwriteBits(&bitstream, spatialSpecificConfig->bsFrameLength, 5);
 
-        FDKwriteBits(&bitstream, bsFreqRes, 3);
-        FDKwriteBits(&bitstream, spatialSpecificConfig->bsTreeConfig, 4);
-        FDKwriteBits(&bitstream, spatialSpecificConfig->bsQuantMode, 2);
+    FDKwriteBits(&bitstream, bsFreqRes, 3);
+    FDKwriteBits(&bitstream, spatialSpecificConfig->bsTreeConfig, 4);
+    FDKwriteBits(&bitstream, spatialSpecificConfig->bsQuantMode, 2);
 
-        FDKwriteBits(&bitstream, 0, 1); /* bsArbitraryDownmix */
+    FDKwriteBits(&bitstream, 0, 1); /* bsArbitraryDownmix */
 
-        FDKwriteBits(&bitstream, spatialSpecificConfig->bsFixedGainDMX, 3);
+    FDKwriteBits(&bitstream, spatialSpecificConfig->bsFixedGainDMX, 3);
 
-        FDKwriteBits(&bitstream, TEMPSHAPE_OFF, 2);
-        FDKwriteBits(&bitstream, spatialSpecificConfig->bsDecorrConfig, 2);
+    FDKwriteBits(&bitstream, TEMPSHAPE_OFF, 2);
+    FDKwriteBits(&bitstream, spatialSpecificConfig->bsDecorrConfig, 2);
 
-        FDKbyteAlign(&bitstream, 0); /* byte alignment */
+    FDKbyteAlign(&bitstream, 0); /* byte alignment */
 
-        /* return number of valid bits in bitstream */
-        if ((*pnOutputBits = FDKgetValidBits(&bitstream)) >
-                (outputBufferSize * 8)) {
-            error = SACENC_INVALID_CONFIG;
-            goto bail;
-        }
+    /* return number of valid bits in bitstream */
+    if ((*pnOutputBits = FDKgetValidBits(&bitstream)) >
+        (outputBufferSize * 8)) {
+      error = SACENC_INVALID_CONFIG;
+      goto bail;
+    }
 
-        /* terminate buffer with alignment */
-        FDKbyteAlign(&bitstream, 0);
+    /* terminate buffer with alignment */
+    FDKbyteAlign(&bitstream, 0);
 
-    } /* valid handle */
+  } /* valid handle */
 
 bail:
-    return error;
+  return error;
 }
 
 /* get SpatialFrame struct */
 SPATIALFRAME *fdk_sacenc_getSpatialFrame(HANDLE_BSF_INSTANCE selfPtr,
-        const SPATIALFRAME_TYPE frameType) {
-    int idx = -1;
+                                         const SPATIALFRAME_TYPE frameType) {
+  int idx = -1;
 
-    switch (frameType) {
-    case READ_SPATIALFRAME:
-    case WRITE_SPATIALFRAME:
-        idx = 0;
-        break;
-    default:
-        idx = -1; /* invalid configuration */
-    }             /* switch frameType */
+  switch (frameType) {
+  case READ_SPATIALFRAME:
+  case WRITE_SPATIALFRAME:
+    idx = 0;
+    break;
+  default:
+    idx = -1; /* invalid configuration */
+  }           /* switch frameType */
 
-    return (((selfPtr == NULL) || (idx == -1)) ? NULL : &selfPtr->frame);
+  return (((selfPtr == NULL) || (idx == -1)) ? NULL : &selfPtr->frame);
 }
 
 static FDK_SACENC_ERROR writeFramingInfo(HANDLE_FDK_BITSTREAM hBitstream,
-        const FRAMINGINFO *const pFramingInfo,
-        const INT frameLength) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+                                         const FRAMINGINFO *const pFramingInfo,
+                                         const INT frameLength) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((hBitstream == NULL) || (pFramingInfo == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        FDKwriteBits(hBitstream, pFramingInfo->bsFramingType, 1);
-        FDKwriteBits(hBitstream, pFramingInfo->numParamSets - 1, 1);
+  if ((hBitstream == NULL) || (pFramingInfo == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    FDKwriteBits(hBitstream, pFramingInfo->bsFramingType, 1);
+    FDKwriteBits(hBitstream, pFramingInfo->numParamSets - 1, 1);
 
-        if (pFramingInfo->bsFramingType) {
-            int ps = 0;
-            int numParamSets = pFramingInfo->numParamSets;
+    if (pFramingInfo->bsFramingType) {
+      int ps = 0;
+      int numParamSets = pFramingInfo->numParamSets;
 
-            {
-                for (ps = 0; ps < numParamSets; ps++) {
-                    int bitsParamSlot = 0;
-                    while ((1 << bitsParamSlot) < (frameLength + 1)) bitsParamSlot++;
-                    if (bitsParamSlot > 0)
-                        FDKwriteBits(hBitstream, pFramingInfo->bsParamSlots[ps],
-                                     bitsParamSlot);
-                }
-            }
-        } /* pFramingInfo->bsFramingType */
-    }   /* valid handle */
+      {
+        for (ps = 0; ps < numParamSets; ps++) {
+          int bitsParamSlot = 0;
+          while ((1 << bitsParamSlot) < (frameLength + 1))
+            bitsParamSlot++;
+          if (bitsParamSlot > 0)
+            FDKwriteBits(hBitstream, pFramingInfo->bsParamSlots[ps],
+                         bitsParamSlot);
+        }
+      }
+    } /* pFramingInfo->bsFramingType */
+  }   /* valid handle */
 
-    return error;
+  return error;
 }
 
 static FDK_SACENC_ERROR writeSmgData(HANDLE_FDK_BITSTREAM hBitstream,
                                      const SMGDATA *const pSmgData,
                                      const INT numParamSets,
                                      const INT dataBands) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((hBitstream == NULL) || (pSmgData == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int i, j;
+  if ((hBitstream == NULL) || (pSmgData == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int i, j;
 
-        for (i = 0; i < numParamSets; i++) {
-            FDKwriteBits(hBitstream, pSmgData->bsSmoothMode[i], 2);
+    for (i = 0; i < numParamSets; i++) {
+      FDKwriteBits(hBitstream, pSmgData->bsSmoothMode[i], 2);
 
-            if (pSmgData->bsSmoothMode[i] >= 2) {
-                FDKwriteBits(hBitstream, pSmgData->bsSmoothTime[i], 2);
-            }
-            if (pSmgData->bsSmoothMode[i] == 3) {
-                const int stride = getBsFreqResStride(pSmgData->bsFreqResStride[i]);
-                FDKwriteBits(hBitstream, pSmgData->bsFreqResStride[i], 2);
-                for (j = 0; j < dataBands; j += stride) {
-                    FDKwriteBits(hBitstream, pSmgData->bsSmgData[i][j], 1);
-                }
-            }
-        } /* for i */
-    }   /* valid handle */
+      if (pSmgData->bsSmoothMode[i] >= 2) {
+        FDKwriteBits(hBitstream, pSmgData->bsSmoothTime[i], 2);
+      }
+      if (pSmgData->bsSmoothMode[i] == 3) {
+        const int stride = getBsFreqResStride(pSmgData->bsFreqResStride[i]);
+        FDKwriteBits(hBitstream, pSmgData->bsFreqResStride[i], 2);
+        for (j = 0; j < dataBands; j += stride) {
+          FDKwriteBits(hBitstream, pSmgData->bsSmgData[i][j], 1);
+        }
+      }
+    } /* for i */
+  }   /* valid handle */
 
-    return error;
+  return error;
 }
 
 static FDK_SACENC_ERROR writeOttData(
@@ -685,144 +685,145 @@ static FDK_SACENC_ERROR writeOttData(
     LOSSLESSDATA *const pCLDLosslessData, LOSSLESSDATA *const pICCLosslessData,
     const INT numOttBoxes, const INT numBands, const INT numParamSets,
     const INT bsIndependencyFlag) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((hBitstream == NULL) || (pPrevOttData == NULL) || (pOttData == NULL) ||
-            (ottConfig == NULL) || (pCLDLosslessData == NULL) ||
-            (pICCLosslessData == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int i;
-        for (i = 0; i < numOttBoxes; i++) {
-            ecData(hBitstream, pOttData->cld[i], pPrevOttData->cld_old[i],
-                   pPrevOttData->quantCoarseCldPrev[i], pCLDLosslessData, t_CLD, i,
-                   numParamSets, bsIndependencyFlag, 0, ottConfig[i].bsOttBands, 15);
-        }
+  if ((hBitstream == NULL) || (pPrevOttData == NULL) || (pOttData == NULL) ||
+      (ottConfig == NULL) || (pCLDLosslessData == NULL) ||
+      (pICCLosslessData == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int i;
+    for (i = 0; i < numOttBoxes; i++) {
+      ecData(hBitstream, pOttData->cld[i], pPrevOttData->cld_old[i],
+             pPrevOttData->quantCoarseCldPrev[i], pCLDLosslessData, t_CLD, i,
+             numParamSets, bsIndependencyFlag, 0, ottConfig[i].bsOttBands, 15);
+    }
+    {
+      for (i = 0; i < numOttBoxes; i++) {
         {
-            for (i = 0; i < numOttBoxes; i++) {
-                {
-                    ecData(hBitstream, pOttData->icc[i], pPrevOttData->icc_old[i],
-                           pPrevOttData->quantCoarseIccPrev[i], pICCLosslessData, t_ICC,
-                           i, numParamSets, bsIndependencyFlag, 0, numBands, 0);
-                }
-            } /* for i */
+          ecData(hBitstream, pOttData->icc[i], pPrevOttData->icc_old[i],
+                 pPrevOttData->quantCoarseIccPrev[i], pICCLosslessData, t_ICC,
+                 i, numParamSets, bsIndependencyFlag, 0, numBands, 0);
         }
-    } /* valid handle */
+      } /* for i */
+    }
+  } /* valid handle */
 
-    return error;
+  return error;
 }
 
 /* write extension frame data to stream */
-static FDK_SACENC_ERROR WriteSpatialExtensionFrame(
-    HANDLE_FDK_BITSTREAM bitstream, HANDLE_BSF_INSTANCE self) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+static FDK_SACENC_ERROR
+WriteSpatialExtensionFrame(HANDLE_FDK_BITSTREAM bitstream,
+                           HANDLE_BSF_INSTANCE self) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((bitstream == NULL) || (self == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        FDKbyteAlign(bitstream, 0);
-    } /* valid handle */
+  if ((bitstream == NULL) || (self == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    FDKbyteAlign(bitstream, 0);
+  } /* valid handle */
 
-    return error;
+  return error;
 }
 
 /* write frame data to stream */
 FDK_SACENC_ERROR fdk_sacenc_writeSpatialFrame(UCHAR *const pOutputBuffer,
-        const INT outputBufferSize,
-        INT *const pnOutputBits,
-        HANDLE_BSF_INSTANCE selfPtr) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+                                              const INT outputBufferSize,
+                                              INT *const pnOutputBits,
+                                              HANDLE_BSF_INSTANCE selfPtr) {
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((pOutputBuffer == NULL) || (pnOutputBits == NULL) || (selfPtr == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        SPATIALFRAME *frame = NULL;
-        SPATIALSPECIFICCONFIG *config = NULL;
-        FDK_BITSTREAM bitstream;
+  if ((pOutputBuffer == NULL) || (pnOutputBits == NULL) || (selfPtr == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    SPATIALFRAME *frame = NULL;
+    SPATIALSPECIFICCONFIG *config = NULL;
+    FDK_BITSTREAM bitstream;
 
-        int i, j, numParamSets, numOttBoxes;
+    int i, j, numParamSets, numOttBoxes;
 
-        if ((NULL ==
-                (frame = fdk_sacenc_getSpatialFrame(selfPtr, READ_SPATIALFRAME))) ||
-                (NULL == (config = &(selfPtr->spatialSpecificConfig)))) {
-            error = SACENC_INVALID_HANDLE;
-            goto bail;
+    if ((NULL ==
+         (frame = fdk_sacenc_getSpatialFrame(selfPtr, READ_SPATIALFRAME))) ||
+        (NULL == (config = &(selfPtr->spatialSpecificConfig)))) {
+      error = SACENC_INVALID_HANDLE;
+      goto bail;
+    }
+
+    numOttBoxes = selfPtr->spatialSpecificConfig.treeDescription.numOttBoxes;
+
+    numParamSets = frame->framingInfo.numParamSets;
+
+    if (frame->bUseBBCues) {
+      for (i = 0; i < SACENC_MAX_NUM_BOXES; i++) {
+        /* If a transient was detected, force only the second ps broad band */
+        if (numParamSets == 1) {
+          frame->CLDLosslessData.bsFreqResStrideXXX[i][0] = 3;
+          frame->ICCLosslessData.bsFreqResStrideXXX[i][0] = 3;
+        } else {
+          for (j = 1; j < MAX_NUM_PARAMS; j++) {
+            frame->CLDLosslessData.bsFreqResStrideXXX[i][j] = 3;
+            frame->ICCLosslessData.bsFreqResStrideXXX[i][j] = 3;
+          }
         }
+      }
+    } /* frame->bUseBBCues */
 
-        numOttBoxes = selfPtr->spatialSpecificConfig.treeDescription.numOttBoxes;
+    /* bind extern buffer to bitstream handle */
+    FDKinitBitStream(&bitstream, pOutputBuffer, outputBufferSize, 0, BS_WRITER);
 
-        numParamSets = frame->framingInfo.numParamSets;
+    if (SACENC_OK != (error = writeFramingInfo(
+                          &bitstream, &(frame->framingInfo),
+                          selfPtr->spatialSpecificConfig.bsFrameLength))) {
+      goto bail;
+    }
 
-        if (frame->bUseBBCues) {
-            for (i = 0; i < SACENC_MAX_NUM_BOXES; i++) {
-                /* If a transient was detected, force only the second ps broad band */
-                if (numParamSets == 1) {
-                    frame->CLDLosslessData.bsFreqResStrideXXX[i][0] = 3;
-                    frame->ICCLosslessData.bsFreqResStrideXXX[i][0] = 3;
-                } else {
-                    for (j = 1; j < MAX_NUM_PARAMS; j++) {
-                        frame->CLDLosslessData.bsFreqResStrideXXX[i][j] = 3;
-                        frame->ICCLosslessData.bsFreqResStrideXXX[i][j] = 3;
-                    }
-                }
-            }
-        } /* frame->bUseBBCues */
+    /* write bsIndependencyFlag */
+    FDKwriteBits(&bitstream, frame->bsIndependencyFlag, 1);
 
-        /* bind extern buffer to bitstream handle */
-        FDKinitBitStream(&bitstream, pOutputBuffer, outputBufferSize, 0, BS_WRITER);
+    /* write spatial data to bitstream */
+    if (SACENC_OK !=
+        (error = writeOttData(&bitstream, &selfPtr->prevFrameData.prevOttData,
+                              &frame->ottData, config->ottConfig,
+                              &frame->CLDLosslessData, &frame->ICCLosslessData,
+                              numOttBoxes, config->numBands, numParamSets,
+                              frame->bsIndependencyFlag))) {
+      goto bail;
+    }
+    if (SACENC_OK != (error = writeSmgData(&bitstream, &frame->smgData,
+                                           numParamSets, config->numBands))) {
+      goto bail;
+    }
 
-        if (SACENC_OK != (error = writeFramingInfo(
-                                      &bitstream, &(frame->framingInfo),
-                                      selfPtr->spatialSpecificConfig.bsFrameLength))) {
-            goto bail;
-        }
+    /* byte alignment */
+    FDKbyteAlign(&bitstream, 0);
 
-        /* write bsIndependencyFlag */
-        FDKwriteBits(&bitstream, frame->bsIndependencyFlag, 1);
+    /* Write SpatialExtensionFrame */
+    if (SACENC_OK !=
+        (error = WriteSpatialExtensionFrame(&bitstream, selfPtr))) {
+      goto bail;
+    }
 
-        /* write spatial data to bitstream */
-        if (SACENC_OK !=
-                (error = writeOttData(&bitstream, &selfPtr->prevFrameData.prevOttData,
-                                      &frame->ottData, config->ottConfig,
-                                      &frame->CLDLosslessData, &frame->ICCLosslessData,
-                                      numOttBoxes, config->numBands, numParamSets,
-                                      frame->bsIndependencyFlag))) {
-            goto bail;
-        }
-        if (SACENC_OK != (error = writeSmgData(&bitstream, &frame->smgData,
-                                               numParamSets, config->numBands))) {
-            goto bail;
-        }
+    if (NULL ==
+        (frame = fdk_sacenc_getSpatialFrame(selfPtr, WRITE_SPATIALFRAME))) {
+      error = SACENC_INVALID_HANDLE;
+      goto bail;
+    }
 
-        /* byte alignment */
-        FDKbyteAlign(&bitstream, 0);
+    clearFrame(frame);
 
-        /* Write SpatialExtensionFrame */
-        if (SACENC_OK !=
-                (error = WriteSpatialExtensionFrame(&bitstream, selfPtr))) {
-            goto bail;
-        }
+    /* return number of valid bits in bitstream */
+    if ((*pnOutputBits = FDKgetValidBits(&bitstream)) >
+        (outputBufferSize * 8)) {
+      error = SACENC_INVALID_CONFIG;
+      goto bail;
+    }
 
-        if (NULL ==
-                (frame = fdk_sacenc_getSpatialFrame(selfPtr, WRITE_SPATIALFRAME))) {
-            error = SACENC_INVALID_HANDLE;
-            goto bail;
-        }
+    /* terminate buffer with alignment */
+    FDKbyteAlign(&bitstream, 0);
 
-        clearFrame(frame);
-
-        /* return number of valid bits in bitstream */
-        if ((*pnOutputBits = FDKgetValidBits(&bitstream)) >
-                (outputBufferSize * 8)) {
-            error = SACENC_INVALID_CONFIG;
-            goto bail;
-        }
-
-        /* terminate buffer with alignment */
-        FDKbyteAlign(&bitstream, 0);
-
-    } /* valid handle */
+  } /* valid handle */
 
 bail:
-    return error;
+  return error;
 }

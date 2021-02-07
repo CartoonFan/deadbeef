@@ -21,119 +21,111 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
+#import "PreferencesWindowController.h"
 #import "DspPreferencesViewController.h"
 #import "GuiPreferencesWindowController.h"
+#import "MediaLibraryPreferencesViewController.h"
 #import "NetworkPreferencesViewController.h"
 #import "PlaybackPreferencesViewController.h"
 #import "PluginsPreferencesViewController.h"
-#import "PreferencesWindowController.h"
 #import "SoundPreferencesViewController.h"
-#import "MediaLibraryPreferencesViewController.h"
 
 @interface PreferencesWindowController ()
 
-@property (unsafe_unretained) IBOutlet NSToolbar *toolbar;
+@property(unsafe_unretained) IBOutlet NSToolbar *toolbar;
 
-@property (strong) IBOutlet DspPreferencesViewController *dspViewController;
-@property (strong) IBOutlet GuiPreferencesWindowController *guiViewController;
-@property (strong) IBOutlet SoundPreferencesViewController *soundViewController;
-@property (strong) IBOutlet PlaybackPreferencesViewController *playbackViewController;
-@property (strong) IBOutlet NetworkPreferencesViewController *networkViewController;
-@property (strong) IBOutlet PluginsPreferencesViewController *pluginsViewController;
-@property (strong) IBOutlet MediaLibraryPreferencesViewController *mediaLibraryPreferencesViewController;
+@property(strong) IBOutlet DspPreferencesViewController *dspViewController;
+@property(strong) IBOutlet GuiPreferencesWindowController *guiViewController;
+@property(strong) IBOutlet SoundPreferencesViewController *soundViewController;
+@property(strong)
+    IBOutlet PlaybackPreferencesViewController *playbackViewController;
+@property(strong)
+    IBOutlet NetworkPreferencesViewController *networkViewController;
+@property(strong)
+    IBOutlet PluginsPreferencesViewController *pluginsViewController;
+@property(strong) IBOutlet MediaLibraryPreferencesViewController
+    *mediaLibraryPreferencesViewController;
 
-@property (nonatomic) NSString *initialTabIdentifier;
-
+@property(nonatomic) NSString *initialTabIdentifier;
 
 @end
 
 @implementation PreferencesWindowController
 
 - (void)windowDidLoad {
-    [super windowDidLoad];
+  [super windowDidLoad];
 
-    _toolbar.delegate = self;
-    _toolbar.selectedItemIdentifier = @"Sound";
+  _toolbar.delegate = self;
+  _toolbar.selectedItemIdentifier = @"Sound";
 
-    if (self.initialTabIdentifier) {
-        _toolbar.selectedItemIdentifier = self.initialTabIdentifier;
-        self.initialTabIdentifier = nil;
-        [self switchToView:self.mediaLibraryPreferencesViewController.view];
-    }
-    else {
-        [self switchToView:self.playbackViewController.view];
-    }
+  if (self.initialTabIdentifier) {
+    _toolbar.selectedItemIdentifier = self.initialTabIdentifier;
+    self.initialTabIdentifier = nil;
+    [self switchToView:self.mediaLibraryPreferencesViewController.view];
+  } else {
+    [self switchToView:self.playbackViewController.view];
+  }
 }
 
 - (void)showWindow:(id)sender {
-    [super showWindow:sender];
+  [super showWindow:sender];
 }
 
-
-- (NSArray *)toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar
-{
-    return [NSArray arrayWithObjects:
-                    @"Sound",
-                    @"Playback",
-                    @"DSP",
-                    @"GUI",
-                    @"Medialib",
-                    @"Network",
-                    @"Plugins",
-                    nil];
+- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar {
+  return [NSArray arrayWithObjects:@"Sound", @"Playback", @"DSP", @"GUI",
+                                   @"Medialib", @"Network", @"Plugins", nil];
 }
 
 - (void)switchToView:(NSView *)view {
-    self.window.contentView = nil;
+  self.window.contentView = nil;
 
-    NSRect oldFrame = [self.window frame];
-    NSRect rc = [self.window frameRectForContentRect:view.frame];
-    rc.origin.x = oldFrame.origin.x;
-    rc.origin.y = oldFrame.origin.y + oldFrame.size.height - rc.size.height;
-    self.window.contentView = view;
-    [self.window setFrame:rc display:YES animate:YES];
+  NSRect oldFrame = [self.window frame];
+  NSRect rc = [self.window frameRectForContentRect:view.frame];
+  rc.origin.x = oldFrame.origin.x;
+  rc.origin.y = oldFrame.origin.y + oldFrame.size.height - rc.size.height;
+  self.window.contentView = view;
+  [self.window setFrame:rc display:YES animate:YES];
 }
 
 - (IBAction)soundAction:(id)sender {
-    [self switchToView:self.playbackViewController.view];
+  [self switchToView:self.playbackViewController.view];
 }
 
 - (IBAction)playbackAction:(id)sender {
-    [self switchToView:self.soundViewController.view];
+  [self switchToView:self.soundViewController.view];
 }
 
 - (IBAction)dspAction:(id)sender {
-    [self switchToView:self.dspViewController.view];
+  [self switchToView:self.dspViewController.view];
 }
 
 - (IBAction)guiAction:(id)sender {
-    [self switchToView:self.guiViewController.view];
+  [self switchToView:self.guiViewController.view];
 }
 
 - (IBAction)networkAction:(id)sender {
-    [self switchToView:self.networkViewController.view];
+  [self switchToView:self.networkViewController.view];
 }
 
 - (IBAction)pluginsAction:(id)sender {
-    [self switchToView:self.pluginsViewController.view];
+  [self switchToView:self.pluginsViewController.view];
 }
 
 - (IBAction)medialibAction:(id)sender {
-    [self switchToView:self.mediaLibraryPreferencesViewController.view];
+  [self switchToView:self.mediaLibraryPreferencesViewController.view];
 }
 
 - (void)outputDeviceChanged {
-    [self.soundViewController outputDeviceChanged];
+  [self.soundViewController outputDeviceChanged];
 }
 
 - (void)switchToTab:(NSString *)identifier {
-    if (!self.window) {
-        self.initialTabIdentifier = identifier;
-    }
-    else {
-        _toolbar.selectedItemIdentifier = identifier;
-        [self switchToView:self.mediaLibraryPreferencesViewController.view];
-    }
+  if (!self.window) {
+    self.initialTabIdentifier = identifier;
+  } else {
+    _toolbar.selectedItemIdentifier = identifier;
+    [self switchToView:self.mediaLibraryPreferencesViewController.view];
+  }
 }
 
 @end

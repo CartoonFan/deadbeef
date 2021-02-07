@@ -103,11 +103,11 @@ amm-info@iis.fraunhofer.de
 #ifndef ADJ_THR_H
 #define ADJ_THR_H
 
-#include "common_fix.h"
 #include "adj_thr_data.h"
-#include "qc_data.h"
-#include "line_pe.h"
+#include "common_fix.h"
 #include "interface.h"
+#include "line_pe.h"
+#include "qc_data.h"
 
 /*****************************************************************************
     functionname: FDKaacEnc_peCalculation

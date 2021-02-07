@@ -25,127 +25,120 @@
   Alexey Yakovenko waker@users.sourceforge.net
 */
 #include "handler.h"
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-#include <stdlib.h>
-#include "handler.h"
 #include "threading.h"
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct message_s {
-    uint32_t id;
-    uintptr_t ctx;
-    uint32_t p1;
-    uint32_t p2;
-    struct message_s *next;
+  uint32_t id;
+  uintptr_t ctx;
+  uint32_t p1;
+  uint32_t p2;
+  struct message_s *next;
 } message_t;
 
 typedef struct handler_s {
-    int queue_size;
-    message_t *mfree;
-    message_t *mqueue;
-    message_t *mqtail;
-    uintptr_t mutex;
-    uintptr_t cond;
-    message_t pool[1];
+  int queue_size;
+  message_t *mfree;
+  message_t *mqueue;
+  message_t *mqtail;
+  uintptr_t mutex;
+  uintptr_t cond;
+  message_t pool[1];
 } handler_t;
 
-void
-handler_reset (handler_t *h) {
-    h->mqueue = NULL;
-    h->mfree = NULL;
+void handler_reset(handler_t *h) {
+  h->mqueue = NULL;
+  h->mfree = NULL;
+  h->mqtail = NULL;
+  memset(h->pool, 0, sizeof(message_t) * h->queue_size);
+  for (int i = 0; i < h->queue_size; i++) {
+    h->pool[i].next = h->mfree;
+    h->mfree = &h->pool[i];
+  }
+}
+
+handler_t *handler_alloc(int queue_size) {
+  int sz = sizeof(handler_t) + (queue_size - 1) * sizeof(message_t);
+  handler_t *h = malloc(sz);
+  memset(h, 0, sz);
+  h->queue_size = queue_size;
+  h->mutex = mutex_create();
+  h->cond = cond_create();
+  handler_reset(h);
+  return h;
+}
+
+void handler_free(handler_t *h) {
+  mutex_lock(h->mutex);
+  handler_reset(h);
+  mutex_unlock(h->mutex);
+  mutex_free(h->mutex);
+  cond_free(h->cond);
+  free(h);
+}
+
+int handler_push(handler_t *h, uint32_t id, uintptr_t ctx, uint32_t p1,
+                 uint32_t p2) {
+  if (!h) {
+    return -1;
+  }
+  if (!h->mfree) {
+    return -1;
+  }
+  mutex_lock(h->mutex);
+  message_t *msg = h->mfree;
+  h->mfree = h->mfree->next;
+  if (h->mqtail) {
+    h->mqtail->next = msg;
+  }
+  h->mqtail = msg;
+  if (!h->mqueue) {
+    h->mqueue = msg;
+  }
+
+  msg->next = NULL;
+  msg->id = id;
+  msg->ctx = ctx;
+  msg->p1 = p1;
+  msg->p2 = p2;
+  mutex_unlock(h->mutex);
+  cond_signal(h->cond);
+  return 0;
+}
+
+void handler_wait(handler_t *h) {
+  cond_wait(h->cond, h->mutex);
+  mutex_unlock(h->mutex);
+}
+
+int handler_pop(handler_t *h, uint32_t *id, uintptr_t *ctx, uint32_t *p1,
+                uint32_t *p2) {
+  mutex_lock(h->mutex);
+  if (!h->mqueue) {
+    mutex_unlock(h->mutex);
+    return -1;
+  }
+  *id = h->mqueue->id;
+  *ctx = h->mqueue->ctx;
+  *p1 = h->mqueue->p1;
+  *p2 = h->mqueue->p2;
+  message_t *next = h->mqueue->next;
+  h->mqueue->next = h->mfree;
+  h->mfree = h->mqueue;
+  h->mqueue = next;
+  if (!h->mqueue) {
     h->mqtail = NULL;
-    memset (h->pool, 0, sizeof (message_t) * h->queue_size);
-    for (int i = 0; i < h->queue_size; i++) {
-        h->pool[i].next = h->mfree;
-        h->mfree = &h->pool[i];
-    }
+  }
+  mutex_unlock(h->mutex);
+  return 0;
 }
 
-handler_t *
-handler_alloc (int queue_size) {
-    int sz = sizeof (handler_t) + (queue_size-1) * sizeof (message_t);
-    handler_t *h = malloc (sz);
-    memset (h, 0, sz);
-    h->queue_size = queue_size;
-    h->mutex = mutex_create ();
-    h->cond = cond_create ();
-    handler_reset (h);
-    return h;
+int handler_hasmessages(handler_t *h) {
+  mutex_lock(h->mutex);
+  int res = h->mqueue ? 1 : 0;
+  mutex_unlock(h->mutex);
+  return res;
 }
-
-void
-handler_free (handler_t *h) {
-    mutex_lock (h->mutex);
-    handler_reset (h);
-    mutex_unlock (h->mutex);
-    mutex_free (h->mutex);
-    cond_free (h->cond);
-    free (h);
-}
-
-int
-handler_push (handler_t *h, uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
-    if (!h) {
-        return -1;
-    }
-    if (!h->mfree) {
-        return -1;
-    }
-    mutex_lock (h->mutex);
-    message_t *msg = h->mfree;
-    h->mfree = h->mfree->next;
-    if (h->mqtail) {
-        h->mqtail->next = msg;
-    }
-    h->mqtail = msg;
-    if (!h->mqueue) {
-        h->mqueue = msg;
-    }
-
-    msg->next = NULL;
-    msg->id = id;
-    msg->ctx = ctx;
-    msg->p1 = p1;
-    msg->p2 = p2;
-    mutex_unlock (h->mutex);
-    cond_signal (h->cond);
-    return 0;
-}
-
-void
-handler_wait (handler_t *h) {
-    cond_wait (h->cond, h->mutex);
-    mutex_unlock (h->mutex);
-}
-
-int
-handler_pop (handler_t *h, uint32_t *id, uintptr_t *ctx, uint32_t *p1, uint32_t *p2) {
-    mutex_lock (h->mutex);
-    if (!h->mqueue) {
-        mutex_unlock (h->mutex);
-        return -1;
-    }
-    *id = h->mqueue->id;
-    *ctx = h->mqueue->ctx;
-    *p1 = h->mqueue->p1;
-    *p2 = h->mqueue->p2;
-    message_t *next = h->mqueue->next;
-    h->mqueue->next = h->mfree;
-    h->mfree = h->mqueue;
-    h->mqueue = next;
-    if (!h->mqueue) {
-        h->mqtail = NULL;
-    }
-    mutex_unlock (h->mutex);
-    return 0;
-}
-
-int
-handler_hasmessages (handler_t *h) {
-    mutex_lock (h->mutex);
-    int res = h->mqueue ? 1 : 0;
-    mutex_unlock (h->mutex);
-    return res;
-}
-

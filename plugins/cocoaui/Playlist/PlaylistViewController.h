@@ -21,27 +21,27 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Cocoa/Cocoa.h>
+#import "ConverterWindowController.h"
 #import "DesignableViewController.h"
 #import "PlaylistView.h"
-#import "ConverterWindowController.h"
+#import <Cocoa/Cocoa.h>
 
 typedef struct {
-    char *title;
-    int type; // predefined col type
-    char *format;
-    int size;
-    int alignment;
-    int set_text_color;
-    uint8_t text_color[4];
-    char *bytecode;
-    int sort_order;
+  char *title;
+  int type; // predefined col type
+  char *format;
+  int size;
+  int alignment;
+  int set_text_color;
+  uint8_t text_color[4];
+  char *bytecode;
+  int sort_order;
 } plt_col_info_t;
 
 @interface PlaylistViewController : DesignableViewController
 
-@property (nonatomic,readonly) plt_col_info_t *columns;
-@property (nonatomic,readonly) int ncolumns;
+@property(nonatomic, readonly) plt_col_info_t *columns;
+@property(nonatomic, readonly) int ncolumns;
 
 - (void)setup;
 - (void)cleanup;

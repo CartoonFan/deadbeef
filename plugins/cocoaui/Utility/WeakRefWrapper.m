@@ -8,21 +8,21 @@
 
 #import "WeakRefWrapper.h"
 
-@interface WeakRefWrapper()
+@interface WeakRefWrapper ()
 
-@property (nonatomic,weak) id object;
+@property(nonatomic, weak) id object;
 
 @end
 
 @implementation WeakRefWrapper
 
 - (instancetype)initWithObject:(id)object {
-    self = [super init];
-    if (self == nil) {
-        return nil;
-    }
-    self.object = object;
-    return self;
+  self = [super init];
+  if (self == nil) {
+    return nil;
+  }
+  self.object = object;
+  return self;
 }
 
 @end

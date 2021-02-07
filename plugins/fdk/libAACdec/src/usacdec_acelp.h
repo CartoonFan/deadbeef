@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef USACDEC_ACELP_H
 #define USACDEC_ACELP_H
 
-#include "common_fix.h"
 #include "FDK_bitstream.h"
+#include "common_fix.h"
 #include "usacdec_const.h"
 #include "usacdec_rom.h"
 
@@ -112,35 +112,35 @@ amm-info@iis.fraunhofer.de
 
 /** Structure which holds the ACELP internal persistent memory */
 typedef struct {
-    FIXP_DBL old_exc_mem[PIT_MAX_MAX + L_INTERPOL];
-    FIXP_DBL old_syn_mem[M_LP_FILTER_ORDER]; /* synthesis filter states */
-    FIXP_SGL A[M_LP_FILTER_ORDER];
-    INT A_exp;
-    FIXP_DBL gc_threshold;
-    FIXP_DBL de_emph_mem;
-    FIXP_SGL past_gpit;
-    FIXP_DBL past_gcode;
-    USHORT old_T0;
-    UCHAR old_T0_frac;
-    FIXP_DBL deemph_mem_wsyn;
-    FIXP_DBL wsyn_rms;
-    SHORT seed_ace;
+  FIXP_DBL old_exc_mem[PIT_MAX_MAX + L_INTERPOL];
+  FIXP_DBL old_syn_mem[M_LP_FILTER_ORDER]; /* synthesis filter states */
+  FIXP_SGL A[M_LP_FILTER_ORDER];
+  INT A_exp;
+  FIXP_DBL gc_threshold;
+  FIXP_DBL de_emph_mem;
+  FIXP_SGL past_gpit;
+  FIXP_DBL past_gcode;
+  USHORT old_T0;
+  UCHAR old_T0_frac;
+  FIXP_DBL deemph_mem_wsyn;
+  FIXP_DBL wsyn_rms;
+  SHORT seed_ace;
 } CAcelpStaticMem;
 
 /** Structure which holds the parameter data needed to decode one ACELP frame.
  */
 typedef struct {
-    UCHAR
-    acelp_core_mode;   /**< mean excitation energy index for whole ACELP frame
+  UCHAR
+  acelp_core_mode;   /**< mean excitation energy index for whole ACELP frame
                       */
-    UCHAR mean_energy; /**< acelp core mode for whole ACELP frame */
-    USHORT T0[NB_SUBFR];
-    UCHAR T0_frac[NB_SUBFR];
-    UCHAR ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
-                                         active for each ACELP subframe */
-    SHORT icb_index[NB_SUBFR]
-    [8]; /**< innovative codebook index for each ACELP subframe */
-    UCHAR gains[NB_SUBFR]; /**< gain index for each ACELP subframe */
+  UCHAR mean_energy; /**< acelp core mode for whole ACELP frame */
+  USHORT T0[NB_SUBFR];
+  UCHAR T0_frac[NB_SUBFR];
+  UCHAR ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
+                                       active for each ACELP subframe */
+  SHORT icb_index[NB_SUBFR]
+                 [8]; /**< innovative codebook index for each ACELP subframe */
+  UCHAR gains[NB_SUBFR]; /**< gain index for each ACELP subframe */
 } CAcelpChannelData;
 
 /**
@@ -274,8 +274,8 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
                        UCHAR last_tcx_noise_factor);
 
 inline SHORT E_UTIL_random(SHORT *seed) {
-    *seed = (SHORT)((((LONG)*seed * (LONG)31821) >> 1) + (LONG)13849);
-    return (*seed);
+  *seed = (SHORT)((((LONG)*seed * (LONG)31821) >> 1) + (LONG)13849);
+  return (*seed);
 }
 
 #endif /* USACDEC_ACELP_H */

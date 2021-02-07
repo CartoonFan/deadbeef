@@ -107,13 +107,13 @@ DRC_ERROR
 processDrcTime(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
                const int delaySamples, const int channelOffset,
                const int drcChannelOffset, const int numChannelsProcessed,
-               const int timeDataChannelOffset, FIXP_DBL* deinterleavedAudio);
+               const int timeDataChannelOffset, FIXP_DBL *deinterleavedAudio);
 
 DRC_ERROR
 processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
                   const int delaySamples, const int channelOffset,
                   const int drcChannelOffset, const int numChannelsProcessed,
                   const int processSingleTimeslot,
-                  FIXP_DBL* deinterleavedAudioReal[],
-                  FIXP_DBL* deinterleavedAudioImag[]);
+                  FIXP_DBL *deinterleavedAudioReal[],
+                  FIXP_DBL *deinterleavedAudioImag[]);
 #endif

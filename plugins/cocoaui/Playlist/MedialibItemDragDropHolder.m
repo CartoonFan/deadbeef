@@ -11,9 +11,9 @@
 
 extern DB_functions_t *deadbeef;
 
-@interface MedialibItemDragDropHolder()
+@interface MedialibItemDragDropHolder ()
 
-@property (nullable,nonatomic,readwrite) ddb_playItem_t *playItem;
+@property(nullable, nonatomic, readwrite) ddb_playItem_t *playItem;
 
 @end
 
@@ -21,78 +21,79 @@ extern DB_functions_t *deadbeef;
 
 // NSSecureCoding
 @dynamic supportsSecureCoding;
-+ (BOOL) supportsSecureCoding {
-    return YES;
++ (BOOL)supportsSecureCoding {
+  return YES;
 }
 
 - (instancetype)init {
-    return [self initWithItem:nil];
+  return [self initWithItem:nil];
 }
 
 - (instancetype)initWithItem:(ddb_playItem_t *)item {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _playItem = item;
-    if (_playItem) {
-        deadbeef->pl_item_ref (_playItem);
-    }
-    return self;
+  self = [super init];
+  if (!self) {
+    return nil;
+  }
+  _playItem = item;
+  if (_playItem) {
+    deadbeef->pl_item_ref(_playItem);
+  }
+  return self;
 }
 
 - (void)dealloc {
-    if (_playItem) {
-        deadbeef->pl_item_unref (_playItem);
-    }
+  if (_playItem) {
+    deadbeef->pl_item_unref(_playItem);
+  }
 }
 
 // NSCoding
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    self = [self initWithItem:nil];
-    if (!self) {
-        return nil;
-    }
+  self = [self initWithItem:nil];
+  if (!self) {
+    return nil;
+  }
 
-    NSData *data = [aDecoder decodeObjectOfClass:[NSArray class] forKey:@"PlayItemPtr"];
-    memcpy (&_playItem, data.bytes, sizeof (_playItem));
-    if (_playItem) {
-        deadbeef->pl_item_ref (_playItem);
-    }
+  NSData *data = [aDecoder decodeObjectOfClass:[NSArray class]
+                                        forKey:@"PlayItemPtr"];
+  memcpy(&_playItem, data.bytes, sizeof(_playItem));
+  if (_playItem) {
+    deadbeef->pl_item_ref(_playItem);
+  }
 
-    return self;
+  return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    // FIXME: this is a low effort impl, which may fail. Proper implementation needs to serialize into plist.
-    NSData *data = [NSData dataWithBytes:&_playItem length:sizeof (_playItem)];
-    [aCoder encodeObject:data forKey:@"PlayItemPtr"];
+  // FIXME: this is a low effort impl, which may fail. Proper implementation
+  // needs to serialize into plist.
+  NSData *data = [NSData dataWithBytes:&_playItem length:sizeof(_playItem)];
+  [aCoder encodeObject:data forKey:@"PlayItemPtr"];
 }
-
-
 
 // NSPasteboardReading
-+ (nonnull NSArray<NSPasteboardType> *)readableTypesForPasteboard:(nonnull NSPasteboard *)pasteboard {
-    return [NSArray arrayWithObjects:ddbMedialibItemUTIType, nil];
++ (nonnull NSArray<NSPasteboardType> *)readableTypesForPasteboard:
+    (nonnull NSPasteboard *)pasteboard {
+  return [NSArray arrayWithObjects:ddbMedialibItemUTIType, nil];
 }
 
-+ (NSPasteboardReadingOptions)readingOptionsForType:(NSPasteboardType)type pasteboard:(NSPasteboard *)pasteboard {
-    return NSPasteboardReadingAsKeyedArchive;
++ (NSPasteboardReadingOptions)readingOptionsForType:(NSPasteboardType)type
+                                         pasteboard:(NSPasteboard *)pasteboard {
+  return NSPasteboardReadingAsKeyedArchive;
 }
 
 // NSPasteboardWriting
 - (NSArray<NSString *> *)writableTypesForPasteboard:(NSPasteboard *)pasteboard {
-    return [NSArray arrayWithObjects:ddbMedialibItemUTIType, nil];
+  return [NSArray arrayWithObjects:ddbMedialibItemUTIType, nil];
 }
 
 - (id)pasteboardPropertyListForType:(NSString *)type {
-    if( [type isEqualToString:ddbMedialibItemUTIType] ) {
-        return [NSKeyedArchiver archivedDataWithRootObject:self];
-    }
+  if ([type isEqualToString:ddbMedialibItemUTIType]) {
+    return [NSKeyedArchiver archivedDataWithRootObject:self];
+  }
 
-    return nil;
+  return nil;
 }
-
 
 @end

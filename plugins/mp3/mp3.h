@@ -41,71 +41,73 @@ extern DB_functions_t *deadbeef;
 struct mp3_decoder_api_s;
 
 typedef struct {
-    DB_fileinfo_t info;
+  DB_fileinfo_t info;
 
-    uint32_t startoffs;
-    uint32_t endoffs;
+  uint32_t startoffs;
+  uint32_t endoffs;
 
-    int64_t startsample;
-    int64_t endsample;
+  int64_t startsample;
+  int64_t endsample;
 
-    mp3info_t mp3info;
-    uint32_t mp3flags; // extra flags to pass to mp3parser
+  mp3info_t mp3info;
+  uint32_t mp3flags; // extra flags to pass to mp3parser
 
-    int64_t currentsample;
-    int64_t skipsamples; // how many samples to skip after seek, usually "seek_sample - mp3info.pcmsample"
+  int64_t currentsample;
+  int64_t skipsamples; // how many samples to skip after seek, usually
+                       // "seek_sample - mp3info.pcmsample"
 
-    DB_FILE *file;
-    DB_playItem_t *it;
+  DB_FILE *file;
+  DB_playItem_t *it;
 
-    // output buffer, supplied by player
-    int bytes_to_decode; // how many bytes is asked to be written to `out`
-    int decoded_samples_remaining; // number of samples left of current decoded mpeg frame
-    char *out;
+  // output buffer, supplied by player
+  int bytes_to_decode; // how many bytes is asked to be written to `out`
+  int decoded_samples_remaining; // number of samples left of current decoded
+                                 // mpeg frame
+  char *out;
 
-    // temp buffer for 32bit decoding, before converting to 16 bit
-    char *conv_buf;
-    int conv_buf_size;
+  // temp buffer for 32bit decoding, before converting to 16 bit
+  char *conv_buf;
+  int conv_buf_size;
 
-    char input[READBUFFER]; // input buffer, for MPEG data
+  char input[READBUFFER]; // input buffer, for MPEG data
 
-    union {
+  union {
 #ifdef USE_LIBMAD
-        struct {
-            struct mad_stream mad_stream;
-            struct mad_frame mad_frame;
-            struct mad_synth mad_synth;
-            long input_remaining_bytes;
-        };
+    struct {
+      struct mad_stream mad_stream;
+      struct mad_frame mad_frame;
+      struct mad_synth mad_synth;
+      long input_remaining_bytes;
+    };
 #endif
 #ifdef USE_LIBMPG123
-        struct {
-            mpg123_handle *mpg123_handle;
-            int mpg123_status;
-            unsigned char *mpg123_audio;
-            int total_decoded_samples;
-        };
-#endif
+    struct {
+      mpg123_handle *mpg123_handle;
+      int mpg123_status;
+      unsigned char *mpg123_audio;
+      int total_decoded_samples;
     };
+#endif
+  };
 
-    int want_16bit;
-    int raw_signal;
-    struct mp3_decoder_api_s *dec;
+  int want_16bit;
+  int raw_signal;
+  struct mp3_decoder_api_s *dec;
 } mp3_info_t;
 
 typedef struct mp3_decoder_api_s {
-    // initialize the decoder, get ready to receive/decode packets
-    void (*init)(mp3_info_t *info);
+  // initialize the decoder, get ready to receive/decode packets
+  void (*init)(mp3_info_t *info);
 
-    // free the decoder
-    void (*free)(mp3_info_t *info);
+  // free the decoder
+  void (*free)(mp3_info_t *info);
 
-    // consume decoded samples into output buffer
-    void (*consume_decoded_data)(mp3_info_t *info);
+  // consume decoded samples into output buffer
+  void (*consume_decoded_data)(mp3_info_t *info);
 
-    // read and decode a single mpeg frame, only if `decoded_samples_remaining` is <=0
-    // return 1 if eof
-    int (*decode_next_packet)(mp3_info_t *info);
+  // read and decode a single mpeg frame, only if `decoded_samples_remaining` is
+  // <=0 return 1 if eof
+  int (*decode_next_packet)(mp3_info_t *info);
 } mp3_decoder_api_t;
 
 #endif

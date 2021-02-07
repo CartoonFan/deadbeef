@@ -108,9 +108,9 @@ amm-info@iis.fraunhofer.de
 #define SACENC_DELAY_H
 
 /* Includes ******************************************************************/
-#include "sacenc_lib.h"
-#include "machine_type.h"
 #include "FDK_matrixCalloc.h"
+#include "machine_type.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_DELAY_INPUT 1024
@@ -139,19 +139,20 @@ FDK_SACENC_ERROR fdk_sacenc_delay_SubCalulateBufferDelays(HANDLE_DELAY hDel);
 
 /* Set Expert Config Parameters */
 FDK_SACENC_ERROR fdk_sacenc_delay_SetDmxAlign(HANDLE_DELAY hDelay,
-        const INT bDmxAlignIn);
+                                              const INT bDmxAlignIn);
 
 FDK_SACENC_ERROR fdk_sacenc_delay_SetTimeDomDmx(HANDLE_DELAY hDelay,
-        const INT bTimeDomDmxIn);
+                                                const INT bTimeDomDmxIn);
 
 FDK_SACENC_ERROR fdk_sacenc_delay_SetSacTimeAlignmentDynamicOut(
     HANDLE_DELAY hDelay, const INT bSacTimeAlignmentDynamicOutIn);
 
-FDK_SACENC_ERROR fdk_sacenc_delay_SetNSacTimeAlignment(
-    HANDLE_DELAY hDelay, const INT nSacTimeAlignmentIn);
+FDK_SACENC_ERROR
+fdk_sacenc_delay_SetNSacTimeAlignment(HANDLE_DELAY hDelay,
+                                      const INT nSacTimeAlignmentIn);
 
 FDK_SACENC_ERROR fdk_sacenc_delay_SetMinimizeDelay(HANDLE_DELAY hDelay,
-        const INT bMinimizeDelay);
+                                                   const INT bMinimizeDelay);
 
 /* Get Internal Variables */
 INT fdk_sacenc_delay_GetOutputAudioBufferDelay(HANDLE_DELAY hDelay);

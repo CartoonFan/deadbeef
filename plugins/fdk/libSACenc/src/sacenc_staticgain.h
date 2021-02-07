@@ -110,9 +110,9 @@ amm-info@iis.fraunhofer.de
 
 /* Includes ******************************************************************/
 #include "common_fix.h"
-#include "sacenc_lib.h"
-#include "sacenc_const.h"
 #include "sacenc_bitstream.h"
+#include "sacenc_const.h"
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define FIXP_GAIN FIXP_DBL
@@ -120,9 +120,9 @@ amm-info@iis.fraunhofer.de
 
 /* Data Types ****************************************************************/
 struct STATIC_GAIN_CONFIG {
-    MP4SPACEENC_MODE encMode;
-    MP4SPACEENC_DMX_GAIN fixedGainDMX;
-    INT preGainFactorDb;
+  MP4SPACEENC_MODE encMode;
+  MP4SPACEENC_DMX_GAIN fixedGainDMX;
+  INT preGainFactorDb;
 };
 
 typedef struct STATIC_GAIN_CONFIG *HANDLE_STATIC_GAIN_CONFIG;
@@ -133,8 +133,8 @@ typedef struct STATIC_GAIN *HANDLE_STATIC_GAIN;
 /* Function / Class Declarations *********************************************/
 
 /* Initializes Static Gain Computation Config */
-FDK_SACENC_ERROR fdk_sacenc_staticGain_OpenConfig(
-    HANDLE_STATIC_GAIN_CONFIG *phStaticGainConfig);
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_OpenConfig(HANDLE_STATIC_GAIN_CONFIG *phStaticGainConfig);
 
 FDK_SACENC_ERROR fdk_sacenc_staticGain_InitDefaultConfig(
     HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig);
@@ -146,17 +146,19 @@ FDK_SACENC_ERROR fdk_sacenc_staticGain_CloseConfig(
 /* Initializes Static Gain Computation ~Constructor */
 FDK_SACENC_ERROR fdk_sacenc_staticGain_Open(HANDLE_STATIC_GAIN *phStaticGain);
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_Init(
-    HANDLE_STATIC_GAIN hStaticGain,
-    const HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig, INT *const scale);
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_Init(HANDLE_STATIC_GAIN hStaticGain,
+                           const HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig,
+                           INT *const scale);
 
 /* Deletes Static Gain Computation Infrastucture ~Destructor */
 FDK_SACENC_ERROR fdk_sacenc_staticGain_Close(HANDLE_STATIC_GAIN *phStaticGain);
 
 /* Apply PostGain to the output PCM Downmix-Signal */
-FDK_SACENC_ERROR fdk_sacenc_staticPostGain_ApplyFDK(
-    const HANDLE_STATIC_GAIN hStaticGain, INT_PCM *const pOutputSamples,
-    const INT nOutputSamples, const INT scale);
+FDK_SACENC_ERROR
+fdk_sacenc_staticPostGain_ApplyFDK(const HANDLE_STATIC_GAIN hStaticGain,
+                                   INT_PCM *const pOutputSamples,
+                                   const INT nOutputSamples, const INT scale);
 
 /* Get Pointer to PreGain-vector */
 FIXP_GAIN *fdk_sacenc_getPreGainPtrFDK(HANDLE_STATIC_GAIN hStaticGain);
@@ -164,14 +166,15 @@ FIXP_GAIN *fdk_sacenc_getPreGainPtrFDK(HANDLE_STATIC_GAIN hStaticGain);
 /* Get Pointer to PostGain-coef */
 FIXP_GAIN fdk_sacenc_getPostGainFDK(HANDLE_STATIC_GAIN hStaticGain);
 
-FIXEDGAINDMXCONFIG fdk_sacenc_staticGain_GetDmxGain(
-    const HANDLE_STATIC_GAIN hStaticGain);
+FIXEDGAINDMXCONFIG
+fdk_sacenc_staticGain_GetDmxGain(const HANDLE_STATIC_GAIN hStaticGain);
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_SetDmxGain(
-    HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
-    const MP4SPACEENC_DMX_GAIN dmxGain);
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_SetDmxGain(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
+                                 const MP4SPACEENC_DMX_GAIN dmxGain);
 
-FDK_SACENC_ERROR fdk_sacenc_staticGain_SetEncMode(
-    HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg, const MP4SPACEENC_MODE encMode);
+FDK_SACENC_ERROR
+fdk_sacenc_staticGain_SetEncMode(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
+                                 const MP4SPACEENC_MODE encMode);
 
 #endif /* SACENC_STATICGAIN_H */

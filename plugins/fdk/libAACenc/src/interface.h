@@ -103,66 +103,66 @@ amm-info@iis.fraunhofer.de
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include "common_fix.h"
 #include "FDK_audio.h"
+#include "common_fix.h"
 
-#include "psy_data.h"
 #include "aacenc_tns.h"
+#include "psy_data.h"
 
 enum { MS_NONE = 0, MS_SOME = 1, MS_ALL = 2 };
 
 enum { MS_ON = 1 };
 
 struct TOOLSINFO {
-    INT msDigest; /* 0 = no MS; 1 = some MS, 2 = all MS */
-    INT msMask[MAX_GROUPED_SFB];
+  INT msDigest; /* 0 = no MS; 1 = some MS, 2 = all MS */
+  INT msMask[MAX_GROUPED_SFB];
 };
 
 typedef struct {
-    INT sfbCnt;
-    INT sfbPerGroup;
-    INT maxSfbPerGroup;
-    INT lastWindowSequence;
-    INT windowShape;
-    INT groupingMask;
-    INT sfbOffsets[MAX_GROUPED_SFB + 1];
+  INT sfbCnt;
+  INT sfbPerGroup;
+  INT maxSfbPerGroup;
+  INT lastWindowSequence;
+  INT windowShape;
+  INT groupingMask;
+  INT sfbOffsets[MAX_GROUPED_SFB + 1];
 
-    INT mdctScale; /* number of transform shifts */
-    INT groupLen[MAX_NO_OF_GROUPS];
+  INT mdctScale; /* number of transform shifts */
+  INT groupLen[MAX_NO_OF_GROUPS];
 
-    TNS_INFO tnsInfo;
-    INT noiseNrg[MAX_GROUPED_SFB];
-    INT isBook[MAX_GROUPED_SFB];
-    INT isScale[MAX_GROUPED_SFB];
+  TNS_INFO tnsInfo;
+  INT noiseNrg[MAX_GROUPED_SFB];
+  INT isBook[MAX_GROUPED_SFB];
+  INT isScale[MAX_GROUPED_SFB];
 
-    /* memory located in QC_OUT_CHANNEL */
-    FIXP_DBL *mdctSpectrum;
-    FIXP_DBL *sfbEnergy;
-    FIXP_DBL *sfbSpreadEnergy;
-    FIXP_DBL *sfbThresholdLdData;
-    FIXP_DBL *sfbMinSnrLdData;
-    FIXP_DBL *sfbEnergyLdData;
+  /* memory located in QC_OUT_CHANNEL */
+  FIXP_DBL *mdctSpectrum;
+  FIXP_DBL *sfbEnergy;
+  FIXP_DBL *sfbSpreadEnergy;
+  FIXP_DBL *sfbThresholdLdData;
+  FIXP_DBL *sfbMinSnrLdData;
+  FIXP_DBL *sfbEnergyLdData;
 
 } PSY_OUT_CHANNEL;
 
 typedef struct {
-    /* information specific to each channel */
-    PSY_OUT_CHANNEL *psyOutChannel[(2)];
+  /* information specific to each channel */
+  PSY_OUT_CHANNEL *psyOutChannel[(2)];
 
-    /* information shared by both channels  */
-    INT commonWindow;
-    struct TOOLSINFO toolsInfo;
+  /* information shared by both channels  */
+  INT commonWindow;
+  struct TOOLSINFO toolsInfo;
 
 } PSY_OUT_ELEMENT;
 
 typedef struct {
-    PSY_OUT_ELEMENT *psyOutElement[((8))];
-    PSY_OUT_CHANNEL *pPsyOutChannels[(8)];
+  PSY_OUT_ELEMENT *psyOutElement[((8))];
+  PSY_OUT_CHANNEL *pPsyOutChannels[(8)];
 
 } PSY_OUT;
 
 inline int isLowDelay(AUDIO_OBJECT_TYPE aot) {
-    return (aot == AOT_ER_AAC_LD || aot == AOT_ER_AAC_ELD);
+  return (aot == AOT_ER_AAC_LD || aot == AOT_ER_AAC_ELD);
 }
 
 #endif /* INTERFACE_H */

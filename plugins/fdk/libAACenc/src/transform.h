@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "mdct.h"
 #include "common_fix.h"
+#include "mdct.h"
 
 #define WTS0 1
 #define WTS1 0
@@ -128,11 +128,11 @@ amm-info@iis.fraunhofer.de
  * \return 0 in case of success, non-zero in case of error (inconsistent
  * parameters).
  */
-INT FDKaacEnc_Transform_Real(const INT_PCM* pTimeData,
-                             FIXP_DBL* RESTRICT mdctData, const INT blockType,
-                             const INT windowShape, INT* prevWindowShape,
+INT FDKaacEnc_Transform_Real(const INT_PCM *pTimeData,
+                             FIXP_DBL *RESTRICT mdctData, const INT blockType,
+                             const INT windowShape, INT *prevWindowShape,
                              H_MDCT mdctPers, const INT frameLength,
-                             INT* pMdctData_e, INT filterType);
+                             INT *pMdctData_e, INT filterType);
 
 /**
  * \brief: Performe ELD filterbnank transform of time domain data.
@@ -153,11 +153,11 @@ INT FDKaacEnc_Transform_Real(const INT_PCM* pTimeData,
  * \return 0 in case of success, non-zero in case of error (inconsistent
  * parameters).
  */
-INT FDKaacEnc_Transform_Real_Eld(const INT_PCM* pTimeData,
-                                 FIXP_DBL* RESTRICT mdctData,
+INT FDKaacEnc_Transform_Real_Eld(const INT_PCM *pTimeData,
+                                 FIXP_DBL *RESTRICT mdctData,
                                  const INT blockType, const INT windowShape,
-                                 INT* prevWindowShape, const INT frameLength,
-                                 INT* mdctData_e, INT filterType,
-                                 FIXP_DBL* RESTRICT overlapAddBuffer);
+                                 INT *prevWindowShape, const INT frameLength,
+                                 INT *mdctData_e, INT filterType,
+                                 FIXP_DBL *RESTRICT overlapAddBuffer);
 
 #endif /* #!defined (TRANSFORM_H) */

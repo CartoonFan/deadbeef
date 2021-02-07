@@ -105,9 +105,9 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
+#include "interface.h"
 #include "psy_const.h"
 #include "qc_data.h"
-#include "interface.h"
 
 #define FORM_FAC_SHIFT 6
 

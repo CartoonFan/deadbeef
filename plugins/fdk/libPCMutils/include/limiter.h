@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef LIMITER_H
 #define LIMITER_H
 
-#include "common_fix.h"
 #include "FDK_audio.h"
+#include "common_fix.h"
 
 #define TDL_ATTACK_DEFAULT_MS (15)  /* default attack  time in ms */
 #define TDL_RELEASE_DEFAULT_MS (50) /* default release time in ms */
@@ -116,38 +116,38 @@ extern "C" {
 #endif
 
 struct TDLimiter {
-    unsigned int attack;
-    FIXP_DBL attackConst, releaseConst;
-    unsigned int attackMs, releaseMs, maxAttackMs;
-    FIXP_DBL threshold;
-    unsigned int channels, maxChannels;
-    UINT sampleRate, maxSampleRate;
-    FIXP_DBL cor, max;
-    FIXP_DBL* maxBuf;
-    FIXP_DBL* delayBuf;
-    unsigned int maxBufIdx, delayBufIdx;
-    FIXP_DBL smoothState0;
-    FIXP_DBL minGain;
+  unsigned int attack;
+  FIXP_DBL attackConst, releaseConst;
+  unsigned int attackMs, releaseMs, maxAttackMs;
+  FIXP_DBL threshold;
+  unsigned int channels, maxChannels;
+  UINT sampleRate, maxSampleRate;
+  FIXP_DBL cor, max;
+  FIXP_DBL *maxBuf;
+  FIXP_DBL *delayBuf;
+  unsigned int maxBufIdx, delayBufIdx;
+  FIXP_DBL smoothState0;
+  FIXP_DBL minGain;
 
-    FIXP_DBL additionalGainPrev;
-    FIXP_DBL additionalGainFilterState;
-    FIXP_DBL additionalGainFilterState1;
+  FIXP_DBL additionalGainPrev;
+  FIXP_DBL additionalGainFilterState;
+  FIXP_DBL additionalGainFilterState1;
 };
 
 typedef enum {
-    TDLIMIT_OK = 0,
-    TDLIMIT_UNKNOWN = -1,
+  TDLIMIT_OK = 0,
+  TDLIMIT_UNKNOWN = -1,
 
-    __error_codes_start = -100,
+  __error_codes_start = -100,
 
-    TDLIMIT_INVALID_HANDLE,
-    TDLIMIT_INVALID_PARAMETER,
+  TDLIMIT_INVALID_HANDLE,
+  TDLIMIT_INVALID_PARAMETER,
 
-    __error_codes_end
+  __error_codes_end
 } TDLIMITER_ERROR;
 
 struct TDLimiter;
-typedef struct TDLimiter* TDLimiterPtr;
+typedef struct TDLimiter *TDLimiterPtr;
 
 #define PCM_LIM LONG
 #define FIXP_DBL2PCM_LIM(x) (x)
@@ -225,7 +225,7 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
  * info:       pointer to an allocated and initialized LIB_INFO structure      *
  * returns:    error code                                                      *
  ******************************************************************************/
-TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info);
+TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO *info);
 
 #ifdef __cplusplus
 }
@@ -273,9 +273,9 @@ TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
  * nSamples:   number of samples per channel                                   *
  * returns:    error code                                                      *
  ******************************************************************************/
-TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, FIXP_DBL* pGain,
-                                 const INT* gain_scale, const UINT gain_size,
+TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM *samplesIn,
+                                 INT_PCM *samplesOut, FIXP_DBL *pGain,
+                                 const INT *gain_scale, const UINT gain_size,
                                  const UINT gain_delay, const UINT nSamples);
 
 #endif /* #ifndef LIMITER_H */

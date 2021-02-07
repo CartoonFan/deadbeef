@@ -109,15 +109,9 @@ amm-info@iis.fraunhofer.de
 /* Inline Function to determine the smaller/bigger value of two values with same
  * type. */
 
-template <class T>
-inline T fixmin(T a, T b) {
-    return (a < b ? a : b);
-}
+template <class T> inline T fixmin(T a, T b) { return (a < b ? a : b); }
 
-template <class T>
-inline T fixmax(T a, T b) {
-    return (a > b ? a : b);
-}
+template <class T> inline T fixmax(T a, T b) { return (a > b ? a : b); }
 
 #define fixmax_D(a, b) fixmax(a, b)
 #define fixmin_D(a, b) fixmin(a, b)

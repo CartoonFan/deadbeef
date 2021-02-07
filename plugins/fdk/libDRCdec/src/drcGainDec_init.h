@@ -107,7 +107,7 @@ DRC_ERROR
 initGainDec(HANDLE_DRC_GAIN_DECODER hGainDec, const int frameSize,
             const int sampleRate);
 
-void initDrcGainBuffers(const int frameSize, DRC_GAIN_BUFFERS* drcGainBuffers);
+void initDrcGainBuffers(const int frameSize, DRC_GAIN_BUFFERS *drcGainBuffers);
 
 DRC_ERROR
 initActiveDrc(HANDLE_DRC_GAIN_DECODER hGainDec,

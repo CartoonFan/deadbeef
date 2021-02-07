@@ -117,18 +117,18 @@ amm-info@iis.fraunhofer.de
 /*    errorLogRvlc: A word of 32 bits used for logging possible errors */
 /*                  within RVLC in case of distorted bitstreams.       */
 /* ------------------------------------------------------------------- */
-#define RVLC_ERROR_ALL_ESCAPE_WORDS_INVALID                                \
-  0x80000000 /*  ESC-Dec  During RVLC-Escape-decoding there have been more \
+#define RVLC_ERROR_ALL_ESCAPE_WORDS_INVALID                                    \
+  0x80000000 /*  ESC-Dec  During RVLC-Escape-decoding there have been more     \
                 bits decoded as there are available */
-#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_FWD                     \
-  0x40000000 /*  RVL-Dec  negative sum-bitcounter during RVL-fwd-decoding \
+#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_FWD                          \
+  0x40000000 /*  RVL-Dec  negative sum-bitcounter during RVL-fwd-decoding      \
                 (long+shrt) */
-#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_BWD                     \
-  0x20000000 /*  RVL-Dec  negative sum-bitcounter during RVL-fwd-decoding \
+#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_BWD                          \
+  0x20000000 /*  RVL-Dec  negative sum-bitcounter during RVL-fwd-decoding      \
                 (long+shrt) */
-#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_FWD \
+#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_FWD                                   \
   0x08000000 /*  RVL-Dec  forbidden codeword detected fwd (long+shrt) */
-#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD \
+#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD                                   \
   0x04000000 /*  RVL-Dec  forbidden codeword detected bwd (long+shrt) */
 
 void CRvlc_Read(CAacDecoderChannelInfo *pAacDecoderChannelInfo,

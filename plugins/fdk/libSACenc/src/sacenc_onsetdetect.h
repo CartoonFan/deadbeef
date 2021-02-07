@@ -110,22 +110,22 @@ amm-info@iis.fraunhofer.de
  ******************************************************************************/
 
 /* Includes ******************************************************************/
-#include "common_fix.h"
 #include "FDK_matrixCalloc.h"
-#include "sacenc_lib.h"
+#include "common_fix.h"
 #include "sacenc_bitstream.h" /* for def. of MAX_NUM_PARAMS */
+#include "sacenc_lib.h"
 
 /* Defines *******************************************************************/
 #define MAX_NUM_TRANS (MAX_NUM_PARAMS / 2)
 
 /* Data Types ****************************************************************/
 typedef struct T_ONSET_DETECT_CONFIG {
-    INT maxTimeSlots;
+  INT maxTimeSlots;
 
-    /* calc transien detection in ]lowerBoundOnsetDetection;
-     * upperBoundOnsetDetection[ */
-    INT lowerBoundOnsetDetection;
-    INT upperBoundOnsetDetection;
+  /* calc transien detection in ]lowerBoundOnsetDetection;
+   * upperBoundOnsetDetection[ */
+  INT lowerBoundOnsetDetection;
+  INT upperBoundOnsetDetection;
 
 } ONSET_DETECT_CONFIG;
 
@@ -135,16 +135,17 @@ typedef struct ONSET_DETECT *HANDLE_ONSET_DETECT;
 
 /* Function / Class Declarations *********************************************/
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Open(HANDLE_ONSET_DETECT *phOnset,
-        const UINT maxTimeSlots);
+                                             const UINT maxTimeSlots);
 
-FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Init(
-    HANDLE_ONSET_DETECT hOnset,
-    const ONSET_DETECT_CONFIG *const pOnsetDetectConfig, const UINT initFlags);
+FDK_SACENC_ERROR
+fdk_sacenc_onsetDetect_Init(HANDLE_ONSET_DETECT hOnset,
+                            const ONSET_DETECT_CONFIG *const pOnsetDetectConfig,
+                            const UINT initFlags);
 
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Close(HANDLE_ONSET_DETECT *phOnset);
 
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Update(HANDLE_ONSET_DETECT hOnset,
-        const INT timeSlots);
+                                               const INT timeSlots);
 
 FDK_SACENC_ERROR fdk_sacenc_onsetDetect_Apply(
     HANDLE_ONSET_DETECT hOnset, const INT nTimeSlots, const INT nHybridBands,

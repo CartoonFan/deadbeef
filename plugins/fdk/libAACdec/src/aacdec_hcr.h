@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 #ifndef AACDEC_HCR_H
 #define AACDEC_HCR_H
 
-#include "channelinfo.h"
 #include "FDK_bitstream.h"
+#include "channelinfo.h"
 
 UINT HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
              const SamplingRateInfo *pSamplingRateInfo,

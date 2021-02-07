@@ -103,21 +103,21 @@ amm-info@iis.fraunhofer.de
 #ifndef TPENC_ADIF_H
 #define TPENC_ADIF_H
 
-#include "machine_type.h"
 #include "FDK_bitstream.h"
+#include "machine_type.h"
 
 #include "tp_data.h"
 
 typedef struct {
-    CHANNEL_MODE cm;
-    INT samplingRate;
-    INT bitRate;
-    int profile;
-    int bVariableRate;
-    int instanceTag;
-    int headerWritten;
-    int matrixMixdownA;
-    int pseudoSurroundEnable;
+  CHANNEL_MODE cm;
+  INT samplingRate;
+  INT bitRate;
+  int profile;
+  int bVariableRate;
+  int instanceTag;
+  int headerWritten;
+  int matrixMixdownA;
+  int pseudoSurroundEnable;
 
 } ADIF_INFO;
 

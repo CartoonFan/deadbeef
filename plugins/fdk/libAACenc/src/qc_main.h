@@ -104,9 +104,9 @@ amm-info@iis.fraunhofer.de
 #define QC_MAIN_H
 
 #include "aacenc.h"
-#include "qc_data.h"
 #include "interface.h"
 #include "psy_main.h"
+#include "qc_data.h"
 #include "tpenc_lib.h"
 
 /* Quantizing & coding stage */
@@ -136,9 +136,9 @@ AAC_ENCODER_ERROR FDKaacEnc_QCMain(QC_STATE *RESTRICT hQC, PSY_OUT **psyOut,
                                    UINT syntaxFlags, SCHAR epConfig);
 
 AAC_ENCODER_ERROR FDKaacEnc_updateFillBits(CHANNEL_MAPPING *cm,
-        QC_STATE *qcKernel,
-        ELEMENT_BITS *RESTRICT elBits[((8))],
-        QC_OUT **qcOut);
+                                           QC_STATE *qcKernel,
+                                           ELEMENT_BITS *RESTRICT elBits[((8))],
+                                           QC_OUT **qcOut);
 
 void FDKaacEnc_updateBitres(CHANNEL_MAPPING *cm, QC_STATE *qcKernel,
                             QC_OUT **qcOut);
@@ -149,9 +149,9 @@ AAC_ENCODER_ERROR FDKaacEnc_FinalizeBitConsumption(
     AUDIO_OBJECT_TYPE aot, UINT syntaxFlags, SCHAR epConfig);
 
 AAC_ENCODER_ERROR FDKaacEnc_AdjustBitrate(QC_STATE *RESTRICT hQC,
-        CHANNEL_MAPPING *RESTRICT cm,
-        INT *avgTotalBits, INT bitRate,
-        INT sampleRate, INT granuleLength);
+                                          CHANNEL_MAPPING *RESTRICT cm,
+                                          INT *avgTotalBits, INT bitRate,
+                                          INT sampleRate, INT granuleLength);
 
 void FDKaacEnc_QCClose(QC_STATE **phQCstate, QC_OUT **phQC);
 

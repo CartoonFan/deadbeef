@@ -6,17 +6,19 @@
 //  Copyright © 2020 Alexey Yakovenko. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #include "deadbeef.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MedialibItemDragDropHolder : NSObject<NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
+@interface MedialibItemDragDropHolder
+    : NSObject <NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
 
-@property (nullable,nonatomic,readonly) ddb_playItem_t *playItem;
+@property(nullable, nonatomic, readonly) ddb_playItem_t *playItem;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithItem:(ddb_playItem_t * _Nullable)item NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithItem:(ddb_playItem_t *_Nullable)item
+    NS_DESIGNATED_INITIALIZER;
 
 @end
 

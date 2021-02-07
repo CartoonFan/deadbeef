@@ -20,9 +20,9 @@
 
     3. This notice may not be removed or altered from any source distribution.
 */
-#import <Cocoa/Cocoa.h>
 #import "PlaylistView.h"
 #import "PlaylistViewController.h"
+#import <Cocoa/Cocoa.h>
 
 @interface SearchViewController : PlaylistViewController
 

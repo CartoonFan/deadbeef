@@ -103,8 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef TONALITY_H
 #define TONALITY_H
 
-#include "common_fix.h"
 #include "chaosmeasure.h"
+#include "common_fix.h"
 
 void FDKaacEnc_CalculateFullTonality(FIXP_DBL *RESTRICT spectrum,
                                      INT *RESTRICT sfbMaxScaleSpec,

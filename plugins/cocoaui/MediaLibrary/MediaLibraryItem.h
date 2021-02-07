@@ -6,9 +6,9 @@
 //  Copyright © 2017 Alexey Yakovenko. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #include "../../../deadbeef.h"
 #include "../../medialib/medialib.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,15 +16,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id)initWithItem:(ddb_medialib_item_t *)item NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic,readonly) NSUInteger numberOfChildren;
+@property(nonatomic, readonly) NSUInteger numberOfChildren;
 - (MediaLibraryItem *)childAtIndex:(NSUInteger)index;
 
-@property (nonatomic,readonly) NSArray *children;
-@property (nonatomic,readonly) NSString *stringValue;
+@property(nonatomic, readonly) NSArray *children;
+@property(nonatomic, readonly) NSString *stringValue;
 
-@property (nonatomic,readonly) ddb_playItem_t *playItem;
+@property(nonatomic, readonly) ddb_playItem_t *playItem;
 
-@property (nonatomic) NSImage *coverImage;
+@property(nonatomic) NSImage *coverImage;
 
 @end
 

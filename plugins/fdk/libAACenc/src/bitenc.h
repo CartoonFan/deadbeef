@@ -103,24 +103,24 @@ amm-info@iis.fraunhofer.de
 #ifndef BITENC_H
 #define BITENC_H
 
-#include "qc_data.h"
+#include "FDK_audio.h"
+#include "aacenc.h"
 #include "aacenc_tns.h"
 #include "channel_map.h"
 #include "interface.h" /* obsolete, when PSY_OUT is thrown out of the WritBS-call! */
-#include "FDK_audio.h"
-#include "aacenc.h"
+#include "qc_data.h"
 
 #include "tpenc_lib.h"
 
 typedef enum {
-    MAX_ENCODER_CHANNELS = 9,
-    MAX_BLOCK_TYPES = 4,
-    MAX_AAC_LAYERS = 9,
-    MAX_LAYERS = MAX_AAC_LAYERS, /* only one core layer if present */
-    FIRST_LAY = 1                /* default layer number for AAC nonscalable */
+  MAX_ENCODER_CHANNELS = 9,
+  MAX_BLOCK_TYPES = 4,
+  MAX_AAC_LAYERS = 9,
+  MAX_LAYERS = MAX_AAC_LAYERS, /* only one core layer if present */
+  FIRST_LAY = 1                /* default layer number for AAC nonscalable */
 } _MAX_CONST;
 
-#define BUFFER_MX_HUFFCB_SIZE \
+#define BUFFER_MX_HUFFCB_SIZE                                                  \
   (32 * sizeof(INT)) /* our FDK_bitbuffer needs size of power 2 */
 
 #define EL_ID_BITS (3)
@@ -169,11 +169,11 @@ AAC_ENCODER_ERROR FDKaacEnc_ChannelElementWrite(
  * \param epConfig Error protection config
  */
 AAC_ENCODER_ERROR FDKaacEnc_WriteBitstream(HANDLE_TRANSPORTENC hTpEnc,
-        CHANNEL_MAPPING *channelMapping,
-        QC_OUT *qcOut, PSY_OUT *psyOut,
-        QC_STATE *qcKernel,
-        AUDIO_OBJECT_TYPE aot,
-        UINT syntaxFlags, SCHAR epConfig);
+                                           CHANNEL_MAPPING *channelMapping,
+                                           QC_OUT *qcOut, PSY_OUT *psyOut,
+                                           QC_STATE *qcKernel,
+                                           AUDIO_OBJECT_TYPE aot,
+                                           UINT syntaxFlags, SCHAR epConfig);
 
 INT FDKaacEnc_writeExtensionData(HANDLE_TRANSPORTENC hTpEnc,
                                  QC_OUT_EXTENSION *pExtension,

@@ -21,14 +21,18 @@
     3. This notice may not be removed or altered from any source distribution.
 */
 
-#import <Cocoa/Cocoa.h>
 #include "deadbeef.h"
+#import <Cocoa/Cocoa.h>
 
-@interface ConverterWindowController : NSWindowController<NSWindowDelegate>
+@interface ConverterWindowController : NSWindowController <NSWindowDelegate>
 
-- (void)runWithTracks:(ddb_playItem_t **)tracks count:(NSInteger)count playlist:(ddb_playlist_t *)plt;
+- (void)runWithTracks:(ddb_playItem_t **)tracks
+                count:(NSInteger)count
+             playlist:(ddb_playlist_t *)plt;
 
-+ (void)runConverterWithTracks:(ddb_playItem_t **)tracks count:(NSInteger)count playlist:(ddb_playlist_t *)plt;
++ (void)runConverterWithTracks:(ddb_playItem_t **)tracks
+                         count:(NSInteger)count
+                      playlist:(ddb_playlist_t *)plt;
 
 + (void)cleanup;
 

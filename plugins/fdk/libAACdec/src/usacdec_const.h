@@ -120,13 +120,13 @@ amm-info@iis.fraunhofer.de
 #define PIT_MIN_12k8 34    /* Minimum pitch lag with resolution 1/4 */
 #define PIT_MAX_12k8 231   /* Maximum pitch lag for fs=12.8kHz */
 #define FSCALE_DENOM 12800 /* Frequency scale denominator */
-#define FAC_FSCALE_MIN \
+#define FAC_FSCALE_MIN                                                         \
   6000 /* Minimum allowed frequency scale for acelp decoder */
 
 #if !defined(LPD_MAX_CORE_SR)
 #define LPD_MAX_CORE_SR 24000 /* Default value from ref soft */
 #endif
-#define FAC_FSCALE_MAX \
+#define FAC_FSCALE_MAX                                                         \
   LPD_MAX_CORE_SR /* Maximum allowed frequency scale for acelp decoder */
 
 /* Maximum pitch lag (= 411 for fs_max = 24000) */
@@ -135,7 +135,7 @@ amm-info@iis.fraunhofer.de
    (6 *                                                                        \
     ((((FAC_FSCALE_MAX * PIT_MIN_12k8) + (FSCALE_DENOM / 2)) / FSCALE_DENOM) - \
      PIT_MIN_12k8)))
-#if (PIT_MAX_TMP < \
+#if (PIT_MAX_TMP <                                                             \
      256) /* cannot be smaller because of tcx time domain concealment */
 #define PIT_MAX_MAX 256
 #else
@@ -149,42 +149,42 @@ amm-info@iis.fraunhofer.de
 
 #define L_FILT 12  /* Delay of up-sampling filter (bass post-filter) */
 #define L_EXTRA 96 /* for bass post-filter */
-#define L_INTERPOL \
+#define L_INTERPOL                                                             \
   (16 + 1) /* Length of filter for interpolation (acelp decoder) */
 
 /* definitions for coreCoderFrameLength = 1024 */
 #define L_FRAME_PLUS_1024 1024 /* length of one 80ms superframe */
-#define L_DIV_1024 \
+#define L_DIV_1024                                                             \
   (L_FRAME_PLUS_1024 / NB_DIV) /* length of one acelp or tcx20 frame */
-#define NB_SUBFR_1024 \
+#define NB_SUBFR_1024                                                          \
   (L_DIV_1024 / L_SUBFR) /* number of 5ms subframe per division */
-#define NB_SUBFR_SUPERFR_1024 \
+#define NB_SUBFR_SUPERFR_1024                                                  \
   (L_FRAME_PLUS_1024 / L_SUBFR) /* number of 5ms subframe per 80ms frame */
 #define AAC_SFD_1024 (NB_SUBFR_SUPERFR_1024 / 2) /* AAC delay (subframe) */
 #define AAC_DELAY_1024 (AAC_SFD_1024 * L_SUBFR)  /* AAC delay (samples) */
 #define SYN_SFD_1024 (AAC_SFD_1024 - BPF_SFD) /* synthesis delay (subframe) */
-#define SYN_DELAY_1024                                          \
-  (SYN_SFD_1024 * L_SUBFR)         /* synthesis delay (samples) \
+#define SYN_DELAY_1024                                                         \
+  (SYN_SFD_1024 * L_SUBFR)         /* synthesis delay (samples)                \
                                     */
 #define LFAC_1024 (L_DIV_1024 / 2) /* FAC frame length */
-#define LFAC_SHORT_1024 \
+#define LFAC_SHORT_1024                                                        \
   (L_DIV_1024 / 4)        /* for transitions EIGHT_SHORT FD->LPD and vv. */
 #define FDNS_NPTS_1024 64 /* FD noise shaping resolution (64=100Hz/point) */
 
 /* definitions for coreCoderFrameLength = 768 */
 #define L_FRAME_PLUS_768 768
-#define L_DIV_768 \
+#define L_DIV_768                                                              \
   (L_FRAME_PLUS_768 / NB_DIV) /* length of one acelp or tcx20 frame */
-#define NB_SUBFR_768 \
+#define NB_SUBFR_768                                                           \
   (L_DIV_768 / L_SUBFR) /* number of 5ms subframe per division */
-#define NB_SUBFR_SUPERFR_768 \
+#define NB_SUBFR_SUPERFR_768                                                   \
   (L_FRAME_PLUS_768 / L_SUBFR) /* number of 5ms subframe per 80ms frame */
 #define AAC_SFD_768 (NB_SUBFR_SUPERFR_768 / 2) /* AAC delay (subframe) */
 #define AAC_DELAY_768 (AAC_SFD_768 * L_SUBFR)  /* AAC delay (samples) */
 #define SYN_SFD_768 (AAC_SFD_768 - BPF_SFD)    /* synthesis delay (subframe) */
 #define SYN_DELAY_768 (SYN_SFD_768 * L_SUBFR)  /* synthesis delay (samples) */
 #define LFAC_768 (L_DIV_768 / 2)               /* FAC frame length */
-#define LFAC_SHORT_768 \
+#define LFAC_SHORT_768                                                         \
   (L_DIV_768 / 4) /* for transitions EIGHT_SHORT FD->LPD and vv. */
 
 /* maximum (used for memory allocation) */

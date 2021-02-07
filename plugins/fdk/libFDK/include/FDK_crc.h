@@ -113,10 +113,10 @@ amm-info@iis.fraunhofer.de
  *  This structure describes single crc region used for crc calculation.
  */
 typedef struct {
-    UCHAR isActive;
-    INT maxBits;
-    INT bitBufCntBits;
-    INT validBits;
+  UCHAR isActive;
+  INT maxBits;
+  INT bitBufCntBits;
+  INT validBits;
 
 } CCrcRegData;
 
@@ -124,26 +124,26 @@ typedef struct {
  *  CRC info structure.
  */
 typedef struct {
-    CCrcRegData crcRegData[MAX_CRC_REGS]; /*!< Multiple crc region description. */
-    const USHORT*
-    pCrcLookup; /*!< Pointer to lookup table filled in FDK_crcInit(). */
+  CCrcRegData crcRegData[MAX_CRC_REGS]; /*!< Multiple crc region description. */
+  const USHORT
+      *pCrcLookup; /*!< Pointer to lookup table filled in FDK_crcInit(). */
 
-    USHORT crcPoly;    /*!< CRC generator polynom. */
-    USHORT crcMask;    /*!< CRC mask. */
-    USHORT startValue; /*!< CRC start value. */
-    UCHAR crcLen;      /*!< CRC length. */
+  USHORT crcPoly;    /*!< CRC generator polynom. */
+  USHORT crcMask;    /*!< CRC mask. */
+  USHORT startValue; /*!< CRC start value. */
+  UCHAR crcLen;      /*!< CRC length. */
 
-    UINT regStart; /*!< Start region marker for synchronization. */
-    UINT regStop;  /*!< Stop region marker for synchronization. */
+  UINT regStart; /*!< Start region marker for synchronization. */
+  UINT regStop;  /*!< Stop region marker for synchronization. */
 
-    USHORT crcValue; /*!< Crc value to be calculated. */
+  USHORT crcValue; /*!< Crc value to be calculated. */
 
 } FDK_CRCINFO;
 
 /**
  *  CRC info handle.
  */
-typedef FDK_CRCINFO* HANDLE_FDK_CRCINFO;
+typedef FDK_CRCINFO *HANDLE_FDK_CRCINFO;
 
 /**
  * \brief  Initialize CRC structure.

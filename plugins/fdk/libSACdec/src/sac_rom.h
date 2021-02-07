@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 #include "sac_dec_interface.h"
 
 #include "huff_nodes.h"
-#include "sac_bitdec.h"
 #include "machine_type.h"
+#include "sac_bitdec.h"
 
 /* Global ROM table data type: */
 #ifndef ARCH_PREFER_MULT_32x32
@@ -156,7 +156,7 @@ extern const FIXP_CFG dequantCLD__FDK[31];
 #define IPD_SCALE (5)
 #define PI__IPD (FL2FXCONST_DBL(3.1415926535897932f / (float)(1 << IPD_SCALE)))
 /* Define for PI*2 for better precision in  SpatialDecApplyPhase() */
-#define PIx2__IPD \
+#define PIx2__IPD                                                              \
   (FL2FXCONST_DBL(3.1415926535897932f / (float)(1 << (IPD_SCALE - 1))))
 
 extern const FIXP_CFG dequantIPD__FDK[16];
@@ -218,13 +218,13 @@ extern const SCHAR row2channelGES[][MAX_M2_INPUT];
 /* sac_calcM1andM2 */
 extern const SCHAR row2residual[][MAX_M2_INPUT];
 
-void SpatialDequantGetCLDValues(int index, FIXP_DBL* cu, FIXP_DBL* cl);
+void SpatialDequantGetCLDValues(int index, FIXP_DBL *cu, FIXP_DBL *cl);
 
-void SpatialDequantGetCLD2Values(int index, FIXP_DBL* x);
+void SpatialDequantGetCLD2Values(int index, FIXP_DBL *x);
 
 /* External helper functions */
 static inline int SacGetHybridSubbands(int qmfSubbands) {
-    return qmfSubbands - MAX_QMF_BANDS_TO_HYBRID + 10;
+  return qmfSubbands - MAX_QMF_BANDS_TO_HYBRID + 10;
 }
 
 #endif /* SAC_ROM_H */

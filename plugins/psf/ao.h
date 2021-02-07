@@ -12,24 +12,23 @@
 #endif
 #include <limits.h>
 
-#define AO_SUCCESS					1
-#define AO_FAIL						0
-#define AO_FAIL_DECOMPRESSION		-1
+#define AO_SUCCESS 1
+#define AO_FAIL 0
+#define AO_FAIL_DECOMPRESSION -1
 
-#define MAX_DISP_INFO_LENGTH		256
-#define AUDIO_RATE					(44100)
+#define MAX_DISP_INFO_LENGTH 256
+#define AUDIO_RATE (44100)
 
-enum
-{
-    COMMAND_NONE = 0,
-    COMMAND_PREV,
-    COMMAND_NEXT,
-    COMMAND_RESTART,
-    COMMAND_HAS_PREV,
-    COMMAND_HAS_NEXT,
-    COMMAND_GET_MIN,
-    COMMAND_GET_MAX,
-    COMMAND_JUMP
+enum {
+  COMMAND_NONE = 0,
+  COMMAND_PREV,
+  COMMAND_NEXT,
+  COMMAND_RESTART,
+  COMMAND_HAS_PREV,
+  COMMAND_HAS_NEXT,
+  COMMAND_GET_MIN,
+  COMMAND_GET_MAX,
+  COMMAND_JUMP
 };
 
 #if 0
@@ -39,28 +38,28 @@ enum
 #endif
 
 #ifdef __LITTLE_ENDIAN__
-#define LSB_FIRST	1
+#define LSB_FIRST 1
 #endif
 #endif
 
 #ifdef WORDS_BIGENDIAN
 #undef LSB_FIRST
 #else
-#define LSB_FIRST	1
+#define LSB_FIRST 1
 #endif
 
 typedef unsigned char ao_bool;
 
 #ifdef __GNUC__
-#include <stddef.h>	// get NULL
 #include <stdbool.h>
+#include <stddef.h> // get NULL
 
 #ifndef nil
 #define nil NULL
 #endif
 
 #ifndef TRUE
-#define TRUE  (1)
+#define TRUE (1)
 #endif
 #ifndef FALSE
 #define FALSE (0)
@@ -71,15 +70,15 @@ typedef unsigned char ao_bool;
 #endif
 
 #ifdef _MSC_VER
-#include <stddef.h>	// get NULL
-#include <wchar.h> // for off_t
+#include <stddef.h> // get NULL
+#include <wchar.h>  // for off_t
 
 #ifndef nil
 #define nil NULL
 #endif
 
 #ifndef TRUE
-#define TRUE  (1)
+#define TRUE (1)
 #endif
 #ifndef FALSE
 #define FALSE (0)
@@ -95,31 +94,30 @@ typedef unsigned char ao_bool;
 #endif
 
 #ifndef PATH_MAX
-#define PATH_MAX	2048
+#define PATH_MAX 2048
 #endif
 
-typedef struct
-{
-    char title[9][MAX_DISP_INFO_LENGTH];
-    char info[9][MAX_DISP_INFO_LENGTH];
+typedef struct {
+  char title[9][MAX_DISP_INFO_LENGTH];
+  char info[9][MAX_DISP_INFO_LENGTH];
 } ao_display_info;
 
-typedef unsigned char		uint8;
-typedef unsigned char		UINT8;
-typedef signed char			int8;
-typedef signed char			INT8;
-typedef unsigned short		uint16;
-typedef unsigned short		UINT16;
-typedef signed short		int16;
-typedef signed short		INT16;
-typedef signed int			int32;
-typedef unsigned int		uint32;
+typedef unsigned char uint8;
+typedef unsigned char UINT8;
+typedef signed char int8;
+typedef signed char INT8;
+typedef unsigned short uint16;
+typedef unsigned short UINT16;
+typedef signed short int16;
+typedef signed short INT16;
+typedef signed int int32;
+typedef unsigned int uint32;
 #ifdef LONG_IS_64BIT
-typedef signed long             int64;
-typedef unsigned long           uint64;
+typedef signed long int64;
+typedef unsigned long uint64;
 #else
-typedef signed long long	int64;
-typedef unsigned long long	uint64;
+typedef signed long long int64;
+typedef unsigned long long uint64;
 #endif
 
 typedef int8 s8;
@@ -147,33 +145,29 @@ typedef uint64 u64;
 #endif
 
 #if LSB_FIRST
-static INLINE u16 BFLIP16(u16 x)
-{
-    return x;
-}
+static INLINE u16 BFLIP16(u16 x) { return x; }
 #else
-static INLINE u16 BFLIP16(u16 x)
-{
-    return( ((x>>8)&0xFF)| ((x&0xFF)<<8) );
+static INLINE u16 BFLIP16(u16 x) {
+  return (((x >> 8) & 0xFF) | ((x & 0xFF) << 8));
 }
 #endif
 
 #ifdef WIN32
 #ifndef _BASETSD_H
-typedef signed int			INT32;
-typedef unsigned int		UINT32;
-typedef signed long long	INT64;
-typedef unsigned long long	UINT64;
+typedef signed int INT32;
+typedef unsigned int UINT32;
+typedef signed long long INT64;
+typedef unsigned long long UINT64;
 #endif
 #else
-typedef signed int			INT32;
-typedef unsigned int		UINT32;
+typedef signed int INT32;
+typedef unsigned int UINT32;
 #ifdef LONG_IS_64BIT
-typedef signed long         INT64;
-typedef unsigned long       UINT64;
+typedef signed long INT64;
+typedef unsigned long UINT64;
 #else
-typedef signed long long	INT64;
-typedef unsigned long long	UINT64;
+typedef signed long long INT64;
+typedef unsigned long long UINT64;
 #endif
 #endif
 
@@ -182,51 +176,47 @@ typedef unsigned long long	UINT64;
 #define LE32(x) (x)
 
 #ifndef __ENDIAN__ /* Mac OS X Endian header has this function in it */
-static unsigned long INLINE Endian32_Swap(unsigned long addr)
-{
-    unsigned long res = (((addr&0xff000000)>>24) |
-                         ((addr&0x00ff0000)>>8) |
-                         ((addr&0x0000ff00)<<8) |
-                         ((addr&0x000000ff)<<24));
+static unsigned long INLINE Endian32_Swap(unsigned long addr) {
+  unsigned long res =
+      (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
+       ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
 
-    return res;
+  return res;
 }
 #endif
 
 #else
 
-static unsigned short INLINE LE16(unsigned short x)
-{
-    unsigned short res = (((x & 0xFF00) >> 8) | ((x & 0xFF) << 8));
-    return res;
+static unsigned short INLINE LE16(unsigned short x) {
+  unsigned short res = (((x & 0xFF00) >> 8) | ((x & 0xFF) << 8));
+  return res;
 }
 
-static unsigned long INLINE LE32(unsigned long addr)
-{
-    unsigned long res = (((addr&0xff000000)>>24) |
-                         ((addr&0x00ff0000)>>8) |
-                         ((addr&0x0000ff00)<<8) |
-                         ((addr&0x000000ff)<<24));
+static unsigned long INLINE LE32(unsigned long addr) {
+  unsigned long res =
+      (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
+       ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
 
-    return res;
+  return res;
 }
 
 #endif
 
 int ao_get_lib(char *filename, uint8 **buffer, uint64 *length);
 
-int ao_identify (char *buffer);
+int ao_identify(char *buffer);
 
-void *ao_start (uint32 type, const char *name, uint8 *buffer, uint32 size);
+void *ao_start(uint32 type, const char *name, uint8 *buffer, uint32 size);
 
-int ao_stop (uint32 type, void *handle);
+int ao_stop(uint32 type, void *handle);
 
-int ao_get_info (uint32 type, void *handle, ao_display_info *info);
+int ao_get_info(uint32 type, void *handle, ao_display_info *info);
 
-int ao_decode (uint32 type, void *handle, int16 *buffer, uint32 size);
+int ao_decode(uint32 type, void *handle, int16 *buffer, uint32 size);
 
-int ao_command (uint32 type, void *handle, int32 command, int32 param);
+int ao_command(uint32 type, void *handle, int32 command, int32 param);
 
-void ao_getlibpath (const char *path, const char *libname, char *libpath, int size);
+void ao_getlibpath(const char *path, const char *libname, char *libpath,
+                   int size);
 
 #endif // AO_H

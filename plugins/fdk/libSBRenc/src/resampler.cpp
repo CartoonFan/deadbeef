@@ -122,12 +122,12 @@ amm-info@iis.fraunhofer.de
 #define BQC(x) FL2FXCONST_SGL(x / 2)
 
 struct FILTER_PARAM {
-    const FIXP_SGL *coeffa; /*! SOS matrix One row/section. Scaled using BQC().
-                             Order of coefficients: B1,B2,A1,A2. B0=A0=1.0 */
-    FIXP_DBL g;             /*! overall gain */
-    int Wc;       /*! normalized passband bandwidth at input samplerate * 1000 */
-    int noCoeffs; /*! number of filter coeffs */
-    int delay;    /*! delay in samples at input samplerate */
+  const FIXP_SGL *coeffa; /*! SOS matrix One row/section. Scaled using BQC().
+                           Order of coefficients: B1,B2,A1,A2. B0=A0=1.0 */
+  FIXP_DBL g;             /*! overall gain */
+  int Wc;       /*! normalized passband bandwidth at input samplerate * 1000 */
+  int noCoeffs; /*! number of filter coeffs */
+  int delay;    /*! delay in samples at input samplerate */
 };
 
 #define BIQUAD_COEFSTEP 4
@@ -168,8 +168,7 @@ static const FIXP_SGL sos48[] = {
     BQC(0.0561434357867363),    BQC(0.999911636304276),
     BQC(-0.0913550299236405),   BQC(0.88883625875915),
     BQC(0.0341680678662057),    BQC(1.00003667508676),
-    BQC(-0.113405185536697),    BQC(0.961756638268446)
-};
+    BQC(-0.113405185536697),    BQC(0.961756638268446)};
 
 static const FIXP_DBL g48 =
     FL2FXCONST_DBL(0.002712866530047) - (FIXP_DBL)0x8000;
@@ -200,8 +199,7 @@ static const FIXP_SGL sos45[] = {
     BQC(0.108951672277119),  BQC(0.999999871167516),   BQC(-0.125584840183225),
     BQC(0.736367748771803),  BQC(0.0387988607229035),  BQC(1.00000011205574),
     BQC(-0.182814849097974), BQC(0.835802108714964),   BQC(0.0042866175809225),
-    BQC(0.999999954830813),  BQC(-0.21965740617151),   BQC(0.942623047782363)
-};
+    BQC(0.999999954830813),  BQC(-0.21965740617151),   BQC(0.942623047782363)};
 
 static const FIXP_DBL g45 =
     FL2FXCONST_DBL(0.00242743980909524) - (FIXP_DBL)0x8000;
@@ -229,8 +227,7 @@ static const FIXP_SGL sos41[] = {
     BQC(1.00000000007952),   BQC(-0.294425165824676),  BQC(0.516594857170212),
     BQC(0.087971668680286),  BQC(0.999999999915528),   BQC(-0.398956566777928),
     BQC(0.686417767801123),  BQC(0.00965373325350294), BQC(1.00000000003744),
-    BQC(-0.48579173764817),  BQC(0.884931534239068)
-};
+    BQC(-0.48579173764817),  BQC(0.884931534239068)};
 
 static const FIXP_DBL g41 = FL2FXCONST_DBL(0.00155956951169248);
 
@@ -252,8 +249,7 @@ static const FIXP_SGL sos35[] = {
     BQC(0.454877024246818),  BQC(1.00000000000086),   BQC(-0.432337328809815),
     BQC(0.356852933642815),  BQC(0.158017147118507),  BQC(0.999999999998876),
     BQC(-0.574817494249777), BQC(0.566380436970833),  BQC(0.0171834649478749),
-    BQC(1.00000000000055),   BQC(-0.718581178041165), BQC(0.83367484487889)
-};
+    BQC(1.00000000000055),   BQC(-0.718581178041165), BQC(0.83367484487889)};
 
 static const FIXP_DBL g35 = FL2FXCONST_DBL(0.00162580994125131);
 
@@ -273,8 +269,7 @@ static const FIXP_SGL sos25[] = {
     BQC(0.364986307455489),  BQC(0.999999999999996),
     BQC(-0.955191189843375), BQC(0.442966457936379),
     BQC(0.0387985751642125), BQC(1.0),
-    BQC(-1.19817786088084),  BQC(0.770493895456328)
-};
+    BQC(-1.19817786088084),  BQC(0.770493895456328)};
 
 static const FIXP_DBL g25 = FL2FXCONST_DBL(0.000945182835294559);
 
@@ -282,8 +277,7 @@ static const struct FILTER_PARAM param_set25 = {sos25, g25, 250, 4, 5};
 
 /* Must be sorted in descending order */
 static const struct FILTER_PARAM *const filter_paramSet[] = {
-    &param_set48, &param_set45, &param_set41, &param_set35, &param_set25
-};
+    &param_set48, &param_set45, &param_set41, &param_set35, &param_set25};
 
 /**************************************************************************/
 /*                         Resampler Functions                            */
@@ -301,37 +295,37 @@ INT FDKaacEnc_InitDownsampler(
     int ratio)                /*!< downsampler ratio */
 
 {
-    UINT i;
-    const struct FILTER_PARAM *currentSet = NULL;
+  UINT i;
+  const struct FILTER_PARAM *currentSet = NULL;
 
-    FDKmemclear(DownSampler->downFilter.states,
-                sizeof(DownSampler->downFilter.states));
-    DownSampler->downFilter.ptr = 0;
+  FDKmemclear(DownSampler->downFilter.states,
+              sizeof(DownSampler->downFilter.states));
+  DownSampler->downFilter.ptr = 0;
 
-    /*
-      find applicable parameter set
-    */
-    currentSet = filter_paramSet[0];
-    for (i = 1; i < sizeof(filter_paramSet) / sizeof(struct FILTER_PARAM *);
-            i++) {
-        if (filter_paramSet[i]->Wc <= Wc) {
-            break;
-        }
-        currentSet = filter_paramSet[i];
+  /*
+    find applicable parameter set
+  */
+  currentSet = filter_paramSet[0];
+  for (i = 1; i < sizeof(filter_paramSet) / sizeof(struct FILTER_PARAM *);
+       i++) {
+    if (filter_paramSet[i]->Wc <= Wc) {
+      break;
     }
+    currentSet = filter_paramSet[i];
+  }
 
-    DownSampler->downFilter.coeffa = currentSet->coeffa;
+  DownSampler->downFilter.coeffa = currentSet->coeffa;
 
-    DownSampler->downFilter.gain = currentSet->g;
-    FDK_ASSERT(currentSet->noCoeffs <= MAXNR_SECTIONS * 2);
+  DownSampler->downFilter.gain = currentSet->g;
+  FDK_ASSERT(currentSet->noCoeffs <= MAXNR_SECTIONS * 2);
 
-    DownSampler->downFilter.noCoeffs = currentSet->noCoeffs;
-    DownSampler->delay = currentSet->delay;
-    DownSampler->downFilter.Wc = currentSet->Wc;
+  DownSampler->downFilter.noCoeffs = currentSet->noCoeffs;
+  DownSampler->delay = currentSet->delay;
+  DownSampler->downFilter.Wc = currentSet->Wc;
 
-    DownSampler->ratio = ratio;
-    DownSampler->pending = ratio - 1;
-    return (1);
+  DownSampler->ratio = ratio;
+  DownSampler->pending = ratio - 1;
+  return (1);
 }
 
 /*!
@@ -344,82 +338,82 @@ INT FDKaacEnc_InitDownsampler(
   \return  filtered value
 */
 
-static inline INT_PCM AdvanceFilter(
-    LP_FILTER *downFilter, /*!< pointer to iir filter instance */
-    INT_PCM *pInput,       /*!< input of filter                */
-    int downRatio) {
-    INT_PCM output;
-    int i, n;
+static inline INT_PCM
+AdvanceFilter(LP_FILTER *downFilter, /*!< pointer to iir filter instance */
+              INT_PCM *pInput,       /*!< input of filter                */
+              int downRatio) {
+  INT_PCM output;
+  int i, n;
 
 #define BIQUAD_SCALE 12
 
-    FIXP_DBL y = FL2FXCONST_DBL(0.0f);
-    FIXP_DBL input;
+  FIXP_DBL y = FL2FXCONST_DBL(0.0f);
+  FIXP_DBL input;
 
-    for (n = 0; n < downRatio; n++) {
-        FIXP_BQS(*states)[2] = downFilter->states;
-        const FIXP_SGL *coeff = downFilter->coeffa;
-        int s1, s2;
+  for (n = 0; n < downRatio; n++) {
+    FIXP_BQS(*states)[2] = downFilter->states;
+    const FIXP_SGL *coeff = downFilter->coeffa;
+    int s1, s2;
 
-        s1 = downFilter->ptr;
-        s2 = s1 ^ 1;
+    s1 = downFilter->ptr;
+    s2 = s1 ^ 1;
 
 #if (SAMPLE_BITS == 16)
-        input = ((FIXP_DBL)pInput[n]) << (DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE);
+    input = ((FIXP_DBL)pInput[n]) << (DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE);
 #elif (SAMPLE_BITS == 32)
-        input = pInput[n] >> BIQUAD_SCALE;
+    input = pInput[n] >> BIQUAD_SCALE;
 #else
 #error NOT IMPLEMENTED
 #endif
 
-        FIXP_BQS state1, state2, state1b, state2b;
+    FIXP_BQS state1, state2, state1b, state2b;
 
-        state1 = states[0][s1];
-        state2 = states[0][s2];
+    state1 = states[0][s1];
+    state2 = states[0][s2];
 
-        /* Loop over sections */
-        for (i = 0; i < downFilter->noCoeffs; i++) {
-            FIXP_DBL state0;
+    /* Loop over sections */
+    for (i = 0; i < downFilter->noCoeffs; i++) {
+      FIXP_DBL state0;
 
-            /* Load merged states (from next section) */
-            state1b = states[i + 1][s1];
-            state2b = states[i + 1][s2];
+      /* Load merged states (from next section) */
+      state1b = states[i + 1][s1];
+      state2b = states[i + 1][s2];
 
-            state0 = input + fMult(state1, coeff[B1]) + fMult(state2, coeff[B2]);
-            y = state0 - fMult(state1b, coeff[A1]) - fMult(state2b, coeff[A2]);
+      state0 = input + fMult(state1, coeff[B1]) + fMult(state2, coeff[B2]);
+      y = state0 - fMult(state1b, coeff[A1]) - fMult(state2b, coeff[A2]);
 
-            /* Store new feed forward merge state */
-            states[i + 1][s2] = y << 1;
-            /* Store new feed backward state */
-            states[i][s2] = input << 1;
+      /* Store new feed forward merge state */
+      states[i + 1][s2] = y << 1;
+      /* Store new feed backward state */
+      states[i][s2] = input << 1;
 
-            /* Feedback output to next section. */
-            input = y;
+      /* Feedback output to next section. */
+      input = y;
 
-            /* Transfer merged states */
-            state1 = state1b;
-            state2 = state2b;
+      /* Transfer merged states */
+      state1 = state1b;
+      state2 = state2b;
 
-            /* Step to next coef set */
-            coeff += BIQUAD_COEFSTEP;
-        }
-        downFilter->ptr ^= 1;
+      /* Step to next coef set */
+      coeff += BIQUAD_COEFSTEP;
     }
-    /* Apply global gain */
-    y = fMult(y, downFilter->gain);
+    downFilter->ptr ^= 1;
+  }
+  /* Apply global gain */
+  y = fMult(y, downFilter->gain);
 
-    /* Apply final gain/scaling to output */
+  /* Apply final gain/scaling to output */
 #if (SAMPLE_BITS == 16)
-    output = (INT_PCM)SATURATE_RIGHT_SHIFT(
-                 y + (FIXP_DBL)(1 << (DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE - 1)),
-                 DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE, SAMPLE_BITS);
-    // output = (INT_PCM) SATURATE_RIGHT_SHIFT(y,
-    // DFRACT_BITS-SAMPLE_BITS-BIQUAD_SCALE, SAMPLE_BITS);
+  output = (INT_PCM)SATURATE_RIGHT_SHIFT(
+      y + (FIXP_DBL)(1 << (DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE - 1)),
+      DFRACT_BITS - SAMPLE_BITS - BIQUAD_SCALE, SAMPLE_BITS);
+  // output = (INT_PCM) SATURATE_RIGHT_SHIFT(y,
+  // DFRACT_BITS-SAMPLE_BITS-BIQUAD_SCALE, SAMPLE_BITS);
 #else
-    output = SATURATE_LEFT_SHIFT(y, BIQUAD_SCALE, SAMPLE_BITS);
+  output = SATURATE_LEFT_SHIFT(y, BIQUAD_SCALE, SAMPLE_BITS);
 #endif
 
-    return output;
+  return output;
 }
 
 /*!
@@ -436,15 +430,15 @@ INT FDKaacEnc_Downsample(
     INT_PCM *outSamples,      /*!< pointer to output samples */
     INT *numOutSamples        /*!< pointer tp number of output samples */
 ) {
-    INT i;
-    *numOutSamples = 0;
+  INT i;
+  *numOutSamples = 0;
 
-    for (i = 0; i < numInSamples; i += DownSampler->ratio) {
-        *outSamples = AdvanceFilter(&(DownSampler->downFilter), &inSamples[i],
-                                    DownSampler->ratio);
-        outSamples++;
-    }
-    *numOutSamples = numInSamples / DownSampler->ratio;
+  for (i = 0; i < numInSamples; i += DownSampler->ratio) {
+    *outSamples = AdvanceFilter(&(DownSampler->downFilter), &inSamples[i],
+                                DownSampler->ratio);
+    outSamples++;
+  }
+  *numOutSamples = numInSamples / DownSampler->ratio;
 
-    return 0;
+  return 0;
 }

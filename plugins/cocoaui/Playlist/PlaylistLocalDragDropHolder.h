@@ -6,15 +6,16 @@
 //  Copyright © 2020 Alexey Yakovenko. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #include "deadbeef.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlaylistLocalDragDropHolder : NSObject<NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
+@interface PlaylistLocalDragDropHolder
+    : NSObject <NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
 
-@property (nonatomic) NSInteger playlistIdx;
-@property (nonatomic) NSArray *itemsIndices;
+@property(nonatomic) NSInteger playlistIdx;
+@property(nonatomic) NSArray *itemsIndices;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithSelectedItemsOfPlaylist:(ddb_playlist_t *)playlist;

@@ -111,11 +111,11 @@ amm-info@iis.fraunhofer.de
 #include "sac_dec.h"
 
 typedef struct {
-    SCHAR numInputChannels;
-    SCHAR numOutputChannels;
-    SCHAR numOttBoxes;
-    SCHAR numTttBoxes;
-    SCHAR ottModeLfe[MAX_NUM_OTT];
+  SCHAR numInputChannels;
+  SCHAR numOutputChannels;
+  SCHAR numOttBoxes;
+  SCHAR numTttBoxes;
+  SCHAR ottModeLfe[MAX_NUM_OTT];
 } TREEPROPERTIES;
 
 enum { TREE_212 = 7, TREE_DUMMY = 255 };
@@ -127,16 +127,16 @@ SACDEC_ERROR SpatialDecParseSpecificConfigHeader(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
     AUDIO_OBJECT_TYPE coreCodec, SPATIAL_DEC_UPMIX_TYPE upmixType);
 
-SACDEC_ERROR SpatialDecParseMps212Config(
-    HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int samplingRate,
-    AUDIO_OBJECT_TYPE coreCodec, INT stereoConfigIndex,
-    INT coreSbrFrameLengthIndex);
+SACDEC_ERROR
+SpatialDecParseMps212Config(HANDLE_FDK_BITSTREAM bitstream,
+                            SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                            int samplingRate, AUDIO_OBJECT_TYPE coreCodec,
+                            INT stereoConfigIndex, INT coreSbrFrameLengthIndex);
 
-SACDEC_ERROR SpatialDecParseSpecificConfig(
-    HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int sacHeaderLen,
-    AUDIO_OBJECT_TYPE coreCodec);
+SACDEC_ERROR
+SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
+                              SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                              int sacHeaderLen, AUDIO_OBJECT_TYPE coreCodec);
 
 int SpatialDecDefaultSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
@@ -148,14 +148,16 @@ SACDEC_ERROR SpatialDecCreateBsFrame(SPATIAL_BS_FRAME *bsFrame,
 
 void SpatialDecCloseBsFrame(SPATIAL_BS_FRAME *bsFrame);
 
-SACDEC_ERROR SpatialDecParseFrameData(
-    spatialDec *self, SPATIAL_BS_FRAME *frame, HANDLE_FDK_BITSTREAM bitstream,
-    const SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, UPMIXTYPE upmixType,
-    int fGlobalIndependencyFlag);
+SACDEC_ERROR
+SpatialDecParseFrameData(spatialDec *self, SPATIAL_BS_FRAME *frame,
+                         HANDLE_FDK_BITSTREAM bitstream,
+                         const SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
+                         UPMIXTYPE upmixType, int fGlobalIndependencyFlag);
 
 SACDEC_ERROR SpatialDecDecodeFrame(spatialDec *self, SPATIAL_BS_FRAME *frame);
 
-SACDEC_ERROR SpatialDecDecodeHeader(
-    spatialDec *self, SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig);
+SACDEC_ERROR
+SpatialDecDecodeHeader(spatialDec *self,
+                       SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig);
 
 #endif

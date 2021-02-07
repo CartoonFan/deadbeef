@@ -10,35 +10,33 @@
 
 extern DB_functions_t *deadbeef;
 
-@interface MediaLibraryManager()
+@interface MediaLibraryManager ()
 
-@property (nonatomic) DB_mediasource_t *medialibPlugin;
-@property (nonatomic,readwrite) ddb_mediasource_source_t source;
+@property(nonatomic) DB_mediasource_t *medialibPlugin;
+@property(nonatomic, readwrite) ddb_mediasource_source_t source;
 
 @end
 
 @implementation MediaLibraryManager
 
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
+- (instancetype)init {
+  self = [super init];
+  if (!self) {
+    return nil;
+  }
 
-    _medialibPlugin = (DB_mediasource_t *)deadbeef->plug_get_for_id ("medialib");
-    _source = self.medialibPlugin->create_source ("deadbeef");
+  _medialibPlugin = (DB_mediasource_t *)deadbeef->plug_get_for_id("medialib");
+  _source = self.medialibPlugin->create_source("deadbeef");
 
-    return self;
+  return self;
 }
 
-- (void)dealloc
-{
-    if (_source) {
-        _medialibPlugin->free_source(_source);
-        _source = NULL;
-    }
-    _medialibPlugin = NULL;
+- (void)dealloc {
+  if (_source) {
+    _medialibPlugin->free_source(_source);
+    _source = NULL;
+  }
+  _medialibPlugin = NULL;
 }
 
 @end

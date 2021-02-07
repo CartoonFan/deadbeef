@@ -103,13 +103,14 @@ amm-info@iis.fraunhofer.de
 #ifndef PNS_FUNC_H
 #define PNS_FUNC_H
 
-#include "common_fix.h"
 #include "aacenc_pns.h"
+#include "common_fix.h"
 #include "psy_data.h"
 
-AAC_ENCODER_ERROR FDKaacEnc_InitPnsConfiguration(
-    PNS_CONFIG *pnsConf, INT bitRate, INT sampleRate, INT usePns, INT sfbCnt,
-    const INT *sfbOffset, const INT numChan, const INT isLC);
+AAC_ENCODER_ERROR
+FDKaacEnc_InitPnsConfiguration(PNS_CONFIG *pnsConf, INT bitRate, INT sampleRate,
+                               INT usePns, INT sfbCnt, const INT *sfbOffset,
+                               const INT numChan, const INT isLC);
 
 void FDKaacEnc_PnsDetect(PNS_CONFIG *pnsConf, PNS_DATA *pnsData,
                          const INT lastWindowSequence, const INT sfbActive,
@@ -130,9 +131,9 @@ void FDKaacEnc_PreProcessPnsChannelPair(
     PNS_DATA *pnsDataRight);
 
 void FDKaacEnc_PostProcessPnsChannelPair(const INT sfbActive,
-        PNS_CONFIG *pnsConf,
-        PNS_DATA *pnsDataLeft,
-        PNS_DATA *pnsDataRight, INT *msMask,
-        INT *msDigest);
+                                         PNS_CONFIG *pnsConf,
+                                         PNS_DATA *pnsDataLeft,
+                                         PNS_DATA *pnsDataRight, INT *msMask,
+                                         INT *msDigest);
 
 #endif /* PNS_FUNC_H */

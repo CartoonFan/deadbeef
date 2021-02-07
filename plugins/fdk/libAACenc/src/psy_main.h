@@ -103,31 +103,31 @@ amm-info@iis.fraunhofer.de
 #ifndef PSY_MAIN_H
 #define PSY_MAIN_H
 
+#include "aacenc_pns.h"
 #include "psy_configuration.h"
 #include "qc_data.h"
-#include "aacenc_pns.h"
 
 /*
   psych internal
 */
 typedef struct {
-    PSY_STATIC *psyStatic[(2)];
+  PSY_STATIC *psyStatic[(2)];
 
 } PSY_ELEMENT;
 
 typedef struct {
-    PSY_DATA psyData[(2)];
-    TNS_DATA tnsData[(2)];
-    PNS_DATA pnsData[(2)];
+  PSY_DATA psyData[(2)];
+  TNS_DATA tnsData[(2)];
+  PNS_DATA pnsData[(2)];
 
 } PSY_DYNAMIC;
 
 typedef struct {
-    PSY_CONFIGURATION psyConf[2]; /* LONG / SHORT */
-    PSY_ELEMENT *psyElement[((8))];
-    PSY_STATIC *pStaticChannels[(8)];
-    PSY_DYNAMIC *psyDynamic;
-    INT granuleLength;
+  PSY_CONFIGURATION psyConf[2]; /* LONG / SHORT */
+  PSY_ELEMENT *psyElement[((8))];
+  PSY_STATIC *pStaticChannels[(8)];
+  PSY_DYNAMIC *psyDynamic;
+  INT granuleLength;
 
 } PSY_INTERNAL;
 
@@ -144,10 +144,11 @@ AAC_ENCODER_ERROR FDKaacEnc_psyInit(PSY_INTERNAL *hPsy, PSY_OUT **phpsyOut,
                                     const AUDIO_OBJECT_TYPE audioObjectType,
                                     CHANNEL_MAPPING *cm);
 
-AAC_ENCODER_ERROR FDKaacEnc_psyMainInit(
-    PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType, CHANNEL_MAPPING *cm,
-    INT sampleRate, INT granuleLength, INT bitRate, INT tnsMask, INT bandwidth,
-    INT usePns, INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags);
+AAC_ENCODER_ERROR
+FDKaacEnc_psyMainInit(PSY_INTERNAL *hPsy, AUDIO_OBJECT_TYPE audioObjectType,
+                      CHANNEL_MAPPING *cm, INT sampleRate, INT granuleLength,
+                      INT bitRate, INT tnsMask, INT bandwidth, INT usePns,
+                      INT useIS, INT useMS, UINT syntaxFlags, ULONG initFlags);
 
 AAC_ENCODER_ERROR FDKaacEnc_psyMain(INT channels, PSY_ELEMENT *psyElement,
                                     PSY_DYNAMIC *psyDynamic,

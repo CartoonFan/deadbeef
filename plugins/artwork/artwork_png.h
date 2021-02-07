@@ -10,8 +10,7 @@
 #define artwork_png_h
 
 #ifdef USE_LIBPNG
-int
-png_resize (const char *fname, const char *outname, int scaled_size);
+int png_resize(const char *fname, const char *outname, int scaled_size);
 #endif
 
 #endif /* artwork_png_h */

@@ -113,14 +113,14 @@ amm-info@iis.fraunhofer.de
 
 #define MAX_RVL 7  /* positive RVLC escape */
 #define MIN_RVL -7 /* negative RVLC escape */
-#define MAX_ALLOWED_DPCM_INDEX                                    \
-  14 /* the maximum allowed index of a decoded dpcm value (offset \
+#define MAX_ALLOWED_DPCM_INDEX                                                 \
+  14 /* the maximum allowed index of a decoded dpcm value (offset              \
         'TABLE_OFFSET' incl --> must be subtracted) */
 #define TABLE_OFFSET                                                           \
   7 /* dpcm offset of valid output values of rvl table decoding, the rvl table \
        ouly returns positive values, therefore the offset */
 #define MAX_LEN_RVLC_CODE_WORD 9 /* max length of a RVL codeword in bits */
-#define MAX_LEN_RVLC_ESCAPE_WORD \
+#define MAX_LEN_RVLC_ESCAPE_WORD                                               \
   20 /* max length of huffman coded RVLC escape word in bits */
 
 #define DPCM_NOISE_NRG_BITS 9
@@ -133,70 +133,70 @@ amm-info@iis.fraunhofer.de
 
 /* sideinfo of RVLC */
 typedef struct {
-    /* ------- ESC 1 Data: --------- */ /* order of RVLC-bitstream components in
-                                           bitstream (RVLC-initialization), every
-                                           component appears only once in
-                                           bitstream */
-    INT sf_concealment;                 /* 1          */
-    INT rev_global_gain;                /* 2          */
-    SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
-                                               (subtract 9) in case of noise
-                                               (PNS); is kept for later use */
-    INT dpcm_noise_nrg;                       /* 4 optional */
-    INT sf_escapes_present;                   /* 5          */
-    SHORT length_of_rvlc_escapes;             /* 6 optional */
-    INT dpcm_noise_last_position;             /* 7 optional */
+  /* ------- ESC 1 Data: --------- */ /* order of RVLC-bitstream components in
+                                         bitstream (RVLC-initialization), every
+                                         component appears only once in
+                                         bitstream */
+  INT sf_concealment;                 /* 1          */
+  INT rev_global_gain;                /* 2          */
+  SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
+                                             (subtract 9) in case of noise
+                                             (PNS); is kept for later use */
+  INT dpcm_noise_nrg;                       /* 4 optional */
+  INT sf_escapes_present;                   /* 5          */
+  SHORT length_of_rvlc_escapes;             /* 6 optional */
+  INT dpcm_noise_last_position;             /* 7 optional */
 
-    INT dpcm_is_last_position;
+  INT dpcm_is_last_position;
 
-    SHORT length_of_rvlc_sf_fwd; /* length_of_rvlc_sf used for forward decoding */
-    SHORT
-    length_of_rvlc_sf_bwd; /* length_of_rvlc_sf used for backward decoding */
+  SHORT length_of_rvlc_sf_fwd; /* length_of_rvlc_sf used for forward decoding */
+  SHORT
+  length_of_rvlc_sf_bwd; /* length_of_rvlc_sf used for backward decoding */
 
-    /* for RVL-Codeword decoder to distinguish between fwd and bwd decoding */
-    SHORT *pRvlBitCnt_RVL;
-    INT *pBitstrIndxRvl_RVL;
+  /* for RVL-Codeword decoder to distinguish between fwd and bwd decoding */
+  SHORT *pRvlBitCnt_RVL;
+  INT *pBitstrIndxRvl_RVL;
 
-    UCHAR numWindowGroups;
-    UCHAR maxSfbTransmitted;
-    UCHAR first_noise_group;
-    UCHAR first_noise_band;
-    UCHAR direction;
+  UCHAR numWindowGroups;
+  UCHAR maxSfbTransmitted;
+  UCHAR first_noise_group;
+  UCHAR first_noise_band;
+  UCHAR direction;
 
-    /* bitstream indices */
-    INT bsAnchor;             /* hcr bit buffer reference index */
-    INT bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
-                               2) for forward  decoding */
-    INT bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
-                               2) for backward decoding */
-    INT bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
+  /* bitstream indices */
+  INT bsAnchor;             /* hcr bit buffer reference index */
+  INT bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
+                             2) for forward  decoding */
+  INT bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
+                             2) for backward decoding */
+  INT bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
 
-    /* decoding trees */
-    const UINT *pHuffTreeRvlCodewds;
-    const UINT *pHuffTreeRvlcEscape;
+  /* decoding trees */
+  const UINT *pHuffTreeRvlCodewds;
+  const UINT *pHuffTreeRvlcEscape;
 
-    /* escape counters */
-    UCHAR numDecodedEscapeWordsFwd; /* when decoding RVL-codes forward  */
-    UCHAR numDecodedEscapeWordsBwd; /* when decoding RVL-codes backward */
-    UCHAR numDecodedEscapeWordsEsc; /* when decoding the escape-Words */
+  /* escape counters */
+  UCHAR numDecodedEscapeWordsFwd; /* when decoding RVL-codes forward  */
+  UCHAR numDecodedEscapeWordsBwd; /* when decoding RVL-codes backward */
+  UCHAR numDecodedEscapeWordsEsc; /* when decoding the escape-Words */
 
-    SCHAR noise_used;
-    SCHAR intensity_used;
-    SCHAR sf_used;
+  SCHAR noise_used;
+  SCHAR intensity_used;
+  SCHAR sf_used;
 
-    SHORT firstScf;
-    SHORT lastScf;
-    SHORT firstNrg;
-    SHORT lastNrg;
-    SHORT firstIs;
-    SHORT lastIs;
+  SHORT firstScf;
+  SHORT lastScf;
+  SHORT firstNrg;
+  SHORT lastNrg;
+  SHORT firstIs;
+  SHORT lastIs;
 
-    /* ------ RVLC error detection ------ */
-    UINT errorLogRvlc;     /* store RVLC errors  */
-    SHORT conceal_min;     /* is set at backward decoding  */
-    SHORT conceal_max;     /* is set at forward  decoding  */
-    SHORT conceal_min_esc; /* is set at backward decoding  */
-    SHORT conceal_max_esc; /* is set at forward  decoding  */
+  /* ------ RVLC error detection ------ */
+  UINT errorLogRvlc;     /* store RVLC errors  */
+  SHORT conceal_min;     /* is set at backward decoding  */
+  SHORT conceal_max;     /* is set at forward  decoding  */
+  SHORT conceal_min_esc; /* is set at backward decoding  */
+  SHORT conceal_max_esc; /* is set at forward  decoding  */
 } CErRvlcInfo;
 
 typedef CErRvlcInfo RVLC_INFO; /* temp */
