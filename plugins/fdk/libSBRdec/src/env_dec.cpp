@@ -306,7 +306,7 @@ static void sbr_envelope_unmapping(
     tempR_e = (SCHAR)((LONG)h_data_right->iEnvelope[i] & MASK_E);
 
     tempR_e -= (18 + NRG_EXP_OFFSET); /* -18 = ld(UNMAPPING_SCALE /
-                 h_data_right->nChannels) */
+             h_data_right->nChannels) */
     tempL_m = (FIXP_SGL)((LONG)h_data_left->iEnvelope[i] & MASK_M);
     tempL_e = (SCHAR)((LONG)h_data_left->iEnvelope[i] & MASK_E);
 

@@ -187,7 +187,7 @@ typedef struct {
   UCHAR targetLayoutRequested;
   UCHAR targetChannelCountRequested;
   LONG audioSampleRate; /* needed for complexity estimation, currently not
-               supported */
+             supported */
 
   /* loudness normalization parameters */
   UCHAR loudnessNormalizationOn;

@@ -856,7 +856,7 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
     }
 
     hgc->nQmfProcChannels = hgc->nQmfProcChannels_requested; /* keep highest
-                                        value encountered so far as allocated */
+                                    value encountered so far as allocated */
 
     hasChanged = 1;
   }

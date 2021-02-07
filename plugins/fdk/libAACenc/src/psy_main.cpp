@@ -1248,7 +1248,7 @@ sfbMaxScaleSpec */
           psyData[ch]->sfbActive, &(hThisPsyConf[ch]->pnsConf),
           pnsData[ch]->pnsFlag, psyData[ch]->sfbEnergyLdData.Long,
           psyOutChannel[ch]->noiseNrg, /* this is the energy that will be
-      written to the bitstream */
+written to the bitstream */
           psyOutChannel[ch]->sfbThresholdLdData);
     }
   }

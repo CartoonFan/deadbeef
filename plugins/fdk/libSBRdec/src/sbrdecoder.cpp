@@ -565,8 +565,8 @@ SBR_ERROR sbrDecoder_InitElement(
            ? 1
            : (self->harmonicSBR ==
               harmonicSBR)) /* The value 2 signalizes that
-                                                 harmonicSBR shall be ignored
-                                            in the config change detection */
+                                               harmonicSBR shall be ignored
+                                          in the config change detection */
   ) {
     /* Nothing to do */
     return SBRDEC_OK;
@@ -579,9 +579,8 @@ SBR_ERROR sbrDecoder_InitElement(
   /* reaching this point the SBR-decoder gets (re-)configured */
 
   /* The flags field is used for all elements! */
-  self->flags &=
-      (SBRDEC_FORCE_RESET | SBRDEC_FLUSH); /* Keep the global flags. They will
-                                  be reset after decoding. */
+  self->flags &= (SBRDEC_FORCE_RESET | SBRDEC_FLUSH); /* Keep the global flags.
+                                           They will be reset after decoding. */
   self->flags |= (downscaleFactor > 1) ? SBRDEC_ELD_DOWNSCALE : 0;
   self->flags |= (coreCodec == AOT_ER_AAC_ELD) ? SBRDEC_ELD_GRID : 0;
   self->flags |= (coreCodec == AOT_ER_AAC_SCAL) ? SBRDEC_SYNTAX_SCAL : 0;
@@ -812,7 +811,7 @@ INT sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   SBR_ERROR sbrError = SBRDEC_OK;
   int headerIndex;
   UINT flagsSaved = 0; /* flags should not be changed in AC_CM_DET_CFG_CHANGE -
-              mode after parsing */
+            mode after parsing */
 
   if (self == NULL || elementIndex >= (8)) {
     return SBRDEC_UNSUPPORTED_CONFIG;
@@ -1219,10 +1218,9 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   lastSlot = (hSbrElement->useFrameSlot > 0) ? hSbrElement->useFrameSlot - 1
                                              : self->numDelayFrames;
   lastHdrSlot = hSbrElement->useHeaderSlot[lastSlot];
-  thisHdrSlot =
-      getHeaderSlot(hSbrElement->useFrameSlot,
-                    hSbrElement->useHeaderSlot); /* Get a free header slot not
-                          used by frames not processed yet. */
+  thisHdrSlot = getHeaderSlot(hSbrElement->useFrameSlot,
+                              hSbrElement->useHeaderSlot); /* Get a free header
+                                  slot not used by frames not processed yet. */
 
   /* Assign the free slot to store a new header if there is one. */
   hSbrHeader = &self->sbrHeader[elementIndex][thisHdrSlot];

@@ -673,11 +673,11 @@ static FIXP_DBL mhLoweringEnergy(FIXP_DBL nrg, INT M) {
     tmpScale = CountLeadingBits(nrg);
     nrg <<= tmpScale;
     nrg = fMult(nrg, FL2FXCONST_DBL(0.398107267f)); /* The maximum boost
-                               is 1.584893, so the
-                               maximum attenuation
-                               should be
-                               square(1/1.584893) =
-                               0.398107267 */
+                           is 1.584893, so the
+                           maximum attenuation
+                           should be
+                           square(1/1.584893) =
+                           0.398107267 */
     nrg >>= tmpScale;
   } else {
     if (M > 1) {
@@ -1973,5 +1973,5 @@ INT FDKsbrEnc_GetEnvEstDelay(HANDLE_SBR_EXTRACT_ENVELOPE hSbr) {
          ((hSbr->YBufferWriteOffset) *
               2 /* mult 2 because nrg's are grouped half */
           - hSbr->rBufferReadOffset); /* in reference hold half spec and calc
-                             nrg's on overlapped spec */
+                           nrg's on overlapped spec */
 }

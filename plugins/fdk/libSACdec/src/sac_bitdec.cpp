@@ -572,8 +572,8 @@ SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
   }
 
   FDKbyteAlign(bitstream, cfgStartPos); /* ISO/IEC FDIS 23003-1: 5.2. ... byte
-                               alignment with respect to the beginning of the
-                               syntactic element in which ByteAlign() occurs. */
+                             alignment with respect to the beginning of the
+                             syntactic element in which ByteAlign() occurs. */
 
   numHeaderBits = cfgStartPos - (INT)FDKgetValidBits(bitstream);
   bitsAvailable -= numHeaderBits;
@@ -592,7 +592,7 @@ SpatialDecParseSpecificConfig(HANDLE_FDK_BITSTREAM bitstream,
 
   FDKbyteAlign(bitstream,
                cfgStartPos); /* Same alignment anchor as above because
-                    SpatialExtensionConfig() always reads full bytes */
+                  SpatialExtensionConfig() always reads full bytes */
 
   pSpatialSpecificConfig->coreCodec = coreCodec;
 
@@ -975,8 +975,8 @@ SpatialDecParseFrameData(spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
   int bsNumOutputChannels =
       treePropertyTable[pSpatialSpecificConfig->treeConfig]
           .numOutputChannels; /* CAUTION: Maybe different to
-                                             pSpatialSpecificConfig->treeConfig
-                                 in some modes! */
+                                               pSpatialSpecificConfig->treeConfig
+                                   in some modes! */
   int paramSetErr = 0;
   UINT alignAnchor = FDKgetValidBits(
       bitstream); /* Anchor for ByteAlign() function. See comment below. */
@@ -1199,8 +1199,8 @@ SpatialDecParseFrameData(spatialDec_struct *self, SPATIAL_BS_FRAME *frame,
 
   if (1 && (!(syntaxFlags & (SACDEC_SYNTAX_USAC)))) {
     FDKbyteAlign(bitstream, alignAnchor); /* ISO/IEC FDIS 23003-1: 5.2. ... byte
-                     alignment with respect to the beginning of the
-                     syntactic element in which ByteAlign() occurs. */
+                 alignment with respect to the beginning of the
+                 syntactic element in which ByteAlign() occurs. */
   }
 
 bail:

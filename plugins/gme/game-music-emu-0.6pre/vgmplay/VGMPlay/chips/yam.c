@@ -3252,8 +3252,9 @@ static void dynacompile(struct YAM_STATE *state) {
       C(0x97)
       C32(STATEOFS(
           yychoice[YYCHOICE_Y_REG_H])) // mov [edi+<OFS32:yychoice2>],edx
-          C(0x8B) C(0x97) C32(STATEOFS(
-              inputs[mpro->i_00rrrrrr]))  // mov edx, [edi+<OFS32:INPUTS+4*IRA>]
+      C(0x8B)
+      C(0x97) C32(STATEOFS(
+          inputs[mpro->i_00rrrrrr]))      // mov edx, [edi+<OFS32:INPUTS+4*IRA>]
           C(0xC1) C(0xFA) C(0x04)         // sar edx,4
           C(0x81) C(0xE2) C32(0x00000FFF) // and edx,0FFFh
           C(0x89) C(0x97) C32(STATEOFS(

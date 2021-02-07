@@ -197,9 +197,9 @@ typedef struct {
   int delay;          /* overall delay / samples  */
   int sbrDecDelay;    /* SBR decoder's delay */
   int corePathOffset; /* core path offset / samples; added by
-             sbrEncoder_Init_delay() */
+           sbrEncoder_Init_delay() */
   int sbrPathOffset;  /* SBR path offset / samples; added by
-             sbrEncoder_Init_delay() */
+           sbrEncoder_Init_delay() */
   int bitstrDelay; /* bitstream delay / frames; added by sbrEncoder_Init_delay()
                     */
   int delayInput2Core; /* delay of the input to the core / samples */
@@ -692,7 +692,7 @@ static UINT FDKsbrEnc_InitializeSbrDefaults(sbrConfigurationPtr config,
   config->freq_res_fixfix[0] = FREQ_RES_HIGH; /* non-split case */
   config->freq_res_fixfix[1] = FREQ_RES_HIGH; /* split case */
   config->fResTransIsLow = 0; /* for transient frames, set variable frequency
-                     resolution according to freqResTable */
+                   resolution according to freqResTable */
 
   /* header_extra_1 */
   config->freqScale = SBR_FREQ_SCALE_DEFAULT;
