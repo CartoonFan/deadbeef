@@ -127,67 +127,67 @@ amm-info@iis.fraunhofer.de
 #define SUBBAND_ANALYSIS_DELAY_STFT256 256
 
 typedef enum {
-    GAIN_DEC_DRC1,
-    GAIN_DEC_DRC1_DRC2,
-    GAIN_DEC_DRC2,
-    GAIN_DEC_DRC3,
-    GAIN_DEC_DRC2_DRC3
+  GAIN_DEC_DRC1,
+  GAIN_DEC_DRC1_DRC2,
+  GAIN_DEC_DRC2,
+  GAIN_DEC_DRC3,
+  GAIN_DEC_DRC2_DRC3
 } GAIN_DEC_LOCATION;
 
 typedef struct {
-    FIXP_DBL gainLin; /* e = 7 */
-    SHORT time;
+  FIXP_DBL gainLin; /* e = 7 */
+  SHORT time;
 } NODE_LIN;
 
 typedef struct {
-    GAIN_INTERPOLATION_TYPE gainInterpolationType;
-    int nNodes[NUM_LNB_FRAMES]; /* number of nodes, saturated to 16 */
-    NODE_LIN linearNode[NUM_LNB_FRAMES][16];
+  GAIN_INTERPOLATION_TYPE gainInterpolationType;
+  int nNodes[NUM_LNB_FRAMES]; /* number of nodes, saturated to 16 */
+  NODE_LIN linearNode[NUM_LNB_FRAMES][16];
 } LINEAR_NODE_BUFFER;
 
 typedef struct {
-    int lnbPointer;
-    LINEAR_NODE_BUFFER linearNodeBuffer[12];
-    LINEAR_NODE_BUFFER dummyLnb;
-    FIXP_DBL channelGain[8][NUM_LNB_FRAMES]; /* e = 8 */
+  int lnbPointer;
+  LINEAR_NODE_BUFFER linearNodeBuffer[12];
+  LINEAR_NODE_BUFFER dummyLnb;
+  FIXP_DBL channelGain[8][NUM_LNB_FRAMES]; /* e = 8 */
 } DRC_GAIN_BUFFERS;
 
 typedef struct {
-    int activeDrcOffset;
-    DRC_INSTRUCTIONS_UNI_DRC *pInst;
-    DRC_COEFFICIENTS_UNI_DRC *pCoef;
+  int activeDrcOffset;
+  DRC_INSTRUCTIONS_UNI_DRC *pInst;
+  DRC_COEFFICIENTS_UNI_DRC *pCoef;
 
-    DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
-    SCHAR channelGroupForChannel[8];
+  DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
+  SCHAR channelGroupForChannel[8];
 
-    UCHAR bandCountForChannelGroup[8];
-    UCHAR gainElementForGroup[8];
-    UCHAR channelGroupIsParametricDrc[8];
-    UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
-                       bands */
-    int lnbIndexForChannel[8][NUM_LNB_FRAMES];
-    int subbandGainsReady;
+  UCHAR bandCountForChannelGroup[8];
+  UCHAR gainElementForGroup[8];
+  UCHAR channelGroupIsParametricDrc[8];
+  UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
+                     bands */
+  int lnbIndexForChannel[8][NUM_LNB_FRAMES];
+  int subbandGainsReady;
 } ACTIVE_DRC;
 
 typedef struct {
-    int deltaTminDefault;
-    INT frameSize;
-    FIXP_DBL loudnessNormalisationGainDb;
-    DELAY_MODE delayMode;
+  int deltaTminDefault;
+  INT frameSize;
+  FIXP_DBL loudnessNormalisationGainDb;
+  DELAY_MODE delayMode;
 
-    int nActiveDrcs;
-    ACTIVE_DRC activeDrc[MAX_ACTIVE_DRCS];
-    int multiBandActiveDrcIndex;
-    int channelGainActiveDrcIndex;
-    FIXP_DBL channelGain[8]; /* e = 8 */
+  int nActiveDrcs;
+  ACTIVE_DRC activeDrc[MAX_ACTIVE_DRCS];
+  int multiBandActiveDrcIndex;
+  int channelGainActiveDrcIndex;
+  FIXP_DBL channelGain[8]; /* e = 8 */
 
-    DRC_GAIN_BUFFERS drcGainBuffers;
-    FIXP_DBL subbandGains[12][4 * 1024 / 256];
-    FIXP_DBL dummySubbandGains[4 * 1024 / 256];
+  DRC_GAIN_BUFFERS drcGainBuffers;
+  FIXP_DBL subbandGains[12][4 * 1024 / 256];
+  FIXP_DBL dummySubbandGains[4 * 1024 / 256];
 
-    int status;
-    int timeDomainSupported;
-    SUBBAND_DOMAIN_MODE subbandDomainSupported;
+  int status;
+  int timeDomainSupported;
+  SUBBAND_DOMAIN_MODE subbandDomainSupported;
 } DRC_GAIN_DECODER, *HANDLE_DRC_GAIN_DECODER;
 
 /* init functions */

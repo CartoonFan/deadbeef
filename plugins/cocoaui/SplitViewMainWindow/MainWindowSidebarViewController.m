@@ -12,7 +12,7 @@
 @interface MainWindowSidebarViewController ()
 
 @property(nonatomic)
-MediaLibraryOutlineViewController *mediaLibraryOutlineViewController;
+    MediaLibraryOutlineViewController *mediaLibraryOutlineViewController;
 @property(weak) IBOutlet NSOutlineView *outlineView;
 
 @end
@@ -20,10 +20,10 @@ MediaLibraryOutlineViewController *mediaLibraryOutlineViewController;
 @implementation MainWindowSidebarViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    self.mediaLibraryOutlineViewController =
-        [[MediaLibraryOutlineViewController alloc]
-         initWithOutlineView:self.outlineView];
+  [super viewDidLoad];
+  self.mediaLibraryOutlineViewController =
+      [[MediaLibraryOutlineViewController alloc]
+          initWithOutlineView:self.outlineView];
 }
 
 @end

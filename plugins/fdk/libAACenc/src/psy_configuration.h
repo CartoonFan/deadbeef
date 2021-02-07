@@ -118,54 +118,54 @@ amm-info@iis.fraunhofer.de
   (FIXP_DBL)0x02940a10 /* FL2FXCONST_DBL(0.001258925f) << THR_SHIFTBITS; */ /* pow(10.0f, -(29.0f/10.0f)) */
 
 typedef struct {
-    INT sfbCnt;    /* number of existing sf bands */
-    INT sfbActive; /* number of sf bands containing energy after lowpass */
-    INT sfbActiveLFE;
-    INT sfbOffset[MAX_SFB + 1];
+  INT sfbCnt;    /* number of existing sf bands */
+  INT sfbActive; /* number of sf bands containing energy after lowpass */
+  INT sfbActiveLFE;
+  INT sfbOffset[MAX_SFB + 1];
 
-    INT filterbank; /* LC, LD or ELD */
+  INT filterbank; /* LC, LD or ELD */
 
-    FIXP_DBL sfbPcmQuantThreshold[MAX_SFB];
+  FIXP_DBL sfbPcmQuantThreshold[MAX_SFB];
 
-    INT maxAllowedIncreaseFactor; /* preecho control */
-    FIXP_SGL minRemainingThresholdFactor;
+  INT maxAllowedIncreaseFactor; /* preecho control */
+  FIXP_SGL minRemainingThresholdFactor;
 
-    INT lowpassLine;
-    INT lowpassLineLFE;
-    FIXP_DBL clipEnergy; /* for level dependend tmn */
+  INT lowpassLine;
+  INT lowpassLineLFE;
+  FIXP_DBL clipEnergy; /* for level dependend tmn */
 
-    FIXP_DBL sfbMaskLowFactor[MAX_SFB];
-    FIXP_DBL sfbMaskHighFactor[MAX_SFB];
+  FIXP_DBL sfbMaskLowFactor[MAX_SFB];
+  FIXP_DBL sfbMaskHighFactor[MAX_SFB];
 
-    FIXP_DBL sfbMaskLowFactorSprEn[MAX_SFB];
-    FIXP_DBL sfbMaskHighFactorSprEn[MAX_SFB];
+  FIXP_DBL sfbMaskLowFactorSprEn[MAX_SFB];
+  FIXP_DBL sfbMaskHighFactorSprEn[MAX_SFB];
 
-    FIXP_DBL sfbMinSnrLdData[MAX_SFB]; /* minimum snr (formerly known as bmax) */
+  FIXP_DBL sfbMinSnrLdData[MAX_SFB]; /* minimum snr (formerly known as bmax) */
 
-    TNS_CONFIG tnsConf;
-    PNS_CONFIG pnsConf;
+  TNS_CONFIG tnsConf;
+  PNS_CONFIG pnsConf;
 
-    INT granuleLength;
-    INT allowIS;
-    INT allowMS;
+  INT granuleLength;
+  INT allowIS;
+  INT allowMS;
 } PSY_CONFIGURATION;
 
 typedef struct {
-    UCHAR sfbCnt;                 /* Number of scalefactor bands */
-    UCHAR sfbWidth[MAX_SFB_LONG]; /* Width of scalefactor bands for long blocks */
+  UCHAR sfbCnt;                 /* Number of scalefactor bands */
+  UCHAR sfbWidth[MAX_SFB_LONG]; /* Width of scalefactor bands for long blocks */
 } SFB_PARAM_LONG;
 
 typedef struct {
-    UCHAR sfbCnt; /* Number of scalefactor bands */
-    UCHAR
-    sfbWidth[MAX_SFB_SHORT]; /* Width of scalefactor bands for short blocks */
+  UCHAR sfbCnt; /* Number of scalefactor bands */
+  UCHAR
+  sfbWidth[MAX_SFB_SHORT]; /* Width of scalefactor bands for short blocks */
 } SFB_PARAM_SHORT;
 
 AAC_ENCODER_ERROR FDKaacEnc_InitPsyConfiguration(INT bitrate, INT samplerate,
-        INT bandwidth, INT blocktype,
-        INT granuleLength, INT useIS,
-        INT useMS,
-        PSY_CONFIGURATION *psyConf,
-        FB_TYPE filterbank);
+                                                 INT bandwidth, INT blocktype,
+                                                 INT granuleLength, INT useIS,
+                                                 INT useMS,
+                                                 PSY_CONFIGURATION *psyConf,
+                                                 FB_TYPE filterbank);
 
 #endif /* PSY_CONFIGURATION_H */

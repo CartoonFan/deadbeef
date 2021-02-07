@@ -138,9 +138,9 @@ extern const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16];
 */
 #define NUM_WHFACTOR_TABLE_ENTRIES 9
 extern const USHORT
-FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
+    FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
 extern const FIXP_DBL
-FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];
+    FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];
 
 /*
   Envelope Adjustor

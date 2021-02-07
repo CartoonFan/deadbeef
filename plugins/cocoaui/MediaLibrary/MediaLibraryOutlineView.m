@@ -11,9 +11,9 @@
 @implementation MediaLibraryOutlineView
 
 - (BOOL)validateProposedFirstResponder:(NSResponder *)responder
-    forEvent:(NSEvent *)event {
-    // This is required so that the Search field can become first responder.
-    return YES;
+                              forEvent:(NSEvent *)event {
+  // This is required so that the Search field can become first responder.
+  return YES;
 }
 
 @end

@@ -35,28 +35,28 @@ typedef void (*ddbDeleteFromDiskControllerWarningCallback_t)(
     ddbDeleteFromDiskController_t ctl, int shouldCancel);
 
 typedef struct {
-    void (*warningMessageForCtx)(
-        ddbDeleteFromDiskController_t ctl, ddb_action_context_t ctx,
-        unsigned trackcount,
-        ddbDeleteFromDiskControllerWarningCallback_t callback);
-    int (*deleteFile)(ddbDeleteFromDiskController_t ctl, const char *uri);
-    void (*completed)(ddbDeleteFromDiskController_t ctl);
+  void (*warningMessageForCtx)(
+      ddbDeleteFromDiskController_t ctl, ddb_action_context_t ctx,
+      unsigned trackcount,
+      ddbDeleteFromDiskControllerWarningCallback_t callback);
+  int (*deleteFile)(ddbDeleteFromDiskController_t ctl, const char *uri);
+  void (*completed)(ddbDeleteFromDiskController_t ctl);
 } ddbDeleteFromDiskControllerDelegate_t;
 
 ddbDeleteFromDiskController_t ddbDeleteFromDiskControllerAlloc(void);
 ddbDeleteFromDiskController_t
 ddbDeleteFromDiskControllerInitWithPlaylist(ddbDeleteFromDiskController_t ctl,
-        ddb_playlist_t *plt,
-        ddb_action_context_t ctx);
+                                            ddb_playlist_t *plt,
+                                            ddb_action_context_t ctx);
 ddbDeleteFromDiskController_t
 ddbDeleteFromDiskControllerInitWithTrackList(ddbDeleteFromDiskController_t ctl,
-        ddbUtilTrackList_t trackList);
+                                             ddbUtilTrackList_t trackList);
 void ddbDeleteFromDiskControllerFree(ddbDeleteFromDiskController_t ctl);
 
 void ddbDeleteFromDiskControllerSetShouldSkipDeletedTracks(
     ddbDeleteFromDiskController_t ctl, int shouldSkipDeletedTracks);
 void ddbDeleteFromDiskControllerSetUserData(ddbDeleteFromDiskController_t ctl,
-        void *userData);
+                                            void *userData);
 void *ddbDeleteFromDiskControllerGetUserData(ddbDeleteFromDiskController_t ctl);
 void ddbDeleteFromDiskControllerRunWithDelegate(
     ddbDeleteFromDiskController_t ctl,

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PlaylistLocalDragDropHolder
     : NSObject <NSPasteboardReading, NSPasteboardWriting, NSSecureCoding>
 
-  @property(nonatomic) NSInteger playlistIdx;
+@property(nonatomic) NSInteger playlistIdx;
 @property(nonatomic) NSArray *itemsIndices;
 
 - (instancetype)init NS_UNAVAILABLE;

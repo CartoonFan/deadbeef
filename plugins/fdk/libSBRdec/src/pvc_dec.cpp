@@ -167,19 +167,15 @@ static const FIXP_SGL pvc_SC_3[] = {
 };
 
 static const UCHAR g_3a_pvcTab1_mode1[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE1] =
-{   {   {0x4F, 0x5B, 0x57, 0x52, 0x4D, 0x65, 0x45, 0x57},
-        {0xF3, 0x0F, 0x18, 0x20, 0x19, 0x4F, 0x3D, 0x23},
-        {0x78, 0x57, 0x55, 0x50, 0x50, 0x20, 0x36, 0x37}
-    },
-    {   {0x4C, 0x5F, 0x53, 0x37, 0x1E, 0xFD, 0x15, 0x0A},
-        {0x05, 0x0E, 0x28, 0x41, 0x48, 0x6E, 0x54, 0x5B},
-        {0x59, 0x47, 0x40, 0x40, 0x3D, 0x33, 0x3F, 0x39}
-    },
-    {   {0x47, 0x5F, 0x57, 0x34, 0x3C, 0x2E, 0x2E, 0x31},
-        {0xFA, 0x13, 0x23, 0x4E, 0x44, 0x7C, 0x34, 0x38},
-        {0x63, 0x43, 0x41, 0x3D, 0x35, 0x19, 0x3D, 0x33}
-    }
-};
+    {{{0x4F, 0x5B, 0x57, 0x52, 0x4D, 0x65, 0x45, 0x57},
+      {0xF3, 0x0F, 0x18, 0x20, 0x19, 0x4F, 0x3D, 0x23},
+      {0x78, 0x57, 0x55, 0x50, 0x50, 0x20, 0x36, 0x37}},
+     {{0x4C, 0x5F, 0x53, 0x37, 0x1E, 0xFD, 0x15, 0x0A},
+      {0x05, 0x0E, 0x28, 0x41, 0x48, 0x6E, 0x54, 0x5B},
+      {0x59, 0x47, 0x40, 0x40, 0x3D, 0x33, 0x3F, 0x39}},
+     {{0x47, 0x5F, 0x57, 0x34, 0x3C, 0x2E, 0x2E, 0x31},
+      {0xFA, 0x13, 0x23, 0x4E, 0x44, 0x7C, 0x34, 0x38},
+      {0x63, 0x43, 0x41, 0x3D, 0x35, 0x19, 0x3D, 0x33}}};
 
 static const UCHAR g_2a_pvcTab2_mode1[PVC_NTAB2][PVC_NBHIGH_MODE1] = {
     {0xCB, 0xD1, 0xCC, 0xD2, 0xE2, 0xEB, 0xE7, 0xE8},
@@ -309,23 +305,18 @@ static const UCHAR g_2a_pvcTab2_mode1[PVC_NTAB2][PVC_NBHIGH_MODE1] = {
     {0xE8, 0xFA, 0xF8, 0xE8, 0xF8, 0xE9, 0xEE, 0xF9},
     {0xE5, 0xE9, 0xF0, 0x00, 0x00, 0xEF, 0xF3, 0xF8},
     {0xF7, 0xFB, 0xFB, 0xF7, 0xF9, 0xF9, 0xF5, 0xF0},
-    {0xFD, 0xFF, 0xF2, 0xEE, 0xF2, 0xF5, 0xF1, 0xF3}
-};
+    {0xFD, 0xFF, 0xF2, 0xEE, 0xF2, 0xF5, 0xF1, 0xF3}};
 
 static const UCHAR g_3a_pvcTab1_mode2[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE2] =
-{   {   {0x11, 0x27, 0x0F, 0xFD, 0x04, 0xFC},
-        {0x00, 0xBE, 0xE3, 0xF4, 0xDB, 0xF0},
-        {0x09, 0x1E, 0x18, 0x1A, 0x21, 0x1B}
-    },
-    {   {0x16, 0x28, 0x2B, 0x29, 0x25, 0x32},
-        {0xF2, 0xE9, 0xE4, 0xE5, 0xE2, 0xD4},
-        {0x0E, 0x0B, 0x0C, 0x0D, 0x0D, 0x0E}
-    },
-    {   {0x2E, 0x3C, 0x20, 0x16, 0x1B, 0x1A},
-        {0xE4, 0xC6, 0xE5, 0xF4, 0xDC, 0xDC},
-        {0x0F, 0x1B, 0x18, 0x14, 0x1E, 0x1A}
-    }
-};
+    {{{0x11, 0x27, 0x0F, 0xFD, 0x04, 0xFC},
+      {0x00, 0xBE, 0xE3, 0xF4, 0xDB, 0xF0},
+      {0x09, 0x1E, 0x18, 0x1A, 0x21, 0x1B}},
+     {{0x16, 0x28, 0x2B, 0x29, 0x25, 0x32},
+      {0xF2, 0xE9, 0xE4, 0xE5, 0xE2, 0xD4},
+      {0x0E, 0x0B, 0x0C, 0x0D, 0x0D, 0x0E}},
+     {{0x2E, 0x3C, 0x20, 0x16, 0x1B, 0x1A},
+      {0xE4, 0xC6, 0xE5, 0xF4, 0xDC, 0xDC},
+      {0x0F, 0x1B, 0x18, 0x14, 0x1E, 0x1A}}};
 
 static const UCHAR g_2a_pvcTab2_mode2[PVC_NTAB2][PVC_NBHIGH_MODE2] = {
     {0x26, 0x25, 0x11, 0x0C, 0xFA, 0x15}, {0x1B, 0x18, 0x11, 0x0E, 0x0E, 0x0E},
@@ -391,103 +382,100 @@ static const UCHAR g_2a_pvcTab2_mode2[PVC_NTAB2][PVC_NBHIGH_MODE2] = {
     {0x2B, 0x27, 0x23, 0x19, 0x13, 0x14}, {0x25, 0x2B, 0x22, 0x22, 0x20, 0x21},
     {0x27, 0x1B, 0x16, 0x17, 0x0F, 0x15}, {0x29, 0x26, 0x23, 0x15, 0x1E, 0x28},
     {0x24, 0x1C, 0x19, 0x1A, 0x18, 0x19}, {0x2D, 0x15, 0x27, 0x2B, 0x24, 0x23},
-    {0x2C, 0x12, 0x1F, 0x23, 0x1F, 0x20}, {0x25, 0x0F, 0x22, 0x27, 0x1F, 0x21}
-};
+    {0x2C, 0x12, 0x1F, 0x23, 0x1F, 0x20}, {0x25, 0x0F, 0x22, 0x27, 0x1F, 0x21}};
 
 static const UCHAR g_a_pvcTab1_dp_mode1[PVC_NTAB1 - 1] = {17, 68};
 static const UCHAR g_a_pvcTab1_dp_mode2[PVC_NTAB1 - 1] = {16, 52};
 /* fractional exponent which corresponds to Q representation value */
 static const SCHAR g_a_scalingCoef_mode1[PVC_NBLOW + 1] = {
-    -1, -1, 0, 6
-    }; /* { 8, 8, 7, 1 }; Q scaling */
+    -1, -1, 0, 6}; /* { 8, 8, 7, 1 }; Q scaling */
 static const SCHAR g_a_scalingCoef_mode2[PVC_NBLOW + 1] = {
-    0, 0, 1, 7
-}; /* { 7, 7, 6, 0 }; Q scaling */
+    0, 0, 1, 7}; /* { 7, 7, 6, 0 }; Q scaling */
 
 int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
                  PVC_DYNAMIC_DATA *pPvcDynamicData, const UCHAR pvcMode,
                  const UCHAR ns, const int RATE, const int kx,
                  const int pvcBorder0, const UCHAR *pPvcID) {
-    int lbw, hbw, i, temp;
-    pPvcDynamicData->pvc_mode = pvcMode;
-    pPvcDynamicData->kx = kx;
-    pPvcDynamicData->RATE = RATE;
+  int lbw, hbw, i, temp;
+  pPvcDynamicData->pvc_mode = pvcMode;
+  pPvcDynamicData->kx = kx;
+  pPvcDynamicData->RATE = RATE;
 
-    switch (pvcMode) {
-    case 0:
-        /* legacy SBR, nothing to do */
-        return 0;
-    case 1:
-        pPvcDynamicData->nbHigh = 8;
-        pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode1;
-        pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode1;
-        pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode1;
-        pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode1;
-        hbw = 8 / RATE;
-        break;
-    case 2:
-        pPvcDynamicData->nbHigh = 6;
-        pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode2;
-        pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode2;
-        pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode2;
-        pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode2;
-        hbw = 12 / RATE;
-        break;
-    default:
-        /* invalid pvcMode */
-        return 1;
-    }
-
-    pPvcDynamicData->pvcBorder0 = pvcBorder0;
-    UCHAR pvcBorder0_last = pPvcStaticData->pvcBorder0;
-    pPvcStaticData->pvcBorder0 = pvcBorder0;
-    pPvcDynamicData->pPvcID = pPvcID;
-
-    pPvcDynamicData->ns = ns;
-    switch (ns) {
-    case 16:
-        pPvcDynamicData->pSCcoeffs = pvc_SC_16;
-        break;
-    case 12:
-        pPvcDynamicData->pSCcoeffs = pvc_SC_12;
-        break;
-    case 4:
-        pPvcDynamicData->pSCcoeffs = pvc_SC_4;
-        break;
-    case 3:
-        pPvcDynamicData->pSCcoeffs = pvc_SC_3;
-        break;
-    default:
-        return 1;
-    }
-
-    /* in the lower part of Esg-array there are previous values of Esg (from last
-       call to this function In case of an previous legay-SBR frame, or if there
-       was a change in cross-over FQ the value of first PVC SBR timeslot is
-       propagated to prev-values in order to have reasonable values for
-       smooth-filtering
-    */
-    if ((pPvcStaticData->pvc_mode_last == 0) || (pPvcStaticData->kx_last != kx)) {
-        pPvcDynamicData->pastEsgSlotsAvail = 0;
-    } else {
-        pPvcDynamicData->pastEsgSlotsAvail = PVC_NS_MAX - pvcBorder0_last;
-    }
-
-    lbw = 8 / RATE;
-
-    temp = kx;
-    for (i = PVC_NBLOW; i >= 0; i--) {
-        pPvcDynamicData->sg_offset_low[i] = temp;
-        temp -= lbw;
-    }
-
-    temp = 0;
-    for (i = 0; i <= pPvcDynamicData->nbHigh; i++) {
-        pPvcDynamicData->sg_offset_high_kx[i] = temp;
-        temp += hbw;
-    }
-
+  switch (pvcMode) {
+  case 0:
+    /* legacy SBR, nothing to do */
     return 0;
+  case 1:
+    pPvcDynamicData->nbHigh = 8;
+    pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode1;
+    pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode1;
+    pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode1;
+    pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode1;
+    hbw = 8 / RATE;
+    break;
+  case 2:
+    pPvcDynamicData->nbHigh = 6;
+    pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode2;
+    pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode2;
+    pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode2;
+    pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode2;
+    hbw = 12 / RATE;
+    break;
+  default:
+    /* invalid pvcMode */
+    return 1;
+  }
+
+  pPvcDynamicData->pvcBorder0 = pvcBorder0;
+  UCHAR pvcBorder0_last = pPvcStaticData->pvcBorder0;
+  pPvcStaticData->pvcBorder0 = pvcBorder0;
+  pPvcDynamicData->pPvcID = pPvcID;
+
+  pPvcDynamicData->ns = ns;
+  switch (ns) {
+  case 16:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_16;
+    break;
+  case 12:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_12;
+    break;
+  case 4:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_4;
+    break;
+  case 3:
+    pPvcDynamicData->pSCcoeffs = pvc_SC_3;
+    break;
+  default:
+    return 1;
+  }
+
+  /* in the lower part of Esg-array there are previous values of Esg (from last
+     call to this function In case of an previous legay-SBR frame, or if there
+     was a change in cross-over FQ the value of first PVC SBR timeslot is
+     propagated to prev-values in order to have reasonable values for
+     smooth-filtering
+  */
+  if ((pPvcStaticData->pvc_mode_last == 0) || (pPvcStaticData->kx_last != kx)) {
+    pPvcDynamicData->pastEsgSlotsAvail = 0;
+  } else {
+    pPvcDynamicData->pastEsgSlotsAvail = PVC_NS_MAX - pvcBorder0_last;
+  }
+
+  lbw = 8 / RATE;
+
+  temp = kx;
+  for (i = PVC_NBLOW; i >= 0; i--) {
+    pPvcDynamicData->sg_offset_low[i] = temp;
+    temp -= lbw;
+  }
+
+  temp = 0;
+  for (i = 0; i <= pPvcDynamicData->nbHigh; i++) {
+    pPvcDynamicData->sg_offset_high_kx[i] = temp;
+    temp += hbw;
+  }
+
+  return 0;
 }
 
 /* call if pvcMode = 1,2 */
@@ -496,23 +484,23 @@ void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
                     FIXP_DBL **qmfBufferImag, const int overlap,
                     const int qmfExponentOverlap,
                     const int qmfExponentCurrent) {
-    int t;
-    FIXP_DBL *predictedEsgSlot;
-    int RATE = pPvcDynamicData->RATE;
-    int pvcBorder0 = pPvcDynamicData->pvcBorder0;
+  int t;
+  FIXP_DBL *predictedEsgSlot;
+  int RATE = pPvcDynamicData->RATE;
+  int pvcBorder0 = pPvcDynamicData->pvcBorder0;
 
-    for (t = pvcBorder0; t < PVC_NTIMESLOT; t++) {
-        int *pPredEsg_exp = &pPvcDynamicData->predEsg_exp[t];
-        predictedEsgSlot = pPvcDynamicData->predEsg[t];
+  for (t = pvcBorder0; t < PVC_NTIMESLOT; t++) {
+    int *pPredEsg_exp = &pPvcDynamicData->predEsg_exp[t];
+    predictedEsgSlot = pPvcDynamicData->predEsg[t];
 
-        pvcDecodeTimeSlot(pPvcStaticData, pPvcDynamicData, &qmfBufferReal[t * RATE],
-                          &qmfBufferImag[t * RATE],
-                          (t * RATE < overlap) ? qmfExponentOverlap
-                          : qmfExponentCurrent,
-                          pvcBorder0, t, predictedEsgSlot, pPredEsg_exp);
-    }
+    pvcDecodeTimeSlot(pPvcStaticData, pPvcDynamicData, &qmfBufferReal[t * RATE],
+                      &qmfBufferImag[t * RATE],
+                      (t * RATE < overlap) ? qmfExponentOverlap
+                                           : qmfExponentCurrent,
+                      pvcBorder0, t, predictedEsgSlot, pPredEsg_exp);
+  }
 
-    return;
+  return;
 }
 
 void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
@@ -521,176 +509,176 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
                        const int qmfExponent, const int pvcBorder0,
                        const int timeSlotNumber, FIXP_DBL predictedEsgSlot[],
                        int *predictedEsg_exp) {
-    int i, band, ksg, ksg_start = 0;
-    int RATE = pPvcDynamicData->RATE;
-    int Esg_index = pPvcStaticData->Esg_slot_index;
-    const SCHAR *sg_borders = pPvcDynamicData->sg_offset_low;
-    FIXP_DBL *pEsg = pPvcStaticData->Esg[Esg_index];
-    FIXP_DBL E[PVC_NBLOW] = {0};
+  int i, band, ksg, ksg_start = 0;
+  int RATE = pPvcDynamicData->RATE;
+  int Esg_index = pPvcStaticData->Esg_slot_index;
+  const SCHAR *sg_borders = pPvcDynamicData->sg_offset_low;
+  FIXP_DBL *pEsg = pPvcStaticData->Esg[Esg_index];
+  FIXP_DBL E[PVC_NBLOW] = {0};
 
-    /* Subband grouping in QMF subbands below SBR range */
-    /* Within one timeslot ( i = [0...(RATE-1)] QMF subsamples) calculate energy
-       E(ib,t) and group them to Esg(ksg,t). Then transfer values to logarithmical
-       domain and store them for time domain smoothing. (7.5.6.3 Subband grouping
-       in QMF subbands below SBR range)
-    */
-    for (ksg = 0; sg_borders[ksg] < 0; ksg++) {
-        pEsg[ksg] = FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)); /* 10*log10(0.1) */
-        ksg_start++;
-    }
+  /* Subband grouping in QMF subbands below SBR range */
+  /* Within one timeslot ( i = [0...(RATE-1)] QMF subsamples) calculate energy
+     E(ib,t) and group them to Esg(ksg,t). Then transfer values to logarithmical
+     domain and store them for time domain smoothing. (7.5.6.3 Subband grouping
+     in QMF subbands below SBR range)
+  */
+  for (ksg = 0; sg_borders[ksg] < 0; ksg++) {
+    pEsg[ksg] = FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)); /* 10*log10(0.1) */
+    ksg_start++;
+  }
 
-    for (i = 0; i < RATE; i++) {
-        FIXP_DBL *qmfR, *qmfI;
-        qmfR = qmfSlotReal[i];
-        qmfI = qmfSlotImag[i];
-        for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
-            for (band = sg_borders[ksg]; band < sg_borders[ksg + 1]; band++) {
-                /* The division by 8 == (RATE*lbw) is required algorithmically */
-                E[ksg] += (fPow2Div2(qmfR[band]) + fPow2Div2(qmfI[band])) >> 2;
-            }
-        }
-    }
+  for (i = 0; i < RATE; i++) {
+    FIXP_DBL *qmfR, *qmfI;
+    qmfR = qmfSlotReal[i];
+    qmfI = qmfSlotImag[i];
     for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
-        if (E[ksg] > (FIXP_DBL)0) {
-            /* 10/log2(10) = 0.752574989159953 * 2^2 */
-            int exp_log;
-            FIXP_DBL nrg = CalcLog2(E[ksg], 2 * qmfExponent, &exp_log);
-            nrg = fMult(nrg, FL2FXCONST_SGL(LOG10FAC));
-            nrg = scaleValue(nrg, exp_log - PVC_ESG_EXP + 2);
-            pEsg[ksg] = fMax(nrg, FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)));
-        } else {
-            pEsg[ksg] =
-                FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)); /* 10*log10(0.1) */
-        }
+      for (band = sg_borders[ksg]; band < sg_borders[ksg + 1]; band++) {
+        /* The division by 8 == (RATE*lbw) is required algorithmically */
+        E[ksg] += (fPow2Div2(qmfR[band]) + fPow2Div2(qmfI[band])) >> 2;
+      }
     }
-
-    /* Time domain smoothing of subband-grouped energy */
-    {
-        int idx = pPvcStaticData->Esg_slot_index;
-        FIXP_DBL *pEsg_filt;
-        FIXP_SGL SCcoeff;
-
-        E[0] = E[1] = E[2] = (FIXP_DBL)0;
-        for (i = 0; i < pPvcDynamicData->ns; i++) {
-            SCcoeff = pPvcDynamicData->pSCcoeffs[i];
-            pEsg_filt = pPvcStaticData->Esg[idx];
-            /* Div2 is compensated by scaling of coeff table */
-            E[0] = fMultAddDiv2(E[0], pEsg_filt[0], SCcoeff);
-            E[1] = fMultAddDiv2(E[1], pEsg_filt[1], SCcoeff);
-            E[2] = fMultAddDiv2(E[2], pEsg_filt[2], SCcoeff);
-            if (i >= pPvcDynamicData->pastEsgSlotsAvail) {
-                /* if past Esg values are not available use the ones from the last valid
-                 * slot */
-                continue;
-            }
-            if (idx > 0) {
-                idx--;
-            } else {
-                idx += PVC_NS_MAX - 1;
-            }
-        }
+  }
+  for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
+    if (E[ksg] > (FIXP_DBL)0) {
+      /* 10/log2(10) = 0.752574989159953 * 2^2 */
+      int exp_log;
+      FIXP_DBL nrg = CalcLog2(E[ksg], 2 * qmfExponent, &exp_log);
+      nrg = fMult(nrg, FL2FXCONST_SGL(LOG10FAC));
+      nrg = scaleValue(nrg, exp_log - PVC_ESG_EXP + 2);
+      pEsg[ksg] = fMax(nrg, FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)));
+    } else {
+      pEsg[ksg] =
+          FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)); /* 10*log10(0.1) */
     }
+  }
 
-    /* SBR envelope scalefactor prediction */
-    {
-        int E_high_exp[PVC_NBHIGH_MAX];
-        int E_high_exp_max = 0;
-        int pvcTab1ID;
-        int pvcTab2ID = (int)pPvcDynamicData->pPvcID[timeSlotNumber];
-        const UCHAR *pTab1, *pTab2;
-        if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[0]) {
-            pvcTab1ID = 0;
-        } else if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[1]) {
-            pvcTab1ID = 1;
-        } else {
-            pvcTab1ID = 2;
-        }
-        pTab1 = &(pPvcDynamicData
+  /* Time domain smoothing of subband-grouped energy */
+  {
+    int idx = pPvcStaticData->Esg_slot_index;
+    FIXP_DBL *pEsg_filt;
+    FIXP_SGL SCcoeff;
+
+    E[0] = E[1] = E[2] = (FIXP_DBL)0;
+    for (i = 0; i < pPvcDynamicData->ns; i++) {
+      SCcoeff = pPvcDynamicData->pSCcoeffs[i];
+      pEsg_filt = pPvcStaticData->Esg[idx];
+      /* Div2 is compensated by scaling of coeff table */
+      E[0] = fMultAddDiv2(E[0], pEsg_filt[0], SCcoeff);
+      E[1] = fMultAddDiv2(E[1], pEsg_filt[1], SCcoeff);
+      E[2] = fMultAddDiv2(E[2], pEsg_filt[2], SCcoeff);
+      if (i >= pPvcDynamicData->pastEsgSlotsAvail) {
+        /* if past Esg values are not available use the ones from the last valid
+         * slot */
+        continue;
+      }
+      if (idx > 0) {
+        idx--;
+      } else {
+        idx += PVC_NS_MAX - 1;
+      }
+    }
+  }
+
+  /* SBR envelope scalefactor prediction */
+  {
+    int E_high_exp[PVC_NBHIGH_MAX];
+    int E_high_exp_max = 0;
+    int pvcTab1ID;
+    int pvcTab2ID = (int)pPvcDynamicData->pPvcID[timeSlotNumber];
+    const UCHAR *pTab1, *pTab2;
+    if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[0]) {
+      pvcTab1ID = 0;
+    } else if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[1]) {
+      pvcTab1ID = 1;
+    } else {
+      pvcTab1ID = 2;
+    }
+    pTab1 = &(pPvcDynamicData
                   ->pPVCTab1[pvcTab1ID * PVC_NBLOW * pPvcDynamicData->nbHigh]);
-        pTab2 = &(pPvcDynamicData->pPVCTab2[pvcTab2ID * pPvcDynamicData->nbHigh]);
-        for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
-            FIXP_SGL predCoeff;
-            FIXP_DBL accu;
-            int predCoeff_exp, kb;
-            E_high_exp[ksg] = 0;
+    pTab2 = &(pPvcDynamicData->pPVCTab2[pvcTab2ID * pPvcDynamicData->nbHigh]);
+    for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
+      FIXP_SGL predCoeff;
+      FIXP_DBL accu;
+      int predCoeff_exp, kb;
+      E_high_exp[ksg] = 0;
 
-            /* residual part */
-            accu = ((LONG)(SCHAR)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP +
-                                               pPvcDynamicData->pScalingCoef[3]);
+      /* residual part */
+      accu = ((LONG)(SCHAR)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP +
+                                         pPvcDynamicData->pScalingCoef[3]);
 
-            /* linear combination of lower grouped energies part */
-            for (kb = 0; kb < PVC_NBLOW; kb++) {
-                predCoeff = (FIXP_SGL)(
-                                (SHORT)(SCHAR)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
-                predCoeff_exp = pPvcDynamicData->pScalingCoef[kb] +
-                                1; /* +1 to compensate for Div2 */
-                accu += fMultDiv2(E[kb], predCoeff) << predCoeff_exp;
-            }
-            /* convert back to linear domain */
-            accu = fMult(accu, FL2FXCONST_SGL(LOG10FAC_INV));
-            accu = f2Pow(
-                       accu, PVC_ESG_EXP - 1,
-                       &predCoeff_exp); /* -1 compensates for exponent of LOG10FAC_INV */
-            predictedEsgSlot[ksg] = accu;
-            E_high_exp[ksg] = predCoeff_exp;
-            if (predCoeff_exp > E_high_exp_max) {
-                E_high_exp_max = predCoeff_exp;
-            }
-        }
-
-        /* rescale output vector according to largest exponent */
-        for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
-            int scale = E_high_exp[ksg] - E_high_exp_max;
-            predictedEsgSlot[ksg] = scaleValue(predictedEsgSlot[ksg], scale);
-        }
-        *predictedEsg_exp = E_high_exp_max;
+      /* linear combination of lower grouped energies part */
+      for (kb = 0; kb < PVC_NBLOW; kb++) {
+        predCoeff = (FIXP_SGL)(
+            (SHORT)(SCHAR)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
+        predCoeff_exp = pPvcDynamicData->pScalingCoef[kb] +
+                        1; /* +1 to compensate for Div2 */
+        accu += fMultDiv2(E[kb], predCoeff) << predCoeff_exp;
+      }
+      /* convert back to linear domain */
+      accu = fMult(accu, FL2FXCONST_SGL(LOG10FAC_INV));
+      accu = f2Pow(
+          accu, PVC_ESG_EXP - 1,
+          &predCoeff_exp); /* -1 compensates for exponent of LOG10FAC_INV */
+      predictedEsgSlot[ksg] = accu;
+      E_high_exp[ksg] = predCoeff_exp;
+      if (predCoeff_exp > E_high_exp_max) {
+        E_high_exp_max = predCoeff_exp;
+      }
     }
 
-    pPvcStaticData->Esg_slot_index =
-        (pPvcStaticData->Esg_slot_index + 1) & (PVC_NS_MAX - 1);
-    pPvcDynamicData->pastEsgSlotsAvail =
-        fMin(pPvcDynamicData->pastEsgSlotsAvail + 1, PVC_NS_MAX - 1);
-    return;
+    /* rescale output vector according to largest exponent */
+    for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
+      int scale = E_high_exp[ksg] - E_high_exp_max;
+      predictedEsgSlot[ksg] = scaleValue(predictedEsgSlot[ksg], scale);
+    }
+    *predictedEsg_exp = E_high_exp_max;
+  }
+
+  pPvcStaticData->Esg_slot_index =
+      (pPvcStaticData->Esg_slot_index + 1) & (PVC_NS_MAX - 1);
+  pPvcDynamicData->pastEsgSlotsAvail =
+      fMin(pPvcDynamicData->pastEsgSlotsAvail + 1, PVC_NS_MAX - 1);
+  return;
 }
 
 /* call if pvcMode = 0,1,2 */
 void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
                  PVC_DYNAMIC_DATA *pPvcDynamicData) {
-    pPvcStaticData->pvc_mode_last = pPvcDynamicData->pvc_mode;
-    pPvcStaticData->kx_last = pPvcDynamicData->kx;
+  pPvcStaticData->pvc_mode_last = pPvcDynamicData->pvc_mode;
+  pPvcStaticData->kx_last = pPvcDynamicData->kx;
 
-    if (pPvcDynamicData->pvc_mode == 0)
-        return;
-
-    {
-        int t, max = -100;
-        for (t = pPvcDynamicData->pvcBorder0; t < PVC_NTIMESLOT; t++) {
-            if (pPvcDynamicData->predEsg_exp[t] > max) {
-                max = pPvcDynamicData->predEsg_exp[t];
-            }
-        }
-        pPvcDynamicData->predEsg_expMax = max;
-    }
+  if (pPvcDynamicData->pvc_mode == 0)
     return;
+
+  {
+    int t, max = -100;
+    for (t = pPvcDynamicData->pvcBorder0; t < PVC_NTIMESLOT; t++) {
+      if (pPvcDynamicData->predEsg_exp[t] > max) {
+        max = pPvcDynamicData->predEsg_exp[t];
+      }
+    }
+    pPvcDynamicData->predEsg_expMax = max;
+  }
+  return;
 }
 
 void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int timeSlot,
                    const int lengthOutputVector, FIXP_DBL *pOutput,
                    SCHAR *pOutput_exp) {
-    int k = 0, ksg;
-    const FIXP_DBL *predEsg = pPvcDynamicData->predEsg[timeSlot];
+  int k = 0, ksg;
+  const FIXP_DBL *predEsg = pPvcDynamicData->predEsg[timeSlot];
 
-    for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
-        for (; k < pPvcDynamicData->sg_offset_high_kx[ksg + 1]; k++) {
-            pOutput[k] = predEsg[ksg];
-            pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
-        }
+  for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
+    for (; k < pPvcDynamicData->sg_offset_high_kx[ksg + 1]; k++) {
+      pOutput[k] = predEsg[ksg];
+      pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
     }
-    ksg--;
-    for (; k < lengthOutputVector; k++) {
-        pOutput[k] = predEsg[ksg];
-        pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
-    }
+  }
+  ksg--;
+  for (; k < lengthOutputVector; k++) {
+    pOutput[k] = predEsg[ksg];
+    pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
+  }
 
-    return;
+  return;
 }

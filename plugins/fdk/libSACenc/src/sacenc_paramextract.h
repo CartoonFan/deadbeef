@@ -128,41 +128,41 @@ amm-info@iis.fraunhofer.de
 typedef struct T_TTO_BOX *HANDLE_TTO_BOX;
 
 typedef enum {
-    BOX_SUBBANDS_INVALID = 0,
-    BOX_SUBBANDS_4 = 4,
-    BOX_SUBBANDS_5 = 5,
-    BOX_SUBBANDS_7 = 7,
-    BOX_SUBBANDS_9 = 9,
-    BOX_SUBBANDS_12 = 12,
-    BOX_SUBBANDS_15 = 15,
-    BOX_SUBBANDS_23 = 23
+  BOX_SUBBANDS_INVALID = 0,
+  BOX_SUBBANDS_4 = 4,
+  BOX_SUBBANDS_5 = 5,
+  BOX_SUBBANDS_7 = 7,
+  BOX_SUBBANDS_9 = 9,
+  BOX_SUBBANDS_12 = 12,
+  BOX_SUBBANDS_15 = 15,
+  BOX_SUBBANDS_23 = 23
 
 } BOX_SUBBAND_CONFIG;
 
 typedef enum {
-    BOX_QUANTMODE_INVALID = -1,
-    BOX_QUANTMODE_FINE = 0,
-    BOX_QUANTMODE_EBQ1 = 1,
-    BOX_QUANTMODE_EBQ2 = 2,
-    BOX_QUANTMODE_RESERVED3 = 3,
-    BOX_QUANTMODE_RESERVED4 = 4,
-    BOX_QUANTMODE_RESERVED5 = 5,
-    BOX_QUANTMODE_RESERVED6 = 6,
-    BOX_QUANTMODE_RESERVED7 = 7
+  BOX_QUANTMODE_INVALID = -1,
+  BOX_QUANTMODE_FINE = 0,
+  BOX_QUANTMODE_EBQ1 = 1,
+  BOX_QUANTMODE_EBQ2 = 2,
+  BOX_QUANTMODE_RESERVED3 = 3,
+  BOX_QUANTMODE_RESERVED4 = 4,
+  BOX_QUANTMODE_RESERVED5 = 5,
+  BOX_QUANTMODE_RESERVED6 = 6,
+  BOX_QUANTMODE_RESERVED7 = 7
 
 } BOX_QUANTMODE;
 
 typedef struct T_TTO_BOX_CONFIG {
-    UCHAR bUseCoarseQuantCld;
-    UCHAR bUseCoarseQuantIcc;
-    UCHAR bUseCoherenceIccOnly;
+  UCHAR bUseCoarseQuantCld;
+  UCHAR bUseCoarseQuantIcc;
+  UCHAR bUseCoherenceIccOnly;
 
-    BOX_SUBBAND_CONFIG subbandConfig;
-    BOX_QUANTMODE boxQuantMode;
+  BOX_SUBBAND_CONFIG subbandConfig;
+  BOX_QUANTMODE boxQuantMode;
 
-    UCHAR nHybridBandsMax;
+  UCHAR nHybridBandsMax;
 
-    UCHAR bFrameKeep;
+  UCHAR bFrameKeep;
 
 } TTO_BOX_CONFIG;
 
@@ -197,19 +197,19 @@ void fdk_sacenc_calcParameterBand2HybridBandOffset(
 
 /* Function / Class Definition ***********************************************/
 static inline UCHAR fdk_sacenc_getCldQuantOffset(const INT bUseCoarseQuant) {
-    return ((bUseCoarseQuant) ? OFFSET_CLD_QUANT_COARSE : OFFSET_CLD_QUANT_FINE);
+  return ((bUseCoarseQuant) ? OFFSET_CLD_QUANT_COARSE : OFFSET_CLD_QUANT_FINE);
 }
 static inline UCHAR fdk_sacenc_getIccQuantOffset(const INT bUseCoarseQuant) {
-    return ((bUseCoarseQuant) ? OFFSET_ICC_QUANT_COARSE : OFFSET_ICC_QUANT_FINE);
+  return ((bUseCoarseQuant) ? OFFSET_ICC_QUANT_COARSE : OFFSET_ICC_QUANT_FINE);
 }
 
 static inline UCHAR
 fdk_sacenc_getNumberCldQuantLevels(const INT bUseCoarseQuant) {
-    return ((bUseCoarseQuant) ? MAX_CLD_QUANT_COARSE : MAX_CLD_QUANT_FINE);
+  return ((bUseCoarseQuant) ? MAX_CLD_QUANT_COARSE : MAX_CLD_QUANT_FINE);
 }
 static inline UCHAR
 fdk_sacenc_getNumberIccQuantLevels(const INT bUseCoarseQuant) {
-    return ((bUseCoarseQuant) ? MAX_ICC_QUANT_COARSE : MAX_ICC_QUANT_FINE);
+  return ((bUseCoarseQuant) ? MAX_ICC_QUANT_COARSE : MAX_ICC_QUANT_FINE);
 }
 
 #endif /* SACENC_PARAMEXTRACT_H */

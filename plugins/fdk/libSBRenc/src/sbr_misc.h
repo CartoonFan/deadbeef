@@ -122,6 +122,6 @@ void FDKsbrEnc_AddVecRight(INT *dst, INT *length_vector_dst, INT *src,
                            INT length_src);
 
 FIXP_DBL FDKsbrEnc_LSI_divide_scale_fract(FIXP_DBL num, FIXP_DBL denom,
-        FIXP_DBL scale);
+                                          FIXP_DBL scale);
 
 #endif
