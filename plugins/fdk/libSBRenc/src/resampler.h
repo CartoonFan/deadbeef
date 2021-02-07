@@ -118,12 +118,12 @@ amm-info@iis.fraunhofer.de
 typedef FIXP_DBL FIXP_BQS;
 
 typedef struct {
-    FIXP_BQS states[MAXNR_SECTIONS + 1][2]; /*! state buffer */
-    const FIXP_SGL *coeffa;                 /*! pointer to filter coeffs */
-    FIXP_DBL gain;                          /*! overall gain factor */
-    int Wc;                                 /*! normalized cutoff freq * 1000 */
-    int noCoeffs;                           /*! number of filter coeffs sets */
-    int ptr;                                /*! index to rinbuffers */
+  FIXP_BQS states[MAXNR_SECTIONS + 1][2]; /*! state buffer */
+  const FIXP_SGL *coeffa;                 /*! pointer to filter coeffs */
+  FIXP_DBL gain;                          /*! overall gain factor */
+  int Wc;                                 /*! normalized cutoff freq * 1000 */
+  int noCoeffs;                           /*! number of filter coeffs sets */
+  int ptr;                                /*! index to rinbuffers */
 } LP_FILTER;
 
 /**************************************************************************/
@@ -131,10 +131,10 @@ typedef struct {
 /**************************************************************************/
 
 typedef struct {
-    LP_FILTER downFilter; /*! filter instance */
-    int ratio;            /*! downsampling ration */
-    int delay;            /*! downsampling delay (source fs)   */
-    int pending;          /*! number of pending output samples */
+  LP_FILTER downFilter; /*! filter instance */
+  int ratio;            /*! downsampling ration */
+  int delay;            /*! downsampling delay (source fs)   */
+  int pending;          /*! number of pending output samples */
 } DOWNSAMPLER;
 
 /**

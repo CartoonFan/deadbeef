@@ -111,11 +111,11 @@ amm-info@iis.fraunhofer.de
 --------------------------------------------------------------------------------------------
 */
 UCHAR ToggleReadDirection(UCHAR readDirection) {
-    if (readDirection == FROM_LEFT_TO_RIGHT) {
-        return FROM_RIGHT_TO_LEFT;
-    } else {
-        return FROM_LEFT_TO_RIGHT;
-    }
+  if (readDirection == FROM_LEFT_TO_RIGHT) {
+    return FROM_RIGHT_TO_LEFT;
+  } else {
+    return FROM_LEFT_TO_RIGHT;
+  }
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -135,30 +135,30 @@ read direction. It is called very often, therefore it makes sense to inline it
 UINT HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
                              INT *pLeftStartOfSegment,
                              INT *pRightStartOfSegment, UCHAR readDirection) {
-    UINT bit;
-    INT readBitOffset;
+  UINT bit;
+  INT readBitOffset;
 
-    if (readDirection == FROM_LEFT_TO_RIGHT) {
-        readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pLeftStartOfSegment;
-        if (readBitOffset) {
-            FDKpushBiDirectional(bs, readBitOffset);
-        }
-
-        bit = FDKreadBits(bs, 1);
-
-        *pLeftStartOfSegment += 1;
-    } else {
-        readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pRightStartOfSegment;
-        if (readBitOffset) {
-            FDKpushBiDirectional(bs, readBitOffset);
-        }
-
-        /* to be replaced with a brother function of FDKreadBits() */
-        bit = FDKreadBits(bs, 1);
-        FDKpushBack(bs, 2);
-
-        *pRightStartOfSegment -= 1;
+  if (readDirection == FROM_LEFT_TO_RIGHT) {
+    readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pLeftStartOfSegment;
+    if (readBitOffset) {
+      FDKpushBiDirectional(bs, readBitOffset);
     }
 
-    return (bit);
+    bit = FDKreadBits(bs, 1);
+
+    *pLeftStartOfSegment += 1;
+  } else {
+    readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pRightStartOfSegment;
+    if (readBitOffset) {
+      FDKpushBiDirectional(bs, readBitOffset);
+    }
+
+    /* to be replaced with a brother function of FDKreadBits() */
+    bit = FDKreadBits(bs, 1);
+    FDKpushBack(bs, 2);
+
+    *pRightStartOfSegment -= 1;
+  }
+
+  return (bit);
 }

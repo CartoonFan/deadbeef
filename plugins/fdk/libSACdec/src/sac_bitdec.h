@@ -111,11 +111,11 @@ amm-info@iis.fraunhofer.de
 #include "sac_dec.h"
 
 typedef struct {
-    SCHAR numInputChannels;
-    SCHAR numOutputChannels;
-    SCHAR numOttBoxes;
-    SCHAR numTttBoxes;
-    SCHAR ottModeLfe[MAX_NUM_OTT];
+  SCHAR numInputChannels;
+  SCHAR numOutputChannels;
+  SCHAR numOttBoxes;
+  SCHAR numTttBoxes;
+  SCHAR ottModeLfe[MAX_NUM_OTT];
 } TREEPROPERTIES;
 
 enum { TREE_212 = 7, TREE_DUMMY = 255 };

@@ -106,9 +106,9 @@ amm-info@iis.fraunhofer.de
 
 void drmRead_CrcInit(HANDLE_DRM pDrm) /*!< pointer to drm crc info stucture */
 {
-    FDK_ASSERT(pDrm != NULL);
+  FDK_ASSERT(pDrm != NULL);
 
-    FDKcrcInit(&pDrm->crcInfo, 0x001d, 0xFFFF, 8);
+  FDKcrcInit(&pDrm->crcInfo, 0x001d, 0xFFFF, 8);
 }
 
 int drmRead_CrcStartReg(
@@ -116,13 +116,13 @@ int drmRead_CrcStartReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int mBits                 /*!< number of bits in crc region */
 ) {
-    FDK_ASSERT(pDrm != NULL);
+  FDK_ASSERT(pDrm != NULL);
 
-    FDKcrcReset(&pDrm->crcInfo);
+  FDKcrcReset(&pDrm->crcInfo);
 
-    pDrm->crcReadValue = FDKreadBits(hBs, 8);
+  pDrm->crcReadValue = FDKreadBits(hBs, 8);
 
-    return (FDKcrcStartReg(&pDrm->crcInfo, hBs, mBits));
+  return (FDKcrcStartReg(&pDrm->crcInfo, hBs, mBits));
 }
 
 void drmRead_CrcEndReg(
@@ -130,19 +130,19 @@ void drmRead_CrcEndReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int reg                   /*!< crc region */
 ) {
-    FDK_ASSERT(pDrm != NULL);
+  FDK_ASSERT(pDrm != NULL);
 
-    FDKcrcEndReg(&pDrm->crcInfo, hBs, reg);
+  FDKcrcEndReg(&pDrm->crcInfo, hBs, reg);
 }
 
 TRANSPORTDEC_ERROR drmRead_CrcCheck(HANDLE_DRM pDrm) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-    USHORT crc;
+  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  USHORT crc;
 
-    crc = FDKcrcGetCRC(&pDrm->crcInfo) ^ 0xFF;
-    if (crc != pDrm->crcReadValue) {
-        return (TRANSPORTDEC_CRC_ERROR);
-    }
+  crc = FDKcrcGetCRC(&pDrm->crcInfo) ^ 0xFF;
+  if (crc != pDrm->crcReadValue) {
+    return (TRANSPORTDEC_CRC_ERROR);
+  }
 
-    return (ErrorStatus);
+  return (ErrorStatus);
 }

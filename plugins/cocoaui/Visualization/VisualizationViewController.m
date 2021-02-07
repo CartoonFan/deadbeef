@@ -17,14 +17,14 @@
 @implementation VisualizationViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+  [super viewDidLoad];
 
-    self.tickTimer =
-        [NSTimer scheduledTimerWithTimeInterval:1 / 30.0
-                 repeats:YES
-            block:^(NSTimer *_Nonnull timer) {
-                self.view.needsDisplay = YES;
-            }];
+  self.tickTimer =
+      [NSTimer scheduledTimerWithTimeInterval:1 / 30.0
+                                      repeats:YES
+                                        block:^(NSTimer *_Nonnull timer) {
+                                          self.view.needsDisplay = YES;
+                                        }];
 }
 
 @end

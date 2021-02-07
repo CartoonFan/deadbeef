@@ -135,8 +135,7 @@ const UCHAR fdk_dec_Da[NB_LEADER][8] = {
     {12, 0, 0, 0, 0, 0, 0, 0},  {12, 4, 0, 0, 0, 0, 0, 0},
     {10, 10, 0, 0, 0, 0, 0, 0}, {14, 2, 0, 0, 0, 0, 0, 0},
     {12, 8, 0, 0, 0, 0, 0, 0},  {16, 0, 0, 0, 0, 0, 0, 0},
-    {20, 0, 0, 0, 0, 0, 0, 0}
-};
+    {20, 0, 0, 0, 0, 0, 0, 0}};
 
 /* Ds - Sign codes of all signed leaders */
 const UCHAR fdk_dec_Ds[NB_LDSIGN] = {
@@ -155,21 +154,18 @@ const UCHAR fdk_dec_Ds[NB_LDSIGN] = {
     160, 224, 0,   64,  128, 192, 0,   3,   15,  63,  129, 135, 159, 255, 0,
     64,  128, 192, 0,   64,  192, 0,   64,  128, 192, 0,   128, 0,   64,  128,
     192, 0,   64,  192, 0,   64,  128, 192, 0,   64,  128, 192, 0,   128, 0,
-    128
-};
+    128};
 
 /* Ns - Number of signed leader associated to a given absolute leader */
 const UCHAR fdk_dec_Ns[NB_LEADER] = {
     5, 3, 5, 8, 2, 7, 11, 6, 9, 12, 10, 3, 8, 13, 14, 9, 14, 4, 4,
-    8, 8, 8, 2, 3, 6, 4,  8, 4, 3,  4,  2, 4, 3,  4,  4, 2,  2
-};
+    8, 8, 8, 2, 3, 6, 4,  8, 4, 3,  4,  2, 4, 3,  4,  4, 2,  2};
 
 /* Ia - Position of the first signed leader associated to an absolute leader */
 const UCHAR fdk_dec_Ia[NB_LEADER] = {
     0,   5,   8,   13,  21,  23,  30,  41,  47,  56,  68,  78,  81,
     89,  102, 116, 125, 139, 143, 147, 155, 163, 171, 173, 176, 182,
-    186, 194, 198, 201, 205, 207, 211, 214, 218, 222, 224
-};
+    186, 194, 198, 201, 205, 207, 211, 214, 218, 222, 224};
 
 /* Is - Cardinalite offset of signed leaders */
 const USHORT fdk_dec_Is[NB_LDSIGN] = {
@@ -193,8 +189,7 @@ const USHORT fdk_dec_Is[NB_LDSIGN] = {
     63128, 63296, 63576, 63632, 63688, 63968, 64136, 64144, 64200, 64256, 64312,
     64368, 64396, 64452, 64480, 64536, 64592, 64648, 64704, 64712, 64720, 64776,
     64832, 64888, 64944, 64972, 65028, 65056, 65112, 65168, 65224, 65280, 65336,
-    65392, 65448, 65504, 65512, 65520, 65528
-};
+    65392, 65448, 65504, 65512, 65520, 65528};
 
 /* A3 - Number of the absolute leaders in codebooks Q2 and Q3 */
 const UCHAR fdk_dec_A3[NB_LDQ3] = {0, 1, 4, 2, 3, 7, 11, 17, 22};
@@ -202,28 +197,24 @@ const UCHAR fdk_dec_A3[NB_LDQ3] = {0, 1, 4, 2, 3, 7, 11, 17, 22};
 /* A4 - Number of the absolute leaders in codebook Q4 */
 const UCHAR fdk_dec_A4[NB_LDQ4] = {5,  6,  8,  9,  10, 12, 13, 14, 15, 16,
                                    18, 19, 20, 21, 23, 24, 25, 26, 27, 28,
-                                   29, 30, 31, 32, 33, 34, 35, 36
-                                  };
+                                   29, 30, 31, 32, 33, 34, 35, 36};
 
 /* I3 - Cardinality offsets for absolute leaders in Q3 */
 const USHORT fdk_dec_I3[NB_LDQ3] = {0,    128,  240,  256, 1376,
-                                    2400, 3744, 3856, 4080
-                                   };
+                                    2400, 3744, 3856, 4080};
 
 /* I4 - Cardinality offset for absolute leaders in Q4 */
 const USHORT fdk_dec_I4[NB_LDQ4] = {
     0,     1792,  5376,  5632,  12800, 21760, 22784, 31744, 38912, 45632,
     52800, 53248, 57728, 60416, 61440, 61552, 62896, 63120, 64144, 64368,
-    64480, 64704, 64720, 64944, 65056, 65280, 65504, 65520
-};
+    64480, 64704, 64720, 64944, 65056, 65280, 65504, 65520};
 
 /* Initial ISF memory for concealment case */
 #define LSFI(x) ((x) << (FRACT_BITS - LSF_SCALE - 1))
 
 const FIXP_LPC fdk_dec_lsf_init[16] = {1506,  3012,  4518,  6024,  7529,  9035,
                                        10541, 12047, 13553, 15059, 16565, 18071,
-                                       19576, 21082, 22588, 24094
-                                      };
+                                       19576, 21082, 22588, 24094};
 
 /* dico_lsf_abs_8b is scaled by 1/(1<<13) */
 #define DICO(x) FX_DBL2FXCONST_LPC(x >> (LSF_SCALE - 13))
@@ -1252,8 +1243,7 @@ const FIXP_LPC fdk_dec_dico_lsf_abs_8b[] = {
     DICO(0x04cfa5e0), DICO(0x06deeb38), DICO(0x0a501c40), DICO(0x136d8aa0),
     DICO(0x17f16e40), DICO(0x1c119300), DICO(0x26154b00), DICO(0x2a0da100),
     DICO(0x2f5935c0), DICO(0x37108d40), DICO(0x3aef07c0), DICO(0x3fccf340),
-    DICO(0x47e4a080), DICO(0x4d8de100), DICO(0x54eb6980), DICO(0x5cdb5380)
-};
+    DICO(0x47e4a080), DICO(0x4d8de100), DICO(0x54eb6980), DICO(0x5cdb5380)};
 
 /* ACELP: table for decoding
    adaptive codebook gain g_p (left column). Scaled by 2.0f.
@@ -1283,17 +1273,14 @@ const FIXP_SGL fdk_t_qua_gain7b[128 * 2] = {
     17351, 2113,  17374, 980,   17566, 26214, 17609, 3912,  17639, 32767, 18151,
     7871,  18197, 2516,  18202, 5649,  18679, 3283,  18930, 1370,  19271, 13757,
     19317, 4120,  19460, 1973,  19654, 10018, 19764, 6792,  19912, 5135,  20040,
-    2841,  21234, 19833
-};
+    2841,  21234, 19833};
 
 /* ACELP: factor table for interpolation of LPC coeffs in LSP domain */
 const FIXP_SGL lsp_interpol_factor[2][NB_SUBFR] = {
-    {   FL2FXCONST_SGL(0.125f), FL2FXCONST_SGL(0.375f), FL2FXCONST_SGL(0.625f),
-        FL2FXCONST_SGL(0.875f)
-    }, /* for coreCoderFrameLength = 1024 */
-    {   FL2FXCONST_SGL(0.166667f), FL2FXCONST_SGL(0.5f), FL2FXCONST_SGL(0.833333f),
-        0x0
-    } /* for coreCoderFrameLength = 768  */
+    {FL2FXCONST_SGL(0.125f), FL2FXCONST_SGL(0.375f), FL2FXCONST_SGL(0.625f),
+     FL2FXCONST_SGL(0.875f)}, /* for coreCoderFrameLength = 1024 */
+    {FL2FXCONST_SGL(0.166667f), FL2FXCONST_SGL(0.5f), FL2FXCONST_SGL(0.833333f),
+     0x0} /* for coreCoderFrameLength = 768  */
 };
 
 /* For bass post filter */
@@ -1305,8 +1292,7 @@ const FIXP_SGL fdk_dec_filt_lp[1 + L_FILT] = {
     FL2FXCONST_SGL_FILT(0.038774f), FL2FXCONST_SGL_FILT(0.027692f),
     FL2FXCONST_SGL_FILT(0.018130f), FL2FXCONST_SGL_FILT(0.010578f),
     FL2FXCONST_SGL_FILT(0.005221f), FL2FXCONST_SGL_FILT(0.001946f),
-    FL2FXCONST_SGL_FILT(0.000385f)
-};
+    FL2FXCONST_SGL_FILT(0.000385f)};
 #endif
 
 /* FAC window tables for coreCoderFrameLength = 1024 */

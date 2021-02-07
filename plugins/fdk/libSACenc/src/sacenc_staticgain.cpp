@@ -120,14 +120,14 @@ This file contains all static gain infrastructure
 
 /* Data Types ****************************************************************/
 struct STATIC_GAIN {
-    /* External Config Values */
-    MP4SPACEENC_MODE encMode;
-    MP4SPACEENC_DMX_GAIN fixedGainDMX;
-    INT preGainFactorDb;
+  /* External Config Values */
+  MP4SPACEENC_MODE encMode;
+  MP4SPACEENC_DMX_GAIN fixedGainDMX;
+  INT preGainFactorDb;
 
-    /* Internal Values */
-    FIXP_GAIN PostGain__FDK;
-    FIXP_GAIN pPreGain__FDK[SACENC_MAX_INPUT_CHANNELS];
+  /* Internal Values */
+  FIXP_GAIN PostGain__FDK;
+  FIXP_GAIN pPreGain__FDK[SACENC_MAX_INPUT_CHANNELS];
 };
 
 /* Constants *****************************************************************/
@@ -158,8 +158,7 @@ static const FIXP_DBL preGainFactorTable__FDK[41] = {
     GAINCF(3.1324201822e-001), GAINCF(3.5146331787e-001),
     GAINCF(3.9434835315e-001), GAINCF(4.4246610999e-001),
     GAINCF(4.9645513296e-001), GAINCF(5.5703181028e-001),
-    GAINCF(6.2500000000e-001)
-};
+    GAINCF(6.2500000000e-001)};
 
 static const FIXP_GAIN dmxGainTable__FDK[] = {
     /* GAINCT2(1.0), */ GAINCT2(0.84089650f),
@@ -168,8 +167,7 @@ static const FIXP_GAIN dmxGainTable__FDK[] = {
     GAINCT2(0.50000000f),
     GAINCT2(0.42044825f),
     GAINCT2(0.35355341f),
-    GAINCT2(0.25000000f)
-};
+    GAINCT2(0.25000000f)};
 
 /* Function / Class Declarations *********************************************/
 
@@ -182,36 +180,36 @@ returns:      noError on success, an apropriate error code else
 -----------------------------------------------------------------------------*/
 FDK_SACENC_ERROR fdk_sacenc_staticGain_OpenConfig(
     HANDLE_STATIC_GAIN_CONFIG *phStaticGainConfig) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == phStaticGainConfig) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        /* Allocate Instance */
-        FDK_ALLOCATE_MEMORY_1D(*phStaticGainConfig, 1, struct STATIC_GAIN_CONFIG);
-    }
-    return error;
+  if (NULL == phStaticGainConfig) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    /* Allocate Instance */
+    FDK_ALLOCATE_MEMORY_1D(*phStaticGainConfig, 1, struct STATIC_GAIN_CONFIG);
+  }
+  return error;
 
 bail:
-    fdk_sacenc_staticGain_CloseConfig(phStaticGainConfig);
-    return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
+  fdk_sacenc_staticGain_CloseConfig(phStaticGainConfig);
+  return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
 }
 
 FDK_SACENC_ERROR fdk_sacenc_staticGain_InitDefaultConfig(
     HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == hStaticGainConfig) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        /* Necessary Input Variables */
-        hStaticGainConfig->encMode = SACENC_INVALID_MODE;
+  if (NULL == hStaticGainConfig) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    /* Necessary Input Variables */
+    hStaticGainConfig->encMode = SACENC_INVALID_MODE;
 
-        /* Optional Configs Set to Default Values */
-        hStaticGainConfig->fixedGainDMX = MP4SPACEENC_DMX_GAIN_DEFAULT;
-        hStaticGainConfig->preGainFactorDb = 0;
-    }
-    return error;
+    /* Optional Configs Set to Default Values */
+    hStaticGainConfig->fixedGainDMX = MP4SPACEENC_DMX_GAIN_DEFAULT;
+    hStaticGainConfig->preGainFactorDb = 0;
+  }
+  return error;
 }
 
 /*-----------------------------------------------------------------------------
@@ -221,15 +219,15 @@ returns:      noError on success, an apropriate error code else
 -----------------------------------------------------------------------------*/
 FDK_SACENC_ERROR fdk_sacenc_staticGain_CloseConfig(
     HANDLE_STATIC_GAIN_CONFIG *phStaticGainConfig) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((phStaticGainConfig == NULL) || (*phStaticGainConfig == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        FDKfree(*phStaticGainConfig);
-        *phStaticGainConfig = NULL;
-    }
-    return error;
+  if ((phStaticGainConfig == NULL) || (*phStaticGainConfig == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    FDKfree(*phStaticGainConfig);
+    *phStaticGainConfig = NULL;
+  }
+  return error;
 }
 
 /*-----------------------------------------------------------------------------
@@ -238,78 +236,78 @@ description:  initializes Static Gains
 returns:      noError on success, an apropriate error code else
 -----------------------------------------------------------------------------*/
 FDK_SACENC_ERROR fdk_sacenc_staticGain_Open(HANDLE_STATIC_GAIN *phStaticGain) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == phStaticGain) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        /* Allocate Instance */
-        FDK_ALLOCATE_MEMORY_1D(*phStaticGain, 1, struct STATIC_GAIN);
-    }
-    return error;
+  if (NULL == phStaticGain) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    /* Allocate Instance */
+    FDK_ALLOCATE_MEMORY_1D(*phStaticGain, 1, struct STATIC_GAIN);
+  }
+  return error;
 
 bail:
-    return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
+  return ((SACENC_OK == error) ? SACENC_MEMORY_ERROR : error);
 }
 
 FDK_SACENC_ERROR
 fdk_sacenc_staticGain_Init(HANDLE_STATIC_GAIN hStaticGain,
                            const HANDLE_STATIC_GAIN_CONFIG hStaticGainConfig,
                            INT *const scale) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((hStaticGain == NULL) || (hStaticGainConfig == NULL)) {
-        error = SACENC_INVALID_HANDLE;
+  if ((hStaticGain == NULL) || (hStaticGainConfig == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    hStaticGain->encMode = hStaticGainConfig->encMode;
+    hStaticGain->fixedGainDMX = hStaticGainConfig->fixedGainDMX;
+    hStaticGain->preGainFactorDb = hStaticGainConfig->preGainFactorDb;
+
+    if ((hStaticGain->preGainFactorDb < -20) ||
+        (hStaticGain->preGainFactorDb > 20)) {
+      error = SACENC_INVALID_CONFIG;
+      goto bail;
+    }
+
+    FIXP_DBL fPreGainFactor__FDK;
+
+    if (hStaticGain->preGainFactorDb == 0) {
+      fPreGainFactor__FDK = (FIXP_DBL)MAXVAL_DBL;
+      *scale = 0;
     } else {
-        hStaticGain->encMode = hStaticGainConfig->encMode;
-        hStaticGain->fixedGainDMX = hStaticGainConfig->fixedGainDMX;
-        hStaticGain->preGainFactorDb = hStaticGainConfig->preGainFactorDb;
+      int s;
+      fPreGainFactor__FDK =
+          preGainFactorTable__FDK[hStaticGain->preGainFactorDb + 20];
+      s = fixMax(0, CntLeadingZeros(fPreGainFactor__FDK) - 1);
+      fPreGainFactor__FDK = fPreGainFactor__FDK << (s);
+      *scale = GAINCF_SF - s;
+    }
 
-        if ((hStaticGain->preGainFactorDb < -20) ||
-                (hStaticGain->preGainFactorDb > 20)) {
-            error = SACENC_INVALID_CONFIG;
-            goto bail;
-        }
+    if (hStaticGain->fixedGainDMX == 0)
+      hStaticGain->PostGain__FDK = MAXVAL_GAIN;
+    else
+      hStaticGain->PostGain__FDK =
+          dmxGainTable__FDK[hStaticGain->fixedGainDMX - 1];
 
-        FIXP_DBL fPreGainFactor__FDK;
+    FDKmemclear(
+        hStaticGain->pPreGain__FDK,
+        sizeof(hStaticGain->pPreGain__FDK)); /* zero all input channels */
 
-        if (hStaticGain->preGainFactorDb == 0) {
-            fPreGainFactor__FDK = (FIXP_DBL)MAXVAL_DBL;
-            *scale = 0;
-        } else {
-            int s;
-            fPreGainFactor__FDK =
-                preGainFactorTable__FDK[hStaticGain->preGainFactorDb + 20];
-            s = fixMax(0, CntLeadingZeros(fPreGainFactor__FDK) - 1);
-            fPreGainFactor__FDK = fPreGainFactor__FDK << (s);
-            *scale = GAINCF_SF - s;
-        }
+    /* Configure PreGain-Vector */
+    if (hStaticGain->encMode == SACENC_212) {
+      hStaticGain->pPreGain__FDK[0] =
+          FX_DBL2FX_GAIN(fPreGainFactor__FDK); /* L */
+      hStaticGain->pPreGain__FDK[1] =
+          FX_DBL2FX_GAIN(fPreGainFactor__FDK); /* R */
+    } else {
+      error = SACENC_INVALID_CONFIG;
+    }
 
-        if (hStaticGain->fixedGainDMX == 0)
-            hStaticGain->PostGain__FDK = MAXVAL_GAIN;
-        else
-            hStaticGain->PostGain__FDK =
-                dmxGainTable__FDK[hStaticGain->fixedGainDMX - 1];
-
-        FDKmemclear(
-            hStaticGain->pPreGain__FDK,
-            sizeof(hStaticGain->pPreGain__FDK)); /* zero all input channels */
-
-        /* Configure PreGain-Vector */
-        if (hStaticGain->encMode == SACENC_212) {
-            hStaticGain->pPreGain__FDK[0] =
-                FX_DBL2FX_GAIN(fPreGainFactor__FDK); /* L */
-            hStaticGain->pPreGain__FDK[1] =
-                FX_DBL2FX_GAIN(fPreGainFactor__FDK); /* R */
-        } else {
-            error = SACENC_INVALID_CONFIG;
-        }
-
-    } /* valid handle */
+  } /* valid handle */
 
 bail:
 
-    return error;
+  return error;
 }
 
 /*-----------------------------------------------------------------------------
@@ -318,15 +316,15 @@ description:  destructs Static Gains
 returns:      noError on success, an apropriate error code else
 -----------------------------------------------------------------------------*/
 FDK_SACENC_ERROR fdk_sacenc_staticGain_Close(HANDLE_STATIC_GAIN *phStaticGain) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if ((phStaticGain == NULL) || (*phStaticGain == NULL)) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        FDKfree(*phStaticGain);
-        *phStaticGain = NULL;
-    }
-    return error;
+  if ((phStaticGain == NULL) || (*phStaticGain == NULL)) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    FDKfree(*phStaticGain);
+    *phStaticGain = NULL;
+  }
+  return error;
 }
 
 /*-----------------------------------------------------------------------------
@@ -338,41 +336,41 @@ FDK_SACENC_ERROR
 fdk_sacenc_staticPostGain_ApplyFDK(const HANDLE_STATIC_GAIN hStaticGain,
                                    INT_PCM *const pOutputSamples,
                                    const INT nOutputSamples, const INT scale) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == hStaticGain) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        int i;
-        FIXP_GAIN postGain = hStaticGain->PostGain__FDK;
+  if (NULL == hStaticGain) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    int i;
+    FIXP_GAIN postGain = hStaticGain->PostGain__FDK;
 
-        if (scale < 0) {
-            if (postGain == MAXVAL_GAIN) {
-                for (i = 0; i < nOutputSamples; i++) {
-                    pOutputSamples[i] = pOutputSamples[i] >> (-scale);
-                }
-            } else {
-                for (i = 0; i < nOutputSamples; i++) {
-                    pOutputSamples[i] = FX_DBL2FX_PCM(
-                                            fMult(postGain, FX_PCM2FX_DBL(pOutputSamples[i])) >> (-scale));
-                }
-            }
-        } else {
-            if (postGain == MAXVAL_GAIN) {
-                for (i = 0; i < nOutputSamples; i++) {
-                    pOutputSamples[i] = FX_DBL2FX_PCM(SATURATE_LEFT_SHIFT(
-                                                          FX_PCM2FX_DBL(pOutputSamples[i]), scale, DFRACT_BITS));
-                }
-            } else {
-                for (i = 0; i < nOutputSamples; i++) {
-                    pOutputSamples[i] = FX_DBL2FX_PCM(SATURATE_LEFT_SHIFT(
-                                                          fMult(postGain, FX_PCM2FX_DBL(pOutputSamples[i])), scale,
-                                                          DFRACT_BITS));
-                }
-            }
+    if (scale < 0) {
+      if (postGain == MAXVAL_GAIN) {
+        for (i = 0; i < nOutputSamples; i++) {
+          pOutputSamples[i] = pOutputSamples[i] >> (-scale);
         }
+      } else {
+        for (i = 0; i < nOutputSamples; i++) {
+          pOutputSamples[i] = FX_DBL2FX_PCM(
+              fMult(postGain, FX_PCM2FX_DBL(pOutputSamples[i])) >> (-scale));
+        }
+      }
+    } else {
+      if (postGain == MAXVAL_GAIN) {
+        for (i = 0; i < nOutputSamples; i++) {
+          pOutputSamples[i] = FX_DBL2FX_PCM(SATURATE_LEFT_SHIFT(
+              FX_PCM2FX_DBL(pOutputSamples[i]), scale, DFRACT_BITS));
+        }
+      } else {
+        for (i = 0; i < nOutputSamples; i++) {
+          pOutputSamples[i] = FX_DBL2FX_PCM(SATURATE_LEFT_SHIFT(
+              fMult(postGain, FX_PCM2FX_DBL(pOutputSamples[i])), scale,
+              DFRACT_BITS));
+        }
+      }
     }
-    return error;
+  }
+  return error;
 }
 
 /*-----------------------------------------------------------------------------
@@ -381,71 +379,71 @@ description:  get Gain-Pointers from struct
 returns:      Pointer to PreGain or postGain
 -----------------------------------------------------------------------------*/
 FIXP_GAIN *fdk_sacenc_getPreGainPtrFDK(HANDLE_STATIC_GAIN hStaticGain) {
-    return ((hStaticGain == NULL) ? NULL : hStaticGain->pPreGain__FDK);
+  return ((hStaticGain == NULL) ? NULL : hStaticGain->pPreGain__FDK);
 }
 
 FIXP_GAIN fdk_sacenc_getPostGainFDK(HANDLE_STATIC_GAIN hStaticGain) {
-    return (hStaticGain->PostGain__FDK);
+  return (hStaticGain->PostGain__FDK);
 }
 
 /* get fixed downmix gain and map it to bitstream enum */
 FIXEDGAINDMXCONFIG
 fdk_sacenc_staticGain_GetDmxGain(const HANDLE_STATIC_GAIN hStaticGain) {
-    FIXEDGAINDMXCONFIG dmxGain = FIXEDGAINDMX_INVALID;
+  FIXEDGAINDMXCONFIG dmxGain = FIXEDGAINDMX_INVALID;
 
-    switch (hStaticGain->fixedGainDMX) {
-    case 0:
-        dmxGain = FIXEDGAINDMX_0;
-        break;
-    case 1:
-        dmxGain = FIXEDGAINDMX_1;
-        break;
-    case 2:
-        dmxGain = FIXEDGAINDMX_2;
-        break;
-    case 3:
-        dmxGain = FIXEDGAINDMX_3;
-        break;
-    case 4:
-        dmxGain = FIXEDGAINDMX_4;
-        break;
-    case 5:
-        dmxGain = FIXEDGAINDMX_5;
-        break;
-    case 6:
-        dmxGain = FIXEDGAINDMX_6;
-        break;
-    case 7:
-        dmxGain = FIXEDGAINDMX_7;
-        break;
-    default:
-        dmxGain = FIXEDGAINDMX_INVALID;
-    }
-    return dmxGain;
+  switch (hStaticGain->fixedGainDMX) {
+  case 0:
+    dmxGain = FIXEDGAINDMX_0;
+    break;
+  case 1:
+    dmxGain = FIXEDGAINDMX_1;
+    break;
+  case 2:
+    dmxGain = FIXEDGAINDMX_2;
+    break;
+  case 3:
+    dmxGain = FIXEDGAINDMX_3;
+    break;
+  case 4:
+    dmxGain = FIXEDGAINDMX_4;
+    break;
+  case 5:
+    dmxGain = FIXEDGAINDMX_5;
+    break;
+  case 6:
+    dmxGain = FIXEDGAINDMX_6;
+    break;
+  case 7:
+    dmxGain = FIXEDGAINDMX_7;
+    break;
+  default:
+    dmxGain = FIXEDGAINDMX_INVALID;
+  }
+  return dmxGain;
 }
 
 FDK_SACENC_ERROR
 fdk_sacenc_staticGain_SetDmxGain(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
                                  const MP4SPACEENC_DMX_GAIN dmxGain) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == hStaticGainCfg) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        hStaticGainCfg->fixedGainDMX = dmxGain;
-    }
-    return error;
+  if (NULL == hStaticGainCfg) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    hStaticGainCfg->fixedGainDMX = dmxGain;
+  }
+  return error;
 }
 
 FDK_SACENC_ERROR
 fdk_sacenc_staticGain_SetEncMode(HANDLE_STATIC_GAIN_CONFIG hStaticGainCfg,
                                  const MP4SPACEENC_MODE encMode) {
-    FDK_SACENC_ERROR error = SACENC_OK;
+  FDK_SACENC_ERROR error = SACENC_OK;
 
-    if (NULL == hStaticGainCfg) {
-        error = SACENC_INVALID_HANDLE;
-    } else {
-        hStaticGainCfg->encMode = encMode;
-    }
-    return error;
+  if (NULL == hStaticGainCfg) {
+    error = SACENC_INVALID_HANDLE;
+  } else {
+    hStaticGainCfg->encMode = encMode;
+  }
+  return error;
 }

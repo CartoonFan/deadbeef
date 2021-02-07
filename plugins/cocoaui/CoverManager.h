@@ -30,7 +30,7 @@
 - (CoverManager *)init;
 @property(nonatomic, readonly) NSImage *defaultCover;
 - (NSImage *)getCoverForTrack:(DB_playItem_t *)track
-    withCallbackWhenReady:(void (*)(NSImage *img, void *user_data))callback
-    withUserDataForCallback:(void *)user_data;
+        withCallbackWhenReady:(void (*)(NSImage *img, void *user_data))callback
+      withUserDataForCallback:(void *)user_data;
 
 @end
