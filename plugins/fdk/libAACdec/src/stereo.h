@@ -130,58 +130,58 @@ amm-info@iis.fraunhofer.de
 enum { JointStereoMaximumGroups = 8, JointStereoMaximumBands = 64 };
 
 typedef struct {
-  UCHAR pred_dir; // 0 = prediction from mid to side channel, 1 = vice versa
-  UCHAR
-  igf_pred_dir;       // 0 = prediction from mid to side channel, 1 = vice versa
-  UCHAR complex_coef; // 0 = alpha_q_im[x] is 0 for all prediction bands, 1 =
-  // alpha_q_im[x] is transmitted via bitstream
-  UCHAR use_prev_frame; // 0 = use current frame for MDST estimation, 1 = use
-  // current and previous frame
+    UCHAR pred_dir; // 0 = prediction from mid to side channel, 1 = vice versa
+    UCHAR
+    igf_pred_dir;       // 0 = prediction from mid to side channel, 1 = vice versa
+    UCHAR complex_coef; // 0 = alpha_q_im[x] is 0 for all prediction bands, 1 =
+    // alpha_q_im[x] is transmitted via bitstream
+    UCHAR use_prev_frame; // 0 = use current frame for MDST estimation, 1 = use
+    // current and previous frame
 
-  SHORT alpha_q_re[JointStereoMaximumGroups][JointStereoMaximumBands];
-  SHORT alpha_q_im[JointStereoMaximumGroups][JointStereoMaximumBands];
+    SHORT alpha_q_re[JointStereoMaximumGroups][JointStereoMaximumBands];
+    SHORT alpha_q_im[JointStereoMaximumGroups][JointStereoMaximumBands];
 } CCplxPredictionData;
 
 /* joint stereo scratch memory (valid for this frame) */
 typedef struct {
-  UCHAR MsMaskPresent;
-  UCHAR MsUsed[JointStereoMaximumBands]; /*!< every arry element contains flags
+    UCHAR MsMaskPresent;
+    UCHAR MsUsed[JointStereoMaximumBands]; /*!< every arry element contains flags
                                   for up to 8 groups. this array is
                                   also utilized for complex stereo
                                   prediction. */
-  UCHAR IGF_MsMaskPresent;
+    UCHAR IGF_MsMaskPresent;
 
-  UCHAR cplx_pred_flag; /* stereo complex prediction was signalled for this
+    UCHAR cplx_pred_flag; /* stereo complex prediction was signalled for this
                  frame */
-  UCHAR igf_cplx_pred_flag;
+    UCHAR igf_cplx_pred_flag;
 
-  /* The following array and variable are needed for the case  when INF is
-   * active */
-  FIXP_DBL store_dmx_re_prev[1024];
-  SHORT store_dmx_re_prev_e;
+    /* The following array and variable are needed for the case  when INF is
+     * active */
+    FIXP_DBL store_dmx_re_prev[1024];
+    SHORT store_dmx_re_prev_e;
 
 } CJointStereoData;
 
 /* joint stereo persistent memory */
 typedef struct {
-  UCHAR clearSpectralCoeffs; /* indicates that the spectral coeffs must be
+    UCHAR clearSpectralCoeffs; /* indicates that the spectral coeffs must be
                       cleared because the transform splitting active
                       flag of the left and right channel was different
                     */
 
-  FIXP_DBL *scratchBuffer; /* pointer to scratch buffer */
+    FIXP_DBL *scratchBuffer; /* pointer to scratch buffer */
 
-  FIXP_DBL
-  *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
+    FIXP_DBL
+    *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
                complex stereo prediction */
-  SHORT *specScale[2];
+    SHORT *specScale[2];
 
-  SHORT alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
-  SHORT alpha_q_im_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
+    SHORT alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
+    SHORT alpha_q_im_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
 
-  UCHAR winSeqPrev;
-  UCHAR winShapePrev;
-  UCHAR winGroupsPrev;
+    UCHAR winSeqPrev;
+    UCHAR winShapePrev;
+    UCHAR winGroupsPrev;
 
 } CJointStereoPersistentData;
 

@@ -125,7 +125,8 @@ static const FIXP_DBL ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_DBL(-1.0 / 3.0), FL2FXCONST_DBL(-1.0 / 4.0),
     FL2FXCONST_DBL(-1.0 / 5.0), FL2FXCONST_DBL(-1.0 / 6.0),
     FL2FXCONST_DBL(-1.0 / 7.0), FL2FXCONST_DBL(-1.0 / 8.0),
-    FL2FXCONST_DBL(-1.0 / 9.0), FL2FXCONST_DBL(-1.0 / 10.0)};
+    FL2FXCONST_DBL(-1.0 / 9.0), FL2FXCONST_DBL(-1.0 / 10.0)
+};
 #else  /* LDCOEFF_16BIT */
 LNK_SECTION_CONSTDATA_L1
 static const FIXP_SGL ldCoeff[MAX_LD_PRECISION] = {
@@ -133,7 +134,8 @@ static const FIXP_SGL ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_SGL(-1.0 / 3.0), FL2FXCONST_SGL(-1.0 / 4.0),
     FL2FXCONST_SGL(-1.0 / 5.0), FL2FXCONST_SGL(-1.0 / 6.0),
     FL2FXCONST_SGL(-1.0 / 7.0), FL2FXCONST_SGL(-1.0 / 8.0),
-    FL2FXCONST_SGL(-1.0 / 9.0), FL2FXCONST_SGL(-1.0 / 10.0)};
+    FL2FXCONST_SGL(-1.0 / 9.0), FL2FXCONST_SGL(-1.0 / 10.0)
+};
 #endif /* LDCOEFF_16BIT */
 
 /*****************************************************************************
@@ -171,19 +173,19 @@ extern const FIXP_DBL invSqrtTab[SQRT_VALUES];
  * \return non-zero if (a_m*2^a_e) < (b_m*2^b_e), 0 otherwise
  */
 FDK_INLINE INT fIsLessThan(FIXP_DBL a_m, INT a_e, FIXP_DBL b_m, INT b_e) {
-  if (a_e > b_e) {
-    return ((b_m >> fMin(a_e - b_e, DFRACT_BITS - 1)) > a_m);
-  } else {
-    return ((a_m >> fMin(b_e - a_e, DFRACT_BITS - 1)) < b_m);
-  }
+    if (a_e > b_e) {
+        return ((b_m >> fMin(a_e - b_e, DFRACT_BITS - 1)) > a_m);
+    } else {
+        return ((a_m >> fMin(b_e - a_e, DFRACT_BITS - 1)) < b_m);
+    }
 }
 
 FDK_INLINE INT fIsLessThan(FIXP_SGL a_m, INT a_e, FIXP_SGL b_m, INT b_e) {
-  if (a_e > b_e) {
-    return ((b_m >> fMin(a_e - b_e, FRACT_BITS - 1)) > a_m);
-  } else {
-    return ((a_m >> fMin(b_e - a_e, FRACT_BITS - 1)) < b_m);
-  }
+    if (a_e > b_e) {
+        return ((b_m >> fMin(a_e - b_e, FRACT_BITS - 1)) > a_m);
+    } else {
+        return ((a_m >> fMin(b_e - a_e, FRACT_BITS - 1)) < b_m);
+    }
 }
 #endif
 
@@ -200,32 +202,32 @@ extern const UINT exp2x_tab_long[32];
 
 LNK_SECTION_CODE_L1
 FDK_INLINE FIXP_DBL CalcInvLdData(const FIXP_DBL x) {
-  int set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
-  int set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
+    int set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
+    int set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
 
-  FIXP_SGL frac = (FIXP_SGL)((LONG)x & 0x3FF);
-  UINT index3 = (UINT)(LONG)(x >> 10) & 0x1F;
-  UINT index2 = (UINT)(LONG)(x >> 15) & 0x1F;
-  UINT index1 = (UINT)(LONG)(x >> 20) & 0x1F;
-  int exp = fMin(31, ((x > FL2FXCONST_DBL(0.0f)) ? (31 - (int)(x >> 25))
-                                                 : (int)(-(x >> 25))));
+    FIXP_SGL frac = (FIXP_SGL)((LONG)x & 0x3FF);
+    UINT index3 = (UINT)(LONG)(x >> 10) & 0x1F;
+    UINT index2 = (UINT)(LONG)(x >> 15) & 0x1F;
+    UINT index1 = (UINT)(LONG)(x >> 20) & 0x1F;
+    int exp = fMin(31, ((x > FL2FXCONST_DBL(0.0f)) ? (31 - (int)(x >> 25))
+                        : (int)(-(x >> 25))));
 
-  UINT lookup1 = exp2_tab_long[index1] * set_zero;
-  UINT lookup2 = exp2w_tab_long[index2];
-  UINT lookup3 = exp2x_tab_long[index3];
-  UINT lookup3f =
-      lookup3 + (UINT)(LONG)fMultDiv2((FIXP_DBL)(0x0016302F), (FIXP_SGL)frac);
+    UINT lookup1 = exp2_tab_long[index1] * set_zero;
+    UINT lookup2 = exp2w_tab_long[index2];
+    UINT lookup3 = exp2x_tab_long[index3];
+    UINT lookup3f =
+        lookup3 + (UINT)(LONG)fMultDiv2((FIXP_DBL)(0x0016302F), (FIXP_SGL)frac);
 
-  UINT lookup12 = (UINT)(LONG)fMult((FIXP_DBL)lookup1, (FIXP_DBL)lookup2);
-  UINT lookup = (UINT)(LONG)fMult((FIXP_DBL)lookup12, (FIXP_DBL)lookup3f);
+    UINT lookup12 = (UINT)(LONG)fMult((FIXP_DBL)lookup1, (FIXP_DBL)lookup2);
+    UINT lookup = (UINT)(LONG)fMult((FIXP_DBL)lookup12, (FIXP_DBL)lookup3f);
 
-  FIXP_DBL retVal = (lookup << 3) >> exp;
+    FIXP_DBL retVal = (lookup << 3) >> exp;
 
-  if (set_max) {
-    retVal = (FIXP_DBL)MAXVAL_DBL;
-  }
+    if (set_max) {
+        retVal = (FIXP_DBL)MAXVAL_DBL;
+    }
 
-  return retVal;
+    return retVal;
 }
 
 void InitLdInt();
@@ -234,45 +236,45 @@ FIXP_DBL CalcLdInt(INT i);
 extern const USHORT sqrt_tab[49];
 
 inline FIXP_DBL sqrtFixp_lookup(FIXP_DBL x) {
-  UINT y = (INT)x;
-  UCHAR is_zero = (y == 0);
-  INT zeros = fixnormz_D(y) & 0x1e;
-  y <<= zeros;
-  UINT idx = (y >> 26) - 16;
-  USHORT frac = (y >> 10) & 0xffff;
-  USHORT nfrac = 0xffff ^ frac;
-  UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
-  t = t >> (zeros >> 1);
-  return (is_zero ? 0 : t);
+    UINT y = (INT)x;
+    UCHAR is_zero = (y == 0);
+    INT zeros = fixnormz_D(y) & 0x1e;
+    y <<= zeros;
+    UINT idx = (y >> 26) - 16;
+    USHORT frac = (y >> 10) & 0xffff;
+    USHORT nfrac = 0xffff ^ frac;
+    UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
+    t = t >> (zeros >> 1);
+    return (is_zero ? 0 : t);
 }
 
 inline FIXP_DBL sqrtFixp_lookup(FIXP_DBL x, INT *x_e) {
-  UINT y = (INT)x;
-  INT e;
+    UINT y = (INT)x;
+    INT e;
 
-  if (x == (FIXP_DBL)0) {
-    return x;
-  }
+    if (x == (FIXP_DBL)0) {
+        return x;
+    }
 
-  /* Normalize */
-  e = fixnormz_D(y);
-  y <<= e;
-  e = *x_e - e + 2;
+    /* Normalize */
+    e = fixnormz_D(y);
+    y <<= e;
+    e = *x_e - e + 2;
 
-  /* Correct odd exponent. */
-  if (e & 1) {
-    y >>= 1;
-    e++;
-  }
-  /* Get square root */
-  UINT idx = (y >> 26) - 16;
-  USHORT frac = (y >> 10) & 0xffff;
-  USHORT nfrac = 0xffff ^ frac;
-  UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
+    /* Correct odd exponent. */
+    if (e & 1) {
+        y >>= 1;
+        e++;
+    }
+    /* Get square root */
+    UINT idx = (y >> 26) - 16;
+    USHORT frac = (y >> 10) & 0xffff;
+    USHORT nfrac = 0xffff ^ frac;
+    UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
 
-  /* Write back exponent */
-  *x_e = e >> 1;
-  return (FIXP_DBL)(LONG)(t >> 1);
+    /* Write back exponent */
+    *x_e = e >> 1;
+    return (FIXP_DBL)(LONG)(t >> 1);
 }
 
 void InitInvSqrtTab();
@@ -292,68 +294,68 @@ void InitInvSqrtTab();
       with Q = 0.5* V ^-0.5; 0.5 <= V < 1.0
 *****************************************************************************/
 static FDK_FORCEINLINE FIXP_DBL invSqrtNorm2(FIXP_DBL op, INT *shift) {
-  FIXP_DBL val = op;
-  FIXP_DBL reg1, reg2;
+    FIXP_DBL val = op;
+    FIXP_DBL reg1, reg2;
 
-  if (val == FL2FXCONST_DBL(0.0)) {
-    *shift = 16;
-    return ((LONG)MAXVAL_DBL); /* maximum positive value */
-  }
+    if (val == FL2FXCONST_DBL(0.0)) {
+        *shift = 16;
+        return ((LONG)MAXVAL_DBL); /* maximum positive value */
+    }
 
 #define INVSQRTNORM2_LINEAR_INTERPOLATE
 #define INVSQRTNORM2_LINEAR_INTERPOLATE_HQ
 
-  /* normalize input, calculate shift value */
-  FDK_ASSERT(val > FL2FXCONST_DBL(0.0));
-  *shift = fNormz(val) - 1; /* CountLeadingBits() is not necessary here since
+    /* normalize input, calculate shift value */
+    FDK_ASSERT(val > FL2FXCONST_DBL(0.0));
+    *shift = fNormz(val) - 1; /* CountLeadingBits() is not necessary here since
                      test value is always > 0 */
-  val <<= *shift;           /* normalized input V */
-  *shift += 2;              /* bias for exponent */
+    val <<= *shift;           /* normalized input V */
+    *shift += 2;              /* bias for exponent */
 
 #if defined(INVSQRTNORM2_LINEAR_INTERPOLATE)
-  INT index =
-      (INT)(val >> (DFRACT_BITS - 1 - (SQRT_BITS + 1))) & SQRT_BITS_MASK;
-  FIXP_DBL Fract =
-      (FIXP_DBL)(((INT)val & SQRT_FRACT_BITS_MASK) << (SQRT_BITS + 1));
-  FIXP_DBL diff = invSqrtTab[index + 1] - invSqrtTab[index];
-  reg1 = invSqrtTab[index] + (fMultDiv2(diff, Fract) << 1);
+    INT index =
+        (INT)(val >> (DFRACT_BITS - 1 - (SQRT_BITS + 1))) & SQRT_BITS_MASK;
+    FIXP_DBL Fract =
+        (FIXP_DBL)(((INT)val & SQRT_FRACT_BITS_MASK) << (SQRT_BITS + 1));
+    FIXP_DBL diff = invSqrtTab[index + 1] - invSqrtTab[index];
+    reg1 = invSqrtTab[index] + (fMultDiv2(diff, Fract) << 1);
 #if defined(INVSQRTNORM2_LINEAR_INTERPOLATE_HQ)
-  /* reg1 = t[i] + (t[i+1]-t[i])*fract ... already computed ...
-                                       + (1-fract)fract*(t[i+2]-t[i+1])/2 */
-  if (Fract != (FIXP_DBL)0) {
-    /* fract = fract * (1 - fract) */
-    Fract = fMultDiv2(Fract, (FIXP_DBL)((ULONG)0x80000000 - (ULONG)Fract)) << 1;
-    diff = diff - (invSqrtTab[index + 2] - invSqrtTab[index + 1]);
-    reg1 = fMultAddDiv2(reg1, Fract, diff);
-  }
+    /* reg1 = t[i] + (t[i+1]-t[i])*fract ... already computed ...
+                                         + (1-fract)fract*(t[i+2]-t[i+1])/2 */
+    if (Fract != (FIXP_DBL)0) {
+        /* fract = fract * (1 - fract) */
+        Fract = fMultDiv2(Fract, (FIXP_DBL)((ULONG)0x80000000 - (ULONG)Fract)) << 1;
+        diff = diff - (invSqrtTab[index + 2] - invSqrtTab[index + 1]);
+        reg1 = fMultAddDiv2(reg1, Fract, diff);
+    }
 #endif /* INVSQRTNORM2_LINEAR_INTERPOLATE_HQ */
 #else
 #error                                                                         \
-    "Either define INVSQRTNORM2_NEWTON_ITERATE or INVSQRTNORM2_LINEAR_INTERPOLATE"
+"Either define INVSQRTNORM2_NEWTON_ITERATE or INVSQRTNORM2_LINEAR_INTERPOLATE"
 #endif
-  /* calculate the output exponent = input exp/2 */
-  if (*shift & 0x00000001) { /* odd shift values ? */
-    /* Note: Do not use rounded value 0x5A82799A to avoid overflow with
-     * shift-by-2 */
-    reg2 = (FIXP_DBL)0x5A827999;
-    /* FL2FXCONST_DBL(0.707106781186547524400844362104849f);*/ /* 1/sqrt(2);
-                                                                */
-    reg1 = fMultDiv2(reg1, reg2) << 2;
-  }
+    /* calculate the output exponent = input exp/2 */
+    if (*shift & 0x00000001) { /* odd shift values ? */
+        /* Note: Do not use rounded value 0x5A82799A to avoid overflow with
+         * shift-by-2 */
+        reg2 = (FIXP_DBL)0x5A827999;
+        /* FL2FXCONST_DBL(0.707106781186547524400844362104849f);*/ /* 1/sqrt(2);
+                                                                    */
+        reg1 = fMultDiv2(reg1, reg2) << 2;
+    }
 
-  *shift = *shift >> 1;
+    *shift = *shift >> 1;
 
-  return (reg1);
+    return (reg1);
 }
 #endif /* FUNCTION_invSqrtNorm2 */
 
 #ifndef FUNCTION_sqrtFixp
 static FDK_FORCEINLINE FIXP_DBL sqrtFixp(FIXP_DBL op) {
-  INT tmp_exp = 0;
-  FIXP_DBL tmp_inv = invSqrtNorm2(op, &tmp_exp);
+    INT tmp_exp = 0;
+    FIXP_DBL tmp_inv = invSqrtNorm2(op, &tmp_exp);
 
-  FDK_ASSERT(tmp_exp > 0);
-  return ((FIXP_DBL)(fMultDiv2((op << (tmp_exp - 1)), tmp_inv) << 2));
+    FDK_ASSERT(tmp_exp > 0);
+    return ((FIXP_DBL)(fMultDiv2((op << (tmp_exp - 1)), tmp_inv) << 2));
 }
 #endif /* FUNCTION_sqrtFixp */
 
@@ -365,18 +367,18 @@ static FDK_FORCEINLINE FIXP_DBL sqrtFixp(FIXP_DBL op) {
  * \exceptions are provided for op=0,1 setting max. positive value
  */
 static inline FIXP_DBL invFixp(FIXP_DBL op) {
-  if ((op == (FIXP_DBL)0x00000000) || (op == (FIXP_DBL)0x00000001)) {
-    return ((LONG)MAXVAL_DBL);
-  }
-  INT tmp_exp;
-  FIXP_DBL tmp_inv = invSqrtNorm2(op, &tmp_exp);
-  FDK_ASSERT((31 - (2 * tmp_exp + 1)) >= 0);
-  int shift = 31 - (2 * tmp_exp + 1);
-  tmp_inv = fPow2Div2(tmp_inv);
-  if (shift) {
-    tmp_inv = ((tmp_inv >> (shift - 1)) + (FIXP_DBL)1) >> 1;
-  }
-  return tmp_inv;
+    if ((op == (FIXP_DBL)0x00000000) || (op == (FIXP_DBL)0x00000001)) {
+        return ((LONG)MAXVAL_DBL);
+    }
+    INT tmp_exp;
+    FIXP_DBL tmp_inv = invSqrtNorm2(op, &tmp_exp);
+    FDK_ASSERT((31 - (2 * tmp_exp + 1)) >= 0);
+    int shift = 31 - (2 * tmp_exp + 1);
+    tmp_inv = fPow2Div2(tmp_inv);
+    if (shift) {
+        tmp_inv = ((tmp_inv >> (shift - 1)) + (FIXP_DBL)1) >> 1;
+    }
+    return tmp_inv;
 }
 
 /**
@@ -387,16 +389,16 @@ static inline FIXP_DBL invFixp(FIXP_DBL op) {
  * \return mantissa of the result
  */
 static inline FIXP_DBL invFixp(FIXP_DBL op_m, int *op_e) {
-  if ((op_m == (FIXP_DBL)0x00000000) || (op_m == (FIXP_DBL)0x00000001)) {
-    *op_e = 31 - *op_e;
-    return ((LONG)MAXVAL_DBL);
-  }
+    if ((op_m == (FIXP_DBL)0x00000000) || (op_m == (FIXP_DBL)0x00000001)) {
+        *op_e = 31 - *op_e;
+        return ((LONG)MAXVAL_DBL);
+    }
 
-  INT tmp_exp;
-  FIXP_DBL tmp_inv = invSqrtNorm2(op_m, &tmp_exp);
+    INT tmp_exp;
+    FIXP_DBL tmp_inv = invSqrtNorm2(op_m, &tmp_exp);
 
-  *op_e = (tmp_exp << 1) - *op_e + 1;
-  return fPow2Div2(tmp_inv);
+    *op_e = (tmp_exp << 1) - *op_e + 1;
+    return fPow2Div2(tmp_inv);
 }
 #endif /* FUNCTION_invFixp */
 
@@ -437,14 +439,14 @@ FIXP_DBL fMultNorm(FIXP_DBL f1, FIXP_DBL f2, INT *result_e);
  * \return mantissa of the result with exponent equal to 0
  */
 inline FIXP_DBL fMultNorm(FIXP_DBL f1, FIXP_DBL f2) {
-  FIXP_DBL m;
-  INT e;
+    FIXP_DBL m;
+    INT e;
 
-  m = fMultNorm(f1, f2, &e);
+    m = fMultNorm(f1, f2, &e);
 
-  m = scaleValueSaturate(m, e);
+    m = scaleValueSaturate(m, e);
 
-  return m;
+    return m;
 }
 
 /**
@@ -459,14 +461,14 @@ inline FIXP_DBL fMultNorm(FIXP_DBL f1, FIXP_DBL f2) {
  */
 inline FIXP_DBL fMultNorm(FIXP_DBL f1_m, INT f1_e, FIXP_DBL f2_m, INT f2_e,
                           INT result_e) {
-  FIXP_DBL m;
-  INT e;
+    FIXP_DBL m;
+    INT e;
 
-  m = fMultNorm(f1_m, f2_m, &e);
+    m = fMultNorm(f1_m, f2_m, &e);
 
-  m = scaleValueSaturate(m, e + f1_e + f2_e - result_e);
+    m = scaleValueSaturate(m, e + f1_e + f2_e - result_e);
 
-  return m;
+    return m;
 }
 #endif /* FUNCTION_fMultNorm */
 
@@ -479,23 +481,23 @@ inline FIXP_DBL fMultNorm(FIXP_DBL f1_m, INT f1_e, FIXP_DBL f2_m, INT f2_e,
  * \return integer value
  */
 inline INT fMultI(FIXP_DBL a, INT b) {
-  FIXP_DBL m, mi;
-  INT m_e;
+    FIXP_DBL m, mi;
+    INT m_e;
 
-  m = fMultNorm(a, (FIXP_DBL)b, &m_e);
+    m = fMultNorm(a, (FIXP_DBL)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT)-DFRACT_BITS) {
-      m = m >> ((-m_e) - 1);
-      mi = (m + (FIXP_DBL)1) >> 1;
+    if (m_e < (INT)0) {
+        if (m_e > (INT)-DFRACT_BITS) {
+            m = m >> ((-m_e) - 1);
+            mi = (m + (FIXP_DBL)1) >> 1;
+        } else {
+            mi = (FIXP_DBL)0;
+        }
     } else {
-      mi = (FIXP_DBL)0;
+        mi = scaleValueSaturate(m, m_e);
     }
-  } else {
-    mi = scaleValueSaturate(m, m_e);
-  }
 
-  return ((INT)mi);
+    return ((INT)mi);
 }
 #endif /* FUNCTION_fMultI */
 
@@ -508,25 +510,25 @@ inline INT fMultI(FIXP_DBL a, INT b) {
  * \return integer value
  */
 inline INT fMultIfloor(FIXP_DBL a, INT b) {
-  FIXP_DBL m, mi;
-  INT m_e;
+    FIXP_DBL m, mi;
+    INT m_e;
 
-  m = fMultNorm(a, (FIXP_DBL)b, &m_e);
+    m = fMultNorm(a, (FIXP_DBL)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT)-DFRACT_BITS) {
-      mi = m >> (-m_e);
+    if (m_e < (INT)0) {
+        if (m_e > (INT)-DFRACT_BITS) {
+            mi = m >> (-m_e);
+        } else {
+            mi = (FIXP_DBL)0;
+            if (m < (FIXP_DBL)0) {
+                mi = (FIXP_DBL)-1;
+            }
+        }
     } else {
-      mi = (FIXP_DBL)0;
-      if (m < (FIXP_DBL)0) {
-        mi = (FIXP_DBL)-1;
-      }
+        mi = scaleValueSaturate(m, m_e);
     }
-  } else {
-    mi = scaleValueSaturate(m, m_e);
-  }
 
-  return ((INT)mi);
+    return ((INT)mi);
 }
 #endif /* FUNCTION_fMultIfloor */
 
@@ -539,28 +541,28 @@ inline INT fMultIfloor(FIXP_DBL a, INT b) {
  * \return integer value
  */
 inline INT fMultIceil(FIXP_DBL a, INT b) {
-  FIXP_DBL m, mi;
-  INT m_e;
+    FIXP_DBL m, mi;
+    INT m_e;
 
-  m = fMultNorm(a, (FIXP_DBL)b, &m_e);
+    m = fMultNorm(a, (FIXP_DBL)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT)-DFRACT_BITS) {
-      mi = (m >> (-m_e));
-      if ((LONG)m & ((1 << (-m_e)) - 1)) {
-        mi = mi + (FIXP_DBL)1;
-      }
+    if (m_e < (INT)0) {
+        if (m_e > (INT)-DFRACT_BITS) {
+            mi = (m >> (-m_e));
+            if ((LONG)m & ((1 << (-m_e)) - 1)) {
+                mi = mi + (FIXP_DBL)1;
+            }
+        } else {
+            mi = (FIXP_DBL)1;
+            if (m < (FIXP_DBL)0) {
+                mi = (FIXP_DBL)0;
+            }
+        }
     } else {
-      mi = (FIXP_DBL)1;
-      if (m < (FIXP_DBL)0) {
-        mi = (FIXP_DBL)0;
-      }
+        mi = scaleValueSaturate(m, m_e);
     }
-  } else {
-    mi = scaleValueSaturate(m, m_e);
-  }
 
-  return ((INT)mi);
+    return ((INT)mi);
 }
 #endif /* FUNCTION_fMultIceil */
 
@@ -609,12 +611,12 @@ FIXP_DBL fDivNormSigned(FIXP_DBL num, FIXP_DBL denom);
  * \return adjusted mantissa
  */
 inline FIXP_DBL fAdjust(FIXP_DBL a_m, INT *pA_e) {
-  INT shift;
+    INT shift;
 
-  shift = fNorm(a_m) - 1;
-  *pA_e -= shift;
+    shift = fNorm(a_m) - 1;
+    *pA_e -= shift;
 
-  return scaleValue(a_m, shift);
+    return scaleValue(a_m, shift);
 }
 
 #ifndef FUNCTION_fAddNorm
@@ -630,45 +632,45 @@ inline FIXP_DBL fAdjust(FIXP_DBL a_m, INT *pA_e) {
  */
 inline FIXP_DBL fAddNorm(FIXP_DBL a_m, INT a_e, FIXP_DBL b_m, INT b_e,
                          INT *pResult_e) {
-  INT result_e;
-  FIXP_DBL result_m;
+    INT result_e;
+    FIXP_DBL result_m;
 
-  /* If one of the summands is zero, return the other.
-     This is necessary for the summation of a very small number to zero */
-  if (a_m == (FIXP_DBL)0) {
-    *pResult_e = b_e;
-    return b_m;
-  }
-  if (b_m == (FIXP_DBL)0) {
-    *pResult_e = a_e;
-    return a_m;
-  }
+    /* If one of the summands is zero, return the other.
+       This is necessary for the summation of a very small number to zero */
+    if (a_m == (FIXP_DBL)0) {
+        *pResult_e = b_e;
+        return b_m;
+    }
+    if (b_m == (FIXP_DBL)0) {
+        *pResult_e = a_e;
+        return a_m;
+    }
 
-  a_m = fAdjust(a_m, &a_e);
-  b_m = fAdjust(b_m, &b_e);
+    a_m = fAdjust(a_m, &a_e);
+    b_m = fAdjust(b_m, &b_e);
 
-  if (a_e > b_e) {
-    result_m = a_m + (b_m >> fMin(a_e - b_e, DFRACT_BITS - 1));
-    result_e = a_e;
-  } else {
-    result_m = (a_m >> fMin(b_e - a_e, DFRACT_BITS - 1)) + b_m;
-    result_e = b_e;
-  }
+    if (a_e > b_e) {
+        result_m = a_m + (b_m >> fMin(a_e - b_e, DFRACT_BITS - 1));
+        result_e = a_e;
+    } else {
+        result_m = (a_m >> fMin(b_e - a_e, DFRACT_BITS - 1)) + b_m;
+        result_e = b_e;
+    }
 
-  *pResult_e = result_e;
-  return result_m;
+    *pResult_e = result_e;
+    return result_m;
 }
 
 inline FIXP_DBL fAddNorm(FIXP_DBL a_m, INT a_e, FIXP_DBL b_m, INT b_e,
                          INT result_e) {
-  FIXP_DBL result_m;
+    FIXP_DBL result_m;
 
-  a_m = scaleValue(a_m, a_e - result_e);
-  b_m = scaleValue(b_m, b_e - result_e);
+    a_m = scaleValue(a_m, a_e - result_e);
+    b_m = scaleValue(b_m, b_e - result_e);
 
-  result_m = a_m + b_m;
+    result_m = a_m + b_m;
 
-  return result_m;
+    return result_m;
 }
 #endif /* FUNCTION_fAddNorm */
 
@@ -774,66 +776,66 @@ FIXP_DBL CalcLog2(FIXP_DBL arg, INT arg_e, INT *result_e);
  * \return mantissa of the result.
  */
 FDK_INLINE FIXP_DBL fLog2(FIXP_DBL x_m, INT x_e, INT *result_e) {
-  FIXP_DBL result_m;
+    FIXP_DBL result_m;
 
-  /* Short cut for zero and negative numbers. */
-  if (x_m <= FL2FXCONST_DBL(0.0f)) {
-    *result_e = DFRACT_BITS - 1;
-    return FL2FXCONST_DBL(-1.0f);
-  }
+    /* Short cut for zero and negative numbers. */
+    if (x_m <= FL2FXCONST_DBL(0.0f)) {
+        *result_e = DFRACT_BITS - 1;
+        return FL2FXCONST_DBL(-1.0f);
+    }
 
-  /* Calculate log2() */
-  {
-    FIXP_DBL x2_m;
-
-    /* Move input value x_m * 2^x_e toward 1.0, where the taylor approximation
-       of the function log(1-x) centered at 0 is most accurate. */
+    /* Calculate log2() */
     {
-      INT b_norm;
+        FIXP_DBL x2_m;
 
-      b_norm = fNormz(x_m) - 1;
-      x2_m = x_m << b_norm;
-      x_e = x_e - b_norm;
+        /* Move input value x_m * 2^x_e toward 1.0, where the taylor approximation
+           of the function log(1-x) centered at 0 is most accurate. */
+        {
+            INT b_norm;
+
+            b_norm = fNormz(x_m) - 1;
+            x2_m = x_m << b_norm;
+            x_e = x_e - b_norm;
+        }
+
+        /* map x from log(x) domain to log(1-x) domain. */
+        x2_m = -(x2_m + FL2FXCONST_DBL(-1.0));
+
+        /* Taylor polynomial approximation of ln(1-x) */
+        {
+            FIXP_DBL px2_m;
+            result_m = FL2FXCONST_DBL(0.0);
+            px2_m = x2_m;
+            for (int i = 0; i < LD_PRECISION; i++) {
+                result_m = fMultAddDiv2(result_m, ldCoeff[i], px2_m);
+                px2_m = fMult(px2_m, x2_m);
+            }
+        }
+        /* Multiply result with 1/ln(2) = 1.0 + 0.442695040888 (get log2(x) from
+         * ln(x) result). */
+        result_m =
+            fMultAddDiv2(result_m, result_m,
+                         FL2FXCONST_DBL(2.0 * 0.4426950408889634073599246810019));
+
+        /* Add exponent part. log2(x_m * 2^x_e) = log2(x_m) + x_e */
+        if (x_e != 0) {
+            int enorm;
+
+            enorm = DFRACT_BITS - fNorm((FIXP_DBL)x_e);
+            /* The -1 in the right shift of result_m compensates the fMultDiv2() above
+             * in the taylor polynomial evaluation loop.*/
+            result_m = (result_m >> (enorm - 1)) +
+                       ((FIXP_DBL)x_e << (DFRACT_BITS - 1 - enorm));
+
+            *result_e = enorm;
+        } else {
+            /* 1 compensates the fMultDiv2() above in the taylor polynomial evaluation
+             * loop.*/
+            *result_e = 1;
+        }
     }
 
-    /* map x from log(x) domain to log(1-x) domain. */
-    x2_m = -(x2_m + FL2FXCONST_DBL(-1.0));
-
-    /* Taylor polynomial approximation of ln(1-x) */
-    {
-      FIXP_DBL px2_m;
-      result_m = FL2FXCONST_DBL(0.0);
-      px2_m = x2_m;
-      for (int i = 0; i < LD_PRECISION; i++) {
-        result_m = fMultAddDiv2(result_m, ldCoeff[i], px2_m);
-        px2_m = fMult(px2_m, x2_m);
-      }
-    }
-    /* Multiply result with 1/ln(2) = 1.0 + 0.442695040888 (get log2(x) from
-     * ln(x) result). */
-    result_m =
-        fMultAddDiv2(result_m, result_m,
-                     FL2FXCONST_DBL(2.0 * 0.4426950408889634073599246810019));
-
-    /* Add exponent part. log2(x_m * 2^x_e) = log2(x_m) + x_e */
-    if (x_e != 0) {
-      int enorm;
-
-      enorm = DFRACT_BITS - fNorm((FIXP_DBL)x_e);
-      /* The -1 in the right shift of result_m compensates the fMultDiv2() above
-       * in the taylor polynomial evaluation loop.*/
-      result_m = (result_m >> (enorm - 1)) +
-                 ((FIXP_DBL)x_e << (DFRACT_BITS - 1 - enorm));
-
-      *result_e = enorm;
-    } else {
-      /* 1 compensates the fMultDiv2() above in the taylor polynomial evaluation
-       * loop.*/
-      *result_e = 1;
-    }
-  }
-
-  return result_m;
+    return result_m;
 }
 
 /**
@@ -843,14 +845,14 @@ FDK_INLINE FIXP_DBL fLog2(FIXP_DBL x_m, INT x_e, INT *result_e) {
  * \return mantissa of the result with implicit exponent of LD_DATA_SHIFT.
  */
 FDK_INLINE FIXP_DBL fLog2(FIXP_DBL x_m, INT x_e) {
-  if (x_m <= FL2FXCONST_DBL(0.0f)) {
-    x_m = FL2FXCONST_DBL(-1.0f);
-  } else {
-    INT result_e;
-    x_m = fLog2(x_m, x_e, &result_e);
-    x_m = scaleValue(x_m, result_e - LD_DATA_SHIFT);
-  }
-  return x_m;
+    if (x_m <= FL2FXCONST_DBL(0.0f)) {
+        x_m = FL2FXCONST_DBL(-1.0f);
+    } else {
+        INT result_e;
+        x_m = fLog2(x_m, x_e, &result_e);
+        x_m = scaleValue(x_m, result_e - LD_DATA_SHIFT);
+    }
+    return x_m;
 }
 
 #endif /* FUNCTION_fLog2 */
@@ -863,11 +865,11 @@ FDK_INLINE FIXP_DBL fLog2(FIXP_DBL x_m, INT x_e) {
  * \return saturated sum of a and b.
  */
 inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
-  LONG sum;
+    LONG sum;
 
-  sum = (LONG)(SHORT)a + (LONG)(SHORT)b;
-  sum = fMax(fMin((INT)sum, (INT)MAXVAL_SGL), (INT)MINVAL_SGL);
-  return (FIXP_SGL)(SHORT)sum;
+    sum = (LONG)(SHORT)a + (LONG)(SHORT)b;
+    sum = fMax(fMin((INT)sum, (INT)MAXVAL_SGL), (INT)MINVAL_SGL);
+    return (FIXP_SGL)(SHORT)sum;
 }
 
 /**
@@ -877,11 +879,11 @@ inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
  * \return saturated sum of a and b.
  */
 inline FIXP_DBL fAddSaturate(const FIXP_DBL a, const FIXP_DBL b) {
-  LONG sum;
+    LONG sum;
 
-  sum = (LONG)(a >> 1) + (LONG)(b >> 1);
-  sum = fMax(fMin((INT)sum, (INT)(MAXVAL_DBL >> 1)), (INT)(MINVAL_DBL >> 1));
-  return (FIXP_DBL)(LONG)(sum << 1);
+    sum = (LONG)(a >> 1) + (LONG)(b >> 1);
+    sum = fMax(fMin((INT)sum, (INT)(MAXVAL_DBL >> 1)), (INT)(MINVAL_DBL >> 1));
+    return (FIXP_DBL)(LONG)(sum << 1);
 }
 #endif /* FUNCTION_fAddSaturate */
 
@@ -915,7 +917,7 @@ inline void InitInvInt(void) {}
  * \param FIXP_DBL representation of 1/intValue
  */
 inline FIXP_DBL GetInvInt(int intValue) {
-  return invCount[fMin(fMax(intValue, 0), 80 - 1)];
+    return invCount[fMin(fMax(intValue, 0), 80 - 1)];
 }
 
 #endif /* FIXPOINT_MATH_H */

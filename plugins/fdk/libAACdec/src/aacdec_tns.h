@@ -106,8 +106,8 @@ amm-info@iis.fraunhofer.de
 #include "common_fix.h"
 
 enum {
-  TNS_MAX_WINDOWS = 8, /* 8 */
-  TNS_MAXIMUM_FILTERS = 3
+    TNS_MAX_WINDOWS = 8, /* 8 */
+    TNS_MAXIMUM_FILTERS = 3
 };
 
 /* TNS_MAXIMUM_ORDER (for memory allocation)
@@ -121,27 +121,27 @@ enum {
 #endif
 
 typedef struct {
-  SCHAR Coeff[TNS_MAXIMUM_ORDER];
+    SCHAR Coeff[TNS_MAXIMUM_ORDER];
 
-  UCHAR StartBand;
-  UCHAR StopBand;
+    UCHAR StartBand;
+    UCHAR StopBand;
 
-  SCHAR Direction;
-  SCHAR Resolution;
+    SCHAR Direction;
+    SCHAR Resolution;
 
-  UCHAR Order;
+    UCHAR Order;
 } CFilter;
 
 typedef struct {
-  CFilter Filter[TNS_MAX_WINDOWS][TNS_MAXIMUM_FILTERS];
-  UCHAR NumberOfFilters[TNS_MAX_WINDOWS];
-  UCHAR DataPresent;
-  UCHAR Active;
+    CFilter Filter[TNS_MAX_WINDOWS][TNS_MAXIMUM_FILTERS];
+    UCHAR NumberOfFilters[TNS_MAX_WINDOWS];
+    UCHAR DataPresent;
+    UCHAR Active;
 
-  /* log2 of the maximum total filter gains. The value is required to
-     keep necessary mantissa headroom so that while applying the TNS predictor
-     the mantissas do not overflow. */
-  UCHAR GainLd;
+    /* log2 of the maximum total filter gains. The value is required to
+       keep necessary mantissa headroom so that while applying the TNS predictor
+       the mantissas do not overflow. */
+    UCHAR GainLd;
 } CTnsData;
 
 void CTns_Reset(CTnsData *pTnsData);

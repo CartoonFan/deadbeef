@@ -34,7 +34,7 @@ int action_skip_to_next_artist_handler(DB_plugin_action_t *act,
                                        ddb_action_context_t ctx);
 
 int action_skip_to_next_composer_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_skip_to_next_genre_handler(DB_plugin_action_t *act,
                                       ddb_action_context_t ctx);
@@ -46,7 +46,7 @@ int action_skip_to_prev_artist_handler(DB_plugin_action_t *act,
                                        ddb_action_context_t ctx);
 
 int action_skip_to_prev_composer_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_skip_to_prev_genre_handler(DB_plugin_action_t *act,
                                       ddb_action_context_t ctx);
@@ -118,7 +118,7 @@ int action_add_to_playqueue_handler(DB_plugin_action_t *act,
                                     ddb_action_context_t ctx);
 
 int action_remove_from_playqueue_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_toggle_mute_handler(DB_plugin_action_t *act,
                                ddb_action_context_t ctx);

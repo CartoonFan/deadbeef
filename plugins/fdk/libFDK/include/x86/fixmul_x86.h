@@ -122,24 +122,24 @@ amm-info@iis.fraunhofer.de
 #define fixmulBitExact_DS(a, b) fixmul_DS(a, b)
 
 inline INT fixmul_DD(INT a, const INT b) {
-  __asm
-  {
+    __asm
+    {
         mov eax, a
         imul b
         shl edx, 1
         mov a, edx
-  }
-  return a;
+    }
+    return a;
 }
 
 inline INT fixmuldiv2_DD(INT a, const INT b) {
-  __asm
-  {
+    __asm
+    {
         mov eax, a
         imul b
         mov a, edx
-  }
-  return a;
+    }
+    return a;
 }
 
 /* #############################################################################
@@ -162,22 +162,22 @@ inline INT fixmuldiv2_DD(INT a, const INT b) {
 #define fixmulBitExact_DS(a, b) fixmul_DS(a, b)
 
 inline INT fixmul_DD(INT a, const INT b) {
-  INT result;
+    INT result;
 
-  asm("imul %2;\n"
-      "shl $1, %0;\n"
-      : "=d"(result), "+a"(a)
-      : "r"(b));
+    asm("imul %2;\n"
+        "shl $1, %0;\n"
+        : "=d"(result), "+a"(a)
+        : "r"(b));
 
-  return result;
+    return result;
 }
 
 inline INT fixmuldiv2_DD(INT a, const INT b) {
-  INT result;
+    INT result;
 
-  asm("imul %2;" : "=d"(result), "+a"(a) : "r"(b));
+    asm("imul %2;" : "=d"(result), "+a"(a) : "r"(b));
 
-  return result;
+    return result;
 }
 
 #endif /* (defined(__GNUC__)||defined(__gnu_linux__)) && defined(__x86__) */

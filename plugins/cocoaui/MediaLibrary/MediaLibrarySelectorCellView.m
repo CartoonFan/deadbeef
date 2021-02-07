@@ -11,19 +11,19 @@
 @implementation MediaLibrarySelectorCellView
 
 - (void)awakeFromNib {
-  [self.popupButton removeAllItems];
+    [self.popupButton removeAllItems];
 
-  [self.popupButton addItemWithTitle:@"Genres"];
-  [self.popupButton addItemWithTitle:@"Albums"];
-  [self.popupButton addItemWithTitle:@"Artists"];
-  [self.popupButton addItemWithTitle:@"Folders"];
+    [self.popupButton addItemWithTitle:@"Genres"];
+    [self.popupButton addItemWithTitle:@"Albums"];
+    [self.popupButton addItemWithTitle:@"Artists"];
+    [self.popupButton addItemWithTitle:@"Folders"];
 
-  self.popupButton.action = @selector(popupButtonAction:);
-  self.popupButton.target = self;
+    self.popupButton.action = @selector(popupButtonAction:);
+    self.popupButton.target = self;
 }
 
 - (void)popupButtonAction:(NSPopUpButton *)sender {
-  [self.delegate filterSelectorChanged:self];
+    [self.delegate filterSelectorChanged:self];
 }
 
 @end

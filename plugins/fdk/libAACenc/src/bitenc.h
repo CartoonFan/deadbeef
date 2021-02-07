@@ -113,11 +113,11 @@ amm-info@iis.fraunhofer.de
 #include "tpenc_lib.h"
 
 typedef enum {
-  MAX_ENCODER_CHANNELS = 9,
-  MAX_BLOCK_TYPES = 4,
-  MAX_AAC_LAYERS = 9,
-  MAX_LAYERS = MAX_AAC_LAYERS, /* only one core layer if present */
-  FIRST_LAY = 1                /* default layer number for AAC nonscalable */
+    MAX_ENCODER_CHANNELS = 9,
+    MAX_BLOCK_TYPES = 4,
+    MAX_AAC_LAYERS = 9,
+    MAX_LAYERS = MAX_AAC_LAYERS, /* only one core layer if present */
+    FIRST_LAY = 1                /* default layer number for AAC nonscalable */
 } _MAX_CONST;
 
 #define BUFFER_MX_HUFFCB_SIZE                                                  \
@@ -169,11 +169,11 @@ AAC_ENCODER_ERROR FDKaacEnc_ChannelElementWrite(
  * \param epConfig Error protection config
  */
 AAC_ENCODER_ERROR FDKaacEnc_WriteBitstream(HANDLE_TRANSPORTENC hTpEnc,
-                                           CHANNEL_MAPPING *channelMapping,
-                                           QC_OUT *qcOut, PSY_OUT *psyOut,
-                                           QC_STATE *qcKernel,
-                                           AUDIO_OBJECT_TYPE aot,
-                                           UINT syntaxFlags, SCHAR epConfig);
+        CHANNEL_MAPPING *channelMapping,
+        QC_OUT *qcOut, PSY_OUT *psyOut,
+        QC_STATE *qcKernel,
+        AUDIO_OBJECT_TYPE aot,
+        UINT syntaxFlags, SCHAR epConfig);
 
 INT FDKaacEnc_writeExtensionData(HANDLE_TRANSPORTENC hTpEnc,
                                  QC_OUT_EXTENSION *pExtension,

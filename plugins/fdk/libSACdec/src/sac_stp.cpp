@@ -196,71 +196,71 @@ amm-info@iis.fraunhofer.de
   }
 
 struct STP_DEC {
-  FIXP_DBL runDryEner[MAX_INPUT_CHANNELS];
-  FIXP_DBL runWetEner[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL oldDryEnerLD64[MAX_INPUT_CHANNELS];
-  FIXP_DBL oldWetEnerLD64[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL prev_tp_scale[MAX_OUTPUT_CHANNELS];
-  const FIXP_CFG *BP;
-  const FIXP_CFG *BP_GF;
-  int update_old_ener;
+    FIXP_DBL runDryEner[MAX_INPUT_CHANNELS];
+    FIXP_DBL runWetEner[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL oldDryEnerLD64[MAX_INPUT_CHANNELS];
+    FIXP_DBL oldWetEnerLD64[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL prev_tp_scale[MAX_OUTPUT_CHANNELS];
+    const FIXP_CFG *BP;
+    const FIXP_CFG *BP_GF;
+    int update_old_ener;
 };
 
 inline void combineSignalReal(FIXP_DBL *hybOutputRealDry,
                               FIXP_DBL *hybOutputRealWet, int bands) {
-  int n;
+    int n;
 
-  for (n = bands - 1; n >= 0; n--) {
-    *hybOutputRealDry = *hybOutputRealDry + *hybOutputRealWet;
-    hybOutputRealDry++, hybOutputRealWet++;
-  }
+    for (n = bands - 1; n >= 0; n--) {
+        *hybOutputRealDry = *hybOutputRealDry + *hybOutputRealWet;
+        hybOutputRealDry++, hybOutputRealWet++;
+    }
 }
 
 inline void combineSignalRealScale1(FIXP_DBL *hybOutputRealDry,
                                     FIXP_DBL *hybOutputRealWet, FIXP_DBL scaleX,
                                     int bands) {
-  int n;
+    int n;
 
-  for (n = bands - 1; n >= 0; n--) {
-    *hybOutputRealDry =
-        *hybOutputRealDry +
-        (fMultDiv2(*hybOutputRealWet, scaleX) << (SF_SCALE + 1));
-    hybOutputRealDry++, hybOutputRealWet++;
-  }
+    for (n = bands - 1; n >= 0; n--) {
+        *hybOutputRealDry =
+            *hybOutputRealDry +
+            (fMultDiv2(*hybOutputRealWet, scaleX) << (SF_SCALE + 1));
+        hybOutputRealDry++, hybOutputRealWet++;
+    }
 }
 
 inline void combineSignalCplx(FIXP_DBL *hybOutputRealDry,
                               FIXP_DBL *hybOutputImagDry,
                               FIXP_DBL *hybOutputRealWet,
                               FIXP_DBL *hybOutputImagWet, int bands) {
-  int n;
+    int n;
 
-  for (n = bands - 1; n >= 0; n--) {
-    *hybOutputRealDry = *hybOutputRealDry + *hybOutputRealWet;
-    *hybOutputImagDry = *hybOutputImagDry + *hybOutputImagWet;
-    hybOutputRealDry++, hybOutputRealWet++;
-    hybOutputImagDry++, hybOutputImagWet++;
-  }
+    for (n = bands - 1; n >= 0; n--) {
+        *hybOutputRealDry = *hybOutputRealDry + *hybOutputRealWet;
+        *hybOutputImagDry = *hybOutputImagDry + *hybOutputImagWet;
+        hybOutputRealDry++, hybOutputRealWet++;
+        hybOutputImagDry++, hybOutputImagWet++;
+    }
 }
 
 inline void
 combineSignalCplxScale1(FIXP_DBL *hybOutputRealDry, FIXP_DBL *hybOutputImagDry,
                         FIXP_DBL *hybOutputRealWet, FIXP_DBL *hybOutputImagWet,
                         const FIXP_CFG *pBP, FIXP_DBL scaleX, int bands) {
-  int n;
-  FIXP_DBL scaleY;
-  for (n = bands - 1; n >= 0; n--) {
-    scaleY = fMultDiv2(scaleX, *pBP);
-    *hybOutputRealDry =
-        *hybOutputRealDry +
-        (fMultDiv2(*hybOutputRealWet, scaleY) << (SF_SCALE + 2));
-    *hybOutputImagDry =
-        *hybOutputImagDry +
-        (fMultDiv2(*hybOutputImagWet, scaleY) << (SF_SCALE + 2));
-    hybOutputRealDry++, hybOutputRealWet++;
-    hybOutputImagDry++, hybOutputImagWet++;
-    pBP++;
-  }
+    int n;
+    FIXP_DBL scaleY;
+    for (n = bands - 1; n >= 0; n--) {
+        scaleY = fMultDiv2(scaleX, *pBP);
+        *hybOutputRealDry =
+            *hybOutputRealDry +
+            (fMultDiv2(*hybOutputRealWet, scaleY) << (SF_SCALE + 2));
+        *hybOutputImagDry =
+            *hybOutputImagDry +
+            (fMultDiv2(*hybOutputImagWet, scaleY) << (SF_SCALE + 2));
+        hybOutputRealDry++, hybOutputRealWet++;
+        hybOutputImagDry++, hybOutputImagWet++;
+        pBP++;
+    }
 }
 
 inline void combineSignalCplxScale2(FIXP_DBL *hybOutputRealDry,
@@ -268,279 +268,281 @@ inline void combineSignalCplxScale2(FIXP_DBL *hybOutputRealDry,
                                     FIXP_DBL *hybOutputRealWet,
                                     FIXP_DBL *hybOutputImagWet, FIXP_DBL scaleX,
                                     int bands) {
-  int n;
+    int n;
 
-  for (n = bands - 1; n >= 0; n--) {
-    *hybOutputRealDry =
-        *hybOutputRealDry +
-        (fMultDiv2(*hybOutputRealWet, scaleX) << (SF_SCALE + 1));
-    *hybOutputImagDry =
-        *hybOutputImagDry +
-        (fMultDiv2(*hybOutputImagWet, scaleX) << (SF_SCALE + 1));
-    hybOutputRealDry++, hybOutputRealWet++;
-    hybOutputImagDry++, hybOutputImagWet++;
-  }
+    for (n = bands - 1; n >= 0; n--) {
+        *hybOutputRealDry =
+            *hybOutputRealDry +
+            (fMultDiv2(*hybOutputRealWet, scaleX) << (SF_SCALE + 1));
+        *hybOutputImagDry =
+            *hybOutputImagDry +
+            (fMultDiv2(*hybOutputImagWet, scaleX) << (SF_SCALE + 1));
+        hybOutputRealDry++, hybOutputRealWet++;
+        hybOutputImagDry++, hybOutputImagWet++;
+    }
 }
 
 /*******************************************************************************
  Functionname: subbandTPCreate
  ******************************************************************************/
 SACDEC_ERROR subbandTPCreate(HANDLE_STP_DEC *hStpDec) {
-  HANDLE_STP_DEC self = NULL;
-  FDK_ALLOCATE_MEMORY_1D(self, 1, struct STP_DEC)
-  if (hStpDec != NULL) {
-    *hStpDec = self;
-  }
+    HANDLE_STP_DEC self = NULL;
+    FDK_ALLOCATE_MEMORY_1D(self, 1, struct STP_DEC)
+    if (hStpDec != NULL) {
+        *hStpDec = self;
+    }
 
-  return MPS_OK;
+    return MPS_OK;
 bail:
-  return MPS_OUTOFMEMORY;
+    return MPS_OUTOFMEMORY;
 }
 
 SACDEC_ERROR subbandTPInit(HANDLE_STP_DEC self) {
-  SACDEC_ERROR err = MPS_OK;
-  int ch;
+    SACDEC_ERROR err = MPS_OK;
+    int ch;
 
-  for (ch = 0; ch < MAX_OUTPUT_CHANNELS; ch++) {
-    self->prev_tp_scale[ch] = FL2FXCONST_DBL(1.0f / (1 << SF_SCALE));
-    self->oldWetEnerLD64[ch] =
-        FL2FXCONST_DBL(0.34375f); /* 32768.0*32768.0/2^(44-26-10) */
-  }
-  for (ch = 0; ch < MAX_INPUT_CHANNELS; ch++) {
-    self->oldDryEnerLD64[ch] =
-        FL2FXCONST_DBL(0.1875f); /* 32768.0*32768.0/2^(44-26) */
-  }
+    for (ch = 0; ch < MAX_OUTPUT_CHANNELS; ch++) {
+        self->prev_tp_scale[ch] = FL2FXCONST_DBL(1.0f / (1 << SF_SCALE));
+        self->oldWetEnerLD64[ch] =
+            FL2FXCONST_DBL(0.34375f); /* 32768.0*32768.0/2^(44-26-10) */
+    }
+    for (ch = 0; ch < MAX_INPUT_CHANNELS; ch++) {
+        self->oldDryEnerLD64[ch] =
+            FL2FXCONST_DBL(0.1875f); /* 32768.0*32768.0/2^(44-26) */
+    }
 
-  self->BP = BP__FDK;
-  self->BP_GF = BP_GF__FDK;
+    self->BP = BP__FDK;
+    self->BP_GF = BP_GF__FDK;
 
-  self->update_old_ener = 0;
+    self->update_old_ener = 0;
 
-  return err;
+    return err;
 }
 
 /*******************************************************************************
  Functionname: subbandTPDestroy
  ******************************************************************************/
 void subbandTPDestroy(HANDLE_STP_DEC *hStpDec) {
-  if (hStpDec != NULL) {
-    FDK_FREE_MEMORY_1D(*hStpDec);
-  }
+    if (hStpDec != NULL) {
+        FDK_FREE_MEMORY_1D(*hStpDec);
+    }
 }
 
 /*******************************************************************************
  Functionname: subbandTPApply
  ******************************************************************************/
 SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
-  FIXP_DBL *qmfOutputRealDry[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputImagDry[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputRealWet[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputImagWet[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL *qmfOutputRealDry[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL *qmfOutputImagDry[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL *qmfOutputRealWet[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL *qmfOutputImagWet[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEner[MAX_INPUT_CHANNELS];
-  FIXP_DBL scale[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL DryEner[MAX_INPUT_CHANNELS];
+    FIXP_DBL scale[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEnerLD64[MAX_INPUT_CHANNELS];
-  FIXP_DBL WetEnerLD64[MAX_OUTPUT_CHANNELS];
+    FIXP_DBL DryEnerLD64[MAX_INPUT_CHANNELS];
+    FIXP_DBL WetEnerLD64[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEner0 = FL2FXCONST_DBL(0.0f);
-  FIXP_DBL WetEnerX, damp, tmp;
-  FIXP_DBL dmxReal0, dmxImag0;
-  int skipChannels[MAX_OUTPUT_CHANNELS];
-  int n, ch, cplxBands, cplxHybBands;
-  int dry_scale_dmx, wet_scale_dmx;
-  int i_LF, i_RF;
-  HANDLE_STP_DEC hStpDec;
-  const FIXP_CFG *pBP;
+    FIXP_DBL DryEner0 = FL2FXCONST_DBL(0.0f);
+    FIXP_DBL WetEnerX, damp, tmp;
+    FIXP_DBL dmxReal0, dmxImag0;
+    int skipChannels[MAX_OUTPUT_CHANNELS];
+    int n, ch, cplxBands, cplxHybBands;
+    int dry_scale_dmx, wet_scale_dmx;
+    int i_LF, i_RF;
+    HANDLE_STP_DEC hStpDec;
+    const FIXP_CFG *pBP;
 
-  int nrgScale = (2 * self->clipProtectGainSF__FDK);
+    int nrgScale = (2 * self->clipProtectGainSF__FDK);
 
-  hStpDec = self->hStpDec;
+    hStpDec = self->hStpDec;
 
-  /* set scalefactor and loop counter */
-  FDK_ASSERT(SF_DRY >= 1);
-  {
-    cplxBands = BP_GF_SIZE;
-    cplxHybBands = self->hybridBands;
-    dry_scale_dmx = (2 * SF_DRY) - 2;
-    wet_scale_dmx = 2;
-  }
-
-  /* setup pointer for forming the direct downmix signal */
-  for (ch = 0; ch < self->numOutputChannels; ch++) {
-    qmfOutputRealDry[ch] = &self->hybOutputRealDry__FDK[ch][7];
-    qmfOutputRealWet[ch] = &self->hybOutputRealWet__FDK[ch][7];
-    qmfOutputImagDry[ch] = &self->hybOutputImagDry__FDK[ch][7];
-    qmfOutputImagWet[ch] = &self->hybOutputImagWet__FDK[ch][7];
-  }
-
-  /* clear skipping flag for all output channels */
-  FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int));
-
-  /* set scale values to zero */
-  FDKmemset(scale, 0, self->numOutputChannels * sizeof(FIXP_DBL));
-
-  /* update normalisation energy with latest smoothed energy */
-  if (hStpDec->update_old_ener == STP_UPDATE_ENERGY_RATE) {
-    hStpDec->update_old_ener = 1;
-    for (ch = 0; ch < self->numInputChannels; ch++) {
-      hStpDec->oldDryEnerLD64[ch] =
-          CalcLdData(hStpDec->runDryEner[ch] + ABS_THR__FDK);
+    /* set scalefactor and loop counter */
+    FDK_ASSERT(SF_DRY >= 1);
+    {
+        cplxBands = BP_GF_SIZE;
+        cplxHybBands = self->hybridBands;
+        dry_scale_dmx = (2 * SF_DRY) - 2;
+        wet_scale_dmx = 2;
     }
+
+    /* setup pointer for forming the direct downmix signal */
     for (ch = 0; ch < self->numOutputChannels; ch++) {
-      hStpDec->oldWetEnerLD64[ch] =
-          CalcLdData(hStpDec->runWetEner[ch] + ABS_THR2__FDK);
+        qmfOutputRealDry[ch] = &self->hybOutputRealDry__FDK[ch][7];
+        qmfOutputRealWet[ch] = &self->hybOutputRealWet__FDK[ch][7];
+        qmfOutputImagDry[ch] = &self->hybOutputImagDry__FDK[ch][7];
+        qmfOutputImagWet[ch] = &self->hybOutputImagWet__FDK[ch][7];
     }
-  } else {
-    hStpDec->update_old_ener++;
-  }
 
-  /* get channel configuration */
-  switch (self->treeConfig) {
-  case TREE_212:
-    i_LF = 0;
-    i_RF = 1;
-    break;
-  default:
-    return MPS_WRONG_TREECONFIG;
-  }
+    /* clear skipping flag for all output channels */
+    FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int));
 
-  /* form the 'direct' downmix signal */
-  pBP = hStpDec->BP_GF - BP_GF_START;
-  switch (self->treeConfig) {
-  case TREE_212:
-    for (n = BP_GF_START; n < cplxBands; n++) {
-      dmxReal0 = qmfOutputRealDry[i_LF][n] + qmfOutputRealDry[i_RF][n];
-      dmxImag0 = qmfOutputImagDry[i_LF][n] + qmfOutputImagDry[i_RF][n];
-      DRY_ENER_SUM_CPLX(DryEner0, dmxReal0, dmxImag0, n);
-    }
-    DRY_ENER_WEIGHT(DryEner0);
-    break;
-  default:;
-  }
-  DryEner[0] = DryEner0;
+    /* set scale values to zero */
+    FDKmemset(scale, 0, self->numOutputChannels * sizeof(FIXP_DBL));
 
-  /* normalise the 'direct' signals */
-  for (ch = 0; ch < self->numInputChannels; ch++) {
-    DryEner[ch] = DryEner[ch] << (nrgScale);
-    hStpDec->runDryEner[ch] =
-        fMult(STP_LPF_COEFF1__FDK, hStpDec->runDryEner[ch]) +
-        fMult(ONE_MINUS_STP_LPF_COEFF1__FDK, DryEner[ch]);
-    if (DryEner[ch] != FL2FXCONST_DBL(0.0f)) {
-      DryEnerLD64[ch] =
-          fixMax((CalcLdData(DryEner[ch]) - hStpDec->oldDryEnerLD64[ch]),
-                 FL2FXCONST_DBL(-0.484375f));
+    /* update normalisation energy with latest smoothed energy */
+    if (hStpDec->update_old_ener == STP_UPDATE_ENERGY_RATE) {
+        hStpDec->update_old_ener = 1;
+        for (ch = 0; ch < self->numInputChannels; ch++) {
+            hStpDec->oldDryEnerLD64[ch] =
+                CalcLdData(hStpDec->runDryEner[ch] + ABS_THR__FDK);
+        }
+        for (ch = 0; ch < self->numOutputChannels; ch++) {
+            hStpDec->oldWetEnerLD64[ch] =
+                CalcLdData(hStpDec->runWetEner[ch] + ABS_THR2__FDK);
+        }
     } else {
-      DryEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
-    }
-  }
-  if (self->treeConfig == TREE_212) {
-    for (; ch < MAX_INPUT_CHANNELS; ch++) {
-      DryEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
-    }
-  }
-
-  /* normalise the 'diffuse' signals */
-  pBP = hStpDec->BP_GF - BP_GF_START;
-  for (ch = 0; ch < self->numOutputChannels; ch++) {
-    if (skipChannels[ch]) {
-      continue;
+        hStpDec->update_old_ener++;
     }
 
-    WetEnerX = FL2FXCONST_DBL(0.0f);
-    for (n = BP_GF_START; n < cplxBands; n++) {
-      tmp = fPow2Div2(qmfOutputRealWet[ch][n] << SF_WET);
-      tmp += fPow2Div2(qmfOutputImagWet[ch][n] << SF_WET);
-      WetEnerX += fMultDiv2(tmp, pBP[n]);
-    }
-    WET_ENER_WEIGHT(WetEnerX);
-
-    WetEnerX = WetEnerX << (nrgScale);
-    hStpDec->runWetEner[ch] =
-        fMult(STP_LPF_COEFF1__FDK, hStpDec->runWetEner[ch]) +
-        fMult(ONE_MINUS_STP_LPF_COEFF1__FDK, WetEnerX);
-
-    if (WetEnerX == FL2FXCONST_DBL(0.0f)) {
-      WetEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
-    } else {
-      WetEnerLD64[ch] =
-          fixMax((CalcLdData(WetEnerX) - hStpDec->oldWetEnerLD64[ch]),
-                 FL2FXCONST_DBL(-0.484375f));
-    }
-  }
-
-  /* compute scale factor for the 'diffuse' signals */
-  switch (self->treeConfig) {
-  case TREE_212:
-    if (DryEner[0] != FL2FXCONST_DBL(0.0f)) {
-      CALC_WET_SCALE(0, i_LF);
-      CALC_WET_SCALE(0, i_RF);
-    }
-    break;
-  default:;
-  }
-
-  damp = FL2FXCONST_DBL(0.1f / (1 << SF_SCALE));
-  for (ch = 0; ch < self->numOutputChannels; ch++) {
-    /* damp the scaling factor */
-    scale[ch] = damp + fMult(FL2FXCONST_DBL(0.9f), scale[ch]);
-
-    /* limiting the scale factor */
-    if (scale[ch] > STP_SCALE_LIMIT__FDK) {
-      scale[ch] = STP_SCALE_LIMIT__FDK;
-    }
-    if (scale[ch] < ONE_DIV_STP_SCALE_LIMIT__FDK) {
-      scale[ch] = ONE_DIV_STP_SCALE_LIMIT__FDK;
+    /* get channel configuration */
+    switch (self->treeConfig) {
+    case TREE_212:
+        i_LF = 0;
+        i_RF = 1;
+        break;
+    default:
+        return MPS_WRONG_TREECONFIG;
     }
 
-    /* low pass filter the scaling factor */
-    scale[ch] =
-        fMult(STP_LPF_COEFF2__FDK, scale[ch]) +
-        fMult(ONE_MINUS_STP_LPF_COEFF2__FDK, hStpDec->prev_tp_scale[ch]);
-    hStpDec->prev_tp_scale[ch] = scale[ch];
-  }
-
-  /* combine 'direct' and scaled 'diffuse' signal */
-  FDK_ASSERT((HP_SIZE - 3 + 10 - 1) == PC_NUM_HYB_BANDS);
-  const SCHAR *channlIndex = row2channelSTP[self->treeConfig];
-
-  for (ch = 0; ch < self->numOutputChannels; ch++) {
-    int no_scaling;
-
-    no_scaling = !frame->tempShapeEnableChannelSTP[channlIndex[ch]];
-    if (no_scaling) {
-      combineSignalCplx(
-          &self->hybOutputRealDry__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputImagDry__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputRealWet__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputImagWet__FDK[ch][self->tp_hybBandBorder],
-          cplxHybBands - self->tp_hybBandBorder);
-
-    } else {
-      FIXP_DBL scaleX;
-      scaleX = scale[ch];
-      pBP = hStpDec->BP - self->tp_hybBandBorder;
-      /* Band[HP_SIZE-3+10-1] needs not to be processed in
-         combineSignalCplxScale1(), because pB[HP_SIZE-3+10-1] would be 1.0 */
-      combineSignalCplxScale1(
-          &self->hybOutputRealDry__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputImagDry__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputRealWet__FDK[ch][self->tp_hybBandBorder],
-          &self->hybOutputImagWet__FDK[ch][self->tp_hybBandBorder],
-          &pBP[self->tp_hybBandBorder], scaleX,
-          (HP_SIZE - 3 + 10 - 1) - self->tp_hybBandBorder);
-
-      {
-        combineSignalCplxScale2(
-            &self->hybOutputRealDry__FDK[ch][HP_SIZE - 3 + 10 - 1],
-            &self->hybOutputImagDry__FDK[ch][HP_SIZE - 3 + 10 - 1],
-            &self->hybOutputRealWet__FDK[ch][HP_SIZE - 3 + 10 - 1],
-            &self->hybOutputImagWet__FDK[ch][HP_SIZE - 3 + 10 - 1], scaleX,
-            cplxHybBands - (HP_SIZE - 3 + 10 - 1));
-      }
+    /* form the 'direct' downmix signal */
+    pBP = hStpDec->BP_GF - BP_GF_START;
+    switch (self->treeConfig) {
+    case TREE_212:
+        for (n = BP_GF_START; n < cplxBands; n++) {
+            dmxReal0 = qmfOutputRealDry[i_LF][n] + qmfOutputRealDry[i_RF][n];
+            dmxImag0 = qmfOutputImagDry[i_LF][n] + qmfOutputImagDry[i_RF][n];
+            DRY_ENER_SUM_CPLX(DryEner0, dmxReal0, dmxImag0, n);
+        }
+        DRY_ENER_WEIGHT(DryEner0);
+        break;
+    default:
+        ;
     }
-  }
+    DryEner[0] = DryEner0;
 
-  return (SACDEC_ERROR)MPS_OK;
-  ;
+    /* normalise the 'direct' signals */
+    for (ch = 0; ch < self->numInputChannels; ch++) {
+        DryEner[ch] = DryEner[ch] << (nrgScale);
+        hStpDec->runDryEner[ch] =
+            fMult(STP_LPF_COEFF1__FDK, hStpDec->runDryEner[ch]) +
+            fMult(ONE_MINUS_STP_LPF_COEFF1__FDK, DryEner[ch]);
+        if (DryEner[ch] != FL2FXCONST_DBL(0.0f)) {
+            DryEnerLD64[ch] =
+                fixMax((CalcLdData(DryEner[ch]) - hStpDec->oldDryEnerLD64[ch]),
+                       FL2FXCONST_DBL(-0.484375f));
+        } else {
+            DryEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
+        }
+    }
+    if (self->treeConfig == TREE_212) {
+        for (; ch < MAX_INPUT_CHANNELS; ch++) {
+            DryEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
+        }
+    }
+
+    /* normalise the 'diffuse' signals */
+    pBP = hStpDec->BP_GF - BP_GF_START;
+    for (ch = 0; ch < self->numOutputChannels; ch++) {
+        if (skipChannels[ch]) {
+            continue;
+        }
+
+        WetEnerX = FL2FXCONST_DBL(0.0f);
+        for (n = BP_GF_START; n < cplxBands; n++) {
+            tmp = fPow2Div2(qmfOutputRealWet[ch][n] << SF_WET);
+            tmp += fPow2Div2(qmfOutputImagWet[ch][n] << SF_WET);
+            WetEnerX += fMultDiv2(tmp, pBP[n]);
+        }
+        WET_ENER_WEIGHT(WetEnerX);
+
+        WetEnerX = WetEnerX << (nrgScale);
+        hStpDec->runWetEner[ch] =
+            fMult(STP_LPF_COEFF1__FDK, hStpDec->runWetEner[ch]) +
+            fMult(ONE_MINUS_STP_LPF_COEFF1__FDK, WetEnerX);
+
+        if (WetEnerX == FL2FXCONST_DBL(0.0f)) {
+            WetEnerLD64[ch] = FL2FXCONST_DBL(-0.484375f);
+        } else {
+            WetEnerLD64[ch] =
+                fixMax((CalcLdData(WetEnerX) - hStpDec->oldWetEnerLD64[ch]),
+                       FL2FXCONST_DBL(-0.484375f));
+        }
+    }
+
+    /* compute scale factor for the 'diffuse' signals */
+    switch (self->treeConfig) {
+    case TREE_212:
+        if (DryEner[0] != FL2FXCONST_DBL(0.0f)) {
+            CALC_WET_SCALE(0, i_LF);
+            CALC_WET_SCALE(0, i_RF);
+        }
+        break;
+    default:
+        ;
+    }
+
+    damp = FL2FXCONST_DBL(0.1f / (1 << SF_SCALE));
+    for (ch = 0; ch < self->numOutputChannels; ch++) {
+        /* damp the scaling factor */
+        scale[ch] = damp + fMult(FL2FXCONST_DBL(0.9f), scale[ch]);
+
+        /* limiting the scale factor */
+        if (scale[ch] > STP_SCALE_LIMIT__FDK) {
+            scale[ch] = STP_SCALE_LIMIT__FDK;
+        }
+        if (scale[ch] < ONE_DIV_STP_SCALE_LIMIT__FDK) {
+            scale[ch] = ONE_DIV_STP_SCALE_LIMIT__FDK;
+        }
+
+        /* low pass filter the scaling factor */
+        scale[ch] =
+            fMult(STP_LPF_COEFF2__FDK, scale[ch]) +
+            fMult(ONE_MINUS_STP_LPF_COEFF2__FDK, hStpDec->prev_tp_scale[ch]);
+        hStpDec->prev_tp_scale[ch] = scale[ch];
+    }
+
+    /* combine 'direct' and scaled 'diffuse' signal */
+    FDK_ASSERT((HP_SIZE - 3 + 10 - 1) == PC_NUM_HYB_BANDS);
+    const SCHAR *channlIndex = row2channelSTP[self->treeConfig];
+
+    for (ch = 0; ch < self->numOutputChannels; ch++) {
+        int no_scaling;
+
+        no_scaling = !frame->tempShapeEnableChannelSTP[channlIndex[ch]];
+        if (no_scaling) {
+            combineSignalCplx(
+                &self->hybOutputRealDry__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputImagDry__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputRealWet__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputImagWet__FDK[ch][self->tp_hybBandBorder],
+                cplxHybBands - self->tp_hybBandBorder);
+
+        } else {
+            FIXP_DBL scaleX;
+            scaleX = scale[ch];
+            pBP = hStpDec->BP - self->tp_hybBandBorder;
+            /* Band[HP_SIZE-3+10-1] needs not to be processed in
+               combineSignalCplxScale1(), because pB[HP_SIZE-3+10-1] would be 1.0 */
+            combineSignalCplxScale1(
+                &self->hybOutputRealDry__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputImagDry__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputRealWet__FDK[ch][self->tp_hybBandBorder],
+                &self->hybOutputImagWet__FDK[ch][self->tp_hybBandBorder],
+                &pBP[self->tp_hybBandBorder], scaleX,
+                (HP_SIZE - 3 + 10 - 1) - self->tp_hybBandBorder);
+
+            {
+                combineSignalCplxScale2(
+                    &self->hybOutputRealDry__FDK[ch][HP_SIZE - 3 + 10 - 1],
+                    &self->hybOutputImagDry__FDK[ch][HP_SIZE - 3 + 10 - 1],
+                    &self->hybOutputRealWet__FDK[ch][HP_SIZE - 3 + 10 - 1],
+                    &self->hybOutputImagWet__FDK[ch][HP_SIZE - 3 + 10 - 1], scaleX,
+                    cplxHybBands - (HP_SIZE - 3 + 10 - 1));
+            }
+        }
+    }
+
+    return (SACDEC_ERROR)MPS_OK;
+    ;
 }

@@ -108,28 +108,28 @@ amm-info@iis.fraunhofer.de
 #include "FDK_crc.h"
 
 typedef struct {
-  INT sample_freq;
-  CHANNEL_MODE channel_mode;
-  UCHAR decoderCanDoMpeg4;
-  UCHAR mpeg_id;
-  UCHAR layer;
-  UCHAR protection_absent;
-  UCHAR profile;
-  UCHAR sample_freq_index;
-  UCHAR private_bit;
-  UCHAR original;
-  UCHAR home;
-  UCHAR copyright_id;
-  UCHAR copyright_start;
-  USHORT frame_length;
-  UCHAR num_raw_blocks;
-  UCHAR BufferFullnesStartFlag;
-  UCHAR channel_config_zero;
-  int headerBits;       /*!< Header bit demand for the current raw data block */
-  int currentBlock;     /*!< Index of current raw data block */
-  int subFrameStartBit; /*!< Bit position where the current raw data block
+    INT sample_freq;
+    CHANNEL_MODE channel_mode;
+    UCHAR decoderCanDoMpeg4;
+    UCHAR mpeg_id;
+    UCHAR layer;
+    UCHAR protection_absent;
+    UCHAR profile;
+    UCHAR sample_freq_index;
+    UCHAR private_bit;
+    UCHAR original;
+    UCHAR home;
+    UCHAR copyright_id;
+    UCHAR copyright_start;
+    USHORT frame_length;
+    UCHAR num_raw_blocks;
+    UCHAR BufferFullnesStartFlag;
+    UCHAR channel_config_zero;
+    int headerBits;       /*!< Header bit demand for the current raw data block */
+    int currentBlock;     /*!< Index of current raw data block */
+    int subFrameStartBit; /*!< Bit position where the current raw data block
                  begins */
-  FDK_CRCINFO crcInfo;
+    FDK_CRCINFO crcInfo;
 } STRUCT_ADTS;
 
 typedef STRUCT_ADTS *HANDLE_ADTS;

@@ -163,7 +163,7 @@ SpatialDecCalculateM1andM2_212(spatialDec *self, int ps,
 
 *******************************************************************************/
 int SpatialDecGetResidualIndex(spatialDec *self, int row) {
-  return row2residual[self->treeConfig][row];
+    return row2residual[self->treeConfig][row];
 }
 
 /*******************************************************************************
@@ -180,16 +180,16 @@ int SpatialDecGetResidualIndex(spatialDec *self, int row) {
 
 *******************************************************************************/
 static void updateAlpha(spatialDec *self) {
-  int nChIn = self->numInputChannels;
-  int ch;
+    int nChIn = self->numInputChannels;
+    int ch;
 
-  for (ch = 0; ch < nChIn; ch++) {
-    FIXP_DBL alpha = /* FL2FXCONST_DBL(1.0f) */ (FIXP_DBL)MAXVAL_DBL;
+    for (ch = 0; ch < nChIn; ch++) {
+        FIXP_DBL alpha = /* FL2FXCONST_DBL(1.0f) */ (FIXP_DBL)MAXVAL_DBL;
 
-    self->arbdmxAlphaPrev__FDK[ch] = self->arbdmxAlpha__FDK[ch];
+        self->arbdmxAlphaPrev__FDK[ch] = self->arbdmxAlpha__FDK[ch];
 
-    self->arbdmxAlpha__FDK[ch] = alpha;
-  }
+        self->arbdmxAlpha__FDK[ch] = alpha;
+    }
 }
 
 /*******************************************************************************
@@ -200,36 +200,36 @@ static void updateAlpha(spatialDec *self) {
 *******************************************************************************/
 SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec *self, int ps,
                                         const SPATIAL_BS_FRAME *frame) {
-  SACDEC_ERROR err = MPS_OK;
+    SACDEC_ERROR err = MPS_OK;
 
-  if ((self->arbitraryDownmix != 0) && (ps == 0)) {
-    updateAlpha(self);
-  }
+    if ((self->arbitraryDownmix != 0) && (ps == 0)) {
+        updateAlpha(self);
+    }
 
-  self->pActivM2ParamBands = NULL;
+    self->pActivM2ParamBands = NULL;
 
-  switch (self->upmixType) {
-  case UPMIXTYPE_BYPASS:
-  case UPMIXTYPE_NORMAL:
-    switch (self->treeConfig) {
-    case TREE_212:
-      err = SpatialDecCalculateM1andM2_212(self, ps, frame);
-      break;
+    switch (self->upmixType) {
+    case UPMIXTYPE_BYPASS:
+    case UPMIXTYPE_NORMAL:
+        switch (self->treeConfig) {
+        case TREE_212:
+            err = SpatialDecCalculateM1andM2_212(self, ps, frame);
+            break;
+        default:
+            err = MPS_WRONG_TREECONFIG;
+        };
+        break;
+
     default:
-      err = MPS_WRONG_TREECONFIG;
-    };
-    break;
+        err = MPS_WRONG_TREECONFIG;
+    }
 
-  default:
-    err = MPS_WRONG_TREECONFIG;
-  }
-
-  if (err != MPS_OK) {
-    goto bail;
-  }
+    if (err != MPS_OK) {
+        goto bail;
+    }
 
 bail:
-  return err;
+    return err;
 }
 
 /*******************************************************************************
@@ -246,64 +246,64 @@ bail:
 static SACDEC_ERROR
 SpatialDecCalculateM1andM2_212(spatialDec *self, int ps,
                                const SPATIAL_BS_FRAME *frame) {
-  SACDEC_ERROR err = MPS_OK;
-  int pb;
+    SACDEC_ERROR err = MPS_OK;
+    int pb;
 
-  FIXP_DBL H11re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
-  FIXP_DBL H12re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
-  FIXP_DBL H21re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
-  FIXP_DBL H22re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
-  FIXP_DBL H11im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
-  FIXP_DBL H21im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H11re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H12re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H21re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H22re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H11im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
+    FIXP_DBL H21im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
 
-  INT phaseCoding = self->phaseCoding;
+    INT phaseCoding = self->phaseCoding;
 
-  switch (phaseCoding) {
-  case 1:
-    /* phase coding: yes; residuals: no */
-    param2UMX_PS_IPD_OPD__FDK(self, frame, H11re, H12re, H21re, H22re, NULL,
-                              NULL, 0, ps, self->residualBands[0]);
-    break;
-  case 3:
-    /* phase coding: yes; residuals: yes */
-    param2UMX_Prediction__FDK(self, H11re, H11im, H12re, NULL, H21re, H21im,
-                              H22re, NULL, 0, ps, self->residualBands[0]);
-    break;
-  default:
-    if (self->residualCoding) {
-      /* phase coding: no; residuals: yes */
-      param2UMX_Prediction__FDK(self, H11re, NULL, H12re, NULL, H21re, NULL,
-                                H22re, NULL, 0, ps, self->residualBands[0]);
-    } else {
-      /* phase coding: no; residuals: no */
-      param2UMX_PS__FDK(self, H11re, H12re, H21re, H22re, NULL, NULL, 0, ps, 0);
+    switch (phaseCoding) {
+    case 1:
+        /* phase coding: yes; residuals: no */
+        param2UMX_PS_IPD_OPD__FDK(self, frame, H11re, H12re, H21re, H22re, NULL,
+                                  NULL, 0, ps, self->residualBands[0]);
+        break;
+    case 3:
+        /* phase coding: yes; residuals: yes */
+        param2UMX_Prediction__FDK(self, H11re, H11im, H12re, NULL, H21re, H21im,
+                                  H22re, NULL, 0, ps, self->residualBands[0]);
+        break;
+    default:
+        if (self->residualCoding) {
+            /* phase coding: no; residuals: yes */
+            param2UMX_Prediction__FDK(self, H11re, NULL, H12re, NULL, H21re, NULL,
+                                      H22re, NULL, 0, ps, self->residualBands[0]);
+        } else {
+            /* phase coding: no; residuals: no */
+            param2UMX_PS__FDK(self, H11re, H12re, H21re, H22re, NULL, NULL, 0, ps, 0);
+        }
+        break;
     }
-    break;
-  }
 
-  for (pb = 0; pb < self->numParameterBands; pb++) {
-    self->M2Real__FDK[0][0][pb] = (H11re[pb]);
-    self->M2Real__FDK[0][1][pb] = (H12re[pb]);
-
-    self->M2Real__FDK[1][0][pb] = (H21re[pb]);
-    self->M2Real__FDK[1][1][pb] = (H22re[pb]);
-  }
-  if (phaseCoding == 3) {
     for (pb = 0; pb < self->numParameterBands; pb++) {
-      self->M2Imag__FDK[0][0][pb] = (H11im[pb]);
-      self->M2Imag__FDK[1][0][pb] = (H21im[pb]);
-      self->M2Imag__FDK[0][1][pb] = (FIXP_DBL)0; // H12im[pb];
-      self->M2Imag__FDK[1][1][pb] = (FIXP_DBL)0; // H22im[pb];
+        self->M2Real__FDK[0][0][pb] = (H11re[pb]);
+        self->M2Real__FDK[0][1][pb] = (H12re[pb]);
+
+        self->M2Real__FDK[1][0][pb] = (H21re[pb]);
+        self->M2Real__FDK[1][1][pb] = (H22re[pb]);
     }
-  }
+    if (phaseCoding == 3) {
+        for (pb = 0; pb < self->numParameterBands; pb++) {
+            self->M2Imag__FDK[0][0][pb] = (H11im[pb]);
+            self->M2Imag__FDK[1][0][pb] = (H21im[pb]);
+            self->M2Imag__FDK[0][1][pb] = (FIXP_DBL)0; // H12im[pb];
+            self->M2Imag__FDK[1][1][pb] = (FIXP_DBL)0; // H22im[pb];
+        }
+    }
 
-  if (self->phaseCoding == 1) {
-    SpatialDecSmoothOPD(
-        self, frame,
-        ps); /* INPUT: PhaseLeft, PhaseRight, (opdLeftState, opdRightState) */
-  }
+    if (self->phaseCoding == 1) {
+        SpatialDecSmoothOPD(
+            self, frame,
+            ps); /* INPUT: PhaseLeft, PhaseRight, (opdLeftState, opdRightState) */
+    }
 
-  return err;
+    return err;
 }
 
 /*******************************************************************************
@@ -323,25 +323,25 @@ static void param2UMX_PS_Core__FDK(
     FIXP_DBL H11[MAX_PARAMETER_BANDS], FIXP_DBL H12[MAX_PARAMETER_BANDS],
     FIXP_DBL H21[MAX_PARAMETER_BANDS], FIXP_DBL H22[MAX_PARAMETER_BANDS],
     FIXP_DBL c_l[MAX_PARAMETER_BANDS], FIXP_DBL c_r[MAX_PARAMETER_BANDS]) {
-  int band;
+    int band;
 
-  if ((c_l != NULL) && (c_r != NULL)) {
-    for (band = 0; band < numOttBands; band++) {
-      SpatialDequantGetCLDValues(cld[band], &c_l[band], &c_r[band]);
+    if ((c_l != NULL) && (c_r != NULL)) {
+        for (band = 0; band < numOttBands; band++) {
+            SpatialDequantGetCLDValues(cld[band], &c_l[band], &c_r[band]);
+        }
     }
-  }
 
-  band = 0;
-  FDK_ASSERT(resBands == 0);
-  for (; band < numOttBands; band++) {
-    /* compute mixing variables: */
-    const int idx1 = cld[band];
-    const int idx2 = icc[band];
-    H11[band] = FX_CFG2FX_DBL(H11_nc[idx1][idx2]);
-    H21[band] = FX_CFG2FX_DBL(H11_nc[30 - idx1][idx2]);
-    H12[band] = FX_CFG2FX_DBL(H12_nc[idx1][idx2]);
-    H22[band] = FX_CFG2FX_DBL(-H12_nc[30 - idx1][idx2]);
-  }
+    band = 0;
+    FDK_ASSERT(resBands == 0);
+    for (; band < numOttBands; band++) {
+        /* compute mixing variables: */
+        const int idx1 = cld[band];
+        const int idx2 = icc[band];
+        H11[band] = FX_CFG2FX_DBL(H11_nc[idx1][idx2]);
+        H21[band] = FX_CFG2FX_DBL(H11_nc[30 - idx1][idx2]);
+        H12[band] = FX_CFG2FX_DBL(H12_nc[idx1][idx2]);
+        H22[band] = FX_CFG2FX_DBL(-H12_nc[30 - idx1][idx2]);
+    }
 }
 
 /*******************************************************************************
@@ -363,16 +363,16 @@ static void param2UMX_PS__FDK(spatialDec *self,
                               FIXP_DBL c_l[MAX_PARAMETER_BANDS],
                               FIXP_DBL c_r[MAX_PARAMETER_BANDS], int ottBoxIndx,
                               int parameterSetIndx, int residualBands) {
-  int band;
-  param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
-                         self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
-                         self->numOttBands[ottBoxIndx], residualBands, H11, H12,
-                         H21, H22, c_l, c_r);
+    int band;
+    param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
+                           self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
+                           self->numOttBands[ottBoxIndx], residualBands, H11, H12,
+                           H21, H22, c_l, c_r);
 
-  for (band = self->numOttBands[ottBoxIndx]; band < self->numParameterBands;
-       band++) {
-    H11[band] = H21[band] = H12[band] = H22[band] = FL2FXCONST_DBL(0.f);
-  }
+    for (band = self->numOttBands[ottBoxIndx]; band < self->numParameterBands;
+            band++) {
+        H11[band] = H21[band] = H12[band] = H22[band] = FL2FXCONST_DBL(0.f);
+    }
 }
 
 #define N_CLD (31)
@@ -405,7 +405,8 @@ static const FIXP_SGL sqrt_one_minus_ICC2[8] = {
 /* exponent of sqrt(CLD) */
 static const SCHAR sqrt_CLD_e[N_CLD] = {
     -24, -7, -6, -5, -4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 0, 1,
-    1,   1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  7, 8, 25};
+        1,   1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  7, 8, 25
+    };
 
 static const FIXP_DBL sqrt_CLD_m[N_CLD] = {
     FL2FXCONST_DBL(0.530542153566195f),
@@ -476,114 +477,114 @@ static const FIXP_DBL CLD_m[N_CLD] = {
 };
 
 static FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK_Function(INT ipdIdx,
-                                                            INT cldIdx,
-                                                            INT iccIdx) {
-  FIXP_DBL cld;
-  SpatialDequantGetCLD2Values(cldIdx, &cld);
+        INT cldIdx,
+        INT iccIdx) {
+    FIXP_DBL cld;
+    SpatialDequantGetCLD2Values(cldIdx, &cld);
 
-  /*const FIXP_DBL one_m = (FIXP_DBL)MAXVAL_DBL;
-  const int one_e = 0;*/
-  const FIXP_DBL one_m = FL2FXCONST_DBL(0.5f);
-  const int one_e = 1;
-  /* iidLin = sqrt(cld); */
-  FIXP_DBL iidLin_m = sqrt_CLD_m[cldIdx];
-  int iidLin_e = sqrt_CLD_e[cldIdx];
-  /* iidLin2 = cld; */
-  FIXP_DBL iidLin2_m = CLD_m[cldIdx];
-  int iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
-  /* iidLin21 = iidLin2 + 1.0f; */
-  int iidLin21_e;
-  FIXP_DBL iidLin21_m =
-      fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
-  /* iidIcc2 = iidLin * icc * 2.0f; */
-  FIXP_CFG icc = dequantICC__FDK[iccIdx];
-  FIXP_DBL temp1_m, temp1c_m;
-  int temp1_e, temp1c_e;
-  temp1_m = fMult(iidLin_m, icc);
-  temp1_e = iidLin_e + 1;
+    /*const FIXP_DBL one_m = (FIXP_DBL)MAXVAL_DBL;
+    const int one_e = 0;*/
+    const FIXP_DBL one_m = FL2FXCONST_DBL(0.5f);
+    const int one_e = 1;
+    /* iidLin = sqrt(cld); */
+    FIXP_DBL iidLin_m = sqrt_CLD_m[cldIdx];
+    int iidLin_e = sqrt_CLD_e[cldIdx];
+    /* iidLin2 = cld; */
+    FIXP_DBL iidLin2_m = CLD_m[cldIdx];
+    int iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
+    /* iidLin21 = iidLin2 + 1.0f; */
+    int iidLin21_e;
+    FIXP_DBL iidLin21_m =
+        fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
+    /* iidIcc2 = iidLin * icc * 2.0f; */
+    FIXP_CFG icc = dequantICC__FDK[iccIdx];
+    FIXP_DBL temp1_m, temp1c_m;
+    int temp1_e, temp1c_e;
+    temp1_m = fMult(iidLin_m, icc);
+    temp1_e = iidLin_e + 1;
 
-  FIXP_DBL cosIpd, sinIpd;
-  cosIpd = COS_IPD(ipdIdx);
-  sinIpd = SIN_IPD(ipdIdx);
+    FIXP_DBL cosIpd, sinIpd;
+    cosIpd = COS_IPD(ipdIdx);
+    sinIpd = SIN_IPD(ipdIdx);
 
-  temp1c_m = fMult(temp1_m, cosIpd);
-  temp1c_e = temp1_e; //+cosIpd_e;
+    temp1c_m = fMult(temp1_m, cosIpd);
+    temp1c_e = temp1_e; //+cosIpd_e;
 
-  int temp2_e, temp3_e, inv_temp3_e, ratio_e;
-  FIXP_DBL temp2_m =
-      fAddNorm(iidLin21_m, iidLin21_e, temp1c_m, temp1c_e, &temp2_e);
-  FIXP_DBL temp3_m =
-      fAddNorm(iidLin21_m, iidLin21_e, temp1_m, temp1_e, &temp3_e);
-  /* calculate 1/temp3 needed later */
-  inv_temp3_e = temp3_e;
-  FIXP_DBL inv_temp3_m = invFixp(temp3_m, &inv_temp3_e);
-  FIXP_DBL ratio_m =
-      fAddNorm(fMult(inv_temp3_m, temp2_m), (inv_temp3_e + temp2_e),
-               FL2FXCONST_DBL(1e-9f), 0, &ratio_e);
+    int temp2_e, temp3_e, inv_temp3_e, ratio_e;
+    FIXP_DBL temp2_m =
+        fAddNorm(iidLin21_m, iidLin21_e, temp1c_m, temp1c_e, &temp2_e);
+    FIXP_DBL temp3_m =
+        fAddNorm(iidLin21_m, iidLin21_e, temp1_m, temp1_e, &temp3_e);
+    /* calculate 1/temp3 needed later */
+    inv_temp3_e = temp3_e;
+    FIXP_DBL inv_temp3_m = invFixp(temp3_m, &inv_temp3_e);
+    FIXP_DBL ratio_m =
+        fAddNorm(fMult(inv_temp3_m, temp2_m), (inv_temp3_e + temp2_e),
+                 FL2FXCONST_DBL(1e-9f), 0, &ratio_e);
 
-  int weight2_e, tempb_atan2_e;
-  FIXP_DBL weight2_m =
-      fPow(ratio_m, ratio_e, FL2FXCONST_DBL(0.5f), -1, &weight2_e);
-  /* atan2(w2*sinIpd, w1*iidLin + w2*cosIpd) = atan2(w2*sinIpd, (2 - w2)*iidLin
-   * + w2*cosIpd) = atan2(w2*sinIpd, 2*iidLin + w2*(cosIpd - iidLin)); */
-  /* tmpa_atan2 = w2*sinIpd; tmpb_atan2 = 2*iidLin + w2*(cosIpd - iidLin); */
-  FIXP_DBL tempb_atan2_m = iidLin_m;
-  tempb_atan2_e = iidLin_e + 1;
-  int add_tmp1_e = 0;
-  FIXP_DBL add_tmp1_m = fAddNorm(cosIpd, 0, -iidLin_m, iidLin_e, &add_tmp1_e);
-  FIXP_DBL add_tmp2_m = fMult(add_tmp1_m, weight2_m);
-  int add_tmp2_e = add_tmp1_e + weight2_e;
-  tempb_atan2_m = fAddNorm(tempb_atan2_m, tempb_atan2_e, add_tmp2_m, add_tmp2_e,
-                           &tempb_atan2_e);
+    int weight2_e, tempb_atan2_e;
+    FIXP_DBL weight2_m =
+        fPow(ratio_m, ratio_e, FL2FXCONST_DBL(0.5f), -1, &weight2_e);
+    /* atan2(w2*sinIpd, w1*iidLin + w2*cosIpd) = atan2(w2*sinIpd, (2 - w2)*iidLin
+     * + w2*cosIpd) = atan2(w2*sinIpd, 2*iidLin + w2*(cosIpd - iidLin)); */
+    /* tmpa_atan2 = w2*sinIpd; tmpb_atan2 = 2*iidLin + w2*(cosIpd - iidLin); */
+    FIXP_DBL tempb_atan2_m = iidLin_m;
+    tempb_atan2_e = iidLin_e + 1;
+    int add_tmp1_e = 0;
+    FIXP_DBL add_tmp1_m = fAddNorm(cosIpd, 0, -iidLin_m, iidLin_e, &add_tmp1_e);
+    FIXP_DBL add_tmp2_m = fMult(add_tmp1_m, weight2_m);
+    int add_tmp2_e = add_tmp1_e + weight2_e;
+    tempb_atan2_m = fAddNorm(tempb_atan2_m, tempb_atan2_e, add_tmp2_m, add_tmp2_e,
+                             &tempb_atan2_e);
 
-  FIXP_DBL tempa_atan2_m = fMult(weight2_m, sinIpd);
-  int tempa_atan2_e = weight2_e; // + sinIpd_e;
+    FIXP_DBL tempa_atan2_m = fMult(weight2_m, sinIpd);
+    int tempa_atan2_e = weight2_e; // + sinIpd_e;
 
-  if (tempa_atan2_e > tempb_atan2_e) {
-    tempb_atan2_m = (tempb_atan2_m >> (tempa_atan2_e - tempb_atan2_e));
-    tempb_atan2_e = tempa_atan2_e;
-  } else if (tempb_atan2_e > tempa_atan2_e) {
-    tempa_atan2_m = (tempa_atan2_m >> (tempb_atan2_e - tempa_atan2_e));
-  }
+    if (tempa_atan2_e > tempb_atan2_e) {
+        tempb_atan2_m = (tempb_atan2_m >> (tempa_atan2_e - tempb_atan2_e));
+        tempb_atan2_e = tempa_atan2_e;
+    } else if (tempb_atan2_e > tempa_atan2_e) {
+        tempa_atan2_m = (tempa_atan2_m >> (tempb_atan2_e - tempa_atan2_e));
+    }
 
-  return fixp_atan2(tempa_atan2_m, tempb_atan2_m);
+    return fixp_atan2(tempa_atan2_m, tempb_atan2_m);
 }
 
 static void calculateOpd(spatialDec *self, INT ottBoxIndx, INT parameterSetIndx,
                          FIXP_DBL opd[MAX_PARAMETER_BANDS]) {
-  INT band;
+    INT band;
 
-  for (band = 0; band < self->numOttBandsIPD; band++) {
-    INT idxCld = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
-    INT idxIpd = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
-    INT idxIcc = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
-    FIXP_DBL cld, ipd;
+    for (band = 0; band < self->numOttBandsIPD; band++) {
+        INT idxCld = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
+        INT idxIpd = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
+        INT idxIcc = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
+        FIXP_DBL cld, ipd;
 
-    ipd = FX_CFG2FX_DBL(dequantIPD__FDK[idxIpd]);
+        ipd = FX_CFG2FX_DBL(dequantIPD__FDK[idxIpd]);
 
-    SpatialDequantGetCLD2Values(idxCld, &cld);
+        SpatialDequantGetCLD2Values(idxCld, &cld);
 
-    /* ipd(idxIpd==8) == PI */
-    if ((cld == FL2FXCONST_DBL(0.0f)) && (idxIpd == 8)) {
-      opd[2 * band] = FL2FXCONST_DBL(0.0f);
-    } else {
-      opd[2 * band] = (dequantIPD_CLD_ICC_splitAngle__FDK_Function(
-                           idxIpd, idxCld, idxIcc) >>
-                       (IPD_SCALE - AT2O_SF));
+        /* ipd(idxIpd==8) == PI */
+        if ((cld == FL2FXCONST_DBL(0.0f)) && (idxIpd == 8)) {
+            opd[2 * band] = FL2FXCONST_DBL(0.0f);
+        } else {
+            opd[2 * band] = (dequantIPD_CLD_ICC_splitAngle__FDK_Function(
+                                 idxIpd, idxCld, idxIcc) >>
+                             (IPD_SCALE - AT2O_SF));
+        }
+        opd[2 * band + 1] = opd[2 * band] - ipd;
     }
-    opd[2 * band + 1] = opd[2 * band] - ipd;
-  }
 }
 
 /* wrap phase in rad to the range of 0 <= x < 2*pi */
 static FIXP_DBL wrapPhase(FIXP_DBL phase) {
-  while (phase < (FIXP_DBL)0)
-    phase += PIx2__IPD;
-  while (phase >= PIx2__IPD)
-    phase -= PIx2__IPD;
-  FDK_ASSERT((phase >= (FIXP_DBL)0) && (phase < PIx2__IPD));
+    while (phase < (FIXP_DBL)0)
+        phase += PIx2__IPD;
+    while (phase >= PIx2__IPD)
+        phase -= PIx2__IPD;
+    FDK_ASSERT((phase >= (FIXP_DBL)0) && (phase < PIx2__IPD));
 
-  return phase;
+    return phase;
 }
 
 /*******************************************************************************
@@ -603,38 +604,38 @@ static void param2UMX_PS_IPD_OPD__FDK(
     FIXP_DBL H21[MAX_PARAMETER_BANDS], FIXP_DBL H22[MAX_PARAMETER_BANDS],
     FIXP_DBL c_l[MAX_PARAMETER_BANDS], FIXP_DBL c_r[MAX_PARAMETER_BANDS],
     int ottBoxIndx, int parameterSetIndx, int residualBands) {
-  INT band;
-  FIXP_DBL opd[2 * MAX_PARAMETER_BANDS];
-  INT numOttBands = self->numOttBands[ottBoxIndx];
-  INT numIpdBands;
+    INT band;
+    FIXP_DBL opd[2 * MAX_PARAMETER_BANDS];
+    INT numOttBands = self->numOttBands[ottBoxIndx];
+    INT numIpdBands;
 
-  numIpdBands = frame->phaseMode ? self->numOttBandsIPD : 0;
+    numIpdBands = frame->phaseMode ? self->numOttBandsIPD : 0;
 
-  FDK_ASSERT(self->residualCoding == 0);
+    FDK_ASSERT(self->residualCoding == 0);
 
-  param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
-                         self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
-                         self->numOttBands[ottBoxIndx], residualBands, H11, H12,
-                         H21, H22, c_l, c_r);
+    param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
+                           self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
+                           self->numOttBands[ottBoxIndx], residualBands, H11, H12,
+                           H21, H22, c_l, c_r);
 
-  for (band = self->numOttBands[ottBoxIndx]; band < self->numParameterBands;
-       band++) {
-    H11[band] = H21[band] = H12[band] = H22[band] = FL2FXCONST_DBL(0.f);
-  }
-
-  if (frame->phaseMode) {
-    calculateOpd(self, ottBoxIndx, parameterSetIndx, opd);
-
-    for (band = 0; band < numIpdBands; band++) {
-      self->PhaseLeft__FDK[band] = wrapPhase(opd[2 * band]);
-      self->PhaseRight__FDK[band] = wrapPhase(opd[2 * band + 1]);
+    for (band = self->numOttBands[ottBoxIndx]; band < self->numParameterBands;
+            band++) {
+        H11[band] = H21[band] = H12[band] = H22[band] = FL2FXCONST_DBL(0.f);
     }
-  }
 
-  for (band = numIpdBands; band < numOttBands; band++) {
-    self->PhaseLeft__FDK[band] = FL2FXCONST_DBL(0.0f);
-    self->PhaseRight__FDK[band] = FL2FXCONST_DBL(0.0f);
-  }
+    if (frame->phaseMode) {
+        calculateOpd(self, ottBoxIndx, parameterSetIndx, opd);
+
+        for (band = 0; band < numIpdBands; band++) {
+            self->PhaseLeft__FDK[band] = wrapPhase(opd[2 * band]);
+            self->PhaseRight__FDK[band] = wrapPhase(opd[2 * band + 1]);
+        }
+    }
+
+    for (band = numIpdBands; band < numOttBands; band++) {
+        self->PhaseLeft__FDK[band] = FL2FXCONST_DBL(0.0f);
+        self->PhaseRight__FDK[band] = FL2FXCONST_DBL(0.0f);
+    }
 }
 
 FDK_INLINE void param2UMX_Prediction_Core__FDK(
@@ -643,154 +644,154 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
     int cldIdx, int iccIdx, int ipdIdx, int band, int numOttBandsIPD,
     int resBands) {
 #define MAX_WEIGHT (1.2f)
-  FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
+    FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
-  if ((band < numOttBandsIPD) && (cldIdx == 15) && (iccIdx == 0) &&
-      (ipdIdx == 8)) {
-    const FIXP_DBL gain =
-        FL2FXCONST_DBL(0.5f / MAX_WEIGHT) >> SCALE_PARAM_M2_212_PRED;
+    if ((band < numOttBandsIPD) && (cldIdx == 15) && (iccIdx == 0) &&
+            (ipdIdx == 8)) {
+        const FIXP_DBL gain =
+            FL2FXCONST_DBL(0.5f / MAX_WEIGHT) >> SCALE_PARAM_M2_212_PRED;
 
-    *H11re = gain;
-    if (band < resBands) {
-      *H21re = gain;
-      *H12re = gain;
-      *H22re = -gain;
+        *H11re = gain;
+        if (band < resBands) {
+            *H21re = gain;
+            *H12re = gain;
+            *H22re = -gain;
+        } else {
+            *H21re = -gain;
+            *H12re = (FIXP_DBL)0;
+            *H22re = (FIXP_DBL)0;
+        }
+        if ((H11im != NULL) &&
+                (H21im != NULL) /*&& (H12im!=NULL) && (H22im!=NULL)*/) {
+            *H11im = (FIXP_DBL)0;
+            *H21im = (FIXP_DBL)0;
+            /* *H12im = (FIXP_DBL)0; */
+            /* *H22im = (FIXP_DBL)0; */
+        }
     } else {
-      *H21re = -gain;
-      *H12re = (FIXP_DBL)0;
-      *H22re = (FIXP_DBL)0;
+        const FIXP_DBL one_m = (FIXP_DBL)MAXVAL_DBL;
+        const int one_e = 0;
+        /* iidLin = sqrt(cld); */
+        FIXP_DBL iidLin_m = sqrt_CLD_m[cldIdx];
+        int iidLin_e = sqrt_CLD_e[cldIdx];
+        /* iidLin2 = cld; */
+        FIXP_DBL iidLin2_m = CLD_m[cldIdx];
+        int iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
+        /* iidLin21 = iidLin2 + 1.0f; */
+        int iidLin21_e;
+        FIXP_DBL iidLin21_m =
+            fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
+        /* iidIcc2 = iidLin * icc * 2.0f; */
+        FIXP_CFG icc = dequantICC__FDK[iccIdx];
+        int iidIcc2_e = iidLin_e + 1;
+        FIXP_DBL iidIcc2_m = fMult(iidLin_m, icc);
+        FIXP_DBL temp_m, sqrt_temp_m, inv_temp_m, weight_m;
+        int temp_e, sqrt_temp_e, inv_temp_e, weight_e, scale;
+        FIXP_DBL cosIpd, sinIpd;
+
+        cosIpd = COS_IPD((band < numOttBandsIPD) ? ipdIdx : 0);
+        sinIpd = SIN_IPD((band < numOttBandsIPD) ? ipdIdx : 0);
+
+        /* temp    = iidLin21 + iidIcc2 * cosIpd; */
+        temp_m = fAddNorm(iidLin21_m, iidLin21_e, fMult(iidIcc2_m, cosIpd),
+                          iidIcc2_e, &temp_e);
+
+        /* calculate 1/temp needed later */
+        inv_temp_e = temp_e;
+        inv_temp_m = invFixp(temp_m, &inv_temp_e);
+
+        /* 1/weight = sqrt(temp) * 1/sqrt(iidLin21) */
+        if (temp_e & 1) {
+            sqrt_temp_m = temp_m >> 1;
+            sqrt_temp_e = (temp_e + 1) >> 1;
+        } else {
+            sqrt_temp_m = temp_m;
+            sqrt_temp_e = temp_e >> 1;
+        }
+        sqrt_temp_m = sqrtFixp(sqrt_temp_m);
+        if (iidLin21_e & 1) {
+            iidLin21_e += 1;
+            iidLin21_m >>= 1;
+        }
+        /* weight_[m,e] is actually 1/weight in the next few lines */
+        weight_m = invSqrtNorm2(iidLin21_m, &weight_e);
+        weight_e -= iidLin21_e >> 1;
+        weight_m = fMult(sqrt_temp_m, weight_m);
+        weight_e += sqrt_temp_e;
+        scale = fNorm(weight_m);
+        weight_m = scaleValue(weight_m, scale);
+        weight_e -= scale;
+        /* weight = 0.5 * max(1/weight, 1/maxWeight) */
+        if ((weight_e < 0) ||
+                ((weight_e == 0) && (weight_m < FL2FXCONST_DBL(1.f / MAX_WEIGHT)))) {
+            weight_m = FL2FXCONST_DBL(1.f / MAX_WEIGHT);
+            weight_e = 0;
+        }
+        weight_e -= 1;
+
+        {
+            FIXP_DBL alphaRe_m, alphaIm_m, accu_m;
+            int alphaRe_e, alphaIm_e, accu_e;
+            /* alphaRe = (1.0f - iidLin2) / temp; */
+            alphaRe_m = fAddNorm(one_m, one_e, -iidLin2_m, iidLin2_e, &alphaRe_e);
+            alphaRe_m = fMult(alphaRe_m, inv_temp_m);
+            alphaRe_e += inv_temp_e;
+
+            /* H11re = weight - alphaRe * weight; */
+            /* H21re = weight + alphaRe * weight; */
+            accu_m = fMult(alphaRe_m, weight_m);
+            accu_e = alphaRe_e + weight_e;
+            {
+                int accu2_e;
+                FIXP_DBL accu2_m;
+                accu2_m = fAddNorm(weight_m, weight_e, -accu_m, accu_e, &accu2_e);
+                *H11re = scaleValue(accu2_m, accu2_e - SCALE_PARAM_M2_212_PRED);
+                accu2_m = fAddNorm(weight_m, weight_e, accu_m, accu_e, &accu2_e);
+                *H21re = scaleValue(accu2_m, accu2_e - SCALE_PARAM_M2_212_PRED);
+            }
+
+            if ((H11im != NULL) &&
+                    (H21im != NULL) /*&& (H12im != NULL) && (H22im != NULL)*/) {
+                /* alphaIm = -iidIcc2 * sinIpd / temp; */
+                alphaIm_m = fMult(-iidIcc2_m, sinIpd);
+                alphaIm_m = fMult(alphaIm_m, inv_temp_m);
+                alphaIm_e = iidIcc2_e + inv_temp_e;
+                /* H11im = -alphaIm * weight; */
+                /* H21im =  alphaIm * weight; */
+                accu_m = fMult(alphaIm_m, weight_m);
+                accu_e = alphaIm_e + weight_e;
+                accu_m = scaleValue(accu_m, accu_e - SCALE_PARAM_M2_212_PRED);
+                *H11im = -accu_m;
+                *H21im = accu_m;
+
+                /* *H12im = (FIXP_DBL)0; */
+                /* *H22im = (FIXP_DBL)0; */
+            }
+        }
+        if (band < resBands) {
+            FIXP_DBL weight =
+                scaleValue(weight_m, weight_e - SCALE_PARAM_M2_212_PRED);
+            *H12re = weight;
+            *H22re = -weight;
+        } else {
+            /* beta = 2.0f * iidLin * (float) sqrt(1.0f - icc * icc) * weight / temp;
+             */
+            FIXP_DBL beta_m;
+            int beta_e;
+            beta_m = FX_SGL2FX_DBL(sqrt_one_minus_ICC2[iccIdx]);
+            beta_e = 1; /* multipication with 2.0f */
+            beta_m = fMult(beta_m, weight_m);
+            beta_e += weight_e;
+            beta_m = fMult(beta_m, iidLin_m);
+            beta_e += iidLin_e;
+            beta_m = fMult(beta_m, inv_temp_m);
+            beta_e += inv_temp_e;
+
+            beta_m = scaleValue(beta_m, beta_e - SCALE_PARAM_M2_212_PRED);
+            *H12re = beta_m;
+            *H22re = -beta_m;
+        }
     }
-    if ((H11im != NULL) &&
-        (H21im != NULL) /*&& (H12im!=NULL) && (H22im!=NULL)*/) {
-      *H11im = (FIXP_DBL)0;
-      *H21im = (FIXP_DBL)0;
-      /* *H12im = (FIXP_DBL)0; */
-      /* *H22im = (FIXP_DBL)0; */
-    }
-  } else {
-    const FIXP_DBL one_m = (FIXP_DBL)MAXVAL_DBL;
-    const int one_e = 0;
-    /* iidLin = sqrt(cld); */
-    FIXP_DBL iidLin_m = sqrt_CLD_m[cldIdx];
-    int iidLin_e = sqrt_CLD_e[cldIdx];
-    /* iidLin2 = cld; */
-    FIXP_DBL iidLin2_m = CLD_m[cldIdx];
-    int iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
-    /* iidLin21 = iidLin2 + 1.0f; */
-    int iidLin21_e;
-    FIXP_DBL iidLin21_m =
-        fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
-    /* iidIcc2 = iidLin * icc * 2.0f; */
-    FIXP_CFG icc = dequantICC__FDK[iccIdx];
-    int iidIcc2_e = iidLin_e + 1;
-    FIXP_DBL iidIcc2_m = fMult(iidLin_m, icc);
-    FIXP_DBL temp_m, sqrt_temp_m, inv_temp_m, weight_m;
-    int temp_e, sqrt_temp_e, inv_temp_e, weight_e, scale;
-    FIXP_DBL cosIpd, sinIpd;
-
-    cosIpd = COS_IPD((band < numOttBandsIPD) ? ipdIdx : 0);
-    sinIpd = SIN_IPD((band < numOttBandsIPD) ? ipdIdx : 0);
-
-    /* temp    = iidLin21 + iidIcc2 * cosIpd; */
-    temp_m = fAddNorm(iidLin21_m, iidLin21_e, fMult(iidIcc2_m, cosIpd),
-                      iidIcc2_e, &temp_e);
-
-    /* calculate 1/temp needed later */
-    inv_temp_e = temp_e;
-    inv_temp_m = invFixp(temp_m, &inv_temp_e);
-
-    /* 1/weight = sqrt(temp) * 1/sqrt(iidLin21) */
-    if (temp_e & 1) {
-      sqrt_temp_m = temp_m >> 1;
-      sqrt_temp_e = (temp_e + 1) >> 1;
-    } else {
-      sqrt_temp_m = temp_m;
-      sqrt_temp_e = temp_e >> 1;
-    }
-    sqrt_temp_m = sqrtFixp(sqrt_temp_m);
-    if (iidLin21_e & 1) {
-      iidLin21_e += 1;
-      iidLin21_m >>= 1;
-    }
-    /* weight_[m,e] is actually 1/weight in the next few lines */
-    weight_m = invSqrtNorm2(iidLin21_m, &weight_e);
-    weight_e -= iidLin21_e >> 1;
-    weight_m = fMult(sqrt_temp_m, weight_m);
-    weight_e += sqrt_temp_e;
-    scale = fNorm(weight_m);
-    weight_m = scaleValue(weight_m, scale);
-    weight_e -= scale;
-    /* weight = 0.5 * max(1/weight, 1/maxWeight) */
-    if ((weight_e < 0) ||
-        ((weight_e == 0) && (weight_m < FL2FXCONST_DBL(1.f / MAX_WEIGHT)))) {
-      weight_m = FL2FXCONST_DBL(1.f / MAX_WEIGHT);
-      weight_e = 0;
-    }
-    weight_e -= 1;
-
-    {
-      FIXP_DBL alphaRe_m, alphaIm_m, accu_m;
-      int alphaRe_e, alphaIm_e, accu_e;
-      /* alphaRe = (1.0f - iidLin2) / temp; */
-      alphaRe_m = fAddNorm(one_m, one_e, -iidLin2_m, iidLin2_e, &alphaRe_e);
-      alphaRe_m = fMult(alphaRe_m, inv_temp_m);
-      alphaRe_e += inv_temp_e;
-
-      /* H11re = weight - alphaRe * weight; */
-      /* H21re = weight + alphaRe * weight; */
-      accu_m = fMult(alphaRe_m, weight_m);
-      accu_e = alphaRe_e + weight_e;
-      {
-        int accu2_e;
-        FIXP_DBL accu2_m;
-        accu2_m = fAddNorm(weight_m, weight_e, -accu_m, accu_e, &accu2_e);
-        *H11re = scaleValue(accu2_m, accu2_e - SCALE_PARAM_M2_212_PRED);
-        accu2_m = fAddNorm(weight_m, weight_e, accu_m, accu_e, &accu2_e);
-        *H21re = scaleValue(accu2_m, accu2_e - SCALE_PARAM_M2_212_PRED);
-      }
-
-      if ((H11im != NULL) &&
-          (H21im != NULL) /*&& (H12im != NULL) && (H22im != NULL)*/) {
-        /* alphaIm = -iidIcc2 * sinIpd / temp; */
-        alphaIm_m = fMult(-iidIcc2_m, sinIpd);
-        alphaIm_m = fMult(alphaIm_m, inv_temp_m);
-        alphaIm_e = iidIcc2_e + inv_temp_e;
-        /* H11im = -alphaIm * weight; */
-        /* H21im =  alphaIm * weight; */
-        accu_m = fMult(alphaIm_m, weight_m);
-        accu_e = alphaIm_e + weight_e;
-        accu_m = scaleValue(accu_m, accu_e - SCALE_PARAM_M2_212_PRED);
-        *H11im = -accu_m;
-        *H21im = accu_m;
-
-        /* *H12im = (FIXP_DBL)0; */
-        /* *H22im = (FIXP_DBL)0; */
-      }
-    }
-    if (band < resBands) {
-      FIXP_DBL weight =
-          scaleValue(weight_m, weight_e - SCALE_PARAM_M2_212_PRED);
-      *H12re = weight;
-      *H22re = -weight;
-    } else {
-      /* beta = 2.0f * iidLin * (float) sqrt(1.0f - icc * icc) * weight / temp;
-       */
-      FIXP_DBL beta_m;
-      int beta_e;
-      beta_m = FX_SGL2FX_DBL(sqrt_one_minus_ICC2[iccIdx]);
-      beta_e = 1; /* multipication with 2.0f */
-      beta_m = fMult(beta_m, weight_m);
-      beta_e += weight_e;
-      beta_m = fMult(beta_m, iidLin_m);
-      beta_e += iidLin_e;
-      beta_m = fMult(beta_m, inv_temp_m);
-      beta_e += inv_temp_e;
-
-      beta_m = scaleValue(beta_m, beta_e - SCALE_PARAM_M2_212_PRED);
-      *H12re = beta_m;
-      *H22re = -beta_m;
-    }
-  }
 }
 
 static void param2UMX_Prediction__FDK(spatialDec *self, FIXP_DBL *H11re,
@@ -799,19 +800,19 @@ static void param2UMX_Prediction__FDK(spatialDec *self, FIXP_DBL *H11re,
                                       FIXP_DBL *H21im, FIXP_DBL *H22re,
                                       FIXP_DBL *H22im, int ottBoxIndx,
                                       int parameterSetIndx, int resBands) {
-  int band;
-  FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
+    int band;
+    FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
-  for (band = 0; band < self->numParameterBands; band++) {
-    int cldIdx = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
-    int iccIdx = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
-    int ipdIdx = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
+    for (band = 0; band < self->numParameterBands; band++) {
+        int cldIdx = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
+        int iccIdx = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
+        int ipdIdx = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
 
-    param2UMX_Prediction_Core__FDK(
-        &H11re[band], (H11im ? &H11im[band] : NULL), &H12re[band], NULL,
-        &H21re[band], (H21im ? &H21im[band] : NULL), &H22re[band], NULL, cldIdx,
-        iccIdx, ipdIdx, band, self->numOttBandsIPD, resBands);
-  }
+        param2UMX_Prediction_Core__FDK(
+            &H11re[band], (H11im ? &H11im[band] : NULL), &H12re[band], NULL,
+            &H21re[band], (H21im ? &H21im[band] : NULL), &H22re[band], NULL, cldIdx,
+            iccIdx, ipdIdx, band, self->numOttBandsIPD, resBands);
+    }
 }
 
 /*******************************************************************************
@@ -828,24 +829,26 @@ static void param2UMX_Prediction__FDK(spatialDec *self, FIXP_DBL *H11re,
 
 SACDEC_ERROR initM1andM2(spatialDec *self, int initStatesFlag,
                          int configChanged) {
-  SACDEC_ERROR err = MPS_OK;
+    SACDEC_ERROR err = MPS_OK;
 
-  self->bOverwriteM1M2prev = (configChanged && !initStatesFlag) ? 1 : 0;
+    self->bOverwriteM1M2prev = (configChanged && !initStatesFlag) ? 1 : 0;
 
-  { self->numM2rows = self->numOutputChannels; }
-
-  if (initStatesFlag) {
-    int i, j, k;
-
-    for (i = 0; i < self->numM2rows; i++) {
-      for (j = 0; j < self->numVChannels; j++) {
-        for (k = 0; k < MAX_PARAMETER_BANDS; k++) {
-          self->M2Real__FDK[i][j][k] = FL2FXCONST_DBL(0);
-          self->M2RealPrev__FDK[i][j][k] = FL2FXCONST_DBL(0);
-        }
-      }
+    {
+        self->numM2rows = self->numOutputChannels;
     }
-  }
 
-  return err;
+    if (initStatesFlag) {
+        int i, j, k;
+
+        for (i = 0; i < self->numM2rows; i++) {
+            for (j = 0; j < self->numVChannels; j++) {
+                for (k = 0; k < MAX_PARAMETER_BANDS; k++) {
+                    self->M2Real__FDK[i][j][k] = FL2FXCONST_DBL(0);
+                    self->M2RealPrev__FDK[i][j][k] = FL2FXCONST_DBL(0);
+                }
+            }
+        }
+    }
+
+    return err;
 }

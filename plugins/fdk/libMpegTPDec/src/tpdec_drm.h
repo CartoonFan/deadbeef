@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 #include "FDK_crc.h"
 
 typedef struct {
-  FDK_CRCINFO crcInfo; /* CRC state info */
-  USHORT crcReadValue; /* CRC value read from bitstream data */
+    FDK_CRCINFO crcInfo; /* CRC state info */
+    USHORT crcReadValue; /* CRC value read from bitstream data */
 
 } STRUCT_DRM;
 
@@ -194,9 +194,9 @@ TRANSPORTDEC_ERROR drmRead_DecodeHeader(HANDLE_DRM pDrm,
  * \return  Total element count including all SCE, CPE and LFE.
  */
 TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *pAsc,
-                                              HANDLE_FDK_BITSTREAM hBs,
-                                              CSTpCallBacks *cb,
-                                              const UCHAR configMode,
-                                              const UCHAR configChanged);
+        HANDLE_FDK_BITSTREAM hBs,
+        CSTpCallBacks *cb,
+        const UCHAR configMode,
+        const UCHAR configChanged);
 
 #endif /* TPDEC_DRM_H */

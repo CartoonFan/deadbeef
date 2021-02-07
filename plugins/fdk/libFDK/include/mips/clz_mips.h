@@ -109,22 +109,22 @@ amm-info@iis.fraunhofer.de
 
 #define FUNCTION_fixnormz_D
 inline INT fixnormz_D(LONG value) {
-  INT result;
-  __asm__("clz %0,%1" : "=d"(result) : "d"(value));
+    INT result;
+    __asm__("clz %0,%1" : "=d"(result) : "d"(value));
 
-  return result;
+    return result;
 }
 
 #elif defined(__mips__) && (__GNUC__ == 3) && (__mips >= 32)
 
 #define FUNCTION_fixnormz_D
 INT inline fixnormz_D(LONG value) {
-  INT result;
-  __asm__("clz %[result], %[value]"
-          : [ result ] "=r"(result)
-          : [ value ] "r"(value));
+    INT result;
+    __asm__("clz %[result], %[value]"
+            : [ result ] "=r"(result)
+            : [ value ] "r"(value));
 
-  return result;
+    return result;
 }
 
 #endif

@@ -190,7 +190,8 @@ const INT v_Huff_envelopeLevelC10T[121] = {
     0x0007FFED, 0x0007FFEE, 0x0007FFEF, 0x0007FFF0, 0x0007FFF1, 0x0007FFF2,
     0x0007FFF3, 0x0007FFF4, 0x0007FFF5, 0x0007FFF6, 0x0007FFF7, 0x0007FFF8,
     0x0007FFF9, 0x0007FFFA, 0x0007FFFB, 0x0007FFFC, 0x0007FFFD, 0x0007FFFE,
-    0x0007FFFF};
+    0x0007FFFF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -208,7 +209,8 @@ const UCHAR v_Huff_envelopeLevelL10T[121] = {
     0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
     0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
     0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13};
+    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13
+};
 
 /* direction: freq
    contents : codewords
@@ -236,7 +238,8 @@ const INT v_Huff_envelopeLevelC10F[121] = {
     0x0007FFE4, 0x000FFFF1, 0x0003FFEC, 0x000FFFF2, 0x000FFFF3, 0x0007FFE5,
     0x0007FFE6, 0x000FFFF4, 0x000FFFF5, 0x000FFFF6, 0x000FFFF7, 0x000FFFF8,
     0x000FFFF9, 0x000FFFFA, 0x000FFFFB, 0x000FFFFC, 0x000FFFFD, 0x000FFFFE,
-    0x000FFFFF};
+    0x000FFFFF
+};
 
 /* direction: freq
    contents : codeword lengths
@@ -254,7 +257,8 @@ const UCHAR v_Huff_envelopeLevelL10F[121] = {
     0x0E, 0x10, 0x10, 0x11, 0x11, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12,
     0x12, 0x14, 0x13, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x13, 0x14,
     0x14, 0x14, 0x14, 0x13, 0x14, 0x12, 0x14, 0x14, 0x13, 0x13, 0x14,
-    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14};
+    0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14
+};
 
 /*******************************************************************************/
 /* table       : envelope balance, 1.5 dB */
@@ -278,7 +282,8 @@ const INT bookSbrEnvBalanceC10T[49] = {
     0x00000FFD, 0x00007FF0, 0x0000FFE3, 0x0000FFF5, 0x0000FFF6, 0x0000FFF7,
     0x0000FFF8, 0x0000FFF9, 0x0000FFFA, 0x0001FFF6, 0x0001FFF7, 0x0001FFF8,
     0x0001FFF9, 0x0001FFFA, 0x0001FFFB, 0x0001FFFC, 0x0001FFFD, 0x0001FFFE,
-    0x0001FFFF};
+    0x0001FFFF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -290,7 +295,8 @@ const UCHAR bookSbrEnvBalanceL10T[49] = {
     0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x0C, 0x0B,
     0x09, 0x07, 0x05, 0x03, 0x01, 0x02, 0x04, 0x06, 0x08, 0x0B,
     0x0C, 0x0F, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x11,
-    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11};
+    0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11
+};
 
 /* direction: freq
    contents : codewords
@@ -306,7 +312,8 @@ const INT bookSbrEnvBalanceC10F[49] = {
     0x00000FFE, 0x00007FFA, 0x0000FFF6, 0x0003FFF1, 0x0003FFF2, 0x0003FFF3,
     0x0003FFF4, 0x0003FFF5, 0x0003FFF6, 0x0003FFF7, 0x0003FFF8, 0x0003FFF9,
     0x0003FFFA, 0x0003FFFB, 0x0003FFFC, 0x0003FFFD, 0x0003FFFE, 0x0007FFFE,
-    0x0007FFFF};
+    0x0007FFFF
+};
 
 /* direction: freq
    contents : codeword lengths
@@ -318,7 +325,8 @@ const UCHAR bookSbrEnvBalanceL10F[49] = {
     0x12, 0x12, 0x12, 0x12, 0x12, 0x10, 0x11, 0x0E, 0x0B, 0x0B,
     0x08, 0x07, 0x04, 0x02, 0x01, 0x03, 0x05, 0x06, 0x09, 0x0B,
     0x0C, 0x0F, 0x10, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12,
-    0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x13, 0x13};
+    0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x13, 0x13
+};
 
 /*******************************************************************************/
 /* table       : envelope level, 3.0 dB */
@@ -343,7 +351,8 @@ const INT v_Huff_envelopeLevelC11T[63] = {
     0x0001FFF5, 0x0003FFEC, 0x0007FFED, 0x0007FFEE, 0x0007FFEF, 0x0007FFF0,
     0x0007FFF1, 0x0007FFF2, 0x0007FFF3, 0x0007FFF4, 0x0007FFF5, 0x0007FFF6,
     0x0007FFF7, 0x0007FFF8, 0x0007FFF9, 0x0007FFFA, 0x0007FFFB, 0x0007FFFC,
-    0x0007FFFD, 0x0007FFFE, 0x0007FFFF};
+    0x0007FFFD, 0x0007FFFE, 0x0007FFFF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -356,7 +365,8 @@ const UCHAR v_Huff_envelopeLevelL11T[63] = {
     0x0E, 0x0E, 0x0D, 0x0C, 0x0B, 0x08, 0x06, 0x04, 0x02, 0x01, 0x03,
     0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0E, 0x0E, 0x0F, 0x10, 0x11, 0x12,
     0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13,
-    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13};
+    0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13, 0x13
+};
 
 /* direction: freq
    contents : codewords
@@ -374,7 +384,8 @@ const INT v_Huff_envelopeLevelC11F[63] = {
     0x00007FFA, 0x0000FFF8, 0x0000FFF9, 0x0001FFF6, 0x0001FFF7, 0x0003FFF5,
     0x0003FFF6, 0x0003FFF1, 0x000FFFF8, 0x0007FFF1, 0x0007FFF2, 0x0007FFF3,
     0x000FFFF9, 0x0007FFF7, 0x0007FFF4, 0x000FFFFA, 0x000FFFFB, 0x000FFFFC,
-    0x000FFFFD, 0x000FFFFE, 0x000FFFFF};
+    0x000FFFFD, 0x000FFFFE, 0x000FFFFF
+};
 
 /* direction: freq
    contents : codeword lengths
@@ -387,7 +398,8 @@ const UCHAR v_Huff_envelopeLevelL11F[63] = {
     0x0E, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x06, 0x04, 0x02, 0x01, 0x03,
     0x05, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x0F, 0x10,
     0x10, 0x11, 0x11, 0x12, 0x12, 0x12, 0x14, 0x13, 0x13, 0x13, 0x14,
-    0x13, 0x13, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14};
+    0x13, 0x13, 0x14, 0x14, 0x14, 0x14, 0x14, 0x14
+};
 
 /*******************************************************************************/
 /* table       : envelope balance, 3.0 dB */
@@ -407,7 +419,8 @@ const INT bookSbrEnvBalanceC11T[25] = {
     0x00001FF7, 0x00001FF8, 0x00000FF8, 0x000000FE, 0x0000007E,
     0x0000000E, 0x00000006, 0x00000000, 0x00000002, 0x0000001E,
     0x0000003E, 0x000001FE, 0x00001FF9, 0x00001FFA, 0x00001FFB,
-    0x00001FFC, 0x00001FFD, 0x00001FFE, 0x00003FFE, 0x00003FFF};
+    0x00001FFC, 0x00001FFD, 0x00001FFE, 0x00003FFE, 0x00003FFF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -417,7 +430,8 @@ const INT bookSbrEnvBalanceC11T[25] = {
 const UCHAR bookSbrEnvBalanceL11T[25] = {
     0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0C, 0x08,
     0x07, 0x04, 0x03, 0x01, 0x02, 0x05, 0x06, 0x09, 0x0D,
-    0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0E, 0x0E};
+    0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0E, 0x0E
+};
 
 /* direction: freq
    contents : codewords
@@ -429,7 +443,8 @@ const INT bookSbrEnvBalanceC11F[25] = {
     0x00003FF8, 0x00003FF9, 0x000007FC, 0x000000FE, 0x0000007E,
     0x0000000E, 0x00000002, 0x00000000, 0x00000006, 0x0000001E,
     0x0000003E, 0x000001FE, 0x00000FFA, 0x00001FF6, 0x00003FFA,
-    0x00003FFB, 0x00003FFC, 0x00003FFD, 0x00003FFE, 0x00003FFF};
+    0x00003FFB, 0x00003FFC, 0x00003FFD, 0x00003FFE, 0x00003FFF
+};
 
 /* direction: freq
    contents : codeword lengths
@@ -439,7 +454,8 @@ const INT bookSbrEnvBalanceC11F[25] = {
 const UCHAR bookSbrEnvBalanceL11F[25] = {
     0x0D, 0x0D, 0x0D, 0x0D, 0x0D, 0x0E, 0x0E, 0x0B, 0x08,
     0x07, 0x04, 0x02, 0x01, 0x03, 0x05, 0x06, 0x09, 0x0C,
-    0x0D, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E};
+    0x0D, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E, 0x0E
+};
 
 /*******************************************************************************/
 /* table       : noise level, 3.0 dB */
@@ -464,7 +480,8 @@ const INT v_Huff_NoiseLevelC11T[63] = {
     0x00001FCD, 0x00001FED, 0x00001FEE, 0x00001FEF, 0x00001FF0, 0x00001FF1,
     0x00001FF2, 0x00001FF3, 0x00001FF4, 0x00001FF5, 0x00001FF6, 0x00001FF7,
     0x00001FF8, 0x00001FF9, 0x00001FFA, 0x00001FFB, 0x00001FFC, 0x00001FFD,
-    0x00001FFE, 0x00003FFE, 0x00003FFF};
+    0x00001FFE, 0x00003FFE, 0x00003FFF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -482,7 +499,8 @@ const UCHAR v_Huff_NoiseLevelL11T[63] = {
     0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D,
     0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D,
     0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D, 0x0000000D,
-    0x0000000D, 0x0000000E, 0x0000000E};
+    0x0000000D, 0x0000000E, 0x0000000E
+};
 
 /*******************************************************************************/
 /* table       : noise balance, 3.0 dB */
@@ -502,7 +520,8 @@ const INT bookSbrNoiseBalanceC11T[25] = {
     0x000000F1, 0x000000F2, 0x000000F3, 0x000000F4, 0x000000F5,
     0x0000001C, 0x00000002, 0x00000000, 0x00000006, 0x0000003A,
     0x000000F6, 0x000000F7, 0x000000F8, 0x000000F9, 0x000000FA,
-    0x000000FB, 0x000000FC, 0x000000FD, 0x000000FE, 0x000000FF};
+    0x000000FB, 0x000000FC, 0x000000FD, 0x000000FE, 0x000000FF
+};
 
 /* direction: time
    contents : codeword lengths
@@ -512,7 +531,8 @@ const INT bookSbrNoiseBalanceC11T[25] = {
 const UCHAR bookSbrNoiseBalanceL11T[25] = {
     0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
     0x08, 0x05, 0x02, 0x01, 0x03, 0x06, 0x08, 0x08, 0x08,
-    0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08};
+    0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08
+};
 
 /*
    tuningTable
@@ -613,148 +633,211 @@ const sbrTuningTable_t sbrTuningTable[] = {
     /*** stereo ***/
     /* 08/16 kHz dual rate */
     {CODEC_AAC, 16000, 24000, 8000, 2, 6, 6, 9, 7, 1, 0, -3, SBR_SWITCH_LRC, 3},
-    {CODEC_AAC, 24000, 28000, 8000, 2, 9, 9, 11, 9, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 36000, 8000, 2, 11, 9, 11, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 8000, 2, 13, 11, 13, 11, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 44000, 52000, 8000, 2, 14, 12, 13, 12, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 52000, 60000, 8000, 2, 14, 14, 13, 13, 3, 0, -3, SBR_SWITCH_LRC,
-     1},
-    {CODEC_AAC, 60000, 76000, 8000, 2, 14, 14, 13, 13, 3, 0, -3, SBR_LEFT_RIGHT,
-     1},
-    {CODEC_AAC, 76000, 128001, 8000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 24000, 28000, 8000, 2, 9, 9, 11, 9, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 36000, 8000, 2, 11, 9, 11, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 8000, 2, 13, 11, 13, 11, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 44000, 52000, 8000, 2, 14, 12, 13, 12, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 52000, 60000, 8000, 2, 14, 14, 13, 13, 3, 0, -3, SBR_SWITCH_LRC,
+        1
+    },
+    {   CODEC_AAC, 60000, 76000, 8000, 2, 14, 14, 13, 13, 3, 0, -3, SBR_LEFT_RIGHT,
+        1
+    },
+    {   CODEC_AAC, 76000, 128001, 8000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 11/22 kHz dual rate */
-    {CODEC_AAC, 16000, 24000, 11025, 2, 7, 5, 9, 7, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 24000, 28000, 11025, 2, 10, 8, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 36000, 11025, 2, 12, 8, 12, 8, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 11025, 2, 13, 9, 13, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 44000, 52000, 11025, 2, 14, 11, 13, 11, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AAC, 52000, 60000, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AAC, 60000, 76000, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 76000, 128001, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 16000, 24000, 11025, 2, 7, 5, 9, 7, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 24000, 28000, 11025, 2, 10, 8, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 36000, 11025, 2, 12, 8, 12, 8, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 11025, 2, 13, 9, 13, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 44000, 52000, 11025, 2, 14, 11, 13, 11, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AAC, 52000, 60000, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AAC, 60000, 76000, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 76000, 128001, 11025, 2, 15, 15, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 12/24 kHz dual rate */
-    {CODEC_AAC, 16000, 24000, 12000, 2, 6, 4, 9, 7, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 24000, 28000, 12000, 2, 9, 7, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 36000, 12000, 2, 11, 7, 12, 8, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 12000, 2, 12, 9, 12, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 44000, 52000, 12000, 2, 13, 12, 13, 12, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AAC, 52000, 60000, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AAC, 60000, 76000, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 76000, 128001, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 16000, 24000, 12000, 2, 6, 4, 9, 7, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 24000, 28000, 12000, 2, 9, 7, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 36000, 12000, 2, 11, 7, 12, 8, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 12000, 2, 12, 9, 12, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 44000, 52000, 12000, 2, 13, 12, 13, 12, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AAC, 52000, 60000, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AAC, 60000, 76000, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 76000, 128001, 12000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 16/32 kHz dual rate */
-    {CODEC_AAC, 16000, 24000, 16000, 2, 4, 2, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 24000, 28000, 16000, 2, 8, 7, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 36000, 16000, 2, 10, 9, 12, 11, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 16000, 2, 13, 13, 13, 13, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AAC, 44000, 52000, 16000, 2, 14, 14, 13, 13, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AAC, 52000, 60000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AAC, 60000, 76000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 76000, 128001, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 16000, 24000, 16000, 2, 4, 2, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 24000, 28000, 16000, 2, 8, 7, 10, 8, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 36000, 16000, 2, 10, 9, 12, 11, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 16000, 2, 13, 13, 13, 13, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AAC, 44000, 52000, 16000, 2, 14, 14, 13, 13, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AAC, 52000, 60000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AAC, 60000, 76000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 76000, 128001, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 22.05/44.1 kHz dual rate */
-    {CODEC_AAC, 16000, 24000, 22050, 2, 2, 1, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 24000, 28000, 22050, 2, 5, 4, 6, 5, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 32000, 22050, 2, 5, 4, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 32000, 36000, 22050, 2, 7, 6, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 22050, 2, 10, 10, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 44000, 52000, 22050, 2, 12, 12, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 52000, 60000, 22050, 2, 13, 13, 10, 10, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AAC, 60000, 76000, 22050, 2, 14, 14, 12, 12, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 76000, 128001, 22050, 2, 14, 14, 12, 12, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 16000, 24000, 22050, 2, 2, 1, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 24000, 28000, 22050, 2, 5, 4, 6, 5, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 32000, 22050, 2, 5, 4, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 32000, 36000, 22050, 2, 7, 6, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 22050, 2, 10, 10, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 44000, 52000, 22050, 2, 12, 12, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 52000, 60000, 22050, 2, 13, 13, 10, 10, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AAC, 60000, 76000, 22050, 2, 14, 14, 12, 12, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 76000, 128001, 22050, 2, 14, 14, 12, 12, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 24/48 kHz dual rate */
-    {CODEC_AAC, 16000, 24000, 24000, 2, 2, 1, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 24000, 28000, 24000, 2, 5, 5, 6, 6, 1, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 28000, 36000, 24000, 2, 7, 6, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 36000, 44000, 24000, 2, 10, 10, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 44000, 52000, 24000, 2, 12, 12, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 52000, 60000, 24000, 2, 13, 13, 10, 10, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AAC, 60000, 76000, 24000, 2, 14, 14, 12, 12, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 76000, 128001, 24000, 2, 14, 14, 12, 12, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 16000, 24000, 24000, 2, 2, 1, 1, 0, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 24000, 28000, 24000, 2, 5, 5, 6, 6, 1, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 28000, 36000, 24000, 2, 7, 6, 8, 7, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 36000, 44000, 24000, 2, 10, 10, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 44000, 52000, 24000, 2, 12, 12, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 52000, 60000, 24000, 2, 13, 13, 10, 10, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AAC, 60000, 76000, 24000, 2, 14, 14, 12, 12, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 76000, 128001, 24000, 2, 14, 14, 12, 12, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 32/64 kHz dual rate */
-    {CODEC_AAC, 32000, 60000, 32000, 2, 4, 4, 4, 4, 2, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 60000, 80000, 32000, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 80000, 112000, 32000, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
-     1},
-    {CODEC_AAC, 112000, 144000, 32000, 2, 11, 11, 10, 10, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 144000, 256001, 32000, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 32000, 60000, 32000, 2, 4, 4, 4, 4, 2, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 60000, 80000, 32000, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 80000, 112000, 32000, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
+        1
+    },
+    {   CODEC_AAC, 112000, 144000, 32000, 2, 11, 11, 10, 10, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 144000, 256001, 32000, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 44.1/88.2 kHz dual rate */
-    {CODEC_AAC, 32000, 60000, 44100, 2, 4, 4, 4, 4, 2, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 60000, 80000, 44100, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 80000, 112000, 44100, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
-     1},
-    {CODEC_AAC, 112000, 144000, 44100, 2, 11, 11, 10, 10, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 144000, 256001, 44100, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 32000, 60000, 44100, 2, 4, 4, 4, 4, 2, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 60000, 80000, 44100, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 80000, 112000, 44100, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
+        1
+    },
+    {   CODEC_AAC, 112000, 144000, 44100, 2, 11, 11, 10, 10, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 144000, 256001, 44100, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 48/96 kHz dual rate */
-    {CODEC_AAC, 36000, 60000, 48000, 2, 4, 4, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
-     3},
-    {CODEC_AAC, 60000, 80000, 48000, 2, 7, 7, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AAC, 80000, 112000, 48000, 2, 9, 9, 10, 10, 3, 0, -3, SBR_LEFT_RIGHT,
-     1},
-    {CODEC_AAC, 112000, 144000, 48000, 2, 11, 11, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AAC, 144000, 256001, 48000, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AAC, 36000, 60000, 48000, 2, 4, 4, 9, 9, 2, 0, -3, SBR_SWITCH_LRC,
+        3
+    },
+    {   CODEC_AAC, 60000, 80000, 48000, 2, 7, 7, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AAC, 80000, 112000, 48000, 2, 9, 9, 10, 10, 3, 0, -3, SBR_LEFT_RIGHT,
+        1
+    },
+    {   CODEC_AAC, 112000, 144000, 48000, 2, 11, 11, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AAC, 144000, 256001, 48000, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /** AAC LOW DELAY SECTION **/
 
@@ -790,106 +873,145 @@ const sbrTuningTable_t sbrTuningTable[] = {
     {CODEC_AACLD, 24000, 36000, 32000, 1, 4, 4, 4, 4, 2, 0, 3, SBR_MONO, 3},
     {CODEC_AACLD, 36000, 60000, 32000, 1, 7, 7, 6, 6, 2, 0, 3, SBR_MONO, 2},
     {CODEC_AACLD, 60000, 72000, 32000, 1, 9, 9, 8, 8, 2, 0, 3, SBR_MONO, 1},
-    {CODEC_AACLD, 72000, 100000, 32000, 1, 11, 11, 10, 10, 2, 0, 3, SBR_MONO,
-     1},
-    {CODEC_AACLD, 100000, 160001, 32000, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
-     1},
+    {   CODEC_AACLD, 72000, 100000, 32000, 1, 11, 11, 10, 10, 2, 0, 3, SBR_MONO,
+        1
+    },
+    {   CODEC_AACLD, 100000, 160001, 32000, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
+        1
+    },
 
     /* 44/88 kHz dual rate */
     {CODEC_AACLD, 36000, 60000, 44100, 1, 8, 7, 6, 9, 2, 0, 3, SBR_MONO, 2},
     {CODEC_AACLD, 60000, 72000, 44100, 1, 9, 9, 10, 10, 2, 0, 3, SBR_MONO, 1},
-    {CODEC_AACLD, 72000, 100000, 44100, 1, 11, 11, 11, 11, 2, 0, 3, SBR_MONO,
-     1},
-    {CODEC_AACLD, 100000, 160001, 44100, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
-     1},
+    {   CODEC_AACLD, 72000, 100000, 44100, 1, 11, 11, 11, 11, 2, 0, 3, SBR_MONO,
+        1
+    },
+    {   CODEC_AACLD, 100000, 160001, 44100, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
+        1
+    },
 
     /* 48/96 kHz dual rate */ /* 32 and 40kbps line tuned for dual-rate SBR
                                */
     {CODEC_AACLD, 36000, 60000, 48000, 1, 4, 7, 4, 4, 2, 0, 3, SBR_MONO, 3},
     {CODEC_AACLD, 60000, 72000, 48000, 1, 9, 9, 10, 10, 2, 0, 3, SBR_MONO, 1},
-    {CODEC_AACLD, 72000, 100000, 48000, 1, 11, 11, 11, 11, 2, 0, 3, SBR_MONO,
-     1},
-    {CODEC_AACLD, 100000, 160001, 48000, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
-     1},
+    {   CODEC_AACLD, 72000, 100000, 48000, 1, 11, 11, 11, 11, 2, 0, 3, SBR_MONO,
+        1
+    },
+    {   CODEC_AACLD, 100000, 160001, 48000, 1, 13, 13, 11, 11, 2, 0, 3, SBR_MONO,
+        1
+    },
 
     /*** stereo ***/
     /* 16/32 kHz dual rate */
-    {CODEC_AACLD, 32000, 36000, 16000, 2, 10, 9, 12, 11, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AACLD, 36000, 44000, 16000, 2, 13, 13, 13, 13, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AACLD, 44000, 52000, 16000, 2, 10, 9, 11, 9, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AACLD, 52000, 60000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_SWITCH_LRC, 1},
-    {CODEC_AACLD, 60000, 76000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 76000, 128001, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 32000, 36000, 16000, 2, 10, 9, 12, 11, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AACLD, 36000, 44000, 16000, 2, 13, 13, 13, 13, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AACLD, 44000, 52000, 16000, 2, 10, 9, 11, 9, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AACLD, 52000, 60000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_SWITCH_LRC, 1
+    },
+    {   CODEC_AACLD, 60000, 76000, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 76000, 128001, 16000, 2, 14, 14, 13, 13, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 22.05/44.1 kHz dual rate */
-    {CODEC_AACLD, 32000, 36000, 22050, 2, 5, 4, 7, 6, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 36000, 44000, 22050, 2, 5, 8, 8, 8, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 44000, 52000, 22050, 2, 7, 10, 8, 8, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 52000, 60000, 22050, 2, 9, 11, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
-     1},
-    {CODEC_AACLD, 60000, 76000, 22050, 2, 10, 12, 10, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 76000, 82000, 22050, 2, 12, 12, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 82000, 128001, 22050, 2, 13, 12, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 32000, 36000, 22050, 2, 5, 4, 7, 6, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 36000, 44000, 22050, 2, 5, 8, 8, 8, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 44000, 52000, 22050, 2, 7, 10, 8, 8, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 52000, 60000, 22050, 2, 9, 11, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
+        1
+    },
+    {   CODEC_AACLD, 60000, 76000, 22050, 2, 10, 12, 10, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 76000, 82000, 22050, 2, 12, 12, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 82000, 128001, 22050, 2, 13, 12, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 24/48 kHz dual rate */
-    {CODEC_AACLD, 32000, 36000, 24000, 2, 5, 4, 7, 6, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 36000, 44000, 24000, 2, 4, 8, 8, 8, 2, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 44000, 52000, 24000, 2, 6, 10, 8, 8, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 52000, 60000, 24000, 2, 9, 11, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
-     1},
-    {CODEC_AACLD, 60000, 76000, 24000, 2, 11, 12, 10, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 76000, 88000, 24000, 2, 12, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 88000, 128001, 24000, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 32000, 36000, 24000, 2, 5, 4, 7, 6, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 36000, 44000, 24000, 2, 4, 8, 8, 8, 2, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 44000, 52000, 24000, 2, 6, 10, 8, 8, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 52000, 60000, 24000, 2, 9, 11, 9, 9, 3, 0, -3, SBR_SWITCH_LRC,
+        1
+    },
+    {   CODEC_AACLD, 60000, 76000, 24000, 2, 11, 12, 10, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 76000, 88000, 24000, 2, 12, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 88000, 128001, 24000, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 32/64 kHz dual rate */
-    {CODEC_AACLD, 60000, 80000, 32000, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 80000, 112000, 32000, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
-     1},
-    {CODEC_AACLD, 112000, 144000, 32000, 2, 11, 11, 10, 10, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 144000, 256001, 32000, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 60000, 80000, 32000, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 80000, 112000, 32000, 2, 9, 9, 8, 8, 3, 0, -3, SBR_LEFT_RIGHT,
+        1
+    },
+    {   CODEC_AACLD, 112000, 144000, 32000, 2, 11, 11, 10, 10, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 144000, 256001, 32000, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 44.1/88.2 kHz dual rate */
-    {CODEC_AACLD, 60000, 80000, 44100, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
-     2},
-    {CODEC_AACLD, 80000, 112000, 44100, 2, 10, 10, 8, 8, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 112000, 144000, 44100, 2, 12, 12, 10, 10, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 144000, 256001, 44100, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 60000, 80000, 44100, 2, 7, 7, 6, 6, 3, 0, -3, SBR_SWITCH_LRC,
+        2
+    },
+    {   CODEC_AACLD, 80000, 112000, 44100, 2, 10, 10, 8, 8, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 112000, 144000, 44100, 2, 12, 12, 10, 10, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 144000, 256001, 44100, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
     /* 48/96 kHz dual rate */
-    {CODEC_AACLD, 60000, 80000, 48000, 2, 7, 7, 10, 10, 2, 0, -3,
-     SBR_SWITCH_LRC, 2},
-    {CODEC_AACLD, 80000, 112000, 48000, 2, 9, 9, 10, 10, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 112000, 144000, 48000, 2, 11, 11, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 144000, 176000, 48000, 2, 12, 12, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
-    {CODEC_AACLD, 176000, 256001, 48000, 2, 13, 13, 11, 11, 3, 0, -3,
-     SBR_LEFT_RIGHT, 1},
+    {   CODEC_AACLD, 60000, 80000, 48000, 2, 7, 7, 10, 10, 2, 0, -3,
+        SBR_SWITCH_LRC, 2
+    },
+    {   CODEC_AACLD, 80000, 112000, 48000, 2, 9, 9, 10, 10, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 112000, 144000, 48000, 2, 11, 11, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 144000, 176000, 48000, 2, 12, 12, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
+    {   CODEC_AACLD, 176000, 256001, 48000, 2, 13, 13, 11, 11, 3, 0, -3,
+        SBR_LEFT_RIGHT, 1
+    },
 
 };
 
@@ -897,14 +1019,18 @@ const int sbrTuningTableSize =
     sizeof(sbrTuningTable) / sizeof(sbrTuningTable[0]);
 
 const psTuningTable_t psTuningTable[4] = {
-    {8000, 22000, PSENC_STEREO_BANDS_10, PSENC_NENV_1,
-     FL2FXCONST_DBL(3.0f / 4.0f)},
-    {22000, 28000, PSENC_STEREO_BANDS_20, PSENC_NENV_1,
-     FL2FXCONST_DBL(2.0f / 4.0f)},
-    {28000, 36000, PSENC_STEREO_BANDS_20, PSENC_NENV_2,
-     FL2FXCONST_DBL(1.5f / 4.0f)},
-    {36000, 160001, PSENC_STEREO_BANDS_20, PSENC_NENV_4,
-     FL2FXCONST_DBL(1.1f / 4.0f)},
+    {   8000, 22000, PSENC_STEREO_BANDS_10, PSENC_NENV_1,
+        FL2FXCONST_DBL(3.0f / 4.0f)
+    },
+    {   22000, 28000, PSENC_STEREO_BANDS_20, PSENC_NENV_1,
+        FL2FXCONST_DBL(2.0f / 4.0f)
+    },
+    {   28000, 36000, PSENC_STEREO_BANDS_20, PSENC_NENV_2,
+        FL2FXCONST_DBL(1.5f / 4.0f)
+    },
+    {   36000, 160001, PSENC_STEREO_BANDS_20, PSENC_NENV_4,
+        FL2FXCONST_DBL(1.1f / 4.0f)
+    },
 };
 
 //@}
