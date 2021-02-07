@@ -61,7 +61,7 @@ int action_new_playlist_handler(struct DB_plugin_action_s *action,
                                 ddb_action_context_t ctx);
 
 int action_remove_current_playlist_handler(struct DB_plugin_action_s *action,
-                                           ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 gboolean action_toggle_mainwin_handler_cb(void *user_data);
 
@@ -96,7 +96,7 @@ int action_delete_from_disk_handler(DB_plugin_action_t *act,
                                     ddb_action_context_t ctx);
 
 int action_show_track_properties_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 gboolean action_find_handler_cb(void *data);
 
@@ -105,12 +105,12 @@ int action_find_handler(DB_plugin_action_t *act, ddb_action_context_t ctx);
 gboolean action_scroll_follows_playback_handler_cb(void *data);
 
 int action_scroll_follows_playback_handler(DB_plugin_action_t *act,
-                                           ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 gboolean action_cursor_follows_playback_handler_cb(void *data);
 
 int action_cursor_follows_playback_handler(DB_plugin_action_t *act,
-                                           ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 gboolean action_load_playlist_handler_cb(void *data);
 
@@ -166,16 +166,16 @@ int action_playback_loop_all_handler(DB_plugin_action_t *act,
                                      ddb_action_context_t ctx);
 
 int action_playback_order_random_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_playback_order_shuffle_albums_handler(DB_plugin_action_t *act,
-                                                 ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_playback_order_shuffle_handler(DB_plugin_action_t *act,
-                                          ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_playback_order_linear_handler(DB_plugin_action_t *act,
-                                         ddb_action_context_t ctx);
+        ddb_action_context_t ctx);
 
 int action_playback_order_cycle_handler(DB_plugin_action_t *act,
                                         ddb_action_context_t ctx);

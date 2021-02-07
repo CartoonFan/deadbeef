@@ -107,7 +107,8 @@ const SCHAR deltaGain_codingProfile_0_1_huffman[24][2] = {
     {1, 2},    {3, 4},     {-63, -65}, {5, -66},   {-64, 6},   {-80, 7},
     {8, 9},    {-68, 10},  {11, 12},   {-56, -67}, {-61, 13},  {-62, -69},
     {14, 15},  {16, -72},  {-71, 17},  {-70, -60}, {18, -59},  {19, 20},
-    {21, -79}, {-57, -73}, {22, -58},  {-76, 23},  {-75, -74}, {-78, -77}};
+    {21, -79}, {-57, -73}, {22, -58},  {-76, 23},  {-75, -74}, {-78, -77}
+};
 
 const SCHAR deltaGain_codingProfile_2_huffman[48][2] = {
     {1, 2},     {3, 4},     {5, 6},     {7, 8},     {9, 10},    {11, 12},
@@ -117,7 +118,8 @@ const SCHAR deltaGain_codingProfile_2_huffman[48][2] = {
     {-53, 30},  {-73, -52}, {31, -74},  {32, 33},   {-75, 34},  {-76, 35},
     {-51, 36},  {-78, 37},  {-77, 38},  {-96, 39},  {-48, 40},  {-50, -79},
     {41, 42},   {-80, -81}, {-82, 43},  {44, -49},  {45, -84},  {-83, -89},
-    {-86, 46},  {-90, -85}, {-91, -93}, {-92, 47},  {-88, -87}, {-95, -94}};
+    {-86, 46},  {-90, -85}, {-91, -93}, {-92, 47},  {-88, -87}, {-95, -94}
+};
 
 const FIXP_SGL slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(-1.2207f / (float)(1 << 2)),
@@ -133,12 +135,14 @@ const FIXP_SGL slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(0.1953f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(0.4883f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(1.2207f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(3.0518f / (float)(1 << 2))};
+                                   FL2FXCONST_SGL(3.0518f / (float)(1 << 2))
+                                  };
 
 const SCHAR slopeSteepness_huffman[14][2] = {
     {1, -57},  {-58, 2},   {3, 4},    {5, 6},    {7, -56},
     {8, -60},  {-61, -55}, {9, -59},  {10, -54}, {-64, 11},
-    {-51, 12}, {-62, -50}, {-63, 13}, {-52, -53}};
+    {-51, 12}, {-62, -50}, {-63, 13}, {-52, -53}
+};
 
 const FIXP_DBL downmixCoeff[] = {
     FL2FXCONST_DBL(1.0000000000 / (float)(1 << 2)),
@@ -156,7 +160,8 @@ const FIXP_DBL downmixCoeff[] = {
     FL2FXCONST_DBL(0.5011872336 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.4216965034 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.3548133892 / (float)(1 << 2)),
-    FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))};
+    FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))
+};
 
 const FIXP_DBL downmixCoeffV1[] = {
     FL2FXCONST_DBL(3.1622776602 / (float)(1 << 2)),
@@ -190,134 +195,177 @@ const FIXP_DBL downmixCoeffV1[] = {
     FL2FXCONST_DBL(0.0562341325 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.0316227766 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.0100000000 / (float)(1 << 2)),
-    FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))};
+    FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))
+};
 
 const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidLeft[] = {
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 1 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 2 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 3 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 4 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
-     FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0}, /* 5 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(5.0f / (float)(1 << 5)), 0}, /* 6 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
+        FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0
+    }, /* 1 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
+        FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0
+    }, /* 2 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
+        FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0
+    }, /* 3 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
+        FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0
+    }, /* 4 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
+        FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0
+    }, /* 5 */
+    {   FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
+        FL2FXCONST_SGL(5.0f / (float)(1 << 5)), 0
+    }, /* 6 */
 };
 
 const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidRight[] = {
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 1 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 2 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 3 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
-     FL2FXCONST_SGL(10.0f / (float)(1 << 5)), 0}, /* 4 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
-     FL2FXCONST_SGL(8.0f / (float)(1 << 5)), 0}, /* 5 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0}, /* 6 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
+        FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0
+    }, /* 1 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
+        FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0
+    }, /* 2 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
+        FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0
+    }, /* 3 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
+        FL2FXCONST_SGL(10.0f / (float)(1 << 5)), 0
+    }, /* 4 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
+        FL2FXCONST_SGL(8.0f / (float)(1 << 5)), 0
+    }, /* 5 */
+    {   FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
+        FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
+        FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0
+    }, /* 6 */
 };
 
 const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesLeft[] = {
-    {2,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-53.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(6.0f / (float)(1 << 7))}}, /* 7 */
-    {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-43.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(6.0f / (float)(1 << 7))}}, /* 8 */
-    {2,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-65.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(12.0f / (float)(1 << 7))}}, /* 9 */
-    {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-55.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(12.0f / (float)(1 << 7))}}, /* 10 */
-    {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-50.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(15.0f / (float)(1 << 7))}} /* 11 */
+    {   2,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-53.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(6.0f / (float)(1 << 7))
+        }
+    }, /* 7 */
+    {   1,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-43.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(6.0f / (float)(1 << 7))
+        }
+    }, /* 8 */
+    {   2,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-65.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(12.0f / (float)(1 << 7))
+        }
+    }, /* 9 */
+    {   1,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-55.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(12.0f / (float)(1 << 7))
+        }
+    }, /* 10 */
+    {   1,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-50.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(15.0f / (float)(1 << 7))
+        }
+    } /* 11 */
 };
 
 const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesRight[] = {
-    {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-11.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(19.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 7 */
-    {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 8 */
-    {3,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(29.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-15.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-35.0f / (float)(1 << 7))}}, /* 9 */
-    {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 10 */
-    {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}} /* 11 */
+    {   4,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-11.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(19.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-34.0f / (float)(1 << 7))
+        }
+    }, /* 7 */
+    {   4,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(14.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-34.0f / (float)(1 << 7))
+        }
+    }, /* 8 */
+    {   3,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(29.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-15.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-35.0f / (float)(1 << 7))
+        }
+    }, /* 9 */
+    {   4,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(14.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-34.0f / (float)(1 << 7))
+        }
+    }, /* 10 */
+    {   4,
+        {   FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(14.0f / (float)(1 << 7))
+        },
+        {   FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
+            FL2FXCONST_SGL(-34.0f / (float)(1 << 7))
+        }
+    } /* 11 */
 };

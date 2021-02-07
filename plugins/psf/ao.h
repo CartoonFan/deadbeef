@@ -20,15 +20,15 @@
 #define AUDIO_RATE (44100)
 
 enum {
-  COMMAND_NONE = 0,
-  COMMAND_PREV,
-  COMMAND_NEXT,
-  COMMAND_RESTART,
-  COMMAND_HAS_PREV,
-  COMMAND_HAS_NEXT,
-  COMMAND_GET_MIN,
-  COMMAND_GET_MAX,
-  COMMAND_JUMP
+    COMMAND_NONE = 0,
+    COMMAND_PREV,
+    COMMAND_NEXT,
+    COMMAND_RESTART,
+    COMMAND_HAS_PREV,
+    COMMAND_HAS_NEXT,
+    COMMAND_GET_MIN,
+    COMMAND_GET_MAX,
+    COMMAND_JUMP
 };
 
 #if 0
@@ -98,8 +98,8 @@ typedef unsigned char ao_bool;
 #endif
 
 typedef struct {
-  char title[9][MAX_DISP_INFO_LENGTH];
-  char info[9][MAX_DISP_INFO_LENGTH];
+    char title[9][MAX_DISP_INFO_LENGTH];
+    char info[9][MAX_DISP_INFO_LENGTH];
 } ao_display_info;
 
 typedef unsigned char uint8;
@@ -145,10 +145,12 @@ typedef uint64 u64;
 #endif
 
 #if LSB_FIRST
-static INLINE u16 BFLIP16(u16 x) { return x; }
+static INLINE u16 BFLIP16(u16 x) {
+    return x;
+}
 #else
 static INLINE u16 BFLIP16(u16 x) {
-  return (((x >> 8) & 0xFF) | ((x & 0xFF) << 8));
+    return (((x >> 8) & 0xFF) | ((x & 0xFF) << 8));
 }
 #endif
 
@@ -177,27 +179,27 @@ typedef unsigned long long UINT64;
 
 #ifndef __ENDIAN__ /* Mac OS X Endian header has this function in it */
 static unsigned long INLINE Endian32_Swap(unsigned long addr) {
-  unsigned long res =
-      (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
-       ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
+    unsigned long res =
+        (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
+         ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
 
-  return res;
+    return res;
 }
 #endif
 
 #else
 
 static unsigned short INLINE LE16(unsigned short x) {
-  unsigned short res = (((x & 0xFF00) >> 8) | ((x & 0xFF) << 8));
-  return res;
+    unsigned short res = (((x & 0xFF00) >> 8) | ((x & 0xFF) << 8));
+    return res;
 }
 
 static unsigned long INLINE LE32(unsigned long addr) {
-  unsigned long res =
-      (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
-       ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
+    unsigned long res =
+        (((addr & 0xff000000) >> 24) | ((addr & 0x00ff0000) >> 8) |
+         ((addr & 0x0000ff00) << 8) | ((addr & 0x000000ff) << 24));
 
-  return res;
+    return res;
 }
 
 #endif

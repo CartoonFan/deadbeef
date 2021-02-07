@@ -111,9 +111,9 @@ amm-info@iis.fraunhofer.de
  * Hybrid Filterband modes.
  */
 typedef enum {
-  THREE_TO_TEN,
-  THREE_TO_TWELVE,
-  THREE_TO_SIXTEEN
+    THREE_TO_TEN,
+    THREE_TO_TWELVE,
+    THREE_TO_SIXTEEN
 
 } FDK_HYBRID_MODE;
 
@@ -121,32 +121,32 @@ typedef enum {
 typedef const struct FDK_HYBRID_SETUP *HANDLE_FDK_HYBRID_SETUP;
 
 typedef struct {
-  FIXP_DBL *bufferLFReal[3];  /*!< LF real filter states. */
-  FIXP_DBL *bufferLFImag[3];  /*!< LF imag filter states. */
-  FIXP_DBL *bufferHFReal[13]; /*!< HF real delay lines. */
-  FIXP_DBL *bufferHFImag[13]; /*!< HF imag delay lines. */
+    FIXP_DBL *bufferLFReal[3];  /*!< LF real filter states. */
+    FIXP_DBL *bufferLFImag[3];  /*!< LF imag filter states. */
+    FIXP_DBL *bufferHFReal[13]; /*!< HF real delay lines. */
+    FIXP_DBL *bufferHFImag[13]; /*!< HF imag delay lines. */
 
-  INT bufferLFpos; /*!< Position to write incoming data into ringbuffer. */
-  INT bufferHFpos; /*!< Delay line positioning. */
-  INT nrBands;     /*!< Number of QMF bands. */
-  INT cplxBands;   /*!< Number of complex QMF bands.*/
-  UCHAR hfMode;    /*!< Flag signalizes treatment of HF bands. */
+    INT bufferLFpos; /*!< Position to write incoming data into ringbuffer. */
+    INT bufferHFpos; /*!< Delay line positioning. */
+    INT nrBands;     /*!< Number of QMF bands. */
+    INT cplxBands;   /*!< Number of complex QMF bands.*/
+    UCHAR hfMode;    /*!< Flag signalizes treatment of HF bands. */
 
-  FIXP_DBL *pLFmemory; /*!< Pointer to LF states buffer. */
-  FIXP_DBL *pHFmemory; /*!< Pointer to HF states buffer. */
+    FIXP_DBL *pLFmemory; /*!< Pointer to LF states buffer. */
+    FIXP_DBL *pHFmemory; /*!< Pointer to HF states buffer. */
 
-  UINT LFmemorySize; /*!< Size of LF states buffer. */
-  UINT HFmemorySize; /*!< Size of HF states buffer. */
+    UINT LFmemorySize; /*!< Size of LF states buffer. */
+    UINT HFmemorySize; /*!< Size of HF states buffer. */
 
-  HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
+    HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
 
 } FDK_ANA_HYB_FILTER;
 
 typedef struct {
-  INT nrBands;   /*!< Number of QMF bands. */
-  INT cplxBands; /*!< Number of complex QMF bands.*/
+    INT nrBands;   /*!< Number of QMF bands. */
+    INT cplxBands; /*!< Number of complex QMF bands.*/
 
-  HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
+    HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
 
 } FDK_SYN_HYB_FILTER;
 

@@ -118,57 +118,57 @@ amm-info@iis.fraunhofer.de
 #define MAX_STRETCH_HBE (4)
 
 typedef enum {
-  KEEP_STATES_SYNCED_OFF = 0,    /*!< normal QMF transposer behaviour */
-  KEEP_STATES_SYNCED_NORMAL = 1, /*!< QMF transposer called for syncing of
+    KEEP_STATES_SYNCED_OFF = 0,    /*!< normal QMF transposer behaviour */
+    KEEP_STATES_SYNCED_NORMAL = 1, /*!< QMF transposer called for syncing of
                         states the last 8/14 slots are calculated in
                         case next frame is HBE */
-  KEEP_STATES_SYNCED_OUTDIFF =
-      2, /*!< QMF transposer behaviour as in normal case, but the calculated
+    KEEP_STATES_SYNCED_OUTDIFF =
+        2, /*!< QMF transposer behaviour as in normal case, but the calculated
   slots are directly written to overlap area of buffer; only used in
   resetSbrDec function */
-  KEEP_STATES_SYNCED_NOOUT =
-      3 /*!< QMF transposer is called for syncing of states only, not output
+    KEEP_STATES_SYNCED_NOOUT =
+        3 /*!< QMF transposer is called for syncing of states only, not output
  is generated at all; only used in resetSbrDec function */
 } KEEP_STATES_SYNCED_MODE;
 
 struct hbeTransposer {
-  int xOverQmf[MAX_NUM_PATCHES_HBE];
+    int xOverQmf[MAX_NUM_PATCHES_HBE];
 
-  int maxStretch;
-  int timeDomainWinLen;
-  int qmfInBufSize;
-  int qmfOutBufSize;
-  int noCols;
-  int noChannels;
-  int startBand;
-  int stopBand;
-  int bSbr41;
+    int maxStretch;
+    int timeDomainWinLen;
+    int qmfInBufSize;
+    int qmfOutBufSize;
+    int noCols;
+    int noChannels;
+    int startBand;
+    int stopBand;
+    int bSbr41;
 
-  INT_PCM *inBuf_F;
-  FIXP_DBL **qmfInBufReal_F;
-  FIXP_DBL **qmfInBufImag_F;
+    INT_PCM *inBuf_F;
+    FIXP_DBL **qmfInBufReal_F;
+    FIXP_DBL **qmfInBufImag_F;
 
-  FIXP_DBL *qmfBufferCodecTempSlot_F;
+    FIXP_DBL *qmfBufferCodecTempSlot_F;
 
-  QMF_FILTER_BANK HBEAnalysiscQMF;
-  QMF_FILTER_BANK HBESynthesisQMF;
+    QMF_FILTER_BANK HBEAnalysiscQMF;
+    QMF_FILTER_BANK HBESynthesisQMF;
 
-  FIXP_DBL const *synthesisQmfPreModCos_F;
-  FIXP_DBL const *synthesisQmfPreModSin_F;
+    FIXP_DBL const *synthesisQmfPreModCos_F;
+    FIXP_DBL const *synthesisQmfPreModSin_F;
 
-  FIXP_QAS anaQmfStates[HBE_QMF_FILTER_STATE_ANA_SIZE];
-  FIXP_QSS synQmfStates[HBE_QMF_FILTER_STATE_SYN_SIZE];
+    FIXP_QAS anaQmfStates[HBE_QMF_FILTER_STATE_ANA_SIZE];
+    FIXP_QSS synQmfStates[HBE_QMF_FILTER_STATE_SYN_SIZE];
 
-  FIXP_DBL **qmfHBEBufReal_F;
-  FIXP_DBL **qmfHBEBufImag_F;
+    FIXP_DBL **qmfHBEBufReal_F;
+    FIXP_DBL **qmfHBEBufImag_F;
 
-  int bXProducts[MAX_STRETCH_HBE];
+    int bXProducts[MAX_STRETCH_HBE];
 
-  int kstart;
-  int synthSize;
+    int kstart;
+    int synthSize;
 
-  int highband_exp[2];
-  int target_exp[2];
+    int highband_exp[2];
+    int target_exp[2];
 };
 
 typedef struct hbeTransposer *HANDLE_HBE_TRANSPOSER;

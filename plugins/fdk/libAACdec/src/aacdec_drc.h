@@ -120,17 +120,17 @@ amm-info@iis.fraunhofer.de
  * \brief DRC module setting parameters
  */
 typedef enum {
-  DRC_CUT_SCALE = 0,
-  DRC_BOOST_SCALE,
-  TARGET_REF_LEVEL,
-  DRC_BS_DELAY,
-  DRC_DATA_EXPIRY_FRAME,
-  APPLY_NORMALIZATION,
-  APPLY_HEAVY_COMPRESSION,
-  DEFAULT_PRESENTATION_MODE,
-  ENCODER_TARGET_LEVEL,
-  MAX_OUTPUT_CHANNELS,
-  UNIDRC_PRECEDENCE
+    DRC_CUT_SCALE = 0,
+    DRC_BOOST_SCALE,
+    TARGET_REF_LEVEL,
+    DRC_BS_DELAY,
+    DRC_DATA_EXPIRY_FRAME,
+    APPLY_NORMALIZATION,
+    APPLY_HEAVY_COMPRESSION,
+    DEFAULT_PRESENTATION_MODE,
+    ENCODER_TARGET_LEVEL,
+    MAX_OUTPUT_CHANNELS,
+    UNIDRC_PRECEDENCE
 } AACDEC_DRC_PARAM;
 
 /**
@@ -141,7 +141,7 @@ void aacDecoder_drcInit(HANDLE_AAC_DRC self);
 void aacDecoder_drcInitChannelData(CDrcChannelData *pDrcChannel);
 
 AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
-                                         AACDEC_DRC_PARAM param, INT value);
+        AACDEC_DRC_PARAM param, INT value);
 
 int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
                               AACDEC_DRC_PAYLOAD_TYPE type);

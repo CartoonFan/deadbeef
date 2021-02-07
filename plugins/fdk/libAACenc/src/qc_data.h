@@ -112,187 +112,187 @@ amm-info@iis.fraunhofer.de
 #include "psy_const.h"
 
 typedef enum {
-  QCDATA_BR_MODE_INVALID = -1,
-  QCDATA_BR_MODE_CBR = 0,   /* Constant bit rate, given average bitrate */
-  QCDATA_BR_MODE_VBR_1 = 1, /* Variable bit rate, very low */
-  QCDATA_BR_MODE_VBR_2 = 2, /* Variable bit rate, low */
-  QCDATA_BR_MODE_VBR_3 = 3, /* Variable bit rate, medium */
-  QCDATA_BR_MODE_VBR_4 = 4, /* Variable bit rate, high */
-  QCDATA_BR_MODE_VBR_5 = 5, /* Variable bit rate, very high */
-  QCDATA_BR_MODE_FF = 6,    /* Fixed frame mode. */
-  QCDATA_BR_MODE_SFR = 7    /* Superframe mode. */
+    QCDATA_BR_MODE_INVALID = -1,
+    QCDATA_BR_MODE_CBR = 0,   /* Constant bit rate, given average bitrate */
+    QCDATA_BR_MODE_VBR_1 = 1, /* Variable bit rate, very low */
+    QCDATA_BR_MODE_VBR_2 = 2, /* Variable bit rate, low */
+    QCDATA_BR_MODE_VBR_3 = 3, /* Variable bit rate, medium */
+    QCDATA_BR_MODE_VBR_4 = 4, /* Variable bit rate, high */
+    QCDATA_BR_MODE_VBR_5 = 5, /* Variable bit rate, very high */
+    QCDATA_BR_MODE_FF = 6,    /* Fixed frame mode. */
+    QCDATA_BR_MODE_SFR = 7    /* Superframe mode. */
 
 } QCDATA_BR_MODE;
 
 typedef struct {
-  MP4_ELEMENT_ID elType;
-  INT instanceTag;
-  INT nChannelsInEl;
-  INT ChannelIndex[2];
-  FIXP_DBL relativeBits;
+    MP4_ELEMENT_ID elType;
+    INT instanceTag;
+    INT nChannelsInEl;
+    INT ChannelIndex[2];
+    FIXP_DBL relativeBits;
 } ELEMENT_INFO;
 
 typedef struct {
-  CHANNEL_MODE encMode;
-  INT nChannels;
-  INT nChannelsEff;
-  INT nElements;
-  ELEMENT_INFO elInfo[((8))];
+    CHANNEL_MODE encMode;
+    INT nChannels;
+    INT nChannelsEff;
+    INT nElements;
+    ELEMENT_INFO elInfo[((8))];
 } CHANNEL_MAPPING;
 
 typedef struct {
-  INT paddingRest;
+    INT paddingRest;
 } PADDING;
 
 /* Quantizing & coding stage */
 
 struct QC_INIT {
-  CHANNEL_MAPPING *channelMapping;
-  INT sceCpe;      /* not used yet                         */
-  INT maxBits;     /* maximum number of bits in reservoir  */
-  INT averageBits; /* average number of bits we should use */
-  INT bitRes;
-  INT sampleRate; /* output sample rate                   */
-  INT isLowDelay; /* if set, calc bits2PE factor depending on samplerate */
-  INT staticBits; /* Bits per frame consumed by transport layers. */
-  QCDATA_BR_MODE bitrateMode;
-  INT meanPe;
-  INT chBitrate; /* Bitrate/channel */
-  INT invQuant;
-  INT maxIterations; /* Maximum number of allowed iterations before
+    CHANNEL_MAPPING *channelMapping;
+    INT sceCpe;      /* not used yet                         */
+    INT maxBits;     /* maximum number of bits in reservoir  */
+    INT averageBits; /* average number of bits we should use */
+    INT bitRes;
+    INT sampleRate; /* output sample rate                   */
+    INT isLowDelay; /* if set, calc bits2PE factor depending on samplerate */
+    INT staticBits; /* Bits per frame consumed by transport layers. */
+    QCDATA_BR_MODE bitrateMode;
+    INT meanPe;
+    INT chBitrate; /* Bitrate/channel */
+    INT invQuant;
+    INT maxIterations; /* Maximum number of allowed iterations before
             FDKaacEnc_crashRecovery() is applied. */
-  FIXP_DBL maxBitFac;
-  INT bitrate;
-  INT nSubFrames;                /* helper variable */
-  INT minBits;                   /* minimal number of bits in one frame*/
-  AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
+    FIXP_DBL maxBitFac;
+    INT bitrate;
+    INT nSubFrames;                /* helper variable */
+    INT minBits;                   /* minimal number of bits in one frame*/
+    AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
                         bitreservoir, 2: disabled bitreservoir */
-  INT bitDistributionMode; /* Configure element-wise execution or execution over
+    INT bitDistributionMode; /* Configure element-wise execution or execution over
                   all elements for the pe-dependent
                   threshold-adaption */
 
-  PADDING padding;
+    PADDING padding;
 };
 
 typedef struct {
-  FIXP_DBL mdctSpectrum[(1024)];
+    FIXP_DBL mdctSpectrum[(1024)];
 
-  SHORT quantSpec[(1024)];
+    SHORT quantSpec[(1024)];
 
-  UINT maxValueInSfb[MAX_GROUPED_SFB];
-  INT scf[MAX_GROUPED_SFB];
-  INT globalGain;
-  SECTION_DATA sectionData;
+    UINT maxValueInSfb[MAX_GROUPED_SFB];
+    INT scf[MAX_GROUPED_SFB];
+    INT globalGain;
+    SECTION_DATA sectionData;
 
-  FIXP_DBL sfbFormFactorLdData[MAX_GROUPED_SFB];
+    FIXP_DBL sfbFormFactorLdData[MAX_GROUPED_SFB];
 
-  FIXP_DBL sfbThresholdLdData[MAX_GROUPED_SFB];
-  FIXP_DBL sfbMinSnrLdData[MAX_GROUPED_SFB];
-  FIXP_DBL sfbEnergyLdData[MAX_GROUPED_SFB];
-  FIXP_DBL sfbEnergy[MAX_GROUPED_SFB];
-  FIXP_DBL sfbWeightedEnergyLdData[MAX_GROUPED_SFB];
+    FIXP_DBL sfbThresholdLdData[MAX_GROUPED_SFB];
+    FIXP_DBL sfbMinSnrLdData[MAX_GROUPED_SFB];
+    FIXP_DBL sfbEnergyLdData[MAX_GROUPED_SFB];
+    FIXP_DBL sfbEnergy[MAX_GROUPED_SFB];
+    FIXP_DBL sfbWeightedEnergyLdData[MAX_GROUPED_SFB];
 
-  FIXP_DBL sfbEnFacLd[MAX_GROUPED_SFB];
+    FIXP_DBL sfbEnFacLd[MAX_GROUPED_SFB];
 
-  FIXP_DBL sfbSpreadEnergy[MAX_GROUPED_SFB];
+    FIXP_DBL sfbSpreadEnergy[MAX_GROUPED_SFB];
 
 } QC_OUT_CHANNEL;
 
 typedef struct {
-  EXT_PAYLOAD_TYPE type; /* type of the extension payload */
-  INT nPayloadBits;      /* size of the payload */
-  UCHAR *pPayload;       /* pointer to payload */
+    EXT_PAYLOAD_TYPE type; /* type of the extension payload */
+    INT nPayloadBits;      /* size of the payload */
+    UCHAR *pPayload;       /* pointer to payload */
 
 } QC_OUT_EXTENSION;
 
 typedef struct {
-  INT staticBitsUsed; /* for verification purposes */
-  INT dynBitsUsed;    /* for verification purposes */
+    INT staticBitsUsed; /* for verification purposes */
+    INT dynBitsUsed;    /* for verification purposes */
 
-  INT extBitsUsed; /* bit consumption of extended fill elements */
-  INT nExtensions; /* number of extension payloads for this element */
-  QC_OUT_EXTENSION extension[(1)]; /* reffering extension payload */
+    INT extBitsUsed; /* bit consumption of extended fill elements */
+    INT nExtensions; /* number of extension payloads for this element */
+    QC_OUT_EXTENSION extension[(1)]; /* reffering extension payload */
 
-  INT grantedDynBits;
+    INT grantedDynBits;
 
-  INT grantedPe;
-  INT grantedPeCorr;
+    INT grantedPe;
+    INT grantedPeCorr;
 
-  PE_DATA peData;
+    PE_DATA peData;
 
-  QC_OUT_CHANNEL *qcOutChannel[(2)];
+    QC_OUT_CHANNEL *qcOutChannel[(2)];
 
-  UCHAR
-  *dynMem_Ah_Flag; /* pointer to dynamic buffer used by AhFlag in function
+    UCHAR
+    *dynMem_Ah_Flag; /* pointer to dynamic buffer used by AhFlag in function
           FDKaacEnc_adaptThresholdsToPe() */
-  UCHAR
-  *dynMem_Thr_Exp; /* pointer to dynamic buffer used by ThrExp in function
+    UCHAR
+    *dynMem_Thr_Exp; /* pointer to dynamic buffer used by ThrExp in function
           FDKaacEnc_adaptThresholdsToPe() */
-  UCHAR *dynMem_SfbNActiveLinesLdData; /* pointer to dynamic buffer used by
+    UCHAR *dynMem_SfbNActiveLinesLdData; /* pointer to dynamic buffer used by
                               sfbNActiveLinesLdData in function
                               FDKaacEnc_correctThresh() */
 
 } QC_OUT_ELEMENT;
 
 typedef struct {
-  QC_OUT_ELEMENT *qcElement[((8))];
-  QC_OUT_CHANNEL *pQcOutChannels[(8)];
-  QC_OUT_EXTENSION extension[(2 + 2)]; /* global extension payload */
-  INT nExtensions;    /* number of extension payloads for this AU */
-  INT maxDynBits;     /* maximal allowed dynamic bits in frame */
-  INT grantedDynBits; /* granted dynamic bits in frame */
-  INT totFillBits;    /* fill bits */
-  INT elementExtBits; /* element associated extension payload bits, e.g. sbr,
+    QC_OUT_ELEMENT *qcElement[((8))];
+    QC_OUT_CHANNEL *pQcOutChannels[(8)];
+    QC_OUT_EXTENSION extension[(2 + 2)]; /* global extension payload */
+    INT nExtensions;    /* number of extension payloads for this AU */
+    INT maxDynBits;     /* maximal allowed dynamic bits in frame */
+    INT grantedDynBits; /* granted dynamic bits in frame */
+    INT totFillBits;    /* fill bits */
+    INT elementExtBits; /* element associated extension payload bits, e.g. sbr,
              drc ... */
-  INT globalExtBits;  /* frame/au associated extension payload bits (anc data
+    INT globalExtBits;  /* frame/au associated extension payload bits (anc data
              ...) */
-  INT staticBits;     /* aac side info bits */
+    INT staticBits;     /* aac side info bits */
 
-  INT totalNoRedPe;
-  INT totalGrantedPeCorr;
+    INT totalNoRedPe;
+    INT totalGrantedPeCorr;
 
-  INT usedDynBits; /* number of dynamic bits in use */
-  INT alignBits;   /* AU alignment bits */
-  INT totalBits;   /* sum of static, dyn, sbr, fill, align and dse bits */
+    INT usedDynBits; /* number of dynamic bits in use */
+    INT alignBits;   /* AU alignment bits */
+    INT totalBits;   /* sum of static, dyn, sbr, fill, align and dse bits */
 
 } QC_OUT;
 
 typedef struct {
-  INT chBitrateEl;         /* channel bitrate in element
+    INT chBitrateEl;         /* channel bitrate in element
                   (totalbitrate*el_relativeBits/el_channels) */
-  INT maxBitsEl;           /* used in crash recovery */
-  INT bitResLevelEl;       /* update bitreservoir level in each call of
+    INT maxBitsEl;           /* used in crash recovery */
+    INT bitResLevelEl;       /* update bitreservoir level in each call of
                   FDKaacEnc_QCMain */
-  INT maxBitResBitsEl;     /* nEffChannels*6144 - averageBitsInFrame */
-  FIXP_DBL relativeBitsEl; /* Bits relative to total Bits*/
+    INT maxBitResBitsEl;     /* nEffChannels*6144 - averageBitsInFrame */
+    FIXP_DBL relativeBitsEl; /* Bits relative to total Bits*/
 } ELEMENT_BITS;
 
 typedef struct {
-  /* this is basically struct QC_INIT */
+    /* this is basically struct QC_INIT */
 
-  INT globHdrBits;
-  INT maxBitsPerFrame; /* maximal allowed bits per frame, 6144*nChannelsEff */
-  INT minBitsPerFrame; /* minimal allowd bits per fram, superframing - DRM */
-  INT nElements;
-  QCDATA_BR_MODE bitrateMode;
-  AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
+    INT globHdrBits;
+    INT maxBitsPerFrame; /* maximal allowed bits per frame, 6144*nChannelsEff */
+    INT minBitsPerFrame; /* minimal allowd bits per fram, superframing - DRM */
+    INT nElements;
+    QCDATA_BR_MODE bitrateMode;
+    AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
                         bitreservoir, 2: disabled bitreservoir */
-  INT bitResTot;
-  INT bitResTotMax;
-  INT maxIterations; /* Maximum number of allowed iterations before
+    INT bitResTot;
+    INT bitResTotMax;
+    INT maxIterations; /* Maximum number of allowed iterations before
             FDKaacEnc_crashRecovery() is applied. */
-  INT invQuant;
+    INT invQuant;
 
-  FIXP_DBL vbrQualFactor;
-  FIXP_DBL maxBitFac;
+    FIXP_DBL vbrQualFactor;
+    FIXP_DBL maxBitFac;
 
-  PADDING padding;
+    PADDING padding;
 
-  ELEMENT_BITS *elementBits[((8))];
-  BITCNTR_STATE *hBitCounter;
-  ADJ_THR_STATE *hAdjThr;
+    ELEMENT_BITS *elementBits[((8))];
+    BITCNTR_STATE *hBitCounter;
+    ADJ_THR_STATE *hAdjThr;
 
-  INT dZoneQuantEnable; /* enable dead zone quantizer */
+    INT dZoneQuantEnable; /* enable dead zone quantizer */
 
 } QC_STATE;
 

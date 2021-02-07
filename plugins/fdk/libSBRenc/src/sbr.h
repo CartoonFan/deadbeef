@@ -127,67 +127,67 @@ amm-info@iis.fraunhofer.de
 typedef enum { SBRENC_DS_NONE, SBRENC_DS_TIME, SBRENC_DS_QMF } SBRENC_DS_TYPE;
 
 typedef struct SBR_CHANNEL {
-  struct ENV_CHANNEL hEnvChannel;
-  // INT_PCM                  *pDSOutBuffer;            /**< Pointer to
-  // downsampled audio output of SBR encoder */
-  DOWNSAMPLER downSampler;
+    struct ENV_CHANNEL hEnvChannel;
+    // INT_PCM                  *pDSOutBuffer;            /**< Pointer to
+    // downsampled audio output of SBR encoder */
+    DOWNSAMPLER downSampler;
 
 } SBR_CHANNEL;
 typedef SBR_CHANNEL *HANDLE_SBR_CHANNEL;
 
 typedef struct SBR_ELEMENT {
-  HANDLE_SBR_CHANNEL sbrChannel[2];
-  QMF_FILTER_BANK *hQmfAnalysis[2];
-  SBR_CONFIG_DATA sbrConfigData;
-  SBR_HEADER_DATA sbrHeaderData;
-  SBR_BITSTREAM_DATA sbrBitstreamData;
-  COMMON_DATA CmonData;
-  INT dynXOverFreqDelay[5]; /**< to delay a frame (I don't like it that much
+    HANDLE_SBR_CHANNEL sbrChannel[2];
+    QMF_FILTER_BANK *hQmfAnalysis[2];
+    SBR_CONFIG_DATA sbrConfigData;
+    SBR_HEADER_DATA sbrHeaderData;
+    SBR_BITSTREAM_DATA sbrBitstreamData;
+    COMMON_DATA CmonData;
+    INT dynXOverFreqDelay[5]; /**< to delay a frame (I don't like it that much
                    that way - hrc) */
-  SBR_ELEMENT_INFO elInfo;
+    SBR_ELEMENT_INFO elInfo;
 
-  UCHAR payloadDelayLine[1 + MAX_DELAY_FRAMES][MAX_PAYLOAD_SIZE];
-  UINT payloadDelayLineSize[1 + MAX_DELAY_FRAMES]; /* Sizes in bits */
+    UCHAR payloadDelayLine[1 + MAX_DELAY_FRAMES][MAX_PAYLOAD_SIZE];
+    UINT payloadDelayLineSize[1 + MAX_DELAY_FRAMES]; /* Sizes in bits */
 
 } SBR_ELEMENT, *HANDLE_SBR_ELEMENT;
 
 typedef struct SBR_ENCODER {
-  HANDLE_SBR_ELEMENT sbrElement[(8)];
-  HANDLE_SBR_CHANNEL pSbrChannel[(8)];
-  QMF_FILTER_BANK QmfAnalysis[(8)];
-  DOWNSAMPLER lfeDownSampler;
-  int lfeChIdx;     /* -1 default for no lfe, else assign channel index. */
-  int noElements;   /* Number of elements. */
-  int nChannels;    /* Total channel count across all elements. */
-  int frameSize;    /* SBR framelength. */
-  int bufferOffset; /* Offset for SBR parameter extraction in time domain input
+    HANDLE_SBR_ELEMENT sbrElement[(8)];
+    HANDLE_SBR_CHANNEL pSbrChannel[(8)];
+    QMF_FILTER_BANK QmfAnalysis[(8)];
+    DOWNSAMPLER lfeDownSampler;
+    int lfeChIdx;     /* -1 default for no lfe, else assign channel index. */
+    int noElements;   /* Number of elements. */
+    int nChannels;    /* Total channel count across all elements. */
+    int frameSize;    /* SBR framelength. */
+    int bufferOffset; /* Offset for SBR parameter extraction in time domain input
            buffer. */
-  int downsampledOffset; /* Offset of downsampled/mixed output for core encoder.
+    int downsampledOffset; /* Offset of downsampled/mixed output for core encoder.
                           */
-  int downmixSize;       /* Size in samples of downsampled/mixed output for core
+    int downmixSize;       /* Size in samples of downsampled/mixed output for core
                 encoder. */
-  INT downSampleFactor;  /* Sampling rate relation between the SBR and the core
+    INT downSampleFactor;  /* Sampling rate relation between the SBR and the core
                 encoder. */
-  SBRENC_DS_TYPE
-  downsamplingMethod; /* Method of downsmapling, time-domain, QMF or none.
+    SBRENC_DS_TYPE
+    downsamplingMethod; /* Method of downsmapling, time-domain, QMF or none.
                        */
-  int nBitstrDelay;   /* Amount of SBR frames to be delayed in bitstream domain.
+    int nBitstrDelay;   /* Amount of SBR frames to be delayed in bitstream domain.
                        */
-  int sbrDecDelay;    /* SBR decoder delay in samples */
-  INT estimateBitrate; /* Estimate bitrate of SBR encoder. */
-  INT inputDataDelay;  /* Delay caused by downsampler, in/out buffer at
+    int sbrDecDelay;    /* SBR decoder delay in samples */
+    INT estimateBitrate; /* Estimate bitrate of SBR encoder. */
+    INT inputDataDelay;  /* Delay caused by downsampler, in/out buffer at
               sbrEncoder_EncodeFrame. */
 
-  UCHAR *dynamicRam;
-  UCHAR *pSBRdynamic_RAM;
+    UCHAR *dynamicRam;
+    UCHAR *pSBRdynamic_RAM;
 
-  HANDLE_PARAMETRIC_STEREO hParametricStereo;
-  QMF_FILTER_BANK qmfSynthesisPS;
+    HANDLE_PARAMETRIC_STEREO hParametricStereo;
+    QMF_FILTER_BANK qmfSynthesisPS;
 
-  /* parameters describing allocation volume of present instance */
-  INT maxElements;
-  INT maxChannels;
-  INT supportPS;
+    /* parameters describing allocation volume of present instance */
+    INT maxElements;
+    INT maxChannels;
+    INT supportPS;
 
 } SBR_ENCODER;
 

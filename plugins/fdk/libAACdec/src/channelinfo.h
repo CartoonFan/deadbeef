@@ -138,11 +138,11 @@ amm-info@iis.fraunhofer.de
 
 /* Output rendering mode */
 typedef enum {
-  AACDEC_RENDER_INVALID = 0,
-  AACDEC_RENDER_IMDCT,
-  AACDEC_RENDER_ELDFB,
-  AACDEC_RENDER_LPD,
-  AACDEC_RENDER_INTIMDCT
+    AACDEC_RENDER_INVALID = 0,
+    AACDEC_RENDER_IMDCT,
+    AACDEC_RENDER_ELDFB,
+    AACDEC_RENDER_LPD,
+    AACDEC_RENDER_INTIMDCT
 } AACDEC_RENDER_MODE;
 
 enum { MAX_QUANTIZED_VALUE = 8191 };
@@ -150,116 +150,116 @@ enum { MAX_QUANTIZED_VALUE = 8191 };
 typedef enum { FD_LONG, FD_SHORT, LPD } USAC_COREMODE;
 
 typedef struct {
-  const SHORT *ScaleFactorBands_Long;
-  const SHORT *ScaleFactorBands_Short;
-  UCHAR NumberOfScaleFactorBands_Long;
-  UCHAR NumberOfScaleFactorBands_Short;
-  UINT samplingRateIndex;
-  UINT samplingRate;
+    const SHORT *ScaleFactorBands_Long;
+    const SHORT *ScaleFactorBands_Short;
+    UCHAR NumberOfScaleFactorBands_Long;
+    UCHAR NumberOfScaleFactorBands_Short;
+    UINT samplingRateIndex;
+    UINT samplingRate;
 } SamplingRateInfo;
 
 typedef struct {
-  UCHAR CommonWindow;
-  UCHAR GlobalGain;
+    UCHAR CommonWindow;
+    UCHAR GlobalGain;
 
 } CRawDataInfo;
 
 typedef struct {
-  UCHAR WindowGroupLength[8];
-  UCHAR WindowGroups;
-  UCHAR Valid;
+    UCHAR WindowGroupLength[8];
+    UCHAR WindowGroups;
+    UCHAR Valid;
 
-  UCHAR WindowShape;         /* 0: sine window, 1: KBD, 2: low overlap */
-  BLOCK_TYPE WindowSequence; /* mdct.h; 0: long, 1: start, 2: short, 3: stop */
-  UCHAR MaxSfBands;
-  UCHAR max_sfb_ste;
-  UCHAR ScaleFactorGrouping;
+    UCHAR WindowShape;         /* 0: sine window, 1: KBD, 2: low overlap */
+    BLOCK_TYPE WindowSequence; /* mdct.h; 0: long, 1: start, 2: short, 3: stop */
+    UCHAR MaxSfBands;
+    UCHAR max_sfb_ste;
+    UCHAR ScaleFactorGrouping;
 
-  UCHAR TotalSfBands;
+    UCHAR TotalSfBands;
 
 } CIcsInfo;
 
 enum {
-  ZERO_HCB = 0,
-  ESCBOOK = 11,
-  NSPECBOOKS = ESCBOOK + 1,
-  BOOKSCL = NSPECBOOKS,
-  NOISE_HCB = 13,
-  INTENSITY_HCB2 = 14,
-  INTENSITY_HCB = 15,
-  LAST_HCB
+    ZERO_HCB = 0,
+    ESCBOOK = 11,
+    NSPECBOOKS = ESCBOOK + 1,
+    BOOKSCL = NSPECBOOKS,
+    NOISE_HCB = 13,
+    INTENSITY_HCB2 = 14,
+    INTENSITY_HCB = 15,
+    LAST_HCB
 };
 
 /* This struct holds the persistent data shared by both channels of a CPE.
    It needs to be allocated for each CPE. */
 typedef struct {
-  CJointStereoPersistentData jointStereoPersistentData;
+    CJointStereoPersistentData jointStereoPersistentData;
 } CpePersistentData;
 
 /*
  * This struct must be allocated one for every channel and must be persistent.
  */
 typedef struct {
-  FIXP_DBL *pOverlapBuffer;
-  mdct_t IMdct;
+    FIXP_DBL *pOverlapBuffer;
+    mdct_t IMdct;
 
-  CArcoData *hArCo;
+    CArcoData *hArCo;
 
-  INT pnsCurrentSeed;
+    INT pnsCurrentSeed;
 
-  /* LPD memory */
-  FIXP_DBL old_synth[PIT_MAX_MAX - L_SUBFR];
-  INT old_T_pf[SYN_SFD];
-  FIXP_DBL old_gain_pf[SYN_SFD];
-  FIXP_DBL mem_bpf[L_FILT + L_SUBFR];
-  UCHAR
-  old_bpf_control_info; /* (1: enable, 0: disable) bpf for past superframe
+    /* LPD memory */
+    FIXP_DBL old_synth[PIT_MAX_MAX - L_SUBFR];
+    INT old_T_pf[SYN_SFD];
+    FIXP_DBL old_gain_pf[SYN_SFD];
+    FIXP_DBL mem_bpf[L_FILT + L_SUBFR];
+    UCHAR
+    old_bpf_control_info; /* (1: enable, 0: disable) bpf for past superframe
                          */
 
-  USAC_COREMODE last_core_mode; /* core mode used by the decoder in previous
+    USAC_COREMODE last_core_mode; /* core mode used by the decoder in previous
                        frame. (not signalled by the bitstream, see
                        CAacDecoderChannelInfo::core_mode_last !! )
                      */
-  UCHAR last_lpd_mode;      /* LPD mode used by the decoder in last LPD subframe
+    UCHAR last_lpd_mode;      /* LPD mode used by the decoder in last LPD subframe
                     (not signalled by the bitstream, see
                    CAacDecoderChannelInfo::lpd_mode_last !! ) */
-  UCHAR last_last_lpd_mode; /* LPD mode used in second last LPD subframe
+    UCHAR last_last_lpd_mode; /* LPD mode used in second last LPD subframe
                     (not signalled by the bitstream) */
-  UCHAR last_lpc_lost;      /* Flag indicating that the previous LPC is lost */
+    UCHAR last_lpc_lost;      /* Flag indicating that the previous LPC is lost */
 
-  FIXP_LPC
-  lpc4_lsf[M_LP_FILTER_ORDER]; /* Last LPC4 coefficients in LSF domain. */
-  FIXP_LPC lsf_adaptive_mean[M_LP_FILTER_ORDER]; /* Adaptive mean of LPC
+    FIXP_LPC
+    lpc4_lsf[M_LP_FILTER_ORDER]; /* Last LPC4 coefficients in LSF domain. */
+    FIXP_LPC lsf_adaptive_mean[M_LP_FILTER_ORDER]; /* Adaptive mean of LPC
                                         coefficients in LSF domain
                                         for concealment. */
-  FIXP_LPC lp_coeff_old[2][M_LP_FILTER_ORDER];   /* Last LPC coefficients in LP
+    FIXP_LPC lp_coeff_old[2][M_LP_FILTER_ORDER];   /* Last LPC coefficients in LP
                         domain. lp_coeff_old[0] is lpc4 (coeffs for
                         right folding point of last tcx frame),
                         lp_coeff_old[1] are coeffs for left folding
                         point of last tcx frame */
-  INT lp_coeff_old_exp[2];
+    INT lp_coeff_old_exp[2];
 
-  FIXP_SGL
-  oldStability; /* LPC coeff stability value from last frame (required for
+    FIXP_SGL
+    oldStability; /* LPC coeff stability value from last frame (required for
        TCX concealment). */
-  UINT numLostLpdFrames; /* Number of consecutive lost subframes. */
+    UINT numLostLpdFrames; /* Number of consecutive lost subframes. */
 
-  /* TCX memory */
-  FIXP_DBL last_tcx_gain;
-  INT last_tcx_gain_e;
-  FIXP_DBL last_alfd_gains[32]; /* Scaled by one bit. */
-  SHORT last_tcx_pitch;
-  UCHAR last_tcx_noise_factor;
+    /* TCX memory */
+    FIXP_DBL last_tcx_gain;
+    INT last_tcx_gain_e;
+    FIXP_DBL last_alfd_gains[32]; /* Scaled by one bit. */
+    SHORT last_tcx_pitch;
+    UCHAR last_tcx_noise_factor;
 
-  /* ACELP memory */
-  CAcelpStaticMem acelp;
+    /* ACELP memory */
+    CAcelpStaticMem acelp;
 
-  ULONG nfRandomSeed; /* seed value for USAC noise filling random generator */
+    ULONG nfRandomSeed; /* seed value for USAC noise filling random generator */
 
-  CDrcChannelData drcData;
-  CConcealmentInfo concealmentInfo;
+    CDrcChannelData drcData;
+    CConcealmentInfo concealmentInfo;
 
-  CpePersistentData *pCpeStaticData;
+    CpePersistentData *pCpeStaticData;
 
 } CAacDecoderStaticChannelInfo;
 
@@ -267,80 +267,80 @@ typedef struct {
  * This union must be allocated for every element (up to 2 channels).
  */
 typedef struct {
-  /* Common bit stream data */
-  SHORT aScaleFactor[(
-      8 * 16)]; /* Spectral scale factors for each sfb in each window. */
-  SHORT aSfbScale[(8 * 16)]; /* could be free after ApplyTools() */
-  UCHAR
-  aCodeBook[(8 * 16)]; /* section data: codebook for each window and sfb. */
-  UCHAR band_is_noise[(8 * 16)];
-  CTnsData TnsData;
-  CRawDataInfo RawDataInfo;
+    /* Common bit stream data */
+    SHORT aScaleFactor[(
+                           8 * 16)]; /* Spectral scale factors for each sfb in each window. */
+    SHORT aSfbScale[(8 * 16)]; /* could be free after ApplyTools() */
+    UCHAR
+    aCodeBook[(8 * 16)]; /* section data: codebook for each window and sfb. */
+    UCHAR band_is_noise[(8 * 16)];
+    CTnsData TnsData;
+    CRawDataInfo RawDataInfo;
 
-  shouldBeUnion {
-    struct {
-      CPulseData PulseData;
-      SHORT aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
+    shouldBeUnion {
+        struct {
+            CPulseData PulseData;
+            SHORT aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
            except for Drm syntax */
-      UCHAR
-      aCodeBooks4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for
+            UCHAR
+            aCodeBooks4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for
   Drm syntax. Same as "aCodeBook" ? */
-      SHORT lenOfReorderedSpectralData;
-      SCHAR lenOfLongestCodeword;
-      SCHAR numberSection;
-      SCHAR rvlcCurrentScaleFactorOK;
-      SCHAR rvlcIntensityUsed;
-    } aac;
-    struct {
-      UCHAR fd_noise_level_and_offset;
-      UCHAR tns_active;
-      UCHAR tns_on_lr;
-      UCHAR tcx_noise_factor[4];
-      UCHAR tcx_global_gain[4];
-    } usac;
-  }
-  specificTo;
+            SHORT lenOfReorderedSpectralData;
+            SCHAR lenOfLongestCodeword;
+            SCHAR numberSection;
+            SCHAR rvlcCurrentScaleFactorOK;
+            SCHAR rvlcIntensityUsed;
+        } aac;
+        struct {
+            UCHAR fd_noise_level_and_offset;
+            UCHAR tns_active;
+            UCHAR tns_on_lr;
+            UCHAR tcx_noise_factor[4];
+            UCHAR tcx_global_gain[4];
+        } usac;
+    }
+    specificTo;
 
 } CAacDecoderDynamicData;
 
 typedef shouldBeUnion {
-  UCHAR DrmBsBuffer[DRM_BS_BUFFER_SIZE];
+    UCHAR DrmBsBuffer[DRM_BS_BUFFER_SIZE];
 
-  /* Common signal data, can be used once the bit stream data from above is not
-   * used anymore. */
-  FIXP_DBL mdctOutTemp[1024];
+    /* Common signal data, can be used once the bit stream data from above is not
+     * used anymore. */
+    FIXP_DBL mdctOutTemp[1024];
 
-  FIXP_DBL synth_buf[(PIT_MAX_MAX + SYN_DELAY + L_FRAME_PLUS)];
+    FIXP_DBL synth_buf[(PIT_MAX_MAX + SYN_DELAY + L_FRAME_PLUS)];
 
-  FIXP_DBL workBuffer[WB_SECTION_SIZE];
+    FIXP_DBL workBuffer[WB_SECTION_SIZE];
 }
 CWorkBufferCore1;
 
 /* Common data referenced by all channels */
 typedef struct {
-  CAacDecoderDynamicData pAacDecoderDynamicData[2];
+    CAacDecoderDynamicData pAacDecoderDynamicData[2];
 
-  CPnsInterChannelData pnsInterChannelData;
-  INT pnsRandomSeed[(8 * 16)];
+    CPnsInterChannelData pnsInterChannelData;
+    INT pnsRandomSeed[(8 * 16)];
 
-  CJointStereoData jointStereoData; /* One for one element */
+    CJointStereoData jointStereoData; /* One for one element */
 
-  shouldBeUnion {
-    struct {
-      CErHcrInfo erHcrInfo;
-      CErRvlcInfo erRvlcInfo;
-      SHORT aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
-      SHORT aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
-      SHORT aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
-    } aac;
-  }
-  overlay;
+    shouldBeUnion {
+        struct {
+            CErHcrInfo erHcrInfo;
+            CErRvlcInfo erRvlcInfo;
+            SHORT aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
+            SHORT aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
+            SHORT aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
+        } aac;
+    }
+    overlay;
 
 } CAacDecoderCommonData;
 
 typedef struct {
-  CWorkBufferCore1 *pWorkBufferCore1;
-  CCplxPredictionData *cplxPredictionData;
+    CWorkBufferCore1 *pWorkBufferCore1;
+    CCplxPredictionData *cplxPredictionData;
 } CAacDecoderCommonStaticData;
 
 /*
@@ -356,68 +356,68 @@ typedef struct {
  * CChannelElement_Decode() call..
  */
 typedef struct {
-  shouldBeUnion {
-    struct {
-      FIXP_DBL fac_data0[LFAC];
-      SCHAR fac_data_e[4];
-      FIXP_DBL
-      *fac_data[4]; /* Pointers to unused parts of pSpectralCoefficient */
+    shouldBeUnion {
+        struct {
+            FIXP_DBL fac_data0[LFAC];
+            SCHAR fac_data_e[4];
+            FIXP_DBL
+            *fac_data[4]; /* Pointers to unused parts of pSpectralCoefficient */
 
-      UCHAR core_mode; /* current core mode */
-      USAC_COREMODE
-      core_mode_last;      /* previous core mode, signalled in the bitstream
+            UCHAR core_mode; /* current core mode */
+            USAC_COREMODE
+            core_mode_last;      /* previous core mode, signalled in the bitstream
 (not done by the decoder, see
 CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-      UCHAR lpd_mode_last; /* previous LPD mode, signalled in the bitstream
+            UCHAR lpd_mode_last; /* previous LPD mode, signalled in the bitstream
 (not done by the decoder, see
 CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-      UCHAR mod[4];
-      UCHAR bpf_control_info; /* (1: enable, 0: disable) bpf for current
+            UCHAR mod[4];
+            UCHAR bpf_control_info; /* (1: enable, 0: disable) bpf for current
 superframe */
 
-      FIXP_LPC lsp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction
+            FIXP_LPC lsp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction
                coefficients in LSP domain */
-      FIXP_LPC
-      lp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction coefficients in
+            FIXP_LPC
+            lp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction coefficients in
      LP domain */
-      INT lp_coeff_exp[5];
-      FIXP_LPC
-      lsf_adaptive_mean_cand[M_LP_FILTER_ORDER]; /* concealment: is
+            INT lp_coeff_exp[5];
+            FIXP_LPC
+            lsf_adaptive_mean_cand[M_LP_FILTER_ORDER]; /* concealment: is
         copied to
         CAacDecoderStaticChannelInfo->lsf_adaptive_mean
         once frame is assumed to be correct*/
-      FIXP_SGL aStability[4]; /* LPC coeff stability values required for ACELP
+            FIXP_SGL aStability[4]; /* LPC coeff stability values required for ACELP
 and TCX (concealment) */
 
-      CAcelpChannelData acelp[4];
+            CAcelpChannelData acelp[4];
 
-      FIXP_DBL tcx_gain[4];
-      SCHAR tcx_gain_e[4];
-    } usac;
+            FIXP_DBL tcx_gain[4];
+            SCHAR tcx_gain_e[4];
+        } usac;
 
-    struct {
-      CPnsData PnsData; /* Not required for USAC */
-    } aac;
-  }
-  data;
+        struct {
+            CPnsData PnsData; /* Not required for USAC */
+        } aac;
+    }
+    data;
 
-  SPECTRAL_PTR pSpectralCoefficient; /* Spectral coefficients of each window */
-  SHORT specScale[8]; /* Scale shift values of each spectrum window */
-  CIcsInfo icsInfo;
-  INT granuleLength; /* Size of smallest spectrum piece */
-  UCHAR ElementInstanceTag;
+    SPECTRAL_PTR pSpectralCoefficient; /* Spectral coefficients of each window */
+    SHORT specScale[8]; /* Scale shift values of each spectrum window */
+    CIcsInfo icsInfo;
+    INT granuleLength; /* Size of smallest spectrum piece */
+    UCHAR ElementInstanceTag;
 
-  AACDEC_RENDER_MODE renderMode; /* Output signal rendering mode */
+    AACDEC_RENDER_MODE renderMode; /* Output signal rendering mode */
 
-  CAacDecoderDynamicData *
-      pDynData; /* Data required for one element and discarded after decoding */
-  CAacDecoderCommonData
-      *pComData; /* Data required for one channel at a time during decode */
-  CAacDecoderCommonStaticData *pComStaticData; /* Persistent data required for
+    CAacDecoderDynamicData *
+    pDynData; /* Data required for one element and discarded after decoding */
+    CAacDecoderCommonData
+    *pComData; /* Data required for one channel at a time during decode */
+    CAacDecoderCommonStaticData *pComStaticData; /* Persistent data required for
                                       one channel at a time during
                                       decode */
 
-  int currAliasingSymmetry; /* required for RSVD60 MCT */
+    int currAliasingSymmetry; /* required for RSVD60 MCT */
 
 } CAacDecoderChannelInfo;
 
@@ -495,73 +495,75 @@ void CPns_SetCorrelation(CPnsData *pPnsData, const int group, const int band,
 
 /****************** inline functions ******************/
 
-inline UCHAR IsValid(const CIcsInfo *pIcsInfo) { return pIcsInfo->Valid; }
+inline UCHAR IsValid(const CIcsInfo *pIcsInfo) {
+    return pIcsInfo->Valid;
+}
 
 inline UCHAR IsLongBlock(const CIcsInfo *pIcsInfo) {
-  return (pIcsInfo->WindowSequence != BLOCK_SHORT);
+    return (pIcsInfo->WindowSequence != BLOCK_SHORT);
 }
 
 inline UCHAR GetWindowShape(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->WindowShape;
+    return pIcsInfo->WindowShape;
 }
 
 inline BLOCK_TYPE GetWindowSequence(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->WindowSequence;
+    return pIcsInfo->WindowSequence;
 }
 
 inline const SHORT *
 GetScaleFactorBandOffsets(const CIcsInfo *pIcsInfo,
                           const SamplingRateInfo *samplingRateInfo) {
-  if (IsLongBlock(pIcsInfo)) {
-    return samplingRateInfo->ScaleFactorBands_Long;
-  } else {
-    return samplingRateInfo->ScaleFactorBands_Short;
-  }
+    if (IsLongBlock(pIcsInfo)) {
+        return samplingRateInfo->ScaleFactorBands_Long;
+    } else {
+        return samplingRateInfo->ScaleFactorBands_Short;
+    }
 }
 
 inline UCHAR
 GetNumberOfScaleFactorBands(const CIcsInfo *pIcsInfo,
                             const SamplingRateInfo *samplingRateInfo) {
-  if (IsLongBlock(pIcsInfo)) {
-    return samplingRateInfo->NumberOfScaleFactorBands_Long;
-  } else {
-    return samplingRateInfo->NumberOfScaleFactorBands_Short;
-  }
+    if (IsLongBlock(pIcsInfo)) {
+        return samplingRateInfo->NumberOfScaleFactorBands_Long;
+    } else {
+        return samplingRateInfo->NumberOfScaleFactorBands_Short;
+    }
 }
 
 inline int GetWindowsPerFrame(const CIcsInfo *pIcsInfo) {
-  return (pIcsInfo->WindowSequence == BLOCK_SHORT) ? 8 : 1;
+    return (pIcsInfo->WindowSequence == BLOCK_SHORT) ? 8 : 1;
 }
 
 inline UCHAR GetWindowGroups(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->WindowGroups;
+    return pIcsInfo->WindowGroups;
 }
 
 inline UCHAR GetWindowGroupLength(const CIcsInfo *pIcsInfo, const INT index) {
-  return pIcsInfo->WindowGroupLength[index];
+    return pIcsInfo->WindowGroupLength[index];
 }
 
 inline const UCHAR *GetWindowGroupLengthTable(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->WindowGroupLength;
+    return pIcsInfo->WindowGroupLength;
 }
 
 inline UCHAR GetScaleFactorBandsTransmitted(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->MaxSfBands;
+    return pIcsInfo->MaxSfBands;
 }
 
 inline UCHAR GetScaleMaxFactorBandsTransmitted(const CIcsInfo *pIcsInfo0,
-                                               const CIcsInfo *pIcsInfo1) {
-  return fMax(pIcsInfo0->MaxSfBands, pIcsInfo1->MaxSfBands);
+        const CIcsInfo *pIcsInfo1) {
+    return fMax(pIcsInfo0->MaxSfBands, pIcsInfo1->MaxSfBands);
 }
 
 inline UCHAR GetScaleFactorBandsTotal(const CIcsInfo *pIcsInfo) {
-  return pIcsInfo->TotalSfBands;
+    return pIcsInfo->TotalSfBands;
 }
 
 /* Note: This function applies to AAC-LC only ! */
 inline UCHAR GetMaximumTnsBands(const CIcsInfo *pIcsInfo,
                                 const int samplingRateIndex) {
-  return tns_max_bands_tbl[samplingRateIndex][!IsLongBlock(pIcsInfo)];
+    return tns_max_bands_tbl[samplingRateIndex][!IsLongBlock(pIcsInfo)];
 }
 
 #endif /* #ifndef CHANNELINFO_H */

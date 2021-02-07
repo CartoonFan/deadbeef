@@ -114,9 +114,9 @@ amm-info@iis.fraunhofer.de
  * \brief  Contains information needed for a single channel map.
  */
 typedef struct {
-  const UCHAR
-      *pChannelMap; /*!< Actual channel mapping for one single configuration. */
-  UCHAR numChannels; /*!< The number of channels for the channel map which is
+    const UCHAR
+    *pChannelMap; /*!< Actual channel mapping for one single configuration. */
+    UCHAR numChannels; /*!< The number of channels for the channel map which is
             the maximum used channel index+1. */
 } CHANNEL_MAP_INFO;
 
@@ -128,9 +128,9 @@ typedef struct {
  * library. Always use one of the API access functions below!
  */
 typedef struct {
-  const CHANNEL_MAP_INFO *pMapInfoTab; /*!< Table of channel maps. */
-  UINT mapInfoTabLen; /*!< Length of the channel map table array. */
-  UINT fPassThrough;  /*!< Flag that defines whether the specified mapping shall
+    const CHANNEL_MAP_INFO *pMapInfoTab; /*!< Table of channel maps. */
+    UINT mapInfoTabLen; /*!< Length of the channel map table array. */
+    UINT fPassThrough;  /*!< Flag that defines whether the specified mapping shall
              be applied  (value: 0) or the input just gets passed
              through (MPEG mapping). */
 } FDK_channelMapDescr;
