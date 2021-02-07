@@ -125,24 +125,24 @@ read direction. It is called very often, therefore it makes sense to inline it
 
 UCHAR rvlcReadBitFromBitstream(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
                                INT *pPosition, UCHAR readDirection) {
-  UINT bit;
-  INT readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pPosition;
+    UINT bit;
+    INT readBitOffset = (INT)FDKgetValidBits(bs) - bsAnchor + *pPosition;
 
-  if (readBitOffset) {
-    FDKpushBiDirectional(bs, readBitOffset);
-  }
+    if (readBitOffset) {
+        FDKpushBiDirectional(bs, readBitOffset);
+    }
 
-  if (readDirection == FWD) {
-    bit = FDKreadBits(bs, 1);
+    if (readDirection == FWD) {
+        bit = FDKreadBits(bs, 1);
 
-    *pPosition += 1;
-  } else {
-    /* to be replaced with a brother function of FDKreadBits() */
-    bit = FDKreadBits(bs, 1);
-    FDKpushBack(bs, 2);
+        *pPosition += 1;
+    } else {
+        /* to be replaced with a brother function of FDKreadBits() */
+        bit = FDKreadBits(bs, 1);
+        FDKpushBack(bs, 2);
 
-    *pPosition -= 1;
-  }
+        *pPosition -= 1;
+    }
 
-  return (bit);
+    return (bit);
 }

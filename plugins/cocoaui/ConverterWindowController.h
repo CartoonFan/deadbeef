@@ -27,12 +27,12 @@
 @interface ConverterWindowController : NSWindowController <NSWindowDelegate>
 
 - (void)runWithTracks:(ddb_playItem_t **)tracks
-                count:(NSInteger)count
-             playlist:(ddb_playlist_t *)plt;
+    count:(NSInteger)count
+    playlist:(ddb_playlist_t *)plt;
 
 + (void)runConverterWithTracks:(ddb_playItem_t **)tracks
-                         count:(NSInteger)count
-                      playlist:(ddb_playlist_t *)plt;
+    count:(NSInteger)count
+    playlist:(ddb_playlist_t *)plt;
 
 + (void)cleanup;
 

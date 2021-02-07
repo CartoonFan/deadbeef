@@ -149,11 +149,11 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     UINT flags, UINT strmFlags);
 
 static inline INT CLpd_FAC_getLength(int fNotShortBlock, int fac_length_long) {
-  if (fNotShortBlock) {
-    return (fac_length_long);
-  } else {
-    return fac_length_long / 2;
-  }
+    if (fNotShortBlock) {
+        return (fac_length_long);
+    } else {
+        return fac_length_long / 2;
+    }
 }
 
 void filtLP(const FIXP_DBL *syn, FIXP_PCM *syn_out, FIXP_DBL *noise,
@@ -188,9 +188,9 @@ void bass_pf_1sf_delay(FIXP_DBL syn[], const INT T_sf[], FIXP_DBL *pit_gain,
  */
 FDK_INLINE
 int UsacRandomSign(ULONG *seed) {
-  *seed = (ULONG)((UINT64)(*seed) * 69069 + 5);
+    *seed = (ULONG)((UINT64)(*seed) * 69069 + 5);
 
-  return (int)((*seed) & 0x10000);
+    return (int)((*seed) & 0x10000);
 }
 
 void CFdp_Reset(CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);

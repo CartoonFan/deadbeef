@@ -22,38 +22,42 @@
 #include "wmadec.h"
 
 fixed64 IntTo64(int x) {
-  fixed64 res = 0;
-  unsigned char *p = (unsigned char *)&res;
+    fixed64 res = 0;
+    unsigned char *p = (unsigned char *)&res;
 
 #ifdef ROCKBOX_BIG_ENDIAN
-  p[5] = x & 0xff;
-  p[4] = (x & 0xff00) >> 8;
-  p[3] = (x & 0xff0000) >> 16;
-  p[2] = (x & 0xff000000) >> 24;
+    p[5] = x & 0xff;
+    p[4] = (x & 0xff00) >> 8;
+    p[3] = (x & 0xff0000) >> 16;
+    p[2] = (x & 0xff000000) >> 24;
 #else
-  p[2] = x & 0xff;
-  p[3] = (x & 0xff00) >> 8;
-  p[4] = (x & 0xff0000) >> 16;
-  p[5] = (x & 0xff000000) >> 24;
+    p[2] = x & 0xff;
+    p[3] = (x & 0xff00) >> 8;
+    p[4] = (x & 0xff0000) >> 16;
+    p[5] = (x & 0xff000000) >> 24;
 #endif
-  return res;
+    return res;
 }
 
 int IntFrom64(fixed64 x) {
-  int res = 0;
-  unsigned char *p = (unsigned char *)&x;
+    int res = 0;
+    unsigned char *p = (unsigned char *)&x;
 
 #ifdef ROCKBOX_BIG_ENDIAN
-  res = p[5] | (p[4] << 8) | (p[3] << 16) | (p[2] << 24);
+    res = p[5] | (p[4] << 8) | (p[3] << 16) | (p[2] << 24);
 #else
-  res = p[2] | (p[3] << 8) | (p[4] << 16) | (p[5] << 24);
+    res = p[2] | (p[3] << 8) | (p[4] << 16) | (p[5] << 24);
 #endif
-  return res;
+    return res;
 }
 
-fixed32 Fixed32From64(fixed64 x) { return x & 0xFFFFFFFF; }
+fixed32 Fixed32From64(fixed64 x) {
+    return x & 0xFFFFFFFF;
+}
 
-fixed64 Fixed32To64(fixed32 x) { return (fixed64)x; }
+fixed64 Fixed32To64(fixed32 x) {
+    return (fixed64)x;
+}
 
 /*
     Not performance senstitive code here
@@ -61,32 +65,32 @@ fixed64 Fixed32To64(fixed32 x) { return (fixed64)x; }
 */
 
 fixed32 fixdiv32(fixed32 x, fixed32 y) {
-  fixed64 temp;
+    fixed64 temp;
 
-  if (x == 0)
-    return 0;
-  if (y == 0)
-    return 0x7fffffff;
-  temp = x;
-  temp <<= PRECISION;
-  return (fixed32)(temp / y);
+    if (x == 0)
+        return 0;
+    if (y == 0)
+        return 0x7fffffff;
+    temp = x;
+    temp <<= PRECISION;
+    return (fixed32)(temp / y);
 }
 
 fixed64 fixdiv64(fixed64 x, fixed64 y) {
-  fixed64 temp;
+    fixed64 temp;
 
-  if (x == 0)
-    return 0;
-  if (y == 0)
-    return 0x07ffffffffffffffLL;
-  temp = x;
-  temp <<= PRECISION64;
-  return (fixed64)(temp / y);
+    if (x == 0)
+        return 0;
+    if (y == 0)
+        return 0x07ffffffffffffffLL;
+    temp = x;
+    temp <<= PRECISION64;
+    return (fixed64)(temp / y);
 }
 
 fixed32 fixsqrt32(fixed32 x) {
 
-  unsigned long r = 0, s, v = (unsigned long)x;
+    unsigned long r = 0, s, v = (unsigned long)x;
 
 #define STEP(k)                                                                \
   s = r + (1 << k * 2);                                                        \
@@ -96,24 +100,24 @@ fixed32 fixsqrt32(fixed32 x) {
     r |= (1 << k * 2);                                                         \
   }
 
-  STEP(15);
-  STEP(14);
-  STEP(13);
-  STEP(12);
-  STEP(11);
-  STEP(10);
-  STEP(9);
-  STEP(8);
-  STEP(7);
-  STEP(6);
-  STEP(5);
-  STEP(4);
-  STEP(3);
-  STEP(2);
-  STEP(1);
-  STEP(0);
+    STEP(15);
+    STEP(14);
+    STEP(13);
+    STEP(12);
+    STEP(11);
+    STEP(10);
+    STEP(9);
+    STEP(8);
+    STEP(7);
+    STEP(6);
+    STEP(5);
+    STEP(4);
+    STEP(3);
+    STEP(2);
+    STEP(1);
+    STEP(0);
 
-  return (fixed32)(r << (PRECISION / 2));
+    return (fixed32)(r << (PRECISION / 2));
 }
 
 static const long cordic_circular_gain = 0xb2458939; /* 0.607252929 */
@@ -169,49 +173,49 @@ static const unsigned long atan_table[] = {
  */
 
 long fsincos(unsigned long phase, fixed32 *cos) {
-  int64_t x, x1, y, y1;
-  unsigned long z, z1;
-  int i;
+    int64_t x, x1, y, y1;
+    unsigned long z, z1;
+    int i;
 
-  /* Setup initial vector */
-  x = cordic_circular_gain;
-  y = 0;
-  z = phase;
+    /* Setup initial vector */
+    x = cordic_circular_gain;
+    y = 0;
+    z = phase;
 
-  /* The phase has to be somewhere between 0..pi for this to work right */
-  if (z < 0xffffffff / 4) {
-    /* z in first quadrant, z += pi/2 to correct */
-    x = -x;
-    z += 0xffffffff / 4;
-  } else if (z < 3 * (0xffffffff / 4)) {
-    /* z in third quadrant, z -= pi/2 to correct */
-    z -= 0xffffffff / 4;
-  } else {
-    /* z in fourth quadrant, z -= 3pi/2 to correct */
-    x = -x;
-    z -= 3 * (0xffffffff / 4);
-  }
-
-  /* Each iteration adds roughly 1-bit of extra precision */
-  for (i = 0; i < 31; i++) {
-    x1 = x >> i;
-    y1 = y >> i;
-    z1 = atan_table[i];
-
-    /* Decided which direction to rotate vector. Pivot point is pi/2 */
-    if (z >= 0xffffffff / 4) {
-      x -= y1;
-      y += x1;
-      z -= z1;
+    /* The phase has to be somewhere between 0..pi for this to work right */
+    if (z < 0xffffffff / 4) {
+        /* z in first quadrant, z += pi/2 to correct */
+        x = -x;
+        z += 0xffffffff / 4;
+    } else if (z < 3 * (0xffffffff / 4)) {
+        /* z in third quadrant, z -= pi/2 to correct */
+        z -= 0xffffffff / 4;
     } else {
-      x += y1;
-      y -= x1;
-      z += z1;
+        /* z in fourth quadrant, z -= 3pi/2 to correct */
+        x = -x;
+        z -= 3 * (0xffffffff / 4);
     }
-  }
 
-  if (cos)
-    *cos = (int32_t)x;
+    /* Each iteration adds roughly 1-bit of extra precision */
+    for (i = 0; i < 31; i++) {
+        x1 = x >> i;
+        y1 = y >> i;
+        z1 = atan_table[i];
 
-  return y;
+        /* Decided which direction to rotate vector. Pivot point is pi/2 */
+        if (z >= 0xffffffff / 4) {
+            x -= y1;
+            y += x1;
+            z -= z1;
+        } else {
+            x += y1;
+            y -= x1;
+            z += z1;
+        }
+    }
+
+    if (cos)
+        *cos = (int32_t)x;
+
+    return y;
 }

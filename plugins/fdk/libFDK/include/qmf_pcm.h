@@ -135,81 +135,83 @@ void qmfSynPrototypeFirSlot_fallback(
     FIXP_DBL *RESTRICT imagSlot,      /*!< Input: Pointer to imag Slot */
     INT_PCM_QMFOUT *RESTRICT timeOut, /*!< Time domain data */
     int stride) {
-  FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
-  int no_channels = qmf->no_channels;
-  const FIXP_PFT *p_Filter = qmf->p_filter;
-  int p_stride = qmf->p_stride;
-  int j;
-  FIXP_QSS *RESTRICT sta = FilterStates;
-  const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
-  int scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
-              qmf->outGain_e;
+    FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
+    int no_channels = qmf->no_channels;
+    const FIXP_PFT *p_Filter = qmf->p_filter;
+    int p_stride = qmf->p_stride;
+    int j;
+    FIXP_QSS *RESTRICT sta = FilterStates;
+    const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
+    int scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
+                qmf->outGain_e;
 
-  p_flt =
-      p_Filter + p_stride * QMF_NO_POLY; /*                     5th of 330 */
-  p_fltm = p_Filter + (qmf->FilterSize / 2) -
-           p_stride * QMF_NO_POLY; /* 5 + (320 - 2*5) = 315th of 330 */
+    p_flt =
+        p_Filter + p_stride * QMF_NO_POLY; /*                     5th of 330 */
+    p_fltm = p_Filter + (qmf->FilterSize / 2) -
+             p_stride * QMF_NO_POLY; /* 5 + (320 - 2*5) = 315th of 330 */
 
-  FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
+    FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
 
-  FIXP_DBL rnd_val = 0;
+    FIXP_DBL rnd_val = 0;
 
-  if (scale > 0) {
-    if (scale < (DFRACT_BITS - 1))
-      rnd_val = FIXP_DBL(1 << (scale - 1));
-    else
-      scale = (DFRACT_BITS - 1);
-  } else {
-    scale = fMax(scale, -(DFRACT_BITS - 1));
-  }
-
-  for (j = no_channels - 1; j >= 0; j--) {
-    FIXP_DBL imag = imagSlot[j]; /* no_channels-1 .. 0 */
-    FIXP_DBL real = realSlot[j]; /* no_channels-1 .. 0 */
-    {
-      INT_PCM_QMFOUT tmp;
-      FIXP_DBL Are = fMultAddDiv2(FX_QSS2FX_DBL(sta[0]), p_fltm[0], real);
-
-      /* This PCM formatting performs:
-         - multiplication with 16-bit gain, if not -1.0f
-         - rounding, if shift right is applied
-         - apply shift left (or right) with saturation to 32 (or 16) bits
-         - store output with --stride in 32 (or 16) bit format
-      */
-      if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
-      {
-        Are = fMult(Are, gain);
-      }
-      if (scale >= 0) {
-        FDK_ASSERT(Are <= (Are + rnd_val)); /* Round-addition must not overflow,
-                       might be equal for rnd_val=0 */
-        tmp = (INT_PCM_QMFOUT)(
-            SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
-      } else {
-        tmp = (INT_PCM_QMFOUT)(
-            SATURATE_LEFT_SHIFT(Are, -scale, SAMPLE_BITS_QMFOUT));
-      }
-
-      { timeOut[(j)*stride] = tmp; }
+    if (scale > 0) {
+        if (scale < (DFRACT_BITS - 1))
+            rnd_val = FIXP_DBL(1 << (scale - 1));
+        else
+            scale = (DFRACT_BITS - 1);
+    } else {
+        scale = fMax(scale, -(DFRACT_BITS - 1));
     }
 
-    sta[0] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[1]), p_flt[4], imag));
-    sta[1] =
-        FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[2]), p_fltm[1], real));
-    sta[2] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[3]), p_flt[3], imag));
-    sta[3] =
-        FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[4]), p_fltm[2], real));
-    sta[4] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[5]), p_flt[2], imag));
-    sta[5] =
-        FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[6]), p_fltm[3], real));
-    sta[6] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[7]), p_flt[1], imag));
-    sta[7] =
-        FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[8]), p_fltm[4], real));
-    sta[8] = FX_DBL2FX_QSS(fMultDiv2(p_flt[0], imag));
-    p_flt += (p_stride * QMF_NO_POLY);
-    p_fltm -= (p_stride * QMF_NO_POLY);
-    sta += 9; // = (2*QMF_NO_POLY-1);
-  }
+    for (j = no_channels - 1; j >= 0; j--) {
+        FIXP_DBL imag = imagSlot[j]; /* no_channels-1 .. 0 */
+        FIXP_DBL real = realSlot[j]; /* no_channels-1 .. 0 */
+        {
+            INT_PCM_QMFOUT tmp;
+            FIXP_DBL Are = fMultAddDiv2(FX_QSS2FX_DBL(sta[0]), p_fltm[0], real);
+
+            /* This PCM formatting performs:
+               - multiplication with 16-bit gain, if not -1.0f
+               - rounding, if shift right is applied
+               - apply shift left (or right) with saturation to 32 (or 16) bits
+               - store output with --stride in 32 (or 16) bit format
+            */
+            if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
+            {
+                Are = fMult(Are, gain);
+            }
+            if (scale >= 0) {
+                FDK_ASSERT(Are <= (Are + rnd_val)); /* Round-addition must not overflow,
+                       might be equal for rnd_val=0 */
+                tmp = (INT_PCM_QMFOUT)(
+                          SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
+            } else {
+                tmp = (INT_PCM_QMFOUT)(
+                          SATURATE_LEFT_SHIFT(Are, -scale, SAMPLE_BITS_QMFOUT));
+            }
+
+            {
+                timeOut[(j)*stride] = tmp;
+            }
+        }
+
+        sta[0] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[1]), p_flt[4], imag));
+        sta[1] =
+            FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[2]), p_fltm[1], real));
+        sta[2] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[3]), p_flt[3], imag));
+        sta[3] =
+            FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[4]), p_fltm[2], real));
+        sta[4] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[5]), p_flt[2], imag));
+        sta[5] =
+            FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[6]), p_fltm[3], real));
+        sta[6] = FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[7]), p_flt[1], imag));
+        sta[7] =
+            FX_DBL2FX_QSS(fMultAddDiv2(FX_QSS2FX_DBL(sta[8]), p_fltm[4], real));
+        sta[8] = FX_DBL2FX_QSS(fMultDiv2(p_flt[0], imag));
+        p_flt += (p_stride * QMF_NO_POLY);
+        p_fltm -= (p_stride * QMF_NO_POLY);
+        sta += 9; // = (2*QMF_NO_POLY-1);
+    }
 }
 
 #ifndef FUNCTION_qmfSynPrototypeFirSlot_NonSymmetric
@@ -225,78 +227,78 @@ static void qmfSynPrototypeFirSlot_NonSymmetric(
     FIXP_DBL *RESTRICT imagSlot,      /*!< Input: Pointer to imag Slot */
     INT_PCM_QMFOUT *RESTRICT timeOut, /*!< Time domain data */
     int stride) {
-  FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
-  int no_channels = qmf->no_channels;
-  const FIXP_PFT *p_Filter = qmf->p_filter;
-  int p_stride = qmf->p_stride;
-  int j;
-  FIXP_QSS *RESTRICT sta = FilterStates;
-  const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
-  int scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
-              qmf->outGain_e;
+    FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
+    int no_channels = qmf->no_channels;
+    const FIXP_PFT *p_Filter = qmf->p_filter;
+    int p_stride = qmf->p_stride;
+    int j;
+    FIXP_QSS *RESTRICT sta = FilterStates;
+    const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
+    int scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
+                qmf->outGain_e;
 
-  p_flt = p_Filter; /*!< Pointer to first half of filter coefficients */
-  p_fltm =
-      &p_flt[qmf->FilterSize / 2]; /* at index 320, overall 640 coefficients */
+    p_flt = p_Filter; /*!< Pointer to first half of filter coefficients */
+    p_fltm =
+        &p_flt[qmf->FilterSize / 2]; /* at index 320, overall 640 coefficients */
 
-  FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
+    FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
 
-  FIXP_DBL rnd_val = (FIXP_DBL)0;
+    FIXP_DBL rnd_val = (FIXP_DBL)0;
 
-  if (scale > 0) {
-    if (scale < (DFRACT_BITS - 1))
-      rnd_val = FIXP_DBL(1 << (scale - 1));
-    else
-      scale = (DFRACT_BITS - 1);
-  } else {
-    scale = fMax(scale, -(DFRACT_BITS - 1));
-  }
-
-  for (j = no_channels - 1; j >= 0; j--) {
-    FIXP_DBL imag = imagSlot[j]; /* no_channels-1 .. 0 */
-    FIXP_DBL real = realSlot[j]; /* no_channels-1 .. 0 */
-    {
-      INT_PCM_QMFOUT tmp;
-      FIXP_DBL Are = sta[0] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[4], real));
-
-      /* This PCM formatting performs:
-         - multiplication with 16-bit gain, if not -1.0f
-         - rounding, if shift right is applied
-         - apply shift left (or right) with saturation to 32 (or 16) bits
-         - store output with --stride in 32 (or 16) bit format
-      */
-      if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
-      {
-        Are = fMult(Are, gain);
-      }
-      if (scale > 0) {
-        FDK_ASSERT(Are <
-                   (Are + rnd_val)); /* Round-addition must not overflow */
-        tmp = (INT_PCM_QMFOUT)(
-            SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
-      } else {
-        tmp = (INT_PCM_QMFOUT)(
-            SATURATE_LEFT_SHIFT(Are, -scale, SAMPLE_BITS_QMFOUT));
-      }
-      timeOut[j * stride] = tmp;
+    if (scale > 0) {
+        if (scale < (DFRACT_BITS - 1))
+            rnd_val = FIXP_DBL(1 << (scale - 1));
+        else
+            scale = (DFRACT_BITS - 1);
+    } else {
+        scale = fMax(scale, -(DFRACT_BITS - 1));
     }
 
-    sta[0] = sta[1] + FX_DBL2FX_QSS(fMultDiv2(p_flt[4], imag));
-    sta[1] = sta[2] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[3], real));
-    sta[2] = sta[3] + FX_DBL2FX_QSS(fMultDiv2(p_flt[3], imag));
+    for (j = no_channels - 1; j >= 0; j--) {
+        FIXP_DBL imag = imagSlot[j]; /* no_channels-1 .. 0 */
+        FIXP_DBL real = realSlot[j]; /* no_channels-1 .. 0 */
+        {
+            INT_PCM_QMFOUT tmp;
+            FIXP_DBL Are = sta[0] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[4], real));
 
-    sta[3] = sta[4] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[2], real));
-    sta[4] = sta[5] + FX_DBL2FX_QSS(fMultDiv2(p_flt[2], imag));
-    sta[5] = sta[6] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[1], real));
-    sta[6] = sta[7] + FX_DBL2FX_QSS(fMultDiv2(p_flt[1], imag));
+            /* This PCM formatting performs:
+               - multiplication with 16-bit gain, if not -1.0f
+               - rounding, if shift right is applied
+               - apply shift left (or right) with saturation to 32 (or 16) bits
+               - store output with --stride in 32 (or 16) bit format
+            */
+            if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
+            {
+                Are = fMult(Are, gain);
+            }
+            if (scale > 0) {
+                FDK_ASSERT(Are <
+                           (Are + rnd_val)); /* Round-addition must not overflow */
+                tmp = (INT_PCM_QMFOUT)(
+                          SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
+            } else {
+                tmp = (INT_PCM_QMFOUT)(
+                          SATURATE_LEFT_SHIFT(Are, -scale, SAMPLE_BITS_QMFOUT));
+            }
+            timeOut[j * stride] = tmp;
+        }
 
-    sta[7] = sta[8] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[0], real));
-    sta[8] = FX_DBL2FX_QSS(fMultDiv2(p_flt[0], imag));
+        sta[0] = sta[1] + FX_DBL2FX_QSS(fMultDiv2(p_flt[4], imag));
+        sta[1] = sta[2] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[3], real));
+        sta[2] = sta[3] + FX_DBL2FX_QSS(fMultDiv2(p_flt[3], imag));
 
-    p_flt += (p_stride * QMF_NO_POLY);
-    p_fltm += (p_stride * QMF_NO_POLY);
-    sta += 9; // = (2*QMF_NO_POLY-1);
-  }
+        sta[3] = sta[4] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[2], real));
+        sta[4] = sta[5] + FX_DBL2FX_QSS(fMultDiv2(p_flt[2], imag));
+        sta[5] = sta[6] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[1], real));
+        sta[6] = sta[7] + FX_DBL2FX_QSS(fMultDiv2(p_flt[1], imag));
+
+        sta[7] = sta[8] + FX_DBL2FX_QSS(fMultDiv2(p_fltm[0], real));
+        sta[8] = FX_DBL2FX_QSS(fMultDiv2(p_flt[0], imag));
+
+        p_flt += (p_stride * QMF_NO_POLY);
+        p_fltm += (p_stride * QMF_NO_POLY);
+        sta += 9; // = (2*QMF_NO_POLY-1);
+    }
 }
 #endif /* FUNCTION_qmfSynPrototypeFirSlot_NonSymmetric */
 
@@ -307,27 +309,27 @@ void qmfSynthesisFilteringSlot(HANDLE_QMF_FILTER_BANK synQmf,
                                const int scaleFactorHighBand,
                                INT_PCM_QMFOUT *timeOut, const int stride,
                                FIXP_DBL *pWorkBuffer) {
-  if (!(synQmf->flags & QMF_FLAG_LP))
-    qmfInverseModulationHQ(synQmf, realSlot, imagSlot, scaleFactorLowBand,
-                           scaleFactorHighBand, pWorkBuffer);
-  else {
-    if (synQmf->flags & QMF_FLAG_CLDFB) {
-      qmfInverseModulationLP_odd(synQmf, realSlot, scaleFactorLowBand,
-                                 scaleFactorHighBand, pWorkBuffer);
-    } else {
-      qmfInverseModulationLP_even(synQmf, realSlot, scaleFactorLowBand,
-                                  scaleFactorHighBand, pWorkBuffer);
+    if (!(synQmf->flags & QMF_FLAG_LP))
+        qmfInverseModulationHQ(synQmf, realSlot, imagSlot, scaleFactorLowBand,
+                               scaleFactorHighBand, pWorkBuffer);
+    else {
+        if (synQmf->flags & QMF_FLAG_CLDFB) {
+            qmfInverseModulationLP_odd(synQmf, realSlot, scaleFactorLowBand,
+                                       scaleFactorHighBand, pWorkBuffer);
+        } else {
+            qmfInverseModulationLP_even(synQmf, realSlot, scaleFactorLowBand,
+                                        scaleFactorHighBand, pWorkBuffer);
+        }
     }
-  }
 
-  if (synQmf->flags & QMF_FLAG_NONSYMMETRIC) {
-    qmfSynPrototypeFirSlot_NonSymmetric(synQmf, pWorkBuffer,
-                                        pWorkBuffer + synQmf->no_channels,
-                                        timeOut, stride);
-  } else {
-    qmfSynPrototypeFirSlot(synQmf, pWorkBuffer,
-                           pWorkBuffer + synQmf->no_channels, timeOut, stride);
-  }
+    if (synQmf->flags & QMF_FLAG_NONSYMMETRIC) {
+        qmfSynPrototypeFirSlot_NonSymmetric(synQmf, pWorkBuffer,
+                                            pWorkBuffer + synQmf->no_channels,
+                                            timeOut, stride);
+    } else {
+        qmfSynPrototypeFirSlot(synQmf, pWorkBuffer,
+                               pWorkBuffer + synQmf->no_channels, timeOut, stride);
+    }
 }
 
 /*!
@@ -370,35 +372,35 @@ void qmfSynthesisFiltering(
     const INT stride,        /*!< stride factor of output */
     FIXP_DBL *pWorkBuffer    /*!< pointer to temporal working buffer */
 ) {
-  int i;
-  int L = synQmf->no_channels;
-  int scaleFactorHighBand;
-  int scaleFactorLowBand_ov, scaleFactorLowBand_no_ov;
+    int i;
+    int L = synQmf->no_channels;
+    int scaleFactorHighBand;
+    int scaleFactorLowBand_ov, scaleFactorLowBand_no_ov;
 
-  FDK_ASSERT(synQmf->no_channels >= synQmf->lsb);
-  FDK_ASSERT(synQmf->no_channels >= synQmf->usb);
+    FDK_ASSERT(synQmf->no_channels >= synQmf->lsb);
+    FDK_ASSERT(synQmf->no_channels >= synQmf->usb);
 
-  /* adapt scaling */
-  scaleFactorHighBand = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
-                        scaleFactor->hb_scale - synQmf->filterScale;
-  scaleFactorLowBand_ov = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
-                          scaleFactor->ov_lb_scale - synQmf->filterScale;
-  scaleFactorLowBand_no_ov = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
-                             scaleFactor->lb_scale - synQmf->filterScale;
+    /* adapt scaling */
+    scaleFactorHighBand = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
+                          scaleFactor->hb_scale - synQmf->filterScale;
+    scaleFactorLowBand_ov = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
+                            scaleFactor->ov_lb_scale - synQmf->filterScale;
+    scaleFactorLowBand_no_ov = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
+                               scaleFactor->lb_scale - synQmf->filterScale;
 
-  for (i = 0; i < synQmf->no_col; i++) /* ----- no_col loop ----- */
-  {
-    const FIXP_DBL *QmfBufferImagSlot = NULL;
+    for (i = 0; i < synQmf->no_col; i++) /* ----- no_col loop ----- */
+    {
+        const FIXP_DBL *QmfBufferImagSlot = NULL;
 
-    int scaleFactorLowBand =
-        (i < ov_len) ? scaleFactorLowBand_ov : scaleFactorLowBand_no_ov;
+        int scaleFactorLowBand =
+            (i < ov_len) ? scaleFactorLowBand_ov : scaleFactorLowBand_no_ov;
 
-    if (!(synQmf->flags & QMF_FLAG_LP))
-      QmfBufferImagSlot = QmfBufferImag[i];
+        if (!(synQmf->flags & QMF_FLAG_LP))
+            QmfBufferImagSlot = QmfBufferImag[i];
 
-    qmfSynthesisFilteringSlot(synQmf, QmfBufferReal[i], QmfBufferImagSlot,
-                              scaleFactorLowBand, scaleFactorHighBand,
-                              timeOut + (i * L * stride), stride, pWorkBuffer);
-  } /* no_col loop  i  */
+        qmfSynthesisFilteringSlot(synQmf, QmfBufferReal[i], QmfBufferImagSlot,
+                                  scaleFactorLowBand, scaleFactorHighBand,
+                                  timeOut + (i * L * stride), stride, pWorkBuffer);
+    } /* no_col loop  i  */
 }
 #endif /* QMF_PCM_H */

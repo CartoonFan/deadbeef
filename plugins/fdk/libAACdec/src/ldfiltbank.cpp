@@ -114,163 +114,163 @@ amm-info@iis.fraunhofer.de
 
 static void multE2_DinvF_fdk(FIXP_PCM *output, FIXP_DBL *x, const FIXP_WTB *fb,
                              FIXP_DBL *z, const int N) {
-  int i;
+    int i;
 
-  /*  scale for FIXP_DBL -> INT_PCM conversion. */
-  const int scale = (DFRACT_BITS - SAMPLE_BITS) - LDFB_HEADROOM;
+    /*  scale for FIXP_DBL -> INT_PCM conversion. */
+    const int scale = (DFRACT_BITS - SAMPLE_BITS) - LDFB_HEADROOM;
 #if ((DFRACT_BITS - SAMPLE_BITS - LDFB_HEADROOM) > 0)
-  FIXP_DBL rnd_val_wts0 = (FIXP_DBL)0;
-  FIXP_DBL rnd_val_wts1 = (FIXP_DBL)0;
-  if (-WTS0 - 1 + scale)
-    rnd_val_wts0 = (FIXP_DBL)(1 << (-WTS0 - 1 + scale - 1));
-  if (-WTS1 - 1 + scale)
-    rnd_val_wts1 = (FIXP_DBL)(1 << (-WTS1 - 1 + scale - 1));
+    FIXP_DBL rnd_val_wts0 = (FIXP_DBL)0;
+    FIXP_DBL rnd_val_wts1 = (FIXP_DBL)0;
+    if (-WTS0 - 1 + scale)
+        rnd_val_wts0 = (FIXP_DBL)(1 << (-WTS0 - 1 + scale - 1));
+    if (-WTS1 - 1 + scale)
+        rnd_val_wts1 = (FIXP_DBL)(1 << (-WTS1 - 1 + scale - 1));
 #endif
 
-  for (i = 0; i < N / 4; i++) {
-    FIXP_DBL z0, z2, tmp;
+    for (i = 0; i < N / 4; i++) {
+        FIXP_DBL z0, z2, tmp;
 
-    z2 = x[N / 2 + i];
-    z0 = z2 + (fMultDiv2(z[N / 2 + i], fb[2 * N + i]) >> (-WTS2 - 1));
+        z2 = x[N / 2 + i];
+        z0 = z2 + (fMultDiv2(z[N / 2 + i], fb[2 * N + i]) >> (-WTS2 - 1));
 
-    z[N / 2 + i] = x[N / 2 - 1 - i] +
-                   (fMultDiv2(z[N + i], fb[2 * N + N / 2 + i]) >> (-WTS2 - 1));
+        z[N / 2 + i] = x[N / 2 - 1 - i] +
+                       (fMultDiv2(z[N + i], fb[2 * N + N / 2 + i]) >> (-WTS2 - 1));
 
-    tmp = (fMultDiv2(z[N / 2 + i], fb[N + N / 2 - 1 - i]) +
-           fMultDiv2(z[i], fb[N + N / 2 + i]));
+        tmp = (fMultDiv2(z[N / 2 + i], fb[N + N / 2 - 1 - i]) +
+               fMultDiv2(z[i], fb[N + N / 2 + i]));
 
 #if ((DFRACT_BITS - SAMPLE_BITS - LDFB_HEADROOM) > 0)
-    FDK_ASSERT((-WTS1 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp <= ((FIXP_DBL)0x7FFFFFFF -
-                       rnd_val_wts1)); /* rounding must not cause overflow */
-    output[(N * 3 / 4 - 1 - i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
-        tmp + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
+        FDK_ASSERT((-WTS1 - 1 + scale) >= 0);
+        FDK_ASSERT(tmp <= ((FIXP_DBL)0x7FFFFFFF -
+                           rnd_val_wts1)); /* rounding must not cause overflow */
+        output[(N * 3 / 4 - 1 - i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
+                                          tmp + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS1 + 1 - scale) >= 0);
-    output[(N * 3 / 4 - 1 - i)] =
-        (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp, WTS1 + 1 - scale, PCM_OUT_BITS);
+        FDK_ASSERT((WTS1 + 1 - scale) >= 0);
+        output[(N * 3 / 4 - 1 - i)] =
+            (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp, WTS1 + 1 - scale, PCM_OUT_BITS);
 #endif
 
-    z[i] = z0;
-    z[N + i] = z2;
-  }
+        z[i] = z0;
+        z[N + i] = z2;
+    }
 
-  for (i = N / 4; i < N / 2; i++) {
-    FIXP_DBL z0, z2, tmp0, tmp1;
+    for (i = N / 4; i < N / 2; i++) {
+        FIXP_DBL z0, z2, tmp0, tmp1;
 
-    z2 = x[N / 2 + i];
-    z0 = z2 + (fMultDiv2(z[N / 2 + i], fb[2 * N + i]) >> (-WTS2 - 1));
+        z2 = x[N / 2 + i];
+        z0 = z2 + (fMultDiv2(z[N / 2 + i], fb[2 * N + i]) >> (-WTS2 - 1));
 
-    z[N / 2 + i] = x[N / 2 - 1 - i] +
-                   (fMultDiv2(z[N + i], fb[2 * N + N / 2 + i]) >> (-WTS2 - 1));
+        z[N / 2 + i] = x[N / 2 - 1 - i] +
+                       (fMultDiv2(z[N + i], fb[2 * N + N / 2 + i]) >> (-WTS2 - 1));
 
-    tmp0 = (fMultDiv2(z[N / 2 + i], fb[N / 2 - 1 - i]) +
-            fMultDiv2(z[i], fb[N / 2 + i]));
-    tmp1 = (fMultDiv2(z[N / 2 + i], fb[N + N / 2 - 1 - i]) +
-            fMultDiv2(z[i], fb[N + N / 2 + i]));
+        tmp0 = (fMultDiv2(z[N / 2 + i], fb[N / 2 - 1 - i]) +
+                fMultDiv2(z[i], fb[N / 2 + i]));
+        tmp1 = (fMultDiv2(z[N / 2 + i], fb[N + N / 2 - 1 - i]) +
+                fMultDiv2(z[i], fb[N + N / 2 + i]));
 
 #if ((DFRACT_BITS - SAMPLE_BITS - LDFB_HEADROOM) > 0)
-    FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp0 <= ((FIXP_DBL)0x7FFFFFFF -
-                        rnd_val_wts0)); /* rounding must not cause overflow */
-    FDK_ASSERT(tmp1 <= ((FIXP_DBL)0x7FFFFFFF -
-                        rnd_val_wts1)); /* rounding must not cause overflow */
-    output[(i - N / 4)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
-        tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
-    output[(N * 3 / 4 - 1 - i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
-        tmp1 + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
+        FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
+        FDK_ASSERT(tmp0 <= ((FIXP_DBL)0x7FFFFFFF -
+                            rnd_val_wts0)); /* rounding must not cause overflow */
+        FDK_ASSERT(tmp1 <= ((FIXP_DBL)0x7FFFFFFF -
+                            rnd_val_wts1)); /* rounding must not cause overflow */
+        output[(i - N / 4)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
+                                  tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
+        output[(N * 3 / 4 - 1 - i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
+                                          tmp1 + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS0 + 1 - scale) >= 0);
-    output[(i - N / 4)] =
-        (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
-    output[(N * 3 / 4 - 1 - i)] =
-        (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp1, WTS1 + 1 - scale, PCM_OUT_BITS);
+        FDK_ASSERT((WTS0 + 1 - scale) >= 0);
+        output[(i - N / 4)] =
+            (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
+        output[(N * 3 / 4 - 1 - i)] =
+            (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp1, WTS1 + 1 - scale, PCM_OUT_BITS);
 #endif
-    z[i] = z0;
-    z[N + i] = z2;
-  }
+        z[i] = z0;
+        z[N + i] = z2;
+    }
 
-  /* Exchange quarter parts of x to bring them in the "right" order */
-  for (i = 0; i < N / 4; i++) {
-    FIXP_DBL tmp0 = fMultDiv2(z[i], fb[N / 2 + i]);
+    /* Exchange quarter parts of x to bring them in the "right" order */
+    for (i = 0; i < N / 4; i++) {
+        FIXP_DBL tmp0 = fMultDiv2(z[i], fb[N / 2 + i]);
 
 #if ((DFRACT_BITS - SAMPLE_BITS - LDFB_HEADROOM) > 0)
-    FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp0 <= ((FIXP_DBL)0x7FFFFFFF -
-                        rnd_val_wts0)); /* rounding must not cause overflow */
-    output[(N * 3 / 4 + i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
-        tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
+        FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
+        FDK_ASSERT(tmp0 <= ((FIXP_DBL)0x7FFFFFFF -
+                            rnd_val_wts0)); /* rounding must not cause overflow */
+        output[(N * 3 / 4 + i)] = (FIXP_PCM)SATURATE_RIGHT_SHIFT(
+                                      tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS0 + 1 - scale) >= 0);
-    output[(N * 3 / 4 + i)] =
-        (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
+        FDK_ASSERT((WTS0 + 1 - scale) >= 0);
+        output[(N * 3 / 4 + i)] =
+            (FIXP_PCM)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
 #endif
-  }
+    }
 }
 
 int InvMdctTransformLowDelay_fdk(FIXP_DBL *mdctData, const int mdctData_e,
                                  FIXP_PCM *output, FIXP_DBL *fs_buffer,
                                  const int N) {
-  const FIXP_WTB *coef;
-  FIXP_DBL gain = (FIXP_DBL)0;
-  int scale = mdctData_e + MDCT_OUT_HEADROOM -
-              LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside
+    const FIXP_WTB *coef;
+    FIXP_DBL gain = (FIXP_DBL)0;
+    int scale = mdctData_e + MDCT_OUT_HEADROOM -
+                LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside
                           multE2_DinvF_fdk() below */
-  int i;
+    int i;
 
-  /* Select LD window slope */
-  switch (N) {
-  case 256:
-    coef = LowDelaySynthesis256;
-    break;
-  case 240:
-    coef = LowDelaySynthesis240;
-    break;
-  case 160:
-    coef = LowDelaySynthesis160;
-    break;
-  case 128:
-    coef = LowDelaySynthesis128;
-    break;
-  case 120:
-    coef = LowDelaySynthesis120;
-    break;
-  case 512:
-    coef = LowDelaySynthesis512;
-    break;
-  case 480:
-  default:
-    coef = LowDelaySynthesis480;
-    break;
-  }
-
-  /*
-     Apply exponent and 1/N factor.
-     Note: "scale" is off by one because for LD_MDCT the window length is twice
-     the window length of a regular MDCT. This is corrected inside
-     multE2_DinvF_fdk(). Refer to ISO/IEC 14496-3:2009 page 277,
-     chapter 4.6.20.2 "Low Delay Window".
-   */
-  imdct_gain(&gain, &scale, N);
-
-  dct_IV(mdctData, N, &scale);
-
-  if (N == 256 || N == 240 || N == 160) {
-    scale -= 1;
-  } else if (N == 128 || N == 120) {
-    scale -= 2;
-  }
-
-  if (gain != (FIXP_DBL)0) {
-    for (i = 0; i < N; i++) {
-      mdctData[i] = fMult(mdctData[i], gain);
+    /* Select LD window slope */
+    switch (N) {
+    case 256:
+        coef = LowDelaySynthesis256;
+        break;
+    case 240:
+        coef = LowDelaySynthesis240;
+        break;
+    case 160:
+        coef = LowDelaySynthesis160;
+        break;
+    case 128:
+        coef = LowDelaySynthesis128;
+        break;
+    case 120:
+        coef = LowDelaySynthesis120;
+        break;
+    case 512:
+        coef = LowDelaySynthesis512;
+        break;
+    case 480:
+    default:
+        coef = LowDelaySynthesis480;
+        break;
     }
-  }
-  scaleValuesSaturate(mdctData, N, scale);
 
-  /* Since all exponent and factors have been applied, current exponent is zero.
-   */
-  multE2_DinvF_fdk(output, mdctData, coef, fs_buffer, N);
+    /*
+       Apply exponent and 1/N factor.
+       Note: "scale" is off by one because for LD_MDCT the window length is twice
+       the window length of a regular MDCT. This is corrected inside
+       multE2_DinvF_fdk(). Refer to ISO/IEC 14496-3:2009 page 277,
+       chapter 4.6.20.2 "Low Delay Window".
+     */
+    imdct_gain(&gain, &scale, N);
 
-  return (1);
+    dct_IV(mdctData, N, &scale);
+
+    if (N == 256 || N == 240 || N == 160) {
+        scale -= 1;
+    } else if (N == 128 || N == 120) {
+        scale -= 2;
+    }
+
+    if (gain != (FIXP_DBL)0) {
+        for (i = 0; i < N; i++) {
+            mdctData[i] = fMult(mdctData[i], gain);
+        }
+    }
+    scaleValuesSaturate(mdctData, N, scale);
+
+    /* Since all exponent and factors have been applied, current exponent is zero.
+     */
+    multE2_DinvF_fdk(output, mdctData, coef, fs_buffer, N);
+
+    return (1);
 }

@@ -129,35 +129,35 @@ amm-info@iis.fraunhofer.de
 #if !defined(FUNCTION_fixnormz_S)
 #ifdef FUNCTION_fixnormz_D
 inline INT fixnormz_S(SHORT a) {
-  if (a < 0) {
-    return 0;
-  }
-  return fixnormz_D((INT)(a)) - 16;
+    if (a < 0) {
+        return 0;
+    }
+    return fixnormz_D((INT)(a)) - 16;
 }
 #else
 inline INT fixnormz_S(SHORT a) {
-  int leadingBits = 0;
-  a = ~a;
-  while (a & 0x8000) {
-    leadingBits++;
-    a <<= 1;
-  }
+    int leadingBits = 0;
+    a = ~a;
+    while (a & 0x8000) {
+        leadingBits++;
+        a <<= 1;
+    }
 
-  return (leadingBits);
+    return (leadingBits);
 }
 #endif
 #endif
 
 #if !defined(FUNCTION_fixnormz_D)
 inline INT fixnormz_D(LONG a) {
-  INT leadingBits = 0;
-  a = ~a;
-  while (a & 0x80000000) {
-    leadingBits++;
-    a <<= 1;
-  }
+    INT leadingBits = 0;
+    a = ~a;
+    while (a & 0x80000000) {
+        leadingBits++;
+        a <<= 1;
+    }
 
-  return (leadingBits);
+    return (leadingBits);
 }
 #endif
 
@@ -170,35 +170,35 @@ values. Return this value minus 1. Return 0 if operand==0.
 #if !defined(FUNCTION_fixnorm_S)
 #ifdef FUNCTION_fixnorm_D
 inline INT fixnorm_S(FIXP_SGL val) {
-  if (val == (FIXP_SGL)0) {
-    return 0;
-  }
-  return fixnorm_D((INT)(val)) - 16;
+    if (val == (FIXP_SGL)0) {
+        return 0;
+    }
+    return fixnorm_D((INT)(val)) - 16;
 }
 #else
 inline INT fixnorm_S(FIXP_SGL val) {
-  INT leadingBits = 0;
-  if (val != (FIXP_SGL)0) {
-    if (val < (FIXP_SGL)0) {
-      val = ~val;
+    INT leadingBits = 0;
+    if (val != (FIXP_SGL)0) {
+        if (val < (FIXP_SGL)0) {
+            val = ~val;
+        }
+        leadingBits = fixnormz_S(val) - 1;
     }
-    leadingBits = fixnormz_S(val) - 1;
-  }
-  return (leadingBits);
+    return (leadingBits);
 }
 #endif
 #endif
 
 #if !defined(FUNCTION_fixnorm_D)
 inline INT fixnorm_D(FIXP_DBL val) {
-  INT leadingBits = 0;
-  if (val != (FIXP_DBL)0) {
-    if (val < (FIXP_DBL)0) {
-      val = ~val;
+    INT leadingBits = 0;
+    if (val != (FIXP_DBL)0) {
+        if (val < (FIXP_DBL)0) {
+            val = ~val;
+        }
+        leadingBits = fixnormz_D(val) - 1;
     }
-    leadingBits = fixnormz_D(val) - 1;
-  }
-  return (leadingBits);
+    return (leadingBits);
 }
 #endif
 

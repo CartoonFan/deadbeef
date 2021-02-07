@@ -116,34 +116,34 @@ extern "C" {
 #endif
 
 struct TDLimiter {
-  unsigned int attack;
-  FIXP_DBL attackConst, releaseConst;
-  unsigned int attackMs, releaseMs, maxAttackMs;
-  FIXP_DBL threshold;
-  unsigned int channels, maxChannels;
-  UINT sampleRate, maxSampleRate;
-  FIXP_DBL cor, max;
-  FIXP_DBL *maxBuf;
-  FIXP_DBL *delayBuf;
-  unsigned int maxBufIdx, delayBufIdx;
-  FIXP_DBL smoothState0;
-  FIXP_DBL minGain;
+    unsigned int attack;
+    FIXP_DBL attackConst, releaseConst;
+    unsigned int attackMs, releaseMs, maxAttackMs;
+    FIXP_DBL threshold;
+    unsigned int channels, maxChannels;
+    UINT sampleRate, maxSampleRate;
+    FIXP_DBL cor, max;
+    FIXP_DBL *maxBuf;
+    FIXP_DBL *delayBuf;
+    unsigned int maxBufIdx, delayBufIdx;
+    FIXP_DBL smoothState0;
+    FIXP_DBL minGain;
 
-  FIXP_DBL additionalGainPrev;
-  FIXP_DBL additionalGainFilterState;
-  FIXP_DBL additionalGainFilterState1;
+    FIXP_DBL additionalGainPrev;
+    FIXP_DBL additionalGainFilterState;
+    FIXP_DBL additionalGainFilterState1;
 };
 
 typedef enum {
-  TDLIMIT_OK = 0,
-  TDLIMIT_UNKNOWN = -1,
+    TDLIMIT_OK = 0,
+    TDLIMIT_UNKNOWN = -1,
 
-  __error_codes_start = -100,
+    __error_codes_start = -100,
 
-  TDLIMIT_INVALID_HANDLE,
-  TDLIMIT_INVALID_PARAMETER,
+    TDLIMIT_INVALID_HANDLE,
+    TDLIMIT_INVALID_PARAMETER,
 
-  __error_codes_end
+    __error_codes_end
 } TDLIMITER_ERROR;
 
 struct TDLimiter;

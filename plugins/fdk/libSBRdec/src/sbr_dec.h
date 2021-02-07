@@ -121,55 +121,55 @@ amm-info@iis.fraunhofer.de
 #include "hbe.h"
 
 enum SBRDEC_QMF_SKIP {
-  qmfSkipNothing = 0,
-  qmfSkipAnalysis = 1 << 0,
-  qmfSkipSynthesis = 1 << 1
+    qmfSkipNothing = 0,
+    qmfSkipAnalysis = 1 << 0,
+    qmfSkipSynthesis = 1 << 1
 };
 
 typedef struct {
-  SBR_CALCULATE_ENVELOPE SbrCalculateEnvelope;
-  SBR_LPP_TRANS LppTrans;
-  PVC_STATIC_DATA PvcStaticData;
+    SBR_CALCULATE_ENVELOPE SbrCalculateEnvelope;
+    SBR_LPP_TRANS LppTrans;
+    PVC_STATIC_DATA PvcStaticData;
 
-  /* do scale handling in sbr an not in qmf */
-  SHORT scale_ov;
-  SHORT scale_lb;
-  SHORT scale_hbe;
+    /* do scale handling in sbr an not in qmf */
+    SHORT scale_ov;
+    SHORT scale_lb;
+    SHORT scale_hbe;
 
-  SHORT prev_frame_lSbr;
-  SHORT prev_frame_hbeSbr;
+    SHORT prev_frame_lSbr;
+    SHORT prev_frame_hbeSbr;
 
-  int codecFrameSize;
+    int codecFrameSize;
 
-  HANDLE_HBE_TRANSPOSER hHBE;
+    HANDLE_HBE_TRANSPOSER hHBE;
 
-  HANDLE_FDK_QMF_DOMAIN_IN qmfDomainInCh;
-  HANDLE_FDK_QMF_DOMAIN_OUT qmfDomainOutCh;
+    HANDLE_FDK_QMF_DOMAIN_IN qmfDomainInCh;
+    HANDLE_FDK_QMF_DOMAIN_OUT qmfDomainOutCh;
 
-  SBRDEC_DRC_CHANNEL sbrDrcChannel;
+    SBRDEC_DRC_CHANNEL sbrDrcChannel;
 
 #if (SBRDEC_MAX_HB_FADE_FRAMES > 0)
-  INT highBandFadeCnt; /* counter for fading in high-band signal smoothly */
+    INT highBandFadeCnt; /* counter for fading in high-band signal smoothly */
 
 #endif
-  FIXP_DBL **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
+    FIXP_DBL **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
                       hQmfHBESlotsReal */
 
-  FIXP_DBL **hQmfHBESlotsReal;
-  FIXP_DBL **hQmfHBESlotsImag;
+    FIXP_DBL **hQmfHBESlotsReal;
+    FIXP_DBL **hQmfHBESlotsImag;
 
-  FIXP_DBL **codecQMFBufferReal;
-  FIXP_DBL **codecQMFBufferImag;
-  UCHAR savedStates;
-  int applySbrProc_old;
+    FIXP_DBL **codecQMFBufferReal;
+    FIXP_DBL **codecQMFBufferImag;
+    UCHAR savedStates;
+    int applySbrProc_old;
 } SBR_DEC;
 
 typedef SBR_DEC *HANDLE_SBR_DEC;
 
 typedef struct {
-  SBR_FRAME_DATA frameData[(1) + 1];
-  SBR_PREV_FRAME_DATA prevFrameData;
-  SBR_DEC SbrDec;
+    SBR_FRAME_DATA frameData[(1) + 1];
+    SBR_PREV_FRAME_DATA prevFrameData;
+    SBR_DEC SbrDec;
 } SBR_CHANNEL;
 
 typedef SBR_CHANNEL *HANDLE_SBR_CHANNEL;
@@ -184,7 +184,7 @@ void sbr_dec(
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA hFrameData,   /*!< Control data of current frame */
     HANDLE_SBR_PREV_FRAME_DATA
-        hPrevFrameData,        /*!< Some control data of last frame */
+    hPrevFrameData,        /*!< Some control data of last frame */
     const int applyProcessing, /*!< Flag for SBR operation */
     HANDLE_PS_DEC h_ps_d, const UINT flags, const int codecFrameSize);
 

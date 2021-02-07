@@ -111,23 +111,23 @@ amm-info@iis.fraunhofer.de
   psych internal
 */
 typedef struct {
-  PSY_STATIC *psyStatic[(2)];
+    PSY_STATIC *psyStatic[(2)];
 
 } PSY_ELEMENT;
 
 typedef struct {
-  PSY_DATA psyData[(2)];
-  TNS_DATA tnsData[(2)];
-  PNS_DATA pnsData[(2)];
+    PSY_DATA psyData[(2)];
+    TNS_DATA tnsData[(2)];
+    PNS_DATA pnsData[(2)];
 
 } PSY_DYNAMIC;
 
 typedef struct {
-  PSY_CONFIGURATION psyConf[2]; /* LONG / SHORT */
-  PSY_ELEMENT *psyElement[((8))];
-  PSY_STATIC *pStaticChannels[(8)];
-  PSY_DYNAMIC *psyDynamic;
-  INT granuleLength;
+    PSY_CONFIGURATION psyConf[2]; /* LONG / SHORT */
+    PSY_ELEMENT *psyElement[((8))];
+    PSY_STATIC *pStaticChannels[(8)];
+    PSY_DYNAMIC *psyDynamic;
+    INT granuleLength;
 
 } PSY_INTERNAL;
 

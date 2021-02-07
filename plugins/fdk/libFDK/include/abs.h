@@ -119,17 +119,19 @@ amm-info@iis.fraunhofer.de
 
 #if !defined(FUNCTION_fixabs_D)
 inline FIXP_DBL fixabs_D(FIXP_DBL x) {
-  return ((x) > (FIXP_DBL)(0)) ? (x) : -(x);
+    return ((x) > (FIXP_DBL)(0)) ? (x) : -(x);
 }
 #endif
 
 #if !defined(FUNCTION_fixabs_I)
-inline INT fixabs_I(INT x) { return ((x) > (INT)(0)) ? (x) : -(x); }
+inline INT fixabs_I(INT x) {
+    return ((x) > (INT)(0)) ? (x) : -(x);
+}
 #endif
 
 #if !defined(FUNCTION_fixabs_S)
 inline FIXP_SGL fixabs_S(FIXP_SGL x) {
-  return ((x) > (FIXP_SGL)(0)) ? (x) : -(x);
+    return ((x) > (FIXP_SGL)(0)) ? (x) : -(x);
 }
 #endif
 

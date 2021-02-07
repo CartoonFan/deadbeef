@@ -120,8 +120,8 @@ FIXP_DBL FDKaacEnc_calcSfbDist(const FIXP_DBL *mdctSpectrum,
                                INT dZoneQuantEnable);
 
 void FDKaacEnc_calcSfbQuantEnergyAndDist(FIXP_DBL *mdctSpectrum,
-                                         SHORT *quantSpectrum, INT noOfLines,
-                                         INT gain, FIXP_DBL *en,
-                                         FIXP_DBL *dist);
+        SHORT *quantSpectrum, INT noOfLines,
+        INT gain, FIXP_DBL *en,
+        FIXP_DBL *dist);
 
 #endif /* QUANTIZE_H */

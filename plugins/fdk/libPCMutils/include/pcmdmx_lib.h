@@ -150,27 +150,27 @@ amm-info@iis.fraunhofer.de
  *  Error codes that can be returned by module interface functions.
  */
 typedef enum {
-  PCMDMX_OK = 0x0, /*!< No error happened. */
-  PCMDMX_UNSUPPORTED =
-      0x1, /*!< The requested feature/service is unavailable. This can
+    PCMDMX_OK = 0x0, /*!< No error happened. */
+    PCMDMX_UNSUPPORTED =
+        0x1, /*!< The requested feature/service is unavailable. This can
           occur if the module was built for a wrong configuration.  */
-  pcm_dmx_fatal_error_start,
-  PCMDMX_OUT_OF_MEMORY, /*!< Not enough memory to set up an instance of the
+    pcm_dmx_fatal_error_start,
+    PCMDMX_OUT_OF_MEMORY, /*!< Not enough memory to set up an instance of the
                      module.    */
-  pcm_dmx_fatal_error_end,
+    pcm_dmx_fatal_error_end,
 
-  PCMDMX_INVALID_HANDLE,   /*!< The given instance handle is not valid.   */
-  PCMDMX_INVALID_ARGUMENT, /*!< One of the parameters handed over is invalid. */
-  PCMDMX_INVALID_CH_CONFIG, /*!< The given channel configuration is not
+    PCMDMX_INVALID_HANDLE,   /*!< The given instance handle is not valid.   */
+    PCMDMX_INVALID_ARGUMENT, /*!< One of the parameters handed over is invalid. */
+    PCMDMX_INVALID_CH_CONFIG, /*!< The given channel configuration is not
                          supported and thus no processing was performed.
                        */
-  PCMDMX_INVALID_MODE,  /*!< The set configuration/mode is not applicable.  */
-  PCMDMX_UNKNOWN_PARAM, /*!< The handed parameter is not known/supported. */
-  PCMDMX_UNABLE_TO_SET_PARAM, /*!< Unable to set the specific parameter. Most
+    PCMDMX_INVALID_MODE,  /*!< The set configuration/mode is not applicable.  */
+    PCMDMX_UNKNOWN_PARAM, /*!< The handed parameter is not known/supported. */
+    PCMDMX_UNABLE_TO_SET_PARAM, /*!< Unable to set the specific parameter. Most
                            probably the    value ist out of range.
                          */
-  PCMDMX_CORRUPT_ANC_DATA,    /*!< The read ancillary data was corrupt.       */
-  PCMDMX_OUTPUT_BUFFER_TOO_SMALL /*!< The size of pcm output buffer is too
+    PCMDMX_CORRUPT_ANC_DATA,    /*!< The read ancillary data was corrupt.       */
+    PCMDMX_OUTPUT_BUFFER_TOO_SMALL /*!< The size of pcm output buffer is too
                               small.               */
 
 } PCMDMX_ERROR;
@@ -189,17 +189,17 @@ typedef enum {
  * pcmDmx_SetParam() and pcmDmx_GetParam().
  */
 typedef enum {
-  DMX_PROFILE_SETTING = 0x01, /*!< Defines which equations, coefficients and
+    DMX_PROFILE_SETTING = 0x01, /*!< Defines which equations, coefficients and
                              default/ fallback values used for downmixing. See
                              ::DMX_PROFILE_TYPE type for details. */
-  DMX_BS_DATA_EXPIRY_FRAME =
-      0x10,                 /*!< The number of frames without new metadata that
+    DMX_BS_DATA_EXPIRY_FRAME =
+        0x10,                 /*!< The number of frames without new metadata that
                            have to go by before the bitstream data expires.
                            The value 0 disables expiry.                     */
-  DMX_BS_DATA_DELAY = 0x11, /*!< The number of delay frames of the output
+    DMX_BS_DATA_DELAY = 0x11, /*!< The number of delay frames of the output
                            samples compared to the bitstream data. */
-  MIN_NUMBER_OF_OUTPUT_CHANNELS =
-      0x20, /*!< The minimum number of output channels. For all
+    MIN_NUMBER_OF_OUTPUT_CHANNELS =
+        0x20, /*!< The minimum number of output channels. For all
            input configurations that have less than the given
            channels the module will modify the output
            automatically to obtain the given number of output
@@ -211,8 +211,8 @@ typedef enum {
            parameter ::MAX_NUMBER_OF_OUTPUT_CHANNELS the
            latter will be set to the same value. Both values
            -1 and 0 disable the feature.                    */
-  MAX_NUMBER_OF_OUTPUT_CHANNELS =
-      0x21, /*!< The maximum number of output channels. For all
+    MAX_NUMBER_OF_OUTPUT_CHANNELS =
+        0x21, /*!< The maximum number of output channels. For all
            input configurations that have more than the given
            channels the module will apply a mixdown
            automatically to obtain the given number of output
@@ -221,10 +221,10 @@ typedef enum {
            than the value of ::MIN_NUMBER_OF_OUTPUT_CHANNELS
            parameter the latter will be set to the same value.
            The values -1 and 0 disable the feature.         */
-  DMX_DUAL_CHANNEL_MODE =
-      0x30, /*!< Downmix mode for two channel audio data. See type
+    DMX_DUAL_CHANNEL_MODE =
+        0x30, /*!< Downmix mode for two channel audio data. See type
            ::DUAL_CHANNEL_MODE for details.                 */
-  DMX_PSEUDO_SURROUND_MODE = 0x31 /*!< Defines how module handles pseudo
+    DMX_PSEUDO_SURROUND_MODE = 0x31 /*!< Defines how module handles pseudo
                                  surround compatible signals. See
                                  ::PSEUDO_SURROUND_MODE type for details. */
 } PCMDMX_PARAM;
@@ -235,13 +235,13 @@ typedef enum {
  *  Valid value list for parameter ::DMX_PROFILE_SETTING.
  */
 typedef enum {
-  DMX_PRFL_STANDARD = 0x0, /*!< The standard profile creates mixdown signals
+    DMX_PRFL_STANDARD = 0x0, /*!< The standard profile creates mixdown signals
                           based on the advanced downmix metadata (from a
                           DSE), equations and default values defined in
                           ISO/IEC 14496:3 Ammendment 4. Any other (legacy)
                           downmix metadata will be ignored. */
-  DMX_PRFL_MATRIX_MIX =
-      0x1, /*!< This profile behaves just as the standard profile if
+    DMX_PRFL_MATRIX_MIX =
+        0x1, /*!< This profile behaves just as the standard profile if
           advanced downmix metadata (from a DSE) is available. If
           not, the matrix_mixdown information embedded in the
           program configuration element (PCE) will be applied. If
@@ -249,11 +249,11 @@ typedef enum {
           the default coefficients defined in MPEG-4 Ammendment 4.
           The profile can be used e.g. to support legacy digital
           TV (e.g. DVB) streams.                                 */
-  DMX_PRFL_FORCE_MATRIX_MIX =
-      0x2, /*!< Similar to the ::DMX_PRFL_MATRIX_MIX profile but if both
+    DMX_PRFL_FORCE_MATRIX_MIX =
+        0x2, /*!< Similar to the ::DMX_PRFL_MATRIX_MIX profile but if both
           the advanced (DSE) and the legacy (PCE) MPEG downmix
           metadata are available the latter will be applied.     */
-  DMX_PRFL_ARIB_JAPAN = 0x3 /*!< Downmix creation as described in ABNT NBR
+    DMX_PRFL_ARIB_JAPAN = 0x3 /*!< Downmix creation as described in ABNT NBR
                            15602-2. But if advanced downmix metadata is
                            available it will be prefered. */
 } DMX_PROFILE_TYPE;
@@ -264,11 +264,11 @@ typedef enum {
  *  Valid value list for parameter ::DMX_PSEUDO_SURROUND_MODE.
  */
 typedef enum {
-  NEVER_DO_PS_DMX = -1, /*!< Ignore any metadata and do never create a pseudo
+    NEVER_DO_PS_DMX = -1, /*!< Ignore any metadata and do never create a pseudo
                        surround compatible downmix. (Default) */
-  AUTO_PS_DMX = 0,      /*!< Create a pseudo surround compatible downmix only if
+    AUTO_PS_DMX = 0,      /*!< Create a pseudo surround compatible downmix only if
                        signalled in bitstreams meta data. */
-  FORCE_PS_DMX = 1      /*!< Always create a pseudo surround compatible downmix.
+    FORCE_PS_DMX = 1      /*!< Always create a pseudo surround compatible downmix.
                        CAUTION: This can lead to excessive signal cancellations
                        and signal level differences for non-compatible signals.  */
 } PSEUDO_SURROUND_MODE;
@@ -279,10 +279,10 @@ typedef enum {
  *  Valid value list for parameter ::DMX_DUAL_CHANNEL_MODE.
  */
 typedef enum {
-  STEREO_MODE = 0x0, /*!< Leave stereo signals as they are. */
-  CH1_MODE = 0x1,    /*!< Create a dual mono output signal from channel 1.    */
-  CH2_MODE = 0x2,    /*!< Create a dual mono output signal from channel 2.    */
-  MIXED_MODE = 0x3   /*!< Create a dual mono output signal by mixing the two
+    STEREO_MODE = 0x0, /*!< Leave stereo signals as they are. */
+    CH1_MODE = 0x1,    /*!< Create a dual mono output signal from channel 1.    */
+    CH2_MODE = 0x2,    /*!< Create a dual mono output signal from channel 2.    */
+    MIXED_MODE = 0x3   /*!< Create a dual mono output signal by mixing the two
                     channels.   */
 } DUAL_CHANNEL_MODE;
 
@@ -391,9 +391,9 @@ PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
  *::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
-                                            int matrixMixdownPresent,
-                                            int matrixMixdownIdx,
-                                            int pseudoSurroundEnable);
+        int matrixMixdownPresent,
+        int matrixMixdownIdx,
+        int pseudoSurroundEnable);
 
 /** Reset the module.
  * @param[in] self   Handle of PCM downmix instance.

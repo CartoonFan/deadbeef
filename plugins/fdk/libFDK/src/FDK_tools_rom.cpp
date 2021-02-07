@@ -4030,80 +4030,89 @@ const FIXP_WTP KBDWindow1024[] = {
  * 3/4 of radix 2 raster][ceil(log2(length)) length  96    ..  768 ]
  */
 const FIXP_WTP *const windowSlopes[2][4][9] = {
-    { /* Sine */
-     {/* Radix 2 */
-      NULL, SineWindow8, SineWindow16, SineWindow32, SineWindow64,
-      SineWindow128, SineWindow256, SineWindow512, SineWindow1024},
-     {      /* 10ms raster */
-      NULL, /* 3.25 */
-      NULL, /* 7.5 */
-      NULL, NULL, NULL, SineWindow120, SineWindow240, SineWindow480,
-      SineWindow960},
-     {      /* 3/4 radix2 raster */
-      NULL, /* 3 */
-      NULL, /* 6 */
-      SineWindow12, SineWindow24, SineWindow48, SineWindow96, SineWindow192,
-      SineWindow384, SineWindow768},
-     {
-         /* 3/4 radix2 raster */
-         NULL,
-         NULL, /* 3 */
-         NULL, /* 6 */
-         SineWindow20,
-         SineWindow40,
-         NULL,
-         SineWindow160,
-         NULL,
-         NULL,
-     }},
-    { /* KBD */
-     {/* Radix 2 */
-      NULL, KBDWindow128, KBDWindow256, SineWindow512, KBDWindow1024},
-     {/* 10ms raster */
-      NULL, KBDWindow120, NULL, SineWindow480, KBDWindow960},
-     {/* 3/4 radix2 raster */
-      NULL, KBDWindow96,
-      SineWindow192, /* This entry might be accessed for erred bit streams. */
-      NULL, KBDWindow768},
-     {NULL, NULL, NULL, NULL}}};
+    {   /* Sine */
+        {   /* Radix 2 */
+            NULL, SineWindow8, SineWindow16, SineWindow32, SineWindow64,
+            SineWindow128, SineWindow256, SineWindow512, SineWindow1024
+        },
+        {   /* 10ms raster */
+            NULL, /* 3.25 */
+            NULL, /* 7.5 */
+            NULL, NULL, NULL, SineWindow120, SineWindow240, SineWindow480,
+            SineWindow960
+        },
+        {   /* 3/4 radix2 raster */
+            NULL, /* 3 */
+            NULL, /* 6 */
+            SineWindow12, SineWindow24, SineWindow48, SineWindow96, SineWindow192,
+            SineWindow384, SineWindow768
+        },
+        {
+            /* 3/4 radix2 raster */
+            NULL,
+            NULL, /* 3 */
+            NULL, /* 6 */
+            SineWindow20,
+            SineWindow40,
+            NULL,
+            SineWindow160,
+            NULL,
+            NULL,
+        }
+    },
+    {   /* KBD */
+        {   /* Radix 2 */
+            NULL, KBDWindow128, KBDWindow256, SineWindow512, KBDWindow1024
+        },
+        {   /* 10ms raster */
+            NULL, KBDWindow120, NULL, SineWindow480, KBDWindow960
+        },
+        {   /* 3/4 radix2 raster */
+            NULL, KBDWindow96,
+            SineWindow192, /* This entry might be accessed for erred bit streams. */
+            NULL, KBDWindow768
+        },
+        {NULL, NULL, NULL, NULL}
+    }
+};
 
 const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
-  const FIXP_WTP *w = NULL;
-  int raster, ld2_length;
+    const FIXP_WTP *w = NULL;
+    int raster, ld2_length;
 
-  /* Get ld2 of length - 2 + 1
-     -2: because first table entry is window of size 4
-     +1: because we already include +1 because of ceil(log2(length)) */
-  ld2_length = DFRACT_BITS - 1 - fNormz((FIXP_DBL)length) - 1;
+    /* Get ld2 of length - 2 + 1
+       -2: because first table entry is window of size 4
+       +1: because we already include +1 because of ceil(log2(length)) */
+    ld2_length = DFRACT_BITS - 1 - fNormz((FIXP_DBL)length) - 1;
 
-  /* Extract sort of "eigenvalue" (the 4 left most bits) of length. */
-  switch ((length) >> (ld2_length - 2)) {
-  case 0x8: /* radix 2 */
-    raster = 0;
-    ld2_length--; /* revert + 1 because of ceil(log2(length)) from above. */
-    break;
-  case 0xf: /* 10 ms */
-    raster = 1;
-    break;
-  case 0xc: /* 3/4 of radix 2 */
-    raster = 2;
-    break;
-  default:
-    raster = 0;
-    break;
-  }
+    /* Extract sort of "eigenvalue" (the 4 left most bits) of length. */
+    switch ((length) >> (ld2_length - 2)) {
+    case 0x8: /* radix 2 */
+        raster = 0;
+        ld2_length--; /* revert + 1 because of ceil(log2(length)) from above. */
+        break;
+    case 0xf: /* 10 ms */
+        raster = 1;
+        break;
+    case 0xc: /* 3/4 of radix 2 */
+        raster = 2;
+        break;
+    default:
+        raster = 0;
+        break;
+    }
 
-  /* The table for sine windows (shape == 0) is 4 entries longer. */
-  if (shape == 1) {
-    ld2_length -= 4;
-  }
+    /* The table for sine windows (shape == 0) is 4 entries longer. */
+    if (shape == 1) {
+        ld2_length -= 4;
+    }
 
-  /* Look up table */
-  w = windowSlopes[shape & 1][raster][ld2_length];
+    /* Look up table */
+    w = windowSlopes[shape & 1][raster][ld2_length];
 
-  FDK_ASSERT(w != NULL);
+    FDK_ASSERT(w != NULL);
 
-  return w;
+    return w;
 }
 
 /*
@@ -6110,7 +6119,8 @@ const FIXP_PFT qmf_mpsldfb_320[QMF320_MPSLDFB_PFT_TABLE_SIZE] = {
     QTMFLLD(4.7164849937e-002),  QTMFLLD(-6.0613000393e-001),
     QTMFLLD(-1.7908872105e-003), QTMFLLD(6.5761915175e-004),
     QTMFLLD(-7.1337916888e-003), QTMFLLD(6.8181537092e-002),
-    QTMFLLD(-5.8092808723e-001), QTMFLLD(-1.0135001503e-003)};
+    QTMFLLD(-5.8092808723e-001), QTMFLLD(-1.0135001503e-003)
+};
 
 /*!
   \name QMF
@@ -6467,7 +6477,8 @@ const FIXP_PFT qmf_mpsldfb_640[QMF640_MPSLDFB_PFT_TABLE_SIZE] = {
     QTMFLLD(6.2805138528e-002),  QTMFLLD(-5.8725595474e-001),
     QTMFLLD(-1.2320743408e-003), QTMFLLD(7.2508689482e-004),
     QTMFLLD(-6.9030462764e-003), QTMFLLD(7.3557935655e-002),
-    QTMFLLD(-5.7460016012e-001), QTMFLLD(-7.9492607620e-004)};
+    QTMFLLD(-5.7460016012e-001), QTMFLLD(-7.9492607620e-004)
+};
 
 //@{
 /*!
@@ -6508,7 +6519,8 @@ const FIXP_WTP sin_twiddle_L64[] = {
     WTCP(0x18f8b83c, 0x7d8a5f40), WTCP(0x15e21445, 0x7e1d93ea),
     WTCP(0x12c8106f, 0x7e9d55fc), WTCP(0x0fab272b, 0x7f0991c4),
     WTCP(0x0c8bd35e, 0x7f62368f), WTCP(0x096a9049, 0x7fa736b4),
-    WTCP(0x0647d97c, 0x7fd8878e), WTCP(0x03242abf, 0x7ff62182)};
+    WTCP(0x0647d97c, 0x7fd8878e), WTCP(0x03242abf, 0x7ff62182)
+};
 
 const USHORT sqrt_tab[49] = {
     0x5a82, 0x5d4b, 0x6000, 0x62a1, 0x6531, 0x67b1, 0x6a21, 0x6c84, 0x6ed9,
@@ -6516,24 +6528,26 @@ const USHORT sqrt_tab[49] = {
     0x83f0, 0x85dd, 0x87c3, 0x89a3, 0x8b7c, 0x8d4e, 0x8f1b, 0x90e2, 0x92a4,
     0x9460, 0x9617, 0x97ca, 0x9977, 0x9b20, 0x9cc4, 0x9e64, 0xa000, 0xa197,
     0xa32b, 0xa4ba, 0xa646, 0xa7cf, 0xa953, 0xaad5, 0xac53, 0xadcd, 0xaf45,
-    0xb0b9, 0xb22b, 0xb399, 0xb504};
+    0xb0b9, 0xb22b, 0xb399, 0xb504
+};
 
 LNK_SECTION_CONSTDATA_L1
 const FIXP_DBL invCount[80] = /* This could be 16-bit wide */
-    {0x00000000, 0x7fffffff, 0x40000000, 0x2aaaaaab, 0x20000000, 0x1999999a,
-     0x15555555, 0x12492492, 0x10000000, 0x0e38e38e, 0x0ccccccd, 0x0ba2e8ba,
-     0x0aaaaaab, 0x09d89d8a, 0x09249249, 0x08888889, 0x08000000, 0x07878788,
-     0x071c71c7, 0x06bca1af, 0x06666666, 0x06186186, 0x05d1745d, 0x0590b216,
-     0x05555555, 0x051eb852, 0x04ec4ec5, 0x04bda12f, 0x04924925, 0x0469ee58,
-     0x04444444, 0x04210842, 0x04000000, 0x03e0f83e, 0x03c3c3c4, 0x03a83a84,
-     0x038e38e4, 0x03759f23, 0x035e50d8, 0x03483483, 0x03333333, 0x031f3832,
-     0x030c30c3, 0x02fa0be8, 0x02e8ba2f, 0x02d82d83, 0x02c8590b, 0x02b93105,
-     0x02aaaaab, 0x029cbc15, 0x028f5c29, 0x02828283, 0x02762762, 0x026a439f,
-     0x025ed098, 0x0253c825, 0x02492492, 0x023ee090, 0x0234f72c, 0x022b63cc,
-     0x02222222, 0x02192e2a, 0x02108421, 0x02082082, 0x02000000, 0x01f81f82,
-     0x01f07c1f, 0x01e9131b, 0x01e1e1e2, 0x01dae607, 0x01d41d42, 0x01cd8569,
-     0x01c71c72, 0x01c0e070, 0x01bacf91, 0x01b4e81b, 0x01af286c, 0x01a98ef6,
-     0x01a41a42, 0x019ec8e9};
+{   0x00000000, 0x7fffffff, 0x40000000, 0x2aaaaaab, 0x20000000, 0x1999999a,
+    0x15555555, 0x12492492, 0x10000000, 0x0e38e38e, 0x0ccccccd, 0x0ba2e8ba,
+    0x0aaaaaab, 0x09d89d8a, 0x09249249, 0x08888889, 0x08000000, 0x07878788,
+    0x071c71c7, 0x06bca1af, 0x06666666, 0x06186186, 0x05d1745d, 0x0590b216,
+    0x05555555, 0x051eb852, 0x04ec4ec5, 0x04bda12f, 0x04924925, 0x0469ee58,
+    0x04444444, 0x04210842, 0x04000000, 0x03e0f83e, 0x03c3c3c4, 0x03a83a84,
+    0x038e38e4, 0x03759f23, 0x035e50d8, 0x03483483, 0x03333333, 0x031f3832,
+    0x030c30c3, 0x02fa0be8, 0x02e8ba2f, 0x02d82d83, 0x02c8590b, 0x02b93105,
+    0x02aaaaab, 0x029cbc15, 0x028f5c29, 0x02828283, 0x02762762, 0x026a439f,
+    0x025ed098, 0x0253c825, 0x02492492, 0x023ee090, 0x0234f72c, 0x022b63cc,
+    0x02222222, 0x02192e2a, 0x02108421, 0x02082082, 0x02000000, 0x01f81f82,
+    0x01f07c1f, 0x01e9131b, 0x01e1e1e2, 0x01dae607, 0x01d41d42, 0x01cd8569,
+    0x01c71c72, 0x01c0e070, 0x01bacf91, 0x01b4e81b, 0x01af286c, 0x01a98ef6,
+    0x01a41a42, 0x019ec8e9
+};
 
 /*
  * Bitstream data lists
@@ -6549,7 +6563,8 @@ static const rbd_id_t el_aac_sce[] = {
     section_data, scale_factor_data, pulse, tns_data_present, tns_data,
     gain_control_data_present,
     /* gain_control_data, */
-    spectral_data, adtscrc_end_reg1, end_of_sequence};
+    spectral_data, adtscrc_end_reg1, end_of_sequence
+};
 
 static const struct element_list node_aac_sce = {el_aac_sce, {NULL, NULL}};
 
@@ -6561,12 +6576,14 @@ static const rbd_id_t el_aac_cce[] = {
     tns_data_present, tns_data, gain_control_data_present,
     /* gain_control_data, */
     spectral_data, gain_element_lists, /* CCE specific */
-    adtscrc_end_reg1, end_of_sequence};
+    adtscrc_end_reg1, end_of_sequence
+};
 
 static const struct element_list node_aac_cce = {el_aac_cce, {NULL, NULL}};
 
 static const rbd_id_t el_aac_cpe[] = {adtscrc_start_reg1, element_instance_tag,
-                                      common_window, link_sequence};
+                                      common_window, link_sequence
+                                     };
 
 static const rbd_id_t el_aac_cpe0[] = {
     /*common_window = 0*/
@@ -6578,7 +6595,8 @@ static const rbd_id_t el_aac_cpe0[] = {
     adtscrc_start_reg2, global_gain, ics_info, section_data, scale_factor_data,
     pulse, tns_data_present, tns_data, gain_control_data_present,
     /*gain_control_data,*/
-    spectral_data, adtscrc_end_reg1, adtscrc_end_reg2, end_of_sequence};
+    spectral_data, adtscrc_end_reg1, adtscrc_end_reg2, end_of_sequence
+};
 
 static const rbd_id_t el_aac_cpe1[] = {
     /* common_window = 1 */
@@ -6592,14 +6610,16 @@ static const rbd_id_t el_aac_cpe1[] = {
     adtscrc_start_reg2, global_gain, section_data, scale_factor_data, pulse,
     tns_data_present, tns_data, gain_control_data_present,
     /*gain_control_data,*/
-    spectral_data, adtscrc_end_reg1, adtscrc_end_reg2, end_of_sequence};
+    spectral_data, adtscrc_end_reg1, adtscrc_end_reg2, end_of_sequence
+};
 
 static const struct element_list node_aac_cpe0 = {el_aac_cpe0, {NULL, NULL}};
 
 static const struct element_list node_aac_cpe1 = {el_aac_cpe1, {NULL, NULL}};
 
 static const element_list_t node_aac_cpe = {el_aac_cpe,
-                                            {&node_aac_cpe0, &node_aac_cpe1}};
+    {&node_aac_cpe0, &node_aac_cpe1}
+};
 
 /*
  * AOT C- {17,23}
@@ -6619,10 +6639,12 @@ static const rbd_id_t el_aac_sce_epc0[] = {
     esc2_rvlc, /* rvlc_cod_sf, rvlc_esc_sf */
     tns_data,
     spectral_data,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const struct element_list node_aac_sce_epc0 = {el_aac_sce_epc0,
-                                                      {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const rbd_id_t el_aac_sce_epc1[] = {
     element_instance_tag, global_gain, ics_info, section_data,
@@ -6630,13 +6652,16 @@ static const rbd_id_t el_aac_sce_epc1[] = {
     /*gain_control_data,*/
     esc1_hcr,  /*length_of_rvlc_escapes, length_of_rvlc_sf */
     esc2_rvlc, /* rvlc_cod_sf, rvlc_esc_sf */
-    tns_data, spectral_data, end_of_sequence};
+    tns_data, spectral_data, end_of_sequence
+};
 
 static const struct element_list node_aac_sce_epc1 = {el_aac_sce_epc1,
-                                                      {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const rbd_id_t el_aac_cpe_epc0[] = {element_instance_tag, common_window,
-                                           link_sequence};
+                                           link_sequence
+                                          };
 
 static const rbd_id_t el_aac_cpe0_epc0[] = {
     /* common_window = 0 */
@@ -6670,7 +6695,8 @@ static const rbd_id_t el_aac_cpe0_epc0[] = {
     /* ESC 3: */
     tns_data,
     /* ESC 4: */
-    spectral_data, end_of_sequence};
+    spectral_data, end_of_sequence
+};
 
 static const rbd_id_t el_aac_cpe1_epc0[] = {
     /* common_window = 1 */
@@ -6709,16 +6735,20 @@ static const rbd_id_t el_aac_cpe1_epc0[] = {
     /* ESC 3: */
     tns_data,
     /* ESC 4: */
-    spectral_data, end_of_sequence};
+    spectral_data, end_of_sequence
+};
 
 static const struct element_list node_aac_cpe0_epc0 = {el_aac_cpe0_epc0,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_aac_cpe1_epc0 = {el_aac_cpe1_epc0,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const element_list_t node_aac_cpe_epc0 = {
-    el_aac_cpe_epc0, {&node_aac_cpe0_epc0, &node_aac_cpe1_epc0}};
+    el_aac_cpe_epc0, {&node_aac_cpe0_epc0, &node_aac_cpe1_epc0}
+};
 
 static const rbd_id_t el_aac_cpe0_epc1[] = {
     global_gain, ics_info, section_data, scale_factor_data, pulse,
@@ -6732,7 +6762,8 @@ static const rbd_id_t el_aac_cpe0_epc1[] = {
     next_channel, esc2_rvlc, /* rvlc_cod_sf, rvlc_esc_sf */
     next_channel, esc2_rvlc, /* rvlc_cod_sf, rvlc_esc_sf */
     next_channel, tns_data, next_channel, tns_data, next_channel, spectral_data,
-    next_channel, spectral_data, end_of_sequence};
+    next_channel, spectral_data, end_of_sequence
+};
 
 static const rbd_id_t el_aac_cpe1_epc1[] = {
     ics_info, ms, ltp_data_present,
@@ -6753,16 +6784,20 @@ static const rbd_id_t el_aac_cpe1_epc1[] = {
     next_channel, esc2_rvlc, /* rvlc_cod_sf, rvlc_esc_sf */
 
     next_channel, tns_data, next_channel, tns_data, next_channel, spectral_data,
-    next_channel, spectral_data, end_of_sequence};
+    next_channel, spectral_data, end_of_sequence
+};
 
 static const struct element_list node_aac_cpe0_epc1 = {el_aac_cpe0_epc1,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_aac_cpe1_epc1 = {el_aac_cpe1_epc1,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const element_list_t node_aac_cpe_epc1 = {
-    el_aac_cpe, {&node_aac_cpe0_epc1, &node_aac_cpe1_epc1}};
+    el_aac_cpe, {&node_aac_cpe0_epc1, &node_aac_cpe1_epc1}
+};
 
 /*
  * AOT = 20
@@ -6776,10 +6811,12 @@ static const rbd_id_t el_scal_sce_epc0[] = {ics_info, /* ESC 1 */
                                             esc2_rvlc,     /* ESC 2 */
                                             tns_data,      /* ESC 3 */
                                             spectral_data, /* ESC 4 */
-                                            end_of_sequence};
+                                            end_of_sequence
+                                           };
 
 static const struct element_list node_scal_sce_epc0 = {el_scal_sce_epc0,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const rbd_id_t el_scal_cpe_epc0[] = {
     ics_info,             /* ESC 0 */
@@ -6795,10 +6832,12 @@ static const rbd_id_t el_scal_cpe_epc0[] = {
     esc2_rvlc,     /* ESC 2 (ch 1) */
     tns_data,      /* ESC 3 (ch 1) */
     spectral_data, /* ESC 4 (ch 1) */
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const struct element_list node_scal_cpe_epc0 = {el_scal_cpe_epc0,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 /*
  * AOT = 20
@@ -6808,10 +6847,12 @@ static const rbd_id_t el_scal_sce_epc1[] = {
     ics_info, tns_data_present, ltp_data_present,
     /* ltp_data, */
     global_gain, section_data, scale_factor_data, esc1_hcr, tns_data,
-    spectral_data, end_of_sequence};
+    spectral_data, end_of_sequence
+};
 
 static const struct element_list node_scal_sce_epc1 = {el_scal_sce_epc1,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const rbd_id_t el_scal_cpe_epc1[] = {
     ics_info, ms, tns_data_present, ltp_data_present,
@@ -6821,10 +6862,12 @@ static const rbd_id_t el_scal_cpe_epc1[] = {
     /* ltp_data, */
     global_gain, section_data, scale_factor_data, esc1_hcr, next_channel,
     tns_data, next_channel, tns_data, next_channel, spectral_data, next_channel,
-    spectral_data, end_of_sequence};
+    spectral_data, end_of_sequence
+};
 
 static const struct element_list node_scal_cpe_epc1 = {el_scal_cpe_epc1,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 /*
  * Pseudo AOT for DRM/DRM+ (similar to AOT 20)
@@ -6833,7 +6876,8 @@ static const rbd_id_t el_drm_sce[] = {
     drmcrc_start_reg, ics_info, tns_data_present, ltp_data_present,
     /* ltp_data, */
     global_gain, section_data, scale_factor_data, esc1_hcr, tns_data,
-    drmcrc_end_reg, spectral_data, end_of_sequence};
+    drmcrc_end_reg, spectral_data, end_of_sequence
+};
 
 static const struct element_list node_drm_sce = {el_drm_sce, {NULL, NULL}};
 
@@ -6845,7 +6889,8 @@ static const rbd_id_t el_drm_cpe[] = {
     /* ltp_data, */
     global_gain, section_data, scale_factor_data, esc1_hcr, next_channel,
     tns_data, next_channel, tns_data, drmcrc_end_reg, next_channel,
-    spectral_data, next_channel, spectral_data, end_of_sequence};
+    spectral_data, next_channel, spectral_data, end_of_sequence
+};
 
 static const struct element_list node_drm_cpe = {el_drm_cpe, {NULL, NULL}};
 
@@ -6855,10 +6900,12 @@ static const struct element_list node_drm_cpe = {el_drm_cpe, {NULL, NULL}};
  */
 static const rbd_id_t el_eld_sce_epc0[] = {
     global_gain, ics_info, section_data, scale_factor_data, tns_data_present,
-    tns_data,    esc1_hcr, esc2_rvlc,    spectral_data,     end_of_sequence};
+    tns_data,    esc1_hcr, esc2_rvlc,    spectral_data,     end_of_sequence
+};
 
 static const struct element_list node_eld_sce_epc0 = {el_eld_sce_epc0,
-                                                      {NULL, NULL}};
+    {NULL, NULL}
+};
 
 #define node_eld_sce_epc1 node_eld_sce_epc0
 
@@ -6871,7 +6918,8 @@ static const rbd_id_t el_eld_cpe_epc0[] = {ics_info,          ms,
                                            section_data,      scale_factor_data,
                                            tns_data_present,  tns_data,
                                            esc1_hcr,          esc2_rvlc,
-                                           spectral_data,     end_of_sequence};
+                                           spectral_data,     end_of_sequence
+                                          };
 
 static const rbd_id_t el_eld_cpe_epc1[] = {ics_info,          ms,
                                            global_gain,       section_data,
@@ -6884,13 +6932,16 @@ static const rbd_id_t el_eld_cpe_epc1[] = {ics_info,          ms,
                                            esc1_hcr,          esc2_rvlc,
                                            spectral_data,     next_channel,
                                            esc1_hcr,          esc2_rvlc,
-                                           spectral_data,     end_of_sequence};
+                                           spectral_data,     end_of_sequence
+                                          };
 
 static const struct element_list node_eld_cpe_epc0 = {el_eld_cpe_epc0,
-                                                      {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_eld_cpe_epc1 = {el_eld_cpe_epc1,
-                                                      {NULL, NULL}};
+    {NULL, NULL}
+};
 
 /*
  * AOT = 42
@@ -6898,33 +6949,41 @@ static const struct element_list node_eld_cpe_epc1 = {el_eld_cpe_epc1,
  */
 
 static const rbd_id_t el_usac_coremode[] = {core_mode, next_channel,
-                                            link_sequence};
+                                            link_sequence
+                                           };
 
 static const rbd_id_t el_usac_sce0_epc0[] = {
     tns_data_present,
     /* fd_channel_stream */
     global_gain, noise, ics_info, tw_data, scale_factor_data_usac, tns_data,
-    ac_spectral_data, fac_data, end_of_sequence};
+    ac_spectral_data, fac_data, end_of_sequence
+};
 
 static const rbd_id_t el_usac_lfe_epc0[] = {
     /* fd_channel_stream */
     global_gain,      ics_info, scale_factor_data_usac,
-    ac_spectral_data, fac_data, end_of_sequence};
+    ac_spectral_data, fac_data, end_of_sequence
+};
 
 static const rbd_id_t el_usac_lpd_epc0[] = {lpd_channel_stream,
-                                            end_of_sequence};
+                                            end_of_sequence
+                                           };
 
 static const struct element_list node_usac_sce0_epc0 = {el_usac_sce0_epc0,
-                                                        {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_sce1_epc0 = {el_usac_lpd_epc0,
-                                                        {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_sce_epc0 = {
-    el_usac_coremode, {&node_usac_sce0_epc0, &node_usac_sce1_epc0}};
+    el_usac_coremode, {&node_usac_sce0_epc0, &node_usac_sce1_epc0}
+};
 
 static const rbd_id_t list_usac_cpe00_epc0[] = {tns_active, common_window,
-                                                link_sequence};
+                                                link_sequence
+                                               };
 
 static const rbd_id_t el_usac_common_tw[] = {common_tw, link_sequence};
 
@@ -6951,7 +7010,8 @@ static const rbd_id_t list_usac_cpe0000_epc0[] = {
     tns_data,
     ac_spectral_data,
     fac_data,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe0001_epc0[] = {
     /*
@@ -6964,13 +7024,15 @@ static const rbd_id_t list_usac_cpe0001_epc0[] = {
     ics_info, scale_factor_data_usac, tns_data,    ac_spectral_data,
     fac_data, next_channel,           global_gain, noise,
     ics_info, scale_factor_data_usac, tns_data,    ac_spectral_data,
-    fac_data, end_of_sequence};
+    fac_data, end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe001_epc0[] = {
     /* core_mode0 = 0 */
     /* core_mode1 = 0 */
     /* common_window = 1 */
-    ics_info, common_max_sfb, ms, common_tw, link_sequence};
+    ics_info, common_max_sfb, ms, common_tw, link_sequence
+};
 
 static const rbd_id_t list_usac_cpe0010_epc0[] = {
     /* core_mode0 = 0 */
@@ -6993,7 +7055,8 @@ static const rbd_id_t list_usac_cpe0010_epc0[] = {
     tns_data,
     ac_spectral_data,
     fac_data,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe0011_epc0[] = {
     /* core_mode0 = 0 */
@@ -7015,7 +7078,8 @@ static const rbd_id_t list_usac_cpe0011_epc0[] = {
     tns_data,
     ac_spectral_data,
     fac_data,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe10_epc0[] = {
     /* core_mode0 = 1 */
@@ -7031,7 +7095,8 @@ static const rbd_id_t list_usac_cpe10_epc0[] = {
     tns_data,
     ac_spectral_data,
     fac_data,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe01_epc0[] = {
     /* core_mode0 = 0 */
@@ -7047,12 +7112,14 @@ static const rbd_id_t list_usac_cpe01_epc0[] = {
     fac_data,
     next_channel,
     lpd_channel_stream,
-    end_of_sequence};
+    end_of_sequence
+};
 
 static const rbd_id_t list_usac_cpe11_epc0[] = {
     /* core_mode0 = 1 */
     /* core_mode1 = 1 */
-    lpd_channel_stream, next_channel, lpd_channel_stream, end_of_sequence};
+    lpd_channel_stream, next_channel, lpd_channel_stream, end_of_sequence
+};
 
 static const struct element_list node_usac_cpe0000_epc0 = {
     /* core_mode0 = 0 */
@@ -7060,7 +7127,8 @@ static const struct element_list node_usac_cpe0000_epc0 = {
     /* common_window = 0 */
     /* common_tw = 0 */
     list_usac_cpe0000_epc0,
-    {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe0010_epc0 = {
     /* core_mode0 = 0 */
@@ -7068,7 +7136,8 @@ static const struct element_list node_usac_cpe0010_epc0 = {
     /* common_window = 1 */
     /* common_tw = 0 */
     list_usac_cpe0010_epc0,
-    {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe0001_epc0 = {
     /* core_mode0 = 0 */
@@ -7076,7 +7145,8 @@ static const struct element_list node_usac_cpe0001_epc0 = {
     /* common_window = 0 */
     /* common_tw = 1 */
     list_usac_cpe0001_epc0,
-    {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe0011_epc0 = {
     /* core_mode0 = 0 */
@@ -7084,131 +7154,142 @@ static const struct element_list node_usac_cpe0011_epc0 = {
     /* common_window = 1 */
     /* common_tw = 1 */
     list_usac_cpe0011_epc0,
-    {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe000_epc0 = {
     /* core_mode0 = 0 */
     /* core_mode1 = 0 */
     /* common_window = 0 */
     el_usac_common_tw,
-    {&node_usac_cpe0000_epc0, &node_usac_cpe0001_epc0}};
+    {&node_usac_cpe0000_epc0, &node_usac_cpe0001_epc0}
+};
 
 static const struct element_list node_usac_cpe001_epc0 = {
-    list_usac_cpe001_epc0, {&node_usac_cpe0010_epc0, &node_usac_cpe0011_epc0}};
+    list_usac_cpe001_epc0, {&node_usac_cpe0010_epc0, &node_usac_cpe0011_epc0}
+};
 
 static const struct element_list node_usac_cpe00_epc0 = {
     /* core_mode0 = 0 */
     /* core_mode1 = 0 */
     list_usac_cpe00_epc0,
-    {&node_usac_cpe000_epc0, &node_usac_cpe001_epc0}};
+    {&node_usac_cpe000_epc0, &node_usac_cpe001_epc0}
+};
 
 static const struct element_list node_usac_cpe10_epc0 = {
     /* core_mode0 = 1 */
     /* core_mode1 = 0 */
     list_usac_cpe10_epc0,
-    {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe01_epc0 = {list_usac_cpe01_epc0,
-                                                         {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe11_epc0 = {list_usac_cpe11_epc0,
-                                                         {NULL, NULL}};
+    {NULL, NULL}
+};
 
 static const struct element_list node_usac_cpe0_epc0 = {
     /* core_mode0 = 0 */
     el_usac_coremode,
-    {&node_usac_cpe00_epc0, &node_usac_cpe01_epc0}};
+    {&node_usac_cpe00_epc0, &node_usac_cpe01_epc0}
+};
 
 static const struct element_list node_usac_cpe1_epc0 = {
     /* core_mode0 = 1 */
     el_usac_coremode,
-    {&node_usac_cpe10_epc0, &node_usac_cpe11_epc0}};
+    {&node_usac_cpe10_epc0, &node_usac_cpe11_epc0}
+};
 
 static const struct element_list node_usac_cpe_epc0 = {
-    el_usac_coremode, {&node_usac_cpe0_epc0, &node_usac_cpe1_epc0}};
+    el_usac_coremode, {&node_usac_cpe0_epc0, &node_usac_cpe1_epc0}
+};
 
 static const struct element_list node_usac_lfe_epc0 = {el_usac_lfe_epc0,
-                                                       {NULL, NULL}};
+    {NULL, NULL}
+};
 
 const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
-                                              SCHAR epConfig, UCHAR nChannels,
-                                              UCHAR layer, UINT elFlags) {
-  switch (aot) {
-  case AOT_AAC_LC:
-  case AOT_SBR:
-  case AOT_PS:
-    FDK_ASSERT(epConfig == -1);
-    if (elFlags & AC_EL_GA_CCE) {
-      return &node_aac_cce;
-    } else {
-      if (nChannels == 1) {
-        return &node_aac_sce;
-      } else {
-        return &node_aac_cpe;
-      }
+        SCHAR epConfig, UCHAR nChannels,
+        UCHAR layer, UINT elFlags) {
+    switch (aot) {
+    case AOT_AAC_LC:
+    case AOT_SBR:
+    case AOT_PS:
+        FDK_ASSERT(epConfig == -1);
+        if (elFlags & AC_EL_GA_CCE) {
+            return &node_aac_cce;
+        } else {
+            if (nChannels == 1) {
+                return &node_aac_sce;
+            } else {
+                return &node_aac_cpe;
+            }
+        }
+    case AOT_ER_AAC_LC:
+    case AOT_ER_AAC_LD:
+        if (nChannels == 1) {
+            if (epConfig == 0) {
+                return &node_aac_sce_epc0;
+            } else {
+                return &node_aac_sce_epc1;
+            }
+        } else {
+            if (epConfig == 0)
+                return &node_aac_cpe_epc0;
+            else
+                return &node_aac_cpe_epc1;
+        }
+    case AOT_USAC:
+        if (elFlags & AC_EL_USAC_LFE) {
+            FDK_ASSERT(nChannels == 1);
+            return &node_usac_lfe_epc0;
+        }
+        if (nChannels == 1) {
+            return &node_usac_sce_epc0;
+        } else {
+            return &node_usac_cpe_epc0;
+        }
+    case AOT_ER_AAC_SCAL:
+        if (nChannels == 1) {
+            if (epConfig <= 0)
+                return &node_scal_sce_epc0;
+            else
+                return &node_scal_sce_epc1;
+        } else {
+            if (epConfig <= 0)
+                return &node_scal_cpe_epc0;
+            else
+                return &node_scal_cpe_epc1;
+        }
+    case AOT_ER_AAC_ELD:
+        if (nChannels == 1) {
+            if (epConfig <= 0)
+                return &node_eld_sce_epc0;
+            else
+                return &node_eld_sce_epc1;
+        } else {
+            if (epConfig <= 0)
+                return &node_eld_cpe_epc0;
+            else
+                return &node_eld_cpe_epc1;
+        }
+    case AOT_DRM_AAC:
+    case AOT_DRM_SBR:
+    case AOT_DRM_MPEG_PS:
+    case AOT_DRM_SURROUND:
+        FDK_ASSERT(epConfig == 1);
+        if (nChannels == 1) {
+            return &node_drm_sce;
+        } else {
+            return &node_drm_cpe;
+        }
+    default:
+        break;
     }
-  case AOT_ER_AAC_LC:
-  case AOT_ER_AAC_LD:
-    if (nChannels == 1) {
-      if (epConfig == 0) {
-        return &node_aac_sce_epc0;
-      } else {
-        return &node_aac_sce_epc1;
-      }
-    } else {
-      if (epConfig == 0)
-        return &node_aac_cpe_epc0;
-      else
-        return &node_aac_cpe_epc1;
-    }
-  case AOT_USAC:
-    if (elFlags & AC_EL_USAC_LFE) {
-      FDK_ASSERT(nChannels == 1);
-      return &node_usac_lfe_epc0;
-    }
-    if (nChannels == 1) {
-      return &node_usac_sce_epc0;
-    } else {
-      return &node_usac_cpe_epc0;
-    }
-  case AOT_ER_AAC_SCAL:
-    if (nChannels == 1) {
-      if (epConfig <= 0)
-        return &node_scal_sce_epc0;
-      else
-        return &node_scal_sce_epc1;
-    } else {
-      if (epConfig <= 0)
-        return &node_scal_cpe_epc0;
-      else
-        return &node_scal_cpe_epc1;
-    }
-  case AOT_ER_AAC_ELD:
-    if (nChannels == 1) {
-      if (epConfig <= 0)
-        return &node_eld_sce_epc0;
-      else
-        return &node_eld_sce_epc1;
-    } else {
-      if (epConfig <= 0)
-        return &node_eld_cpe_epc0;
-      else
-        return &node_eld_cpe_epc1;
-    }
-  case AOT_DRM_AAC:
-  case AOT_DRM_SBR:
-  case AOT_DRM_MPEG_PS:
-  case AOT_DRM_SURROUND:
-    FDK_ASSERT(epConfig == 1);
-    if (nChannels == 1) {
-      return &node_drm_sce;
-    } else {
-      return &node_drm_cpe;
-    }
-  default:
-    break;
-  }
-  return NULL;
+    return NULL;
 }
 
 /* Inverse square root table for operands running from 0.5 to ~1.0 */

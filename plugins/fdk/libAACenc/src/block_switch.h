@@ -121,29 +121,29 @@ amm-info@iis.fraunhofer.de
 
 /****************** Structures ***************************/
 typedef struct {
-  INT lastWindowSequence;
-  INT windowShape;
-  INT lastWindowShape;
-  UINT nBlockSwitchWindows; /* number of windows for energy calculation */
-  INT attack;
-  INT lastattack;
-  INT attackIndex;
-  INT lastAttackIndex;
-  INT allowShortFrames; /* for Low Delay, don't allow short frames */
-  INT allowLookAhead;   /* for Low Delay, don't do look-ahead */
-  INT noOfGroups;
-  INT groupLen[MAX_NO_OF_GROUPS];
-  FIXP_DBL maxWindowNrg; /* max energy in subwindows */
+    INT lastWindowSequence;
+    INT windowShape;
+    INT lastWindowShape;
+    UINT nBlockSwitchWindows; /* number of windows for energy calculation */
+    INT attack;
+    INT lastattack;
+    INT attackIndex;
+    INT lastAttackIndex;
+    INT allowShortFrames; /* for Low Delay, don't allow short frames */
+    INT allowLookAhead;   /* for Low Delay, don't do look-ahead */
+    INT noOfGroups;
+    INT groupLen[MAX_NO_OF_GROUPS];
+    FIXP_DBL maxWindowNrg; /* max energy in subwindows */
 
-  FIXP_DBL
-  windowNrg[2][BLOCK_SWITCH_WINDOWS]; /* time signal energy in Subwindows
+    FIXP_DBL
+    windowNrg[2][BLOCK_SWITCH_WINDOWS]; /* time signal energy in Subwindows
                                    (last and current) */
-  FIXP_DBL windowNrgF[2][BLOCK_SWITCH_WINDOWS]; /* filtered time signal energy
+    FIXP_DBL windowNrgF[2][BLOCK_SWITCH_WINDOWS]; /* filtered time signal energy
                                              in segments (last and
                                              current) */
-  FIXP_DBL accWindowNrg; /* recursively accumulated windowNrgF */
+    FIXP_DBL accWindowNrg; /* recursively accumulated windowNrgF */
 
-  FIXP_DBL iirStates[BLOCK_SWITCHING_IIR_LEN]; /* filter delay-line */
+    FIXP_DBL iirStates[BLOCK_SWITCHING_IIR_LEN]; /* filter delay-line */
 
 } BLOCK_SWITCHING_CONTROL;
 

@@ -110,23 +110,23 @@ amm-info@iis.fraunhofer.de
 #define PE_CONSTPART_SHIFT FRACT_BITS
 
 typedef struct {
-  /* calculated by FDKaacEnc_prepareSfbPe */
-  INT sfbNLines[MAX_GROUPED_SFB]; /* number of relevant lines in sfb */
-  /* the rest is calculated by FDKaacEnc_calcSfbPe */
-  INT sfbPe[MAX_GROUPED_SFB];           /* pe for each sfb */
-  INT sfbConstPart[MAX_GROUPED_SFB];    /* constant part for each sfb */
-  INT sfbNActiveLines[MAX_GROUPED_SFB]; /* number of active lines in sfb */
-  INT pe;                               /* sum of sfbPe */
-  INT constPart;                        /* sum of sfbConstPart */
-  INT nActiveLines;                     /* sum of sfbNActiveLines */
+    /* calculated by FDKaacEnc_prepareSfbPe */
+    INT sfbNLines[MAX_GROUPED_SFB]; /* number of relevant lines in sfb */
+    /* the rest is calculated by FDKaacEnc_calcSfbPe */
+    INT sfbPe[MAX_GROUPED_SFB];           /* pe for each sfb */
+    INT sfbConstPart[MAX_GROUPED_SFB];    /* constant part for each sfb */
+    INT sfbNActiveLines[MAX_GROUPED_SFB]; /* number of active lines in sfb */
+    INT pe;                               /* sum of sfbPe */
+    INT constPart;                        /* sum of sfbConstPart */
+    INT nActiveLines;                     /* sum of sfbNActiveLines */
 } PE_CHANNEL_DATA;
 
 typedef struct {
-  PE_CHANNEL_DATA peChannelData[(2)];
-  INT pe;
-  INT constPart;
-  INT nActiveLines;
-  INT offset;
+    PE_CHANNEL_DATA peChannelData[(2)];
+    INT pe;
+    INT constPart;
+    INT nActiveLines;
+    INT offset;
 } PE_DATA;
 
 void FDKaacEnc_prepareSfbPe(PE_CHANNEL_DATA *RESTRICT const peChanData,
