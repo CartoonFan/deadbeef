@@ -113,33 +113,33 @@ amm-info@iis.fraunhofer.de
 #include "sbr_def.h"
 
 typedef struct {
-    INT offset;
-    INT upDate;
-    INT nSfb[2];
-    SCHAR sfb_nrg_prev[MAX_FREQ_COEFFS];
-    INT deltaTAcrossFrames;
-    FIXP_DBL dF_edge_1stEnv;
-    FIXP_DBL dF_edge_incr;
-    INT dF_edge_incr_fac;
+  INT offset;
+  INT upDate;
+  INT nSfb[2];
+  SCHAR sfb_nrg_prev[MAX_FREQ_COEFFS];
+  INT deltaTAcrossFrames;
+  FIXP_DBL dF_edge_1stEnv;
+  FIXP_DBL dF_edge_incr;
+  INT dF_edge_incr_fac;
 
-    INT codeBookScfLavTime;
-    INT codeBookScfLavFreq;
+  INT codeBookScfLavTime;
+  INT codeBookScfLavFreq;
 
-    INT codeBookScfLavLevelTime;
-    INT codeBookScfLavLevelFreq;
-    INT codeBookScfLavBalanceTime;
-    INT codeBookScfLavBalanceFreq;
+  INT codeBookScfLavLevelTime;
+  INT codeBookScfLavLevelFreq;
+  INT codeBookScfLavBalanceTime;
+  INT codeBookScfLavBalanceFreq;
 
-    INT start_bits;
-    INT start_bits_balance;
+  INT start_bits;
+  INT start_bits_balance;
 
-    const UCHAR *hufftableTimeL;
-    const UCHAR *hufftableFreqL;
+  const UCHAR *hufftableTimeL;
+  const UCHAR *hufftableFreqL;
 
-    const UCHAR *hufftableLevelTimeL;
-    const UCHAR *hufftableBalanceTimeL;
-    const UCHAR *hufftableLevelFreqL;
-    const UCHAR *hufftableBalanceFreqL;
+  const UCHAR *hufftableLevelTimeL;
+  const UCHAR *hufftableBalanceTimeL;
+  const UCHAR *hufftableLevelFreqL;
+  const UCHAR *hufftableBalanceFreqL;
 } SBR_CODE_ENVELOPE;
 typedef SBR_CODE_ENVELOPE *HANDLE_SBR_CODE_ENVELOPE;
 

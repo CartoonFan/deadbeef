@@ -34,7 +34,7 @@ extern DB_functions_t *deadbeef;
 static NSString *default_format = @"[%tracknumber%. ][%artist% - ]%title%";
 
 @interface ConverterWindowController () <ScriptableSelectDelegate,
-    ScriptableItemDelegate>
+                                         ScriptableItemDelegate>
 
 @property(nonatomic) ddb_converter_t *converter_plugin;
 
@@ -66,7 +66,7 @@ static NSString *default_format = @"[%tracknumber%. ][%artist% - ]%title%";
 @property(weak) IBOutlet NSView *dspPresetSelectorContainer;
 
 @property(nonatomic)
-ScriptableSelectViewController *encoderSelectViewController;
+    ScriptableSelectViewController *encoderSelectViewController;
 @property(nonatomic) ScriptableTableDataSource *encoderPresetsDataSource;
 @property(weak) IBOutlet NSView *encoderPresetSelectorContainer;
 
@@ -77,7 +77,7 @@ ScriptableSelectViewController *encoderSelectViewController;
 @property(weak) IBOutlet NSButton *retagAfterCopy;
 @property(unsafe_unretained) IBOutlet NSTextField *outputFileName;
 @property(unsafe_unretained)
-IBOutlet NSArrayController *filenamePreviewController;
+    IBOutlet NSArrayController *filenamePreviewController;
 @property(unsafe_unretained) IBOutlet NSPopUpButton *outputFormat;
 @property(unsafe_unretained) IBOutlet NSPopUpButton *fileExistsAction;
 - (IBAction)cancelAction:(id)sender;
@@ -107,597 +107,597 @@ static NSMutableArray *g_converterControllers;
 @implementation ConverterWindowController
 
 - (void)windowDidLoad {
-    [super windowDidLoad];
+  [super windowDidLoad];
 
-    // Implement this method to handle any initialization after your window
-    // controller's window has been loaded from its nib file.
-    self.converter_plugin =
-        (ddb_converter_t *)deadbeef->plug_get_for_id("converter");
+  // Implement this method to handle any initialization after your window
+  // controller's window has been loaded from its nib file.
+  self.converter_plugin =
+      (ddb_converter_t *)deadbeef->plug_get_for_id("converter");
 
-    [self initializeWidgets];
-    self.window.delegate = self;
+  [self initializeWidgets];
+  self.window.delegate = self;
 
-    self.dspPresetsDataSource =
-        [ScriptableTableDataSource dataSourceWithScriptable:scriptableDspRoot()];
-    self.dspSelectViewController.dataSource = self.dspPresetsDataSource;
-    self.dspSelectViewController = [[ScriptableSelectViewController alloc]
-                                    initWithNibName:@"ScriptableSelectView"
-                                    bundle:nil];
-    self.dspSelectViewController.view.frame =
-        self.dspPresetSelectorContainer.bounds;
-    [_dspPresetSelectorContainer addSubview:self.dspSelectViewController.view];
-    self.dspSelectViewController.dataSource = self.dspPresetsDataSource;
-    self.dspSelectViewController.scriptableItemDelegate = self;
-    self.dspSelectViewController.scriptableSelectDelegate = self;
-    self.dspSelectViewController.errorViewer =
-        ScriptableErrorViewer.sharedInstance;
+  self.dspPresetsDataSource =
+      [ScriptableTableDataSource dataSourceWithScriptable:scriptableDspRoot()];
+  self.dspSelectViewController.dataSource = self.dspPresetsDataSource;
+  self.dspSelectViewController = [[ScriptableSelectViewController alloc]
+      initWithNibName:@"ScriptableSelectView"
+               bundle:nil];
+  self.dspSelectViewController.view.frame =
+      self.dspPresetSelectorContainer.bounds;
+  [_dspPresetSelectorContainer addSubview:self.dspSelectViewController.view];
+  self.dspSelectViewController.dataSource = self.dspPresetsDataSource;
+  self.dspSelectViewController.scriptableItemDelegate = self;
+  self.dspSelectViewController.scriptableSelectDelegate = self;
+  self.dspSelectViewController.errorViewer =
+      ScriptableErrorViewer.sharedInstance;
 
-    char dsp_preset_name[100];
-    deadbeef->conf_get_str("converter.dsp_preset_name", "", dsp_preset_name,
-                           sizeof(dsp_preset_name));
-    scriptableItem_t *dspPreset =
-        scriptableItemSubItemForName(scriptableDspRoot(), dsp_preset_name);
-    if (dspPreset) {
-        [self.dspSelectViewController selectItem:dspPreset];
-    }
+  char dsp_preset_name[100];
+  deadbeef->conf_get_str("converter.dsp_preset_name", "", dsp_preset_name,
+                         sizeof(dsp_preset_name));
+  scriptableItem_t *dspPreset =
+      scriptableItemSubItemForName(scriptableDspRoot(), dsp_preset_name);
+  if (dspPreset) {
+    [self.dspSelectViewController selectItem:dspPreset];
+  }
 
-    self.encoderPresetsDataSource = [ScriptableTableDataSource
-                                     dataSourceWithScriptable:scriptableEncoderRoot()];
-    self.encoderSelectViewController.dataSource = self.dspPresetsDataSource;
+  self.encoderPresetsDataSource = [ScriptableTableDataSource
+      dataSourceWithScriptable:scriptableEncoderRoot()];
+  self.encoderSelectViewController.dataSource = self.dspPresetsDataSource;
 
-    self.encoderSelectViewController = [[ScriptableSelectViewController alloc]
-                                        initWithNibName:@"ScriptableSelectView"
-                                        bundle:nil];
-    self.encoderSelectViewController.view.frame =
-        self.encoderPresetSelectorContainer.bounds;
-    [self.encoderPresetSelectorContainer
-     addSubview:self.encoderSelectViewController.view];
-    self.encoderSelectViewController.dataSource = self.encoderPresetsDataSource;
-    self.encoderSelectViewController.scriptableItemDelegate = self;
-    self.encoderSelectViewController.scriptableSelectDelegate = self;
-    self.encoderSelectViewController.errorViewer =
-        ScriptableErrorViewer.sharedInstance;
+  self.encoderSelectViewController = [[ScriptableSelectViewController alloc]
+      initWithNibName:@"ScriptableSelectView"
+               bundle:nil];
+  self.encoderSelectViewController.view.frame =
+      self.encoderPresetSelectorContainer.bounds;
+  [self.encoderPresetSelectorContainer
+      addSubview:self.encoderSelectViewController.view];
+  self.encoderSelectViewController.dataSource = self.encoderPresetsDataSource;
+  self.encoderSelectViewController.scriptableItemDelegate = self;
+  self.encoderSelectViewController.scriptableSelectDelegate = self;
+  self.encoderSelectViewController.errorViewer =
+      ScriptableErrorViewer.sharedInstance;
 
-    char enc_preset_name[100];
-    deadbeef->conf_get_str("converter.encoder_preset_name", "", enc_preset_name,
-                           sizeof(enc_preset_name));
-    scriptableItem_t *encPreset =
-        scriptableItemSubItemForName(scriptableEncoderRoot(), enc_preset_name);
-    if (encPreset) {
-        [self.encoderSelectViewController selectItem:encPreset];
-    }
+  char enc_preset_name[100];
+  deadbeef->conf_get_str("converter.encoder_preset_name", "", enc_preset_name,
+                         sizeof(enc_preset_name));
+  scriptableItem_t *encPreset =
+      scriptableItemSubItemForName(scriptableEncoderRoot(), enc_preset_name);
+  if (encPreset) {
+    [self.encoderSelectViewController selectItem:encPreset];
+  }
 }
 
 - (void)dealloc {
-    [self reset];
+  [self reset];
 }
 
 - (void)initializeWidgets {
-    deadbeef->conf_lock();
-    const char *out_folder =
-        deadbeef->conf_get_str_fast("converter.output_folder", "");
-    if (!out_folder[0]) {
-        out_folder = getenv("HOME");
-    }
+  deadbeef->conf_lock();
+  const char *out_folder =
+      deadbeef->conf_get_str_fast("converter.output_folder", "");
+  if (!out_folder[0]) {
+    out_folder = getenv("HOME");
+  }
 
-    self.outputFolder.stringValue = [NSString stringWithUTF8String:out_folder];
-    self.outputFileName.stringValue = [NSString
-                                       stringWithUTF8String:deadbeef->conf_get_str_fast("converter.output_file",
-                                               "")];
-    self.preserveFolderStructure.state =
-        deadbeef->conf_get_int("converter.preserve_folder_structure", 0)
-        ? NSOnState
-        : NSOffState;
-    self.bypassSameFormat.state =
-        deadbeef->conf_get_int("converter.bypass_same_format", 0);
-    self.retagAfterCopy.state =
-        deadbeef->conf_get_int("converter.retag_after_copy", 0);
-    self.retagAfterCopy.enabled = self.bypassSameFormat.state == NSOnState;
+  self.outputFolder.stringValue = [NSString stringWithUTF8String:out_folder];
+  self.outputFileName.stringValue = [NSString
+      stringWithUTF8String:deadbeef->conf_get_str_fast("converter.output_file",
+                                                       "")];
+  self.preserveFolderStructure.state =
+      deadbeef->conf_get_int("converter.preserve_folder_structure", 0)
+          ? NSOnState
+          : NSOffState;
+  self.bypassSameFormat.state =
+      deadbeef->conf_get_int("converter.bypass_same_format", 0);
+  self.retagAfterCopy.state =
+      deadbeef->conf_get_int("converter.retag_after_copy", 0);
+  self.retagAfterCopy.enabled = self.bypassSameFormat.state == NSOnState;
 
-    int write_to_source_folder =
-        deadbeef->conf_get_int("converter.write_to_source_folder", 0);
-    self.writeToSourceFolder.state =
-        write_to_source_folder ? NSOnState : NSOffState;
-    self.outputFolder.enabled = !write_to_source_folder;
-    self.preserveFolderStructure.enabled = !write_to_source_folder;
+  int write_to_source_folder =
+      deadbeef->conf_get_int("converter.write_to_source_folder", 0);
+  self.writeToSourceFolder.state =
+      write_to_source_folder ? NSOnState : NSOffState;
+  self.outputFolder.enabled = !write_to_source_folder;
+  self.preserveFolderStructure.enabled = !write_to_source_folder;
 
-    [_fileExistsAction selectItemAtIndex:deadbeef->conf_get_int(
-                           "converter.overwrite_action", 0)];
-    deadbeef->conf_unlock();
+  [_fileExistsAction selectItemAtIndex:deadbeef->conf_get_int(
+                                           "converter.overwrite_action", 0)];
+  deadbeef->conf_unlock();
 
-    [_outputFormat
-     selectItemAtIndex:deadbeef->conf_get_int("converter.output_format", 0)];
-    [_fileExistsAction selectItemAtIndex:deadbeef->conf_get_int(
-                           "converter.overwrite_action", 0)];
+  [_outputFormat
+      selectItemAtIndex:deadbeef->conf_get_int("converter.output_format", 0)];
+  [_fileExistsAction selectItemAtIndex:deadbeef->conf_get_int(
+                                           "converter.overwrite_action", 0)];
 }
 
 - (void)controlTextDidChange:(NSNotification *)notification {
-    NSTextField *textField = [notification object];
-    if (textField == self.outputFolder) {
-        [self updateFilenamesPreview];
-        deadbeef->conf_set_str("converter.output_folder",
-                               [[_outputFolder stringValue] UTF8String]);
-        deadbeef->conf_save();
-    } else if (textField == self.outputFileName) {
-        [self updateFilenamesPreview];
-        deadbeef->conf_set_str("converter.output_file",
-                               [[_outputFileName stringValue] UTF8String]);
-        deadbeef->conf_save();
-    }
+  NSTextField *textField = [notification object];
+  if (textField == self.outputFolder) {
+    [self updateFilenamesPreview];
+    deadbeef->conf_set_str("converter.output_folder",
+                           [[_outputFolder stringValue] UTF8String]);
+    deadbeef->conf_save();
+  } else if (textField == self.outputFileName) {
+    [self updateFilenamesPreview];
+    deadbeef->conf_set_str("converter.output_file",
+                           [[_outputFileName stringValue] UTF8String]);
+    deadbeef->conf_save();
+  }
 }
 
 - (IBAction)preserveFolderStructureChanged:(id)sender {
-    [self updateFilenamesPreview];
-    deadbeef->conf_set_int("converter.preserve_folder_structure",
-                           self.preserveFolderStructure.state == NSOnState);
-    deadbeef->conf_save();
+  [self updateFilenamesPreview];
+  deadbeef->conf_set_int("converter.preserve_folder_structure",
+                         self.preserveFolderStructure.state == NSOnState);
+  deadbeef->conf_save();
 }
 
 - (IBAction)bypassSameFormatChanged:(id)sender {
-    deadbeef->conf_set_int("converter.bypass_same_format",
-                           self.bypassSameFormat.state == NSOnState);
-    deadbeef->conf_save();
+  deadbeef->conf_set_int("converter.bypass_same_format",
+                         self.bypassSameFormat.state == NSOnState);
+  deadbeef->conf_save();
 
-    self.retagAfterCopy.enabled = self.bypassSameFormat.state == NSOnState;
+  self.retagAfterCopy.enabled = self.bypassSameFormat.state == NSOnState;
 }
 
 - (IBAction)retagAfterCopyChanged:(id)sender {
-    deadbeef->conf_set_int("converter.retag_after_copy",
-                           self.retagAfterCopy.state == NSOnState);
-    deadbeef->conf_save();
+  deadbeef->conf_set_int("converter.retag_after_copy",
+                         self.retagAfterCopy.state == NSOnState);
+  deadbeef->conf_save();
 }
 
 - (void)updateFilenamesPreview {
-    NSMutableArray *convert_items_preview =
-        [NSMutableArray arrayWithCapacity:_convert_items_count];
+  NSMutableArray *convert_items_preview =
+      [NSMutableArray arrayWithCapacity:_convert_items_count];
 
-    NSInteger selectedEncoderPreset =
-        self.encoderSelectViewController.indexOfSelectedItem;
-    if (selectedEncoderPreset == -1) {
-        return;
+  NSInteger selectedEncoderPreset =
+      self.encoderSelectViewController.indexOfSelectedItem;
+  if (selectedEncoderPreset == -1) {
+    return;
+  }
+  scriptableItem_t *preset = scriptableItemChildAtIndex(
+      scriptableEncoderRoot(), (unsigned int)selectedEncoderPreset);
+  ddb_encoder_preset_t *encoder_preset =
+      self.converter_plugin->encoder_preset_alloc();
+  scriptableEncoderPresetToConverterEncoderPreset(preset, encoder_preset);
+
+  NSString *outfile = [_outputFileName stringValue];
+
+  if ([outfile isEqual:@""]) {
+    outfile = default_format;
+  }
+
+  for (int n = 0; n < self.convert_items_count; n++) {
+    DB_playItem_t *it = self.convert_items[n];
+    if (it) {
+      char outpath[PATH_MAX];
+
+      self.converter_plugin->get_output_path2(
+          it, self.convert_playlist, [[_outputFolder stringValue] UTF8String],
+          [outfile UTF8String], encoder_preset,
+          self.preserveFolderStructure.state == NSOnState, "",
+          self.writeToSourceFolder.state == NSOnState, outpath,
+          sizeof(outpath));
+
+      [convert_items_preview addObject:[NSString stringWithUTF8String:outpath]];
     }
-    scriptableItem_t *preset = scriptableItemChildAtIndex(
-                                   scriptableEncoderRoot(), (unsigned int)selectedEncoderPreset);
-    ddb_encoder_preset_t *encoder_preset =
-        self.converter_plugin->encoder_preset_alloc();
-    scriptableEncoderPresetToConverterEncoderPreset(preset, encoder_preset);
+  }
 
-    NSString *outfile = [_outputFileName stringValue];
-
-    if ([outfile isEqual:@""]) {
-        outfile = default_format;
-    }
-
-    for (int n = 0; n < self.convert_items_count; n++) {
-        DB_playItem_t *it = self.convert_items[n];
-        if (it) {
-            char outpath[PATH_MAX];
-
-            self.converter_plugin->get_output_path2(
-                it, self.convert_playlist, [[_outputFolder stringValue] UTF8String],
-                [outfile UTF8String], encoder_preset,
-                self.preserveFolderStructure.state == NSOnState, "",
-                self.writeToSourceFolder.state == NSOnState, outpath,
-                sizeof(outpath));
-
-            [convert_items_preview addObject:[NSString stringWithUTF8String:outpath]];
-        }
-    }
-
-    self.filenamePreviewController.content = convert_items_preview;
+  self.filenamePreviewController.content = convert_items_preview;
 }
 
 - (IBAction)writeToSourceFolderChanged:(NSButton *)sender {
-    [self updateFilenamesPreview];
-    int active = sender.state == NSOnState;
-    deadbeef->conf_set_int("converter.write_to_source_folder", active);
-    deadbeef->conf_save();
-    self.outputFolder.enabled = !active;
-    self.preserveFolderStructure.enabled = !active;
+  [self updateFilenamesPreview];
+  int active = sender.state == NSOnState;
+  deadbeef->conf_set_int("converter.write_to_source_folder", active);
+  deadbeef->conf_save();
+  self.outputFolder.enabled = !active;
+  self.preserveFolderStructure.enabled = !active;
 }
 
 - (IBAction)overwritePromptChanged:(id)sender {
-    deadbeef->conf_set_int("converter.overwrite_action",
-                           (int)[_fileExistsAction indexOfSelectedItem]);
-    deadbeef->conf_save();
+  deadbeef->conf_set_int("converter.overwrite_action",
+                         (int)[_fileExistsAction indexOfSelectedItem]);
+  deadbeef->conf_save();
 }
 
 - (IBAction)outputFormatChanged:(id)sender {
-    deadbeef->conf_set_int("converter.output_format",
-                           (int)[_outputFormat indexOfSelectedItem]);
-    deadbeef->conf_save();
+  deadbeef->conf_set_int("converter.output_format",
+                         (int)[_outputFormat indexOfSelectedItem]);
+  deadbeef->conf_save();
 }
 
 - (IBAction)progressCancelAction:(id)sender {
-    self.cancelled = YES;
+  self.cancelled = YES;
 }
 
 - (void)reset {
-    if (_convert_items) {
-        for (NSInteger n = 0; n < self.convert_items_count; n++) {
-            deadbeef->pl_item_unref(_convert_items[n]);
-        }
-        free(_convert_items);
-        self.convert_items = NULL;
+  if (_convert_items) {
+    for (NSInteger n = 0; n < self.convert_items_count; n++) {
+      deadbeef->pl_item_unref(_convert_items[n]);
     }
-    self.convert_items_count = 0;
+    free(_convert_items);
+    self.convert_items = NULL;
+  }
+  self.convert_items_count = 0;
 
-    if (_convert_playlist) {
-        deadbeef->plt_unref(_convert_playlist);
-        self.convert_playlist = NULL;
-    }
+  if (_convert_playlist) {
+    deadbeef->plt_unref(_convert_playlist);
+    self.convert_playlist = NULL;
+  }
 
-    self.outfolder = nil;
-    self.outfile = nil;
+  self.outfolder = nil;
+  self.outfile = nil;
 
-    if (self.encoder_preset) {
-        self.encoder_preset = NULL;
-    }
-    if (self.dsp_preset) {
-        self.dsp_preset = NULL;
-    }
+  if (self.encoder_preset) {
+    self.encoder_preset = NULL;
+  }
+  if (self.dsp_preset) {
+    self.dsp_preset = NULL;
+  }
 }
 
 - (void)runWithTracks:(ddb_playItem_t **)tracks
-    count:(NSInteger)count
-    playlist:(ddb_playlist_t *)plt {
-    if (self.converter_plugin) {
-        [self initializeWidgets];
-    }
-    [self showWindow:self];
-    [self.window makeKeyWindow];
+                count:(NSInteger)count
+             playlist:(ddb_playlist_t *)plt {
+  if (self.converter_plugin) {
+    [self initializeWidgets];
+  }
+  [self showWindow:self];
+  [self.window makeKeyWindow];
 
-    // reinit everything
-    [self reset];
+  // reinit everything
+  [self reset];
 
-    if (plt) {
-        deadbeef->plt_ref(plt);
-        self.convert_playlist = plt;
-    }
+  if (plt) {
+    deadbeef->plt_ref(plt);
+    self.convert_playlist = plt;
+  }
 
-    // store list of tracks
-    self.convert_items_count = count;
-    self.convert_items = calloc(sizeof(ddb_playItem_t *), count);
+  // store list of tracks
+  self.convert_items_count = count;
+  self.convert_items = calloc(sizeof(ddb_playItem_t *), count);
 
-    for (NSInteger i = 0; i < count; i++) {
-        ddb_playItem_t *it = tracks[i];
-        deadbeef->pl_item_ref(it);
-        self.convert_items[i] = it;
-    }
+  for (NSInteger i = 0; i < count; i++) {
+    ddb_playItem_t *it = tracks[i];
+    deadbeef->pl_item_ref(it);
+    self.convert_items[i] = it;
+  }
 
-    [self updateFilenamesPreview];
+  [self updateFilenamesPreview];
 }
 
 - (void)converterFinished:(id)instance withResult:(int)result {
-    if (g_converterControllers) {
-        [g_converterControllers removeObject:instance];
-    }
+  if (g_converterControllers) {
+    [g_converterControllers removeObject:instance];
+  }
 }
 
 - (IBAction)cancelAction:(id)sender {
-    [self.window close];
+  [self.window close];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    if (!self.working) {
-        [self converterFinished:self withResult:0];
-    }
+  if (!self.working) {
+    [self converterFinished:self withResult:0];
+  }
 }
 
 - (IBAction)openOutputFolderAction:(id)sender {
-    NSOpenPanel *panel = [NSOpenPanel openPanel];
+  NSOpenPanel *panel = [NSOpenPanel openPanel];
 
-    panel.canChooseDirectories = YES;
-    panel.canChooseFiles = NO;
-    panel.allowsMultipleSelection = NO;
-    panel.message = @"Choose output folder";
+  panel.canChooseDirectories = YES;
+  panel.canChooseFiles = NO;
+  panel.allowsMultipleSelection = NO;
+  panel.message = @"Choose output folder";
 
-    // Display the panel attached to the document's window.
-    [panel beginSheetModalForWindow:self.window
-          completionHandler:^(NSInteger result) {
-              if (result == NSModalResponseOK) {
-                  NSURL *url = [panel URL];
-            self.outputFolder.stringValue = [url path];
-        }
-    }];
+  // Display the panel attached to the document's window.
+  [panel beginSheetModalForWindow:self.window
+                completionHandler:^(NSInteger result) {
+                  if (result == NSModalResponseOK) {
+                    NSURL *url = [panel URL];
+                    self.outputFolder.stringValue = [url path];
+                  }
+                }];
 }
 
 - (void)setEncoder_preset:(ddb_encoder_preset_t *)encoder_preset {
-    if (_encoder_preset) {
-        self.converter_plugin->encoder_preset_free(_encoder_preset);
-    }
-    self.encoder_preset = encoder_preset;
+  if (_encoder_preset) {
+    self.converter_plugin->encoder_preset_free(_encoder_preset);
+  }
+  self.encoder_preset = encoder_preset;
 }
 
 - (void)setDsp_preset:(ddb_dsp_preset_t *)dsp_preset {
-    if (_dsp_preset) {
-        self.converter_plugin->dsp_preset_free(_dsp_preset);
-    }
-    self.dsp_preset = dsp_preset;
+  if (_dsp_preset) {
+    self.converter_plugin->dsp_preset_free(_dsp_preset);
+  }
+  self.dsp_preset = dsp_preset;
 }
 
 - (IBAction)okAction:(id)sender {
-    self.outfolder = [_outputFolder stringValue];
+  self.outfolder = [_outputFolder stringValue];
 
-    self.outfile = [_outputFileName stringValue];
+  self.outfile = [_outputFileName stringValue];
 
-    if ([self.outfile isEqual:@""]) {
-        self.outfile = default_format;
+  if ([self.outfile isEqual:@""]) {
+    self.outfile = default_format;
+  }
+
+  self.preserve_folder_structure =
+      self.preserveFolderStructure.state == NSOnState;
+
+  self.write_to_source_folder = self.writeToSourceFolder.state == NSOnState;
+
+  self.overwrite_action = (int)[_fileExistsAction indexOfSelectedItem];
+
+  int selected_format = (int)[_outputFormat indexOfSelectedItem];
+  switch (selected_format) {
+  case 1 ... 4:
+    self.output_bps = selected_format * 8;
+    self.output_is_float = 0;
+    break;
+  case 5:
+    self.output_bps = 32;
+    self.output_is_float = 1;
+    break;
+  default:
+    self.output_bps = -1; // same as input, or encoder default
+    break;
+  }
+
+  NSInteger selectedEncoderPreset =
+      self.encoderSelectViewController.indexOfSelectedItem;
+  if (selectedEncoderPreset != -1) {
+    scriptableItem_t *preset = scriptableItemChildAtIndex(
+        scriptableEncoderRoot(), (unsigned int)selectedEncoderPreset);
+    self.encoder_preset = self.converter_plugin->encoder_preset_alloc();
+    scriptableEncoderPresetToConverterEncoderPreset(preset,
+                                                    self.encoder_preset);
+  }
+
+  if (!self.encoder_preset) {
+    NSAlert *alert = [NSAlert new];
+    [alert addButtonWithTitle:@"OK"];
+    alert.messageText = @"Encoder is not selected.";
+    alert.informativeText = @"Please select one of the encoders from the list.";
+    alert.alertStyle = NSAlertStyleCritical;
+    [alert beginSheetModalForWindow:self.window
+                  completionHandler:^(NSModalResponse returnCode){
+                  }];
+
+    return;
+  }
+
+  NSInteger selectedDspPreset =
+      self.dspSelectViewController.indexOfSelectedItem;
+  if (selectedDspPreset != -1) {
+    scriptableItem_t *preset = scriptableItemChildAtIndex(
+        scriptableDspRoot(), (unsigned int)selectedDspPreset);
+    ddb_dsp_context_t *chain = scriptableDspConfigToDspChain(preset);
+    if (chain) {
+      self.dsp_preset = self.converter_plugin->dsp_preset_alloc();
+      self.dsp_preset->chain = chain;
     }
+  }
 
-    self.preserve_folder_structure =
-        self.preserveFolderStructure.state == NSOnState;
+  self.cancelled = NO;
+  self.window.isVisible = NO;
 
-    self.write_to_source_folder = self.writeToSourceFolder.state == NSOnState;
+  self.progressText.stringValue = @"";
+  self.progressOutText.stringValue = @"";
+  self.progressNumeric.stringValue = @"";
+  self.progressBar.minValue = 0;
+  self.progressBar.maxValue = self.convert_items_count - 1;
+  self.progressBar.doubleValue = 0;
+  self.progressPanel.isVisible = YES;
 
-    self.overwrite_action = (int)[_fileExistsAction indexOfSelectedItem];
+  self.working = YES;
 
-    int selected_format = (int)[_outputFormat indexOfSelectedItem];
-    switch (selected_format) {
-    case 1 ... 4:
-        self.output_bps = selected_format * 8;
-        self.output_is_float = 0;
-        break;
-    case 5:
-        self.output_bps = 32;
-        self.output_is_float = 1;
-        break;
-    default:
-        self.output_bps = -1; // same as input, or encoder default
-        break;
-    }
+  self.bypassSameFormatState = self.bypassSameFormat.state;
+  self.retagAfterCopyState = self.retagAfterCopy.state;
 
-    NSInteger selectedEncoderPreset =
-        self.encoderSelectViewController.indexOfSelectedItem;
-    if (selectedEncoderPreset != -1) {
-        scriptableItem_t *preset = scriptableItemChildAtIndex(
-                                       scriptableEncoderRoot(), (unsigned int)selectedEncoderPreset);
-        self.encoder_preset = self.converter_plugin->encoder_preset_alloc();
-        scriptableEncoderPresetToConverterEncoderPreset(preset,
-                self.encoder_preset);
-    }
-
-    if (!self.encoder_preset) {
-        NSAlert *alert = [NSAlert new];
-        [alert addButtonWithTitle:@"OK"];
-        alert.messageText = @"Encoder is not selected.";
-        alert.informativeText = @"Please select one of the encoders from the list.";
-        alert.alertStyle = NSAlertStyleCritical;
-        [alert beginSheetModalForWindow:self.window
-              completionHandler:^(NSModalResponse returnCode) {
-              }];
-
-        return;
-    }
-
-    NSInteger selectedDspPreset =
-        self.dspSelectViewController.indexOfSelectedItem;
-    if (selectedDspPreset != -1) {
-        scriptableItem_t *preset = scriptableItemChildAtIndex(
-                                       scriptableDspRoot(), (unsigned int)selectedDspPreset);
-        ddb_dsp_context_t *chain = scriptableDspConfigToDspChain(preset);
-        if (chain) {
-            self.dsp_preset = self.converter_plugin->dsp_preset_alloc();
-            self.dsp_preset->chain = chain;
-        }
-    }
-
-    self.cancelled = NO;
-    self.window.isVisible = NO;
-
-    self.progressText.stringValue = @"";
-    self.progressOutText.stringValue = @"";
-    self.progressNumeric.stringValue = @"";
-    self.progressBar.minValue = 0;
-    self.progressBar.maxValue = self.convert_items_count - 1;
-    self.progressBar.doubleValue = 0;
-    self.progressPanel.isVisible = YES;
-
-    self.working = YES;
-
-    self.bypassSameFormatState = self.bypassSameFormat.state;
-    self.retagAfterCopyState = self.retagAfterCopy.state;
-
-    dispatch_queue_t aQueue =
-        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(aQueue, ^ {
-        [self converterWorker];
-    });
+  dispatch_queue_t aQueue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+  dispatch_async(aQueue, ^{
+    [self converterWorker];
+  });
 }
 
 - (void)converterWorker {
-    deadbeef->background_job_increment();
+  deadbeef->background_job_increment();
 
-    char root[2000] = "";
-    size_t rootlen = 0;
-    // prepare for preserving folder struct
-    if (self.preserve_folder_structure && self.convert_items_count >= 1) {
-        // start with the 1st track path
-        deadbeef->pl_get_meta(_convert_items[0], ":URI", root, sizeof(root));
-        char *sep = strrchr(root, '/');
-        if (sep) {
-            *sep = 0;
-        }
-        // reduce
-        rootlen = strlen(root);
-        for (int n = 1; n < self.convert_items_count; n++) {
-            deadbeef->pl_lock();
-            const char *path = deadbeef->pl_find_meta(_convert_items[n], ":URI");
-            if (strncmp(path, root, rootlen)) {
-                // find where path splits
-                char *r = root;
-                while (*path && *r) {
-                    if (*path != *r) {
-                        // find new separator
-                        while (r > root && *r != '/') {
-                            r--;
-                        }
-                        *r = 0;
-                        rootlen = r - root;
-                        break;
-                    }
-                    path++;
-                    r++;
-                }
-            }
-            deadbeef->pl_unlock();
-        }
+  char root[2000] = "";
+  size_t rootlen = 0;
+  // prepare for preserving folder struct
+  if (self.preserve_folder_structure && self.convert_items_count >= 1) {
+    // start with the 1st track path
+    deadbeef->pl_get_meta(_convert_items[0], ":URI", root, sizeof(root));
+    char *sep = strrchr(root, '/');
+    if (sep) {
+      *sep = 0;
     }
-
-    ddb_converter_settings_t settings = {
-        .output_bps = self.output_bps,
-        .output_is_float = self.output_is_float,
-        .encoder_preset = self.encoder_preset,
-        .dsp_preset = self.dsp_preset,
-        .bypass_conversion_on_same_format =
-        (self.bypassSameFormatState == NSOnState),
-        .rewrite_tags_after_copy = (self.retagAfterCopyState == NSOnState),
-    };
-
-    for (int n = 0; n < self.convert_items_count; n++) {
-        deadbeef->pl_lock();
-        NSString *text = [NSString
-                          stringWithUTF8String:deadbeef->pl_find_meta(_convert_items[n], ":URI")];
-        deadbeef->pl_unlock();
-        char outpath[PATH_MAX];
-        self.converter_plugin->get_output_path2(
-            _convert_items[n], self.convert_playlist, [self.outfolder UTF8String],
-            [self.outfile UTF8String], self.encoder_preset,
-            self.preserve_folder_structure, root, self.write_to_source_folder,
-            outpath, sizeof(outpath));
-        NSString *nsoutpath = [NSString stringWithUTF8String:outpath];
-
-        dispatch_async(dispatch_get_main_queue(), ^ {
-            self.progressBar.doubleValue = n;
-            self.progressText.stringValue = text;
-            self.progressOutText.stringValue = nsoutpath;
-            self.progressNumeric.stringValue = [NSString
-                                                stringWithFormat:@"%d/%d", n + 1, (int)self.convert_items_count];
-        });
-
-        int skip = 0;
-        char *real_out = realpath(outpath, NULL);
-        if (real_out) {
-            skip = 1;
-            deadbeef->pl_lock();
-            char *real_in =
-                realpath(deadbeef->pl_find_meta(_convert_items[n], ":URI"), NULL);
-            deadbeef->pl_unlock();
-            const int paths_match = real_in && !strcmp(real_in, real_out);
-            free(real_in);
-            free(real_out);
-            if (paths_match) {
-                fprintf(stderr, "converter: destination file is the same as source "
-                        "file, skipping\n");
-            } else if (self.overwrite_action == 2) {
-                unlink(outpath);
-                skip = 0;
-            } else {
-                NSInteger result =
-                    [self overwritePrompt:[NSString stringWithUTF8String:outpath]];
-                if (result == NSAlertSecondButtonReturn) {
-                    unlink(outpath);
-                    skip = 0;
-                } else if (result == NSAlertThirdButtonReturn) {
-                    self.cancelled = YES;
-                }
+    // reduce
+    rootlen = strlen(root);
+    for (int n = 1; n < self.convert_items_count; n++) {
+      deadbeef->pl_lock();
+      const char *path = deadbeef->pl_find_meta(_convert_items[n], ":URI");
+      if (strncmp(path, root, rootlen)) {
+        // find where path splits
+        char *r = root;
+        while (*path && *r) {
+          if (*path != *r) {
+            // find new separator
+            while (r > root && *r != '/') {
+              r--;
             }
-        }
-
-        if (!skip) {
-            self.converter_plugin->convert2(&settings, self.convert_items[n], outpath,
-                                            &_cancelled);
-        }
-        if (self.cancelled) {
+            *r = 0;
+            rootlen = r - root;
             break;
+          }
+          path++;
+          r++;
         }
+      }
+      deadbeef->pl_unlock();
     }
-    dispatch_async(dispatch_get_main_queue(), ^ {
-        [self.progressPanel close];
-        [self converterFinished:self withResult:1];
+  }
+
+  ddb_converter_settings_t settings = {
+      .output_bps = self.output_bps,
+      .output_is_float = self.output_is_float,
+      .encoder_preset = self.encoder_preset,
+      .dsp_preset = self.dsp_preset,
+      .bypass_conversion_on_same_format =
+          (self.bypassSameFormatState == NSOnState),
+      .rewrite_tags_after_copy = (self.retagAfterCopyState == NSOnState),
+  };
+
+  for (int n = 0; n < self.convert_items_count; n++) {
+    deadbeef->pl_lock();
+    NSString *text = [NSString
+        stringWithUTF8String:deadbeef->pl_find_meta(_convert_items[n], ":URI")];
+    deadbeef->pl_unlock();
+    char outpath[PATH_MAX];
+    self.converter_plugin->get_output_path2(
+        _convert_items[n], self.convert_playlist, [self.outfolder UTF8String],
+        [self.outfile UTF8String], self.encoder_preset,
+        self.preserve_folder_structure, root, self.write_to_source_folder,
+        outpath, sizeof(outpath));
+    NSString *nsoutpath = [NSString stringWithUTF8String:outpath];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      self.progressBar.doubleValue = n;
+      self.progressText.stringValue = text;
+      self.progressOutText.stringValue = nsoutpath;
+      self.progressNumeric.stringValue = [NSString
+          stringWithFormat:@"%d/%d", n + 1, (int)self.convert_items_count];
     });
 
-    deadbeef->background_job_decrement();
+    int skip = 0;
+    char *real_out = realpath(outpath, NULL);
+    if (real_out) {
+      skip = 1;
+      deadbeef->pl_lock();
+      char *real_in =
+          realpath(deadbeef->pl_find_meta(_convert_items[n], ":URI"), NULL);
+      deadbeef->pl_unlock();
+      const int paths_match = real_in && !strcmp(real_in, real_out);
+      free(real_in);
+      free(real_out);
+      if (paths_match) {
+        fprintf(stderr, "converter: destination file is the same as source "
+                        "file, skipping\n");
+      } else if (self.overwrite_action == 2) {
+        unlink(outpath);
+        skip = 0;
+      } else {
+        NSInteger result =
+            [self overwritePrompt:[NSString stringWithUTF8String:outpath]];
+        if (result == NSAlertSecondButtonReturn) {
+          unlink(outpath);
+          skip = 0;
+        } else if (result == NSAlertThirdButtonReturn) {
+          self.cancelled = YES;
+        }
+      }
+    }
 
-    self.working = NO;
+    if (!skip) {
+      self.converter_plugin->convert2(&settings, self.convert_items[n], outpath,
+                                      &_cancelled);
+    }
+    if (self.cancelled) {
+      break;
+    }
+  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.progressPanel close];
+    [self converterFinished:self withResult:1];
+  });
+
+  deadbeef->background_job_decrement();
+
+  self.working = NO;
 }
 
 - (NSInteger)overwritePrompt:(NSString *)path {
-    self.overwritePromptCondition = [NSCondition new];
-    dispatch_sync(dispatch_get_main_queue(), ^ {
-        NSAlert *alert = [NSAlert new];
-        [alert addButtonWithTitle:@"No"];
-        [alert addButtonWithTitle:@"Yes"];
-        [alert addButtonWithTitle:@"Cancel"];
-        alert.messageText = @"The file already exists. Overwrite?";
-        alert.informativeText = path;
-        alert.alertStyle = NSAlertStyleCritical;
+  self.overwritePromptCondition = [NSCondition new];
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    NSAlert *alert = [NSAlert new];
+    [alert addButtonWithTitle:@"No"];
+    [alert addButtonWithTitle:@"Yes"];
+    [alert addButtonWithTitle:@"Cancel"];
+    alert.messageText = @"The file already exists. Overwrite?";
+    alert.informativeText = path;
+    alert.alertStyle = NSAlertStyleCritical;
 
-        [alert beginSheetModalForWindow:_progressPanel
-              completionHandler:^(NSModalResponse returnCode) {
-                  [self.overwritePromptCondition lock];
-                  self.overwritePromptResult = returnCode;
-            [self.overwritePromptCondition signal];
-            [self.overwritePromptCondition unlock];
-        }];
-    });
+    [alert beginSheetModalForWindow:_progressPanel
+                  completionHandler:^(NSModalResponse returnCode) {
+                    [self.overwritePromptCondition lock];
+                    self.overwritePromptResult = returnCode;
+                    [self.overwritePromptCondition signal];
+                    [self.overwritePromptCondition unlock];
+                  }];
+  });
 
-    [self.overwritePromptCondition lock];
-    [self.overwritePromptCondition wait];
-    [self.overwritePromptCondition unlock];
-    self.overwritePromptCondition = nil;
-    return self.overwritePromptResult;
+  [self.overwritePromptCondition lock];
+  [self.overwritePromptCondition wait];
+  [self.overwritePromptCondition unlock];
+  self.overwritePromptCondition = nil;
+  return self.overwritePromptResult;
 }
 
 + (void)runConverterWithTracks:(ddb_playItem_t **)tracks
-    count:(NSInteger)count
-    playlist:(ddb_playlist_t *)plt {
-    ConverterWindowController *conv =
-        [[ConverterWindowController alloc] initWithWindowNibName:@"Converter"];
+                         count:(NSInteger)count
+                      playlist:(ddb_playlist_t *)plt {
+  ConverterWindowController *conv =
+      [[ConverterWindowController alloc] initWithWindowNibName:@"Converter"];
 
-    if (!g_converterControllers) {
-        g_converterControllers = [NSMutableArray new];
-    }
-    [g_converterControllers addObject:conv];
-    [conv runWithTracks:tracks count:count playlist:plt];
+  if (!g_converterControllers) {
+    g_converterControllers = [NSMutableArray new];
+  }
+  [g_converterControllers addObject:conv];
+  [conv runWithTracks:tracks count:count playlist:plt];
 }
 
 + (void)cleanup {
-    g_converterControllers = nil;
+  g_converterControllers = nil;
 }
 
 #pragma mark - ScriptableSelectDelegate
 
 - (void)scriptableSelectItemSelected:(nonnull scriptableItem_t *)item {
-    if (item->parent == scriptableEncoderRoot()) {
-        const char *name = scriptableItemPropertyValueForKey(item, "name");
-        deadbeef->conf_set_str("converter.encoder_preset_name", name);
-        [self updateFilenamesPreview];
-    } else if (item->parent == scriptableDspRoot()) {
-        const char *name = scriptableItemPropertyValueForKey(item, "name");
-        deadbeef->conf_set_str("converter.dsp_preset_name", name);
-    }
+  if (item->parent == scriptableEncoderRoot()) {
+    const char *name = scriptableItemPropertyValueForKey(item, "name");
+    deadbeef->conf_set_str("converter.encoder_preset_name", name);
+    [self updateFilenamesPreview];
+  } else if (item->parent == scriptableDspRoot()) {
+    const char *name = scriptableItemPropertyValueForKey(item, "name");
+    deadbeef->conf_set_str("converter.dsp_preset_name", name);
+  }
 }
 
 #pragma mark - ScriptableItemDelegate
 
 - (void)scriptableItemChanged:(scriptableItem_t *_Nonnull)scriptable
-    change:(ScriptableItemChange)change {
-    if (scriptable == scriptableEncoderRoot()) {
-        NSInteger selectedEncPresetIndex =
-            self.encoderSelectViewController.indexOfSelectedItem;
-        scriptableItem_t *selectedEncPreset = scriptableItemChildAtIndex(
-                scriptableEncoderRoot(), (unsigned int)selectedEncPresetIndex);
-        [self scriptableSelectItemSelected:selectedEncPreset];
-        [self.encoderSelectViewController reloadData];
-    } else if (scriptable == scriptableDspRoot()) {
-        NSInteger selectedDspPresetIndex =
-            self.dspSelectViewController.indexOfSelectedItem;
-        scriptableItem_t *selectedDspPreset = scriptableItemChildAtIndex(
-                scriptableDspRoot(), (unsigned int)selectedDspPresetIndex);
-        [self scriptableSelectItemSelected:selectedDspPreset];
-        [self.dspSelectViewController reloadData];
-    }
+                       change:(ScriptableItemChange)change {
+  if (scriptable == scriptableEncoderRoot()) {
+    NSInteger selectedEncPresetIndex =
+        self.encoderSelectViewController.indexOfSelectedItem;
+    scriptableItem_t *selectedEncPreset = scriptableItemChildAtIndex(
+        scriptableEncoderRoot(), (unsigned int)selectedEncPresetIndex);
+    [self scriptableSelectItemSelected:selectedEncPreset];
+    [self.encoderSelectViewController reloadData];
+  } else if (scriptable == scriptableDspRoot()) {
+    NSInteger selectedDspPresetIndex =
+        self.dspSelectViewController.indexOfSelectedItem;
+    scriptableItem_t *selectedDspPreset = scriptableItemChildAtIndex(
+        scriptableDspRoot(), (unsigned int)selectedDspPresetIndex);
+    [self scriptableSelectItemSelected:selectedDspPreset];
+    [self.dspSelectViewController reloadData];
+  }
 }
 
 @end

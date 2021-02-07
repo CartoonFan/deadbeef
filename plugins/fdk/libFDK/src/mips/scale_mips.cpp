@@ -119,14 +119,14 @@ SCALE_INLINE
 INT getScalefactor(const FIXP_DBL *vector, /*!< Pointer to input vector */
                    INT len)                /*!< Length of input vector */
 {
-    INT i;
-    FIXP_DBL maxVal = FL2FX_DBL(0.0f);
+  INT i;
+  FIXP_DBL maxVal = FL2FX_DBL(0.0f);
 
-    for (i = len; i != 0; i--) {
-        maxVal |= __builtin_mips_absq_s_w(*vector++);
-    }
+  for (i = len; i != 0; i--) {
+    maxVal |= __builtin_mips_absq_s_w(*vector++);
+  }
 
-    return fixMax((INT)0, (CntLeadingZeros(maxVal) - 1));
+  return fixMax((INT)0, (CntLeadingZeros(maxVal) - 1));
 }
 #endif
 

@@ -119,59 +119,59 @@ typedef struct s_uni_drc_interface *HANDLE_UNI_DRC_INTERFACE;
 typedef struct s_selection_process_output *HANDLE_SEL_PROC_OUTPUT;
 
 typedef enum {
-    DRC_DEC_SELECTION = 0x1, /* DRC decoder instance for DRC set selection only */
-    DRC_DEC_GAIN = 0x2,      /* DRC decoder instance for applying DRC only */
-    DRC_DEC_ALL = 0x3        /* DRC decoder with full functionality */
+  DRC_DEC_SELECTION = 0x1, /* DRC decoder instance for DRC set selection only */
+  DRC_DEC_GAIN = 0x2,      /* DRC decoder instance for applying DRC only */
+  DRC_DEC_ALL = 0x3        /* DRC decoder with full functionality */
 } DRC_DEC_FUNCTIONAL_RANGE;
 
 typedef enum {
-    /* get and set userparams */
-    DRC_DEC_BOOST,
-    DRC_DEC_COMPRESS,
-    /* set only userparams */
-    DRC_DEC_LOUDNESS_NORMALIZATION_ON,
-    DRC_DEC_TARGET_LOUDNESS, /**< target loudness in dB, with exponent e = 7 */
-    DRC_DEC_EFFECT_TYPE,
-    DRC_DEC_EFFECT_TYPE_FALLBACK_CODE,
-    DRC_DEC_LOUDNESS_MEASUREMENT_METHOD,
-    /* set only system (not user) parameters */
-    DRC_DEC_DOWNMIX_ID,
-    DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED, /**< number of output channels
-                                           notified to FDK_drcDecLib for
-                                           choosing an appropriate
-                                           downmixInstruction */
-    DRC_DEC_BASE_CHANNEL_COUNT,
-    /* get only system parameters */
-    DRC_DEC_IS_MULTIBAND_DRC_1,
-    DRC_DEC_IS_MULTIBAND_DRC_2,
-    DRC_DEC_IS_ACTIVE, /**< MPEG-D DRC payload is present and at least one of
-                      Dynamic Range Control (DRC) or Loudness Normalization
-                      (LN) is activated */
-    DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED /**< number of output channels if
-                                         appropriate downmixInstruction exists
-                                       */
+  /* get and set userparams */
+  DRC_DEC_BOOST,
+  DRC_DEC_COMPRESS,
+  /* set only userparams */
+  DRC_DEC_LOUDNESS_NORMALIZATION_ON,
+  DRC_DEC_TARGET_LOUDNESS, /**< target loudness in dB, with exponent e = 7 */
+  DRC_DEC_EFFECT_TYPE,
+  DRC_DEC_EFFECT_TYPE_FALLBACK_CODE,
+  DRC_DEC_LOUDNESS_MEASUREMENT_METHOD,
+  /* set only system (not user) parameters */
+  DRC_DEC_DOWNMIX_ID,
+  DRC_DEC_TARGET_CHANNEL_COUNT_REQUESTED, /**< number of output channels
+                                         notified to FDK_drcDecLib for
+                                         choosing an appropriate
+                                         downmixInstruction */
+  DRC_DEC_BASE_CHANNEL_COUNT,
+  /* get only system parameters */
+  DRC_DEC_IS_MULTIBAND_DRC_1,
+  DRC_DEC_IS_MULTIBAND_DRC_2,
+  DRC_DEC_IS_ACTIVE, /**< MPEG-D DRC payload is present and at least one of
+                    Dynamic Range Control (DRC) or Loudness Normalization
+                    (LN) is activated */
+  DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED /**< number of output channels if
+                                       appropriate downmixInstruction exists
+                                     */
 } DRC_DEC_USERPARAM;
 
 typedef enum {
-    DRC_DEC_OK = 0,
+  DRC_DEC_OK = 0,
 
-    DRC_DEC_NOT_OK = -10000,
-    DRC_DEC_OUT_OF_MEMORY,
-    DRC_DEC_NOT_OPENED,
-    DRC_DEC_NOT_READY,
-    DRC_DEC_PARAM_OUT_OF_RANGE,
-    DRC_DEC_INVALID_PARAM,
-    DRC_DEC_UNSUPPORTED_FUNCTION
+  DRC_DEC_NOT_OK = -10000,
+  DRC_DEC_OUT_OF_MEMORY,
+  DRC_DEC_NOT_OPENED,
+  DRC_DEC_NOT_READY,
+  DRC_DEC_PARAM_OUT_OF_RANGE,
+  DRC_DEC_INVALID_PARAM,
+  DRC_DEC_UNSUPPORTED_FUNCTION
 } DRC_DEC_ERROR;
 
 typedef enum {
-    DRC_DEC_TEST_TIME_DOMAIN = -100,
-    DRC_DEC_TEST_QMF_DOMAIN,
-    DRC_DEC_TEST_STFT_DOMAIN,
-    DRC_DEC_CODEC_MODE_UNDEFINED = -1,
-    DRC_DEC_MPEG_4_AAC,
-    DRC_DEC_MPEG_D_USAC,
-    DRC_DEC_MPEG_H_3DA
+  DRC_DEC_TEST_TIME_DOMAIN = -100,
+  DRC_DEC_TEST_QMF_DOMAIN,
+  DRC_DEC_TEST_STFT_DOMAIN,
+  DRC_DEC_CODEC_MODE_UNDEFINED = -1,
+  DRC_DEC_MPEG_4_AAC,
+  DRC_DEC_MPEG_D_USAC,
+  DRC_DEC_MPEG_H_3DA
 } DRC_DEC_CODEC_MODE;
 
 /* Apply only DRC sets dedicated to processing location.
@@ -179,11 +179,11 @@ typedef enum {
    DRC2: before or after downmix (AMD1: only after downmix)
    DRC3: after downmix */
 typedef enum {
-    DRC_DEC_DRC1,
-    DRC_DEC_DRC1_DRC2,
-    DRC_DEC_DRC2,
-    DRC_DEC_DRC3,
-    DRC_DEC_DRC2_DRC3
+  DRC_DEC_DRC1,
+  DRC_DEC_DRC1_DRC2,
+  DRC_DEC_DRC2,
+  DRC_DEC_DRC3,
+  DRC_DEC_DRC2_DRC3
 } DRC_DEC_LOCATION;
 
 DRC_DEC_ERROR

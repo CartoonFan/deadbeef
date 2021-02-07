@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 void adtsRead_CrcInit(
     HANDLE_ADTS pAdts) /*!< pointer to adts crc info stucture */
 {
-    FDKcrcInit(&pAdts->crcInfo, 0x8005, 0xFFFF, 16);
+  FDKcrcInit(&pAdts->crcInfo, 0x8005, 0xFFFF, 16);
 }
 
 int adtsRead_CrcStartReg(
@@ -115,11 +115,11 @@ int adtsRead_CrcStartReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int mBits                 /*!< number of bits in crc region */
 ) {
-    if (pAdts->bs.protection_absent) {
-        return 0;
-    }
+  if (pAdts->bs.protection_absent) {
+    return 0;
+  }
 
-    return (FDKcrcStartReg(&pAdts->crcInfo, hBs, mBits));
+  return (FDKcrcStartReg(&pAdts->crcInfo, hBs, mBits));
 }
 
 void adtsRead_CrcEndReg(
@@ -127,24 +127,24 @@ void adtsRead_CrcEndReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int reg                   /*!< crc region */
 ) {
-    if (pAdts->bs.protection_absent == 0) {
-        FDKcrcEndReg(&pAdts->crcInfo, hBs, reg);
-    }
+  if (pAdts->bs.protection_absent == 0) {
+    FDKcrcEndReg(&pAdts->crcInfo, hBs, reg);
+  }
 }
 
 TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-    USHORT crc;
+  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  USHORT crc;
 
-    if (pAdts->bs.protection_absent)
-        return TRANSPORTDEC_OK;
+  if (pAdts->bs.protection_absent)
+    return TRANSPORTDEC_OK;
 
-    crc = FDKcrcGetCRC(&pAdts->crcInfo);
-    if (crc != pAdts->crcReadValue) {
-        return (TRANSPORTDEC_CRC_ERROR);
-    }
+  crc = FDKcrcGetCRC(&pAdts->crcInfo);
+  if (crc != pAdts->crcReadValue) {
+    return (TRANSPORTDEC_CRC_ERROR);
+  }
 
-    return (ErrorStatus);
+  return (ErrorStatus);
 }
 
 #define Adts_Length_SyncWord 12
@@ -165,229 +165,229 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
 #define Adts_Length_CrcCheck 16
 
 TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
-        CSAudioSpecificConfig *pAsc,
-        HANDLE_FDK_BITSTREAM hBs,
-        const INT ignoreBufferFullness) {
-    INT crcReg;
+                                         CSAudioSpecificConfig *pAsc,
+                                         HANDLE_FDK_BITSTREAM hBs,
+                                         const INT ignoreBufferFullness) {
+  INT crcReg;
 
-    INT valBits;
-    INT cmp_buffer_fullness;
-    int i, adtsHeaderLength;
+  INT valBits;
+  INT cmp_buffer_fullness;
+  int i, adtsHeaderLength;
 
-    STRUCT_ADTS_BS bs;
+  STRUCT_ADTS_BS bs;
 
-    CProgramConfig oldPce;
-    /* Store the old PCE temporarily. Maybe we'll need it later if we
-       have channelConfig=0 and no PCE in this frame. */
-    FDKmemcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig));
+  CProgramConfig oldPce;
+  /* Store the old PCE temporarily. Maybe we'll need it later if we
+     have channelConfig=0 and no PCE in this frame. */
+  FDKmemcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig));
 
-    valBits = FDKgetValidBits(hBs) + ADTS_SYNCLENGTH;
+  valBits = FDKgetValidBits(hBs) + ADTS_SYNCLENGTH;
 
-    if (valBits < ADTS_HEADERLENGTH) {
-        return TRANSPORTDEC_NOT_ENOUGH_BITS;
+  if (valBits < ADTS_HEADERLENGTH) {
+    return TRANSPORTDEC_NOT_ENOUGH_BITS;
+  }
+
+  /* adts_fixed_header */
+  bs.mpeg_id = FDKreadBits(hBs, Adts_Length_Id);
+  bs.layer = FDKreadBits(hBs, Adts_Length_Layer);
+  bs.protection_absent = FDKreadBits(hBs, Adts_Length_ProtectionAbsent);
+  bs.profile = FDKreadBits(hBs, Adts_Length_Profile);
+  bs.sample_freq_index = FDKreadBits(hBs, Adts_Length_SamplingFrequencyIndex);
+  bs.private_bit = FDKreadBits(hBs, Adts_Length_PrivateBit);
+  bs.channel_config = FDKreadBits(hBs, Adts_Length_ChannelConfiguration);
+  bs.original = FDKreadBits(hBs, Adts_Length_OriginalCopy);
+  bs.home = FDKreadBits(hBs, Adts_Length_Home);
+
+  /* adts_variable_header */
+  bs.copyright_id = FDKreadBits(hBs, Adts_Length_CopyrightIdentificationBit);
+  bs.copyright_start =
+      FDKreadBits(hBs, Adts_Length_CopyrightIdentificationStart);
+  bs.frame_length = FDKreadBits(hBs, Adts_Length_FrameLength);
+  bs.adts_fullness = FDKreadBits(hBs, Adts_Length_BufferFullness);
+  bs.num_raw_blocks =
+      FDKreadBits(hBs, Adts_Length_NumberOfRawDataBlocksInFrame);
+  bs.num_pce_bits = 0;
+
+  adtsHeaderLength = ADTS_HEADERLENGTH;
+
+  if (valBits < bs.frame_length * 8) {
+    goto bail;
+  }
+
+  if (!bs.protection_absent) {
+    FDKcrcReset(&pAdts->crcInfo);
+    FDKpushBack(hBs, 56); /* complete fixed and variable header! */
+    crcReg = FDKcrcStartReg(&pAdts->crcInfo, hBs, 0);
+    FDKpushFor(hBs, 56);
+  }
+
+  if (!bs.protection_absent && bs.num_raw_blocks > 0) {
+    if ((INT)FDKgetValidBits(hBs) < bs.num_raw_blocks * 16) {
+      goto bail;
+    }
+    for (i = 0; i < bs.num_raw_blocks; i++) {
+      pAdts->rawDataBlockDist[i] = (USHORT)FDKreadBits(hBs, 16);
+      adtsHeaderLength += 16;
+    }
+    /* Change raw data blocks to delta values */
+    pAdts->rawDataBlockDist[bs.num_raw_blocks] =
+        bs.frame_length - 7 - bs.num_raw_blocks * 2 - 2;
+    for (i = bs.num_raw_blocks; i > 0; i--) {
+      pAdts->rawDataBlockDist[i] -= pAdts->rawDataBlockDist[i - 1];
+    }
+  }
+
+  /* adts_error_check */
+  if (!bs.protection_absent) {
+    USHORT crc_check;
+
+    FDKcrcEndReg(&pAdts->crcInfo, hBs, crcReg);
+
+    if ((INT)FDKgetValidBits(hBs) < Adts_Length_CrcCheck) {
+      goto bail;
     }
 
-    /* adts_fixed_header */
-    bs.mpeg_id = FDKreadBits(hBs, Adts_Length_Id);
-    bs.layer = FDKreadBits(hBs, Adts_Length_Layer);
-    bs.protection_absent = FDKreadBits(hBs, Adts_Length_ProtectionAbsent);
-    bs.profile = FDKreadBits(hBs, Adts_Length_Profile);
-    bs.sample_freq_index = FDKreadBits(hBs, Adts_Length_SamplingFrequencyIndex);
-    bs.private_bit = FDKreadBits(hBs, Adts_Length_PrivateBit);
-    bs.channel_config = FDKreadBits(hBs, Adts_Length_ChannelConfiguration);
-    bs.original = FDKreadBits(hBs, Adts_Length_OriginalCopy);
-    bs.home = FDKreadBits(hBs, Adts_Length_Home);
+    crc_check = FDKreadBits(hBs, Adts_Length_CrcCheck);
+    adtsHeaderLength += Adts_Length_CrcCheck;
 
-    /* adts_variable_header */
-    bs.copyright_id = FDKreadBits(hBs, Adts_Length_CopyrightIdentificationBit);
-    bs.copyright_start =
-        FDKreadBits(hBs, Adts_Length_CopyrightIdentificationStart);
-    bs.frame_length = FDKreadBits(hBs, Adts_Length_FrameLength);
-    bs.adts_fullness = FDKreadBits(hBs, Adts_Length_BufferFullness);
-    bs.num_raw_blocks =
-        FDKreadBits(hBs, Adts_Length_NumberOfRawDataBlocksInFrame);
-    bs.num_pce_bits = 0;
-
-    adtsHeaderLength = ADTS_HEADERLENGTH;
-
-    if (valBits < bs.frame_length * 8) {
-        goto bail;
+    pAdts->crcReadValue = crc_check;
+    /* Check header CRC in case of multiple raw data blocks */
+    if (bs.num_raw_blocks > 0) {
+      if (pAdts->crcReadValue != FDKcrcGetCRC(&pAdts->crcInfo)) {
+        return TRANSPORTDEC_CRC_ERROR;
+      }
+      /* Reset CRC for the upcoming raw_data_block() */
+      FDKcrcReset(&pAdts->crcInfo);
     }
+  }
 
-    if (!bs.protection_absent) {
-        FDKcrcReset(&pAdts->crcInfo);
-        FDKpushBack(hBs, 56); /* complete fixed and variable header! */
-        crcReg = FDKcrcStartReg(&pAdts->crcInfo, hBs, 0);
-        FDKpushFor(hBs, 56);
-    }
+  /* check if valid header */
+  if ((bs.layer != 0) ||           // we only support MPEG ADTS
+      (bs.sample_freq_index >= 13) // we only support 96kHz - 7350kHz
+  ) {
+    FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
+    return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+  }
 
-    if (!bs.protection_absent && bs.num_raw_blocks > 0) {
-        if ((INT)FDKgetValidBits(hBs) < bs.num_raw_blocks * 16) {
-            goto bail;
-        }
-        for (i = 0; i < bs.num_raw_blocks; i++) {
-            pAdts->rawDataBlockDist[i] = (USHORT)FDKreadBits(hBs, 16);
-            adtsHeaderLength += 16;
-        }
-        /* Change raw data blocks to delta values */
-        pAdts->rawDataBlockDist[bs.num_raw_blocks] =
-            bs.frame_length - 7 - bs.num_raw_blocks * 2 - 2;
-        for (i = bs.num_raw_blocks; i > 0; i--) {
-            pAdts->rawDataBlockDist[i] -= pAdts->rawDataBlockDist[i - 1];
-        }
-    }
+  /* special treatment of id-bit */
+  if ((bs.mpeg_id == 0) && (pAdts->decoderCanDoMpeg4 == 0)) {
+    /* MPEG-2 decoder cannot play MPEG-4 bitstreams */
 
-    /* adts_error_check */
-    if (!bs.protection_absent) {
-        USHORT crc_check;
+    FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
+    return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+  }
 
-        FDKcrcEndReg(&pAdts->crcInfo, hBs, crcReg);
+  if (!ignoreBufferFullness) {
+    cmp_buffer_fullness =
+        bs.frame_length * 8 +
+        bs.adts_fullness * 32 * getNumberOfEffectiveChannels(bs.channel_config);
 
-        if ((INT)FDKgetValidBits(hBs) < Adts_Length_CrcCheck) {
-            goto bail;
-        }
+    /* Evaluate buffer fullness */
+    if (bs.adts_fullness != 0x7FF) {
+      if (pAdts->BufferFullnesStartFlag) {
+        if (valBits < cmp_buffer_fullness) {
+          /* Condition for start of decoding is not fulfilled */
 
-        crc_check = FDKreadBits(hBs, Adts_Length_CrcCheck);
-        adtsHeaderLength += Adts_Length_CrcCheck;
+          /* The current frame will not be decoded */
+          FDKpushBack(hBs, adtsHeaderLength);
 
-        pAdts->crcReadValue = crc_check;
-        /* Check header CRC in case of multiple raw data blocks */
-        if (bs.num_raw_blocks > 0) {
-            if (pAdts->crcReadValue != FDKcrcGetCRC(&pAdts->crcInfo)) {
-                return TRANSPORTDEC_CRC_ERROR;
-            }
-            /* Reset CRC for the upcoming raw_data_block() */
-            FDKcrcReset(&pAdts->crcInfo);
-        }
-    }
-
-    /* check if valid header */
-    if ((bs.layer != 0) ||           // we only support MPEG ADTS
-            (bs.sample_freq_index >= 13) // we only support 96kHz - 7350kHz
-       ) {
-        FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
-        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
-    }
-
-    /* special treatment of id-bit */
-    if ((bs.mpeg_id == 0) && (pAdts->decoderCanDoMpeg4 == 0)) {
-        /* MPEG-2 decoder cannot play MPEG-4 bitstreams */
-
-        FDKpushFor(hBs, bs.frame_length * 8); // try again one frame later
-        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
-    }
-
-    if (!ignoreBufferFullness) {
-        cmp_buffer_fullness =
-            bs.frame_length * 8 +
-            bs.adts_fullness * 32 * getNumberOfEffectiveChannels(bs.channel_config);
-
-        /* Evaluate buffer fullness */
-        if (bs.adts_fullness != 0x7FF) {
-            if (pAdts->BufferFullnesStartFlag) {
-                if (valBits < cmp_buffer_fullness) {
-                    /* Condition for start of decoding is not fulfilled */
-
-                    /* The current frame will not be decoded */
-                    FDKpushBack(hBs, adtsHeaderLength);
-
-                    if ((cmp_buffer_fullness + adtsHeaderLength) >
-                            (((8192 * 4) << 3) - 7)) {
-                        return TRANSPORTDEC_SYNC_ERROR;
-                    } else {
-                        return TRANSPORTDEC_NOT_ENOUGH_BITS;
-                    }
-                } else {
-                    pAdts->BufferFullnesStartFlag = 0;
-                }
-            }
-        }
-    }
-
-    /* Get info from ADTS header */
-    AudioSpecificConfig_Init(pAsc);
-    pAsc->m_aot = (AUDIO_OBJECT_TYPE)(bs.profile + 1);
-    pAsc->m_samplingFrequencyIndex = bs.sample_freq_index;
-    pAsc->m_samplingFrequency = SamplingRateTable[bs.sample_freq_index];
-    pAsc->m_channelConfiguration = bs.channel_config;
-    pAsc->m_samplesPerFrame = 1024;
-
-    if (bs.channel_config == 0) {
-        int pceBits = 0;
-        UINT alignAnchor = FDKgetValidBits(hBs);
-
-        if (FDKreadBits(hBs, 3) == ID_PCE) {
-            /* Got luck! Parse the PCE */
-            crcReg = adtsRead_CrcStartReg(pAdts, hBs, 0);
-
-            CProgramConfig_Read(&pAsc->m_progrConfigElement, hBs, alignAnchor);
-
-            adtsRead_CrcEndReg(pAdts, hBs, crcReg);
-            pceBits = alignAnchor - FDKgetValidBits(hBs);
-            /* store the number of PCE bits */
-            bs.num_pce_bits = pceBits;
+          if ((cmp_buffer_fullness + adtsHeaderLength) >
+              (((8192 * 4) << 3) - 7)) {
+            return TRANSPORTDEC_SYNC_ERROR;
+          } else {
+            return TRANSPORTDEC_NOT_ENOUGH_BITS;
+          }
         } else {
-            /* No PCE in this frame! Push back the ID tag bits. */
-            FDKpushBack(hBs, 3);
-
-            /* Encoders do not have to write a PCE in each frame.
-               So if we already have a valid PCE we have to use it. */
-            if (oldPce.isValid &&
-                    (bs.sample_freq_index ==
-                     pAdts->bs.sample_freq_index) /* we could compare the complete fixed
-                                 header (bytes) here! */
-                    && (bs.channel_config == pAdts->bs.channel_config) /* == 0 */
-                    &&
-                    (bs.mpeg_id ==
-                     pAdts->bs.mpeg_id)) { /* Restore previous PCE which is still valid */
-                FDKmemcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig));
-            } else if (bs.mpeg_id == 0) {
-                /* If not it seems that we have a implicit channel configuration.
-                   This mode is not allowed in the context of ISO/IEC 14496-3.
-                   Skip this frame and try the next one. */
-                FDKpushFor(hBs, (bs.frame_length << 3) - adtsHeaderLength - 3);
-                return TRANSPORTDEC_UNSUPPORTED_FORMAT;
-            }
-            /* else {
-               ISO/IEC 13818-7 implicit channel mapping is allowed.
-               So just open the box of chocolates to see what we got.
-            } */
+          pAdts->BufferFullnesStartFlag = 0;
         }
+      }
     }
+  }
 
-    /* Copy bit stream data struct to persistent memory now, once we passed all
-     * sanity checks above. */
-    FDKmemcpy(&pAdts->bs, &bs, sizeof(STRUCT_ADTS_BS));
+  /* Get info from ADTS header */
+  AudioSpecificConfig_Init(pAsc);
+  pAsc->m_aot = (AUDIO_OBJECT_TYPE)(bs.profile + 1);
+  pAsc->m_samplingFrequencyIndex = bs.sample_freq_index;
+  pAsc->m_samplingFrequency = SamplingRateTable[bs.sample_freq_index];
+  pAsc->m_channelConfiguration = bs.channel_config;
+  pAsc->m_samplesPerFrame = 1024;
 
-    return TRANSPORTDEC_OK;
+  if (bs.channel_config == 0) {
+    int pceBits = 0;
+    UINT alignAnchor = FDKgetValidBits(hBs);
+
+    if (FDKreadBits(hBs, 3) == ID_PCE) {
+      /* Got luck! Parse the PCE */
+      crcReg = adtsRead_CrcStartReg(pAdts, hBs, 0);
+
+      CProgramConfig_Read(&pAsc->m_progrConfigElement, hBs, alignAnchor);
+
+      adtsRead_CrcEndReg(pAdts, hBs, crcReg);
+      pceBits = alignAnchor - FDKgetValidBits(hBs);
+      /* store the number of PCE bits */
+      bs.num_pce_bits = pceBits;
+    } else {
+      /* No PCE in this frame! Push back the ID tag bits. */
+      FDKpushBack(hBs, 3);
+
+      /* Encoders do not have to write a PCE in each frame.
+         So if we already have a valid PCE we have to use it. */
+      if (oldPce.isValid &&
+          (bs.sample_freq_index ==
+           pAdts->bs.sample_freq_index) /* we could compare the complete fixed
+                       header (bytes) here! */
+          && (bs.channel_config == pAdts->bs.channel_config) /* == 0 */
+          &&
+          (bs.mpeg_id ==
+           pAdts->bs.mpeg_id)) { /* Restore previous PCE which is still valid */
+        FDKmemcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig));
+      } else if (bs.mpeg_id == 0) {
+        /* If not it seems that we have a implicit channel configuration.
+           This mode is not allowed in the context of ISO/IEC 14496-3.
+           Skip this frame and try the next one. */
+        FDKpushFor(hBs, (bs.frame_length << 3) - adtsHeaderLength - 3);
+        return TRANSPORTDEC_UNSUPPORTED_FORMAT;
+      }
+      /* else {
+         ISO/IEC 13818-7 implicit channel mapping is allowed.
+         So just open the box of chocolates to see what we got.
+      } */
+    }
+  }
+
+  /* Copy bit stream data struct to persistent memory now, once we passed all
+   * sanity checks above. */
+  FDKmemcpy(&pAdts->bs, &bs, sizeof(STRUCT_ADTS_BS));
+
+  return TRANSPORTDEC_OK;
 
 bail:
-    FDKpushBack(hBs, adtsHeaderLength);
-    return TRANSPORTDEC_NOT_ENOUGH_BITS;
+  FDKpushBack(hBs, adtsHeaderLength);
+  return TRANSPORTDEC_NOT_ENOUGH_BITS;
 }
 
 int adtsRead_GetRawDataBlockLength(HANDLE_ADTS pAdts, INT blockNum) {
-    int length;
+  int length;
 
-    if (pAdts->bs.num_raw_blocks == 0) {
-        length =
-            (pAdts->bs.frame_length - 7)
-            << 3; /* aac_frame_length subtracted by the header size (7 bytes). */
-        if (pAdts->bs.protection_absent == 0)
-            length -= 16; /* substract 16 bit CRC */
+  if (pAdts->bs.num_raw_blocks == 0) {
+    length =
+        (pAdts->bs.frame_length - 7)
+        << 3; /* aac_frame_length subtracted by the header size (7 bytes). */
+    if (pAdts->bs.protection_absent == 0)
+      length -= 16; /* substract 16 bit CRC */
+  } else {
+    if (pAdts->bs.protection_absent) {
+      length = -1; /* raw data block length is unknown */
     } else {
-        if (pAdts->bs.protection_absent) {
-            length = -1; /* raw data block length is unknown */
-        } else {
-            if (blockNum < 0 || blockNum > 3) {
-                length = -1;
-            } else {
-                length = (pAdts->rawDataBlockDist[blockNum] << 3) - 16;
-            }
-        }
+      if (blockNum < 0 || blockNum > 3) {
+        length = -1;
+      } else {
+        length = (pAdts->rawDataBlockDist[blockNum] << 3) - 16;
+      }
     }
-    if (blockNum == 0 && length > 0) {
-        length -= pAdts->bs.num_pce_bits;
-    }
-    return length;
+  }
+  if (blockNum == 0 && length > 0) {
+    length -= pAdts->bs.num_pce_bits;
+  }
+  return length;
 }

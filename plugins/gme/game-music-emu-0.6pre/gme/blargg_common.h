@@ -118,14 +118,14 @@ global scope already. */
 #define BOOST
 #else
 struct BOOST {
-    typedef signed char int8_t;
-    typedef unsigned char uint8_t;
-    typedef short int16_t;
-    typedef unsigned short uint16_t;
-    typedef int int32_t;
-    typedef unsigned int uint32_t;
-    typedef __int64 int64_t;
-    typedef unsigned __int64 uint64_t;
+  typedef signed char int8_t;
+  typedef unsigned char uint8_t;
+  typedef short int16_t;
+  typedef unsigned short uint16_t;
+  typedef int int32_t;
+  typedef unsigned int uint32_t;
+  typedef __int64 int64_t;
+  typedef unsigned __int64 uint64_t;
 };
 #endif
 
@@ -157,58 +157,42 @@ interface, I override operator new to use malloc. */
 
 class blargg_vector_ {
 protected:
-    void *begin_;
-    size_t size_;
-    void init();
-    blargg_err_t resize_(size_t n, size_t elem_size);
+  void *begin_;
+  size_t size_;
+  void init();
+  blargg_err_t resize_(size_t n, size_t elem_size);
 
 public:
-    size_t size() const {
-        return size_;
-    }
-    void clear();
+  size_t size() const { return size_; }
+  void clear();
 };
 
 // Very lightweight vector for POD types (no constructor/destructor)
 template <class T> class blargg_vector : public blargg_vector_ {
-    union T_must_be_pod {
-        T t;
-    }; // fails if T is not POD
+  union T_must_be_pod {
+    T t;
+  }; // fails if T is not POD
 public:
-    blargg_vector() {
-        init();
-    }
-    ~blargg_vector() {
-        clear();
-    }
+  blargg_vector() { init(); }
+  ~blargg_vector() { clear(); }
 
-    blargg_err_t resize(size_t n) {
-        return resize_(n, sizeof(T));
-    }
+  blargg_err_t resize(size_t n) { return resize_(n, sizeof(T)); }
 
-    T *begin() {
-        return static_cast<T *>(begin_);
-    }
-    const T *begin() const {
-        return static_cast<T *>(begin_);
-    }
+  T *begin() { return static_cast<T *>(begin_); }
+  const T *begin() const { return static_cast<T *>(begin_); }
 
-    T *end() {
-        return static_cast<T *>(begin_) + size_;
-    }
-    const T *end() const {
-        return static_cast<T *>(begin_) + size_;
-    }
+  T *end() { return static_cast<T *>(begin_) + size_; }
+  const T *end() const { return static_cast<T *>(begin_) + size_; }
 
-    T &operator[](size_t n) {
-        assert(n < size_);
-        return static_cast<T *>(begin_)[n];
-    }
+  T &operator[](size_t n) {
+    assert(n < size_);
+    return static_cast<T *>(begin_)[n];
+  }
 
-    const T &operator[](size_t n) const {
-        assert(n < size_);
-        return static_cast<T *>(begin_)[n];
-    }
+  const T &operator[](size_t n) const {
+    assert(n < size_);
+    return static_cast<T *>(begin_)[n];
+  }
 };
 
 // Callback function with user data.
@@ -216,15 +200,13 @@ public:
 // void set_callback( T func, void* user_data = NULL ); // ...this
 // To call function, do set_callback.f( .. set_callback.data ... );
 template <class T> struct blargg_callback {
-    T f;
-    void *data;
-    blargg_callback() {
-        f = NULL;
-    }
-    void operator()(T callback, void *user_data = NULL) {
-        f = callback;
-        data = user_data;
-    }
+  T f;
+  void *data;
+  blargg_callback() { f = NULL; }
+  void operator()(T callback, void *user_data = NULL) {
+    f = callback;
+    data = user_data;
+  }
 };
 
 #ifndef _WIN32
@@ -248,10 +230,10 @@ typedef unsigned short blargg_wchar_t;
 #endif
 
 inline size_t blargg_wcslen(const blargg_wchar_t *str) {
-    size_t length = 0;
-    while (*str++)
-        length++;
-    return length;
+  size_t length = 0;
+  while (*str++)
+    length++;
+  return length;
 }
 
 char *blargg_to_utf8(const blargg_wchar_t *);

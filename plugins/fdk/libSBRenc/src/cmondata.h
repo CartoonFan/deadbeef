@@ -111,15 +111,15 @@ amm-info@iis.fraunhofer.de
 #include "FDK_bitstream.h"
 
 struct COMMON_DATA {
-    INT sbrHdrBits;               /**< number of SBR header bits */
-    INT sbrDataBits;              /**< number of SBR data bits */
-    INT sbrFillBits;              /**< number of SBR fill bits */
-    FDK_BITSTREAM sbrBitbuf;      /**< the SBR data bitbuffer */
-    FDK_BITSTREAM tmpWriteBitbuf; /**< helper var for writing header*/
-    INT xOverFreq;                /**< the SBR crossover frequency */
-    INT dynBwEnabled;    /**< indicates if dynamic bandwidth is enabled */
-    INT sbrNumChannels;  /**< number of channels (meaning mono or stereo) */
-    INT dynXOverFreqEnc; /**< encoder dynamic crossover frequency */
+  INT sbrHdrBits;               /**< number of SBR header bits */
+  INT sbrDataBits;              /**< number of SBR data bits */
+  INT sbrFillBits;              /**< number of SBR fill bits */
+  FDK_BITSTREAM sbrBitbuf;      /**< the SBR data bitbuffer */
+  FDK_BITSTREAM tmpWriteBitbuf; /**< helper var for writing header*/
+  INT xOverFreq;                /**< the SBR crossover frequency */
+  INT dynBwEnabled;    /**< indicates if dynamic bandwidth is enabled */
+  INT sbrNumChannels;  /**< number of channels (meaning mono or stereo) */
+  INT dynXOverFreqEnc; /**< encoder dynamic crossover frequency */
 };
 
 typedef struct COMMON_DATA *HANDLE_COMMON_DATA;

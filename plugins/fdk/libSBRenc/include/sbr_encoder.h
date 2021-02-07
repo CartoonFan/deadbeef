@@ -114,178 +114,178 @@ amm-info@iis.fraunhofer.de
 #define MAX_PAYLOAD_SIZE 256
 
 typedef enum codecType {
-    CODEC_AAC = 0,
-    CODEC_AACLD = 1,
-    CODEC_UNSPECIFIED = 99
+  CODEC_AAC = 0,
+  CODEC_AACLD = 1,
+  CODEC_UNSPECIFIED = 99
 } CODEC_TYPE;
 
 typedef struct {
-    INT bitRate;
-    INT nChannels;
-    INT sampleFreq;
-    INT transFac;
-    INT standardBitrate;
+  INT bitRate;
+  INT nChannels;
+  INT sampleFreq;
+  INT transFac;
+  INT standardBitrate;
 } CODEC_PARAM;
 
 typedef enum {
-    SBR_MONO,
-    SBR_LEFT_RIGHT,
-    SBR_COUPLING,
-    SBR_SWITCH_LRC
+  SBR_MONO,
+  SBR_LEFT_RIGHT,
+  SBR_COUPLING,
+  SBR_SWITCH_LRC
 } SBR_STEREO_MODE;
 
 /* bitstream syntax flags */
 enum {
-    SBR_SYNTAX_LOW_DELAY = 0x0001,
-    SBR_SYNTAX_SCALABLE = 0x0002,
-    SBR_SYNTAX_CRC = 0x0004,
-    SBR_SYNTAX_DRM_CRC = 0x0008,
-    SBR_SYNTAX_ELD_REDUCED_DELAY = 0x0010
+  SBR_SYNTAX_LOW_DELAY = 0x0001,
+  SBR_SYNTAX_SCALABLE = 0x0002,
+  SBR_SYNTAX_CRC = 0x0004,
+  SBR_SYNTAX_DRM_CRC = 0x0008,
+  SBR_SYNTAX_ELD_REDUCED_DELAY = 0x0010
 };
 
 typedef enum { FREQ_RES_LOW = 0, FREQ_RES_HIGH } FREQ_RES;
 
 typedef struct {
-    CODEC_TYPE coreCoder; /*!< LC or ELD */
-    UINT bitrateFrom;     /*!< inclusive */
-    UINT bitrateTo;       /*!< exclusive */
+  CODEC_TYPE coreCoder; /*!< LC or ELD */
+  UINT bitrateFrom;     /*!< inclusive */
+  UINT bitrateTo;       /*!< exclusive */
 
-    UINT sampleRate;   /*!<   */
-    UCHAR numChannels; /*!<   */
+  UINT sampleRate;   /*!<   */
+  UCHAR numChannels; /*!<   */
 
-    UCHAR startFreq;       /*!< bs_start_freq */
-    UCHAR startFreqSpeech; /*!< bs_start_freq for speech config flag */
-    UCHAR stopFreq;        /*!< bs_stop_freq */
-    UCHAR stopFreqSpeech;  /*!< bs_stop_freq for speech config flag */
+  UCHAR startFreq;       /*!< bs_start_freq */
+  UCHAR startFreqSpeech; /*!< bs_start_freq for speech config flag */
+  UCHAR stopFreq;        /*!< bs_stop_freq */
+  UCHAR stopFreqSpeech;  /*!< bs_stop_freq for speech config flag */
 
-    UCHAR numNoiseBands;        /*!<   */
-    UCHAR noiseFloorOffset;     /*!<   */
-    SCHAR noiseMaxLevel;        /*!<   */
-    SBR_STEREO_MODE stereoMode; /*!<   */
-    UCHAR freqScale;            /*!<   */
+  UCHAR numNoiseBands;        /*!<   */
+  UCHAR noiseFloorOffset;     /*!<   */
+  SCHAR noiseMaxLevel;        /*!<   */
+  SBR_STEREO_MODE stereoMode; /*!<   */
+  UCHAR freqScale;            /*!<   */
 } sbrTuningTable_t;
 
 typedef struct sbrConfiguration {
-    /*
-       core coder dependent configurations
-    */
-    CODEC_PARAM
-    codecSettings; /*!< Core coder settings. To be set from core coder. */
-    INT SendHeaderDataTime; /*!< SBR header send update frequency in ms. */
-    INT useWaveCoding;      /*!< Flag: usage of wavecoding tool. */
-    INT crcSbr;             /*!< Flag: usage of SBR-CRC. */
-    INT dynBwSupported;     /*!< Flag: support for dynamic bandwidth in this
-                           combination. */
-    INT parametricCoding;   /*!< Flag: usage of parametric coding tool. */
-    INT downSampleFactor; /*!< Sampling rate relation between the SBR and the core
-                         encoder. */
-    FREQ_RES freq_res_fixfix[2]; /*!< Frequency resolution of envelopes in frame
-                                class FIXFIX, for non-split case and split
-                                case */
-    UCHAR fResTransIsLow; /*!< Frequency resolution of envelopes in transient
-                         frames: low (0) or variable (1) */
+  /*
+     core coder dependent configurations
+  */
+  CODEC_PARAM
+  codecSettings; /*!< Core coder settings. To be set from core coder. */
+  INT SendHeaderDataTime; /*!< SBR header send update frequency in ms. */
+  INT useWaveCoding;      /*!< Flag: usage of wavecoding tool. */
+  INT crcSbr;             /*!< Flag: usage of SBR-CRC. */
+  INT dynBwSupported;     /*!< Flag: support for dynamic bandwidth in this
+                         combination. */
+  INT parametricCoding;   /*!< Flag: usage of parametric coding tool. */
+  INT downSampleFactor; /*!< Sampling rate relation between the SBR and the core
+                       encoder. */
+  FREQ_RES freq_res_fixfix[2]; /*!< Frequency resolution of envelopes in frame
+                              class FIXFIX, for non-split case and split
+                              case */
+  UCHAR fResTransIsLow; /*!< Frequency resolution of envelopes in transient
+                       frames: low (0) or variable (1) */
 
-    /*
-       core coder dependent tuning parameters
-    */
-    INT tran_thr;         /*!< SBR transient detector threshold (* 100). */
-    INT noiseFloorOffset; /*!< Noise floor offset.      */
-    UINT useSpeechConfig; /*!< Flag: adapt tuning parameters according to speech.
+  /*
+     core coder dependent tuning parameters
+  */
+  INT tran_thr;         /*!< SBR transient detector threshold (* 100). */
+  INT noiseFloorOffset; /*!< Noise floor offset.      */
+  UINT useSpeechConfig; /*!< Flag: adapt tuning parameters according to speech.
                          */
 
-    /*
-       core coder independent configurations
-    */
-    INT sbrFrameSize; /*!< SBR frame size in samples. Will be calculated from core
-                     coder settings. */
-    INT sbr_data_extra; /*!< Flag usage of data extra. */
-    INT amp_res;        /*!< Amplitude resolution. */
-    INT ana_max_level;  /*!< Noise insertion maximum level. */
-    INT tran_fc;        /*!< Transient detector start frequency. */
-    INT tran_det_mode;  /*!< Transient detector mode. */
-    INT spread;         /*!< Flag: usage of SBR spread. */
-    INT stat;           /*!< Flag: usage of static framing. */
-    INT e;              /*!< Number of envelopes when static framing is chosen. */
-    SBR_STEREO_MODE stereoMode; /*!< SBR stereo mode. */
-    INT deltaTAcrossFrames;     /*!< Flag: allow time-delta coding. */
-    FIXP_DBL dF_edge_1stEnv; /*!< Extra fraction delta-F coding is allowed to be
-                            more expensive. */
-    FIXP_DBL dF_edge_incr;   /*!< Increment dF_edge_1stEnv this much if dT-coding
-                            was used this frame. */
-    INT sbr_invf_mode;       /*!< Inverse filtering mode. */
-    INT sbr_xpos_mode;       /*!< Transposer mode. */
-    INT sbr_xpos_ctrl;       /*!< Transposer control. */
-    INT sbr_xpos_level;      /*!< Transposer 3rd order level. */
-    INT startFreq;           /*!< The start frequency table index. */
-    INT stopFreq;            /*!< The stop frequency table index. */
-    INT useSaPan;            /*!< Flag: usage of SAPAN stereo. */
-    INT dynBwEnabled;        /*!< Flag: usage of dynamic bandwidth. */
-    INT bParametricStereo;   /*!< Flag: usage of parametric stereo coding tool. */
+  /*
+     core coder independent configurations
+  */
+  INT sbrFrameSize; /*!< SBR frame size in samples. Will be calculated from core
+                   coder settings. */
+  INT sbr_data_extra; /*!< Flag usage of data extra. */
+  INT amp_res;        /*!< Amplitude resolution. */
+  INT ana_max_level;  /*!< Noise insertion maximum level. */
+  INT tran_fc;        /*!< Transient detector start frequency. */
+  INT tran_det_mode;  /*!< Transient detector mode. */
+  INT spread;         /*!< Flag: usage of SBR spread. */
+  INT stat;           /*!< Flag: usage of static framing. */
+  INT e;              /*!< Number of envelopes when static framing is chosen. */
+  SBR_STEREO_MODE stereoMode; /*!< SBR stereo mode. */
+  INT deltaTAcrossFrames;     /*!< Flag: allow time-delta coding. */
+  FIXP_DBL dF_edge_1stEnv; /*!< Extra fraction delta-F coding is allowed to be
+                          more expensive. */
+  FIXP_DBL dF_edge_incr;   /*!< Increment dF_edge_1stEnv this much if dT-coding
+                          was used this frame. */
+  INT sbr_invf_mode;       /*!< Inverse filtering mode. */
+  INT sbr_xpos_mode;       /*!< Transposer mode. */
+  INT sbr_xpos_ctrl;       /*!< Transposer control. */
+  INT sbr_xpos_level;      /*!< Transposer 3rd order level. */
+  INT startFreq;           /*!< The start frequency table index. */
+  INT stopFreq;            /*!< The stop frequency table index. */
+  INT useSaPan;            /*!< Flag: usage of SAPAN stereo. */
+  INT dynBwEnabled;        /*!< Flag: usage of dynamic bandwidth. */
+  INT bParametricStereo;   /*!< Flag: usage of parametric stereo coding tool. */
 
-    /*
-       header_extra1 configuration
-    */
-    UCHAR freqScale;     /*!< Frequency grouping. */
-    INT alterScale;      /*!< Scale resolution. */
-    INT sbr_noise_bands; /*!< Number of noise bands. */
+  /*
+     header_extra1 configuration
+  */
+  UCHAR freqScale;     /*!< Frequency grouping. */
+  INT alterScale;      /*!< Scale resolution. */
+  INT sbr_noise_bands; /*!< Number of noise bands. */
 
-    /*
-       header_extra2 configuration
-    */
-    INT sbr_limiter_bands;    /*!< Number of limiter bands. */
-    INT sbr_limiter_gains;    /*!< Gain of limiter. */
-    INT sbr_interpol_freq;    /*!< Flag: use interpolation in freq. direction. */
-    INT sbr_smoothing_length; /*!< Flag: choose length 4 or 0 (=on, off). */
-    UCHAR init_amp_res_FF;
-    FIXP_DBL threshold_AmpRes_FF_m;
-    SCHAR threshold_AmpRes_FF_e;
+  /*
+     header_extra2 configuration
+  */
+  INT sbr_limiter_bands;    /*!< Number of limiter bands. */
+  INT sbr_limiter_gains;    /*!< Gain of limiter. */
+  INT sbr_interpol_freq;    /*!< Flag: use interpolation in freq. direction. */
+  INT sbr_smoothing_length; /*!< Flag: choose length 4 or 0 (=on, off). */
+  UCHAR init_amp_res_FF;
+  FIXP_DBL threshold_AmpRes_FF_m;
+  SCHAR threshold_AmpRes_FF_e;
 } sbrConfiguration, *sbrConfigurationPtr;
 
 typedef struct SBR_CONFIG_DATA {
-    UINT sbrSyntaxFlags; /**< SBR syntax flags derived from AOT. */
-    INT nChannels;       /**< Number of channels.  */
+  UINT sbrSyntaxFlags; /**< SBR syntax flags derived from AOT. */
+  INT nChannels;       /**< Number of channels.  */
 
-    INT nSfb[2]; /**< Number of SBR scalefactor bands for LO_RES and HI_RES (?) */
-    INT num_Master; /**< Number of elements in v_k_master. */
-    INT sampleFreq; /**< SBR sampling frequency. */
-    INT frameSize;
-    INT xOverFreq;    /**< The SBR start frequency. */
-    INT dynXOverFreq; /**< Used crossover frequency when dynamic bandwidth is
-                     enabled. */
+  INT nSfb[2]; /**< Number of SBR scalefactor bands for LO_RES and HI_RES (?) */
+  INT num_Master; /**< Number of elements in v_k_master. */
+  INT sampleFreq; /**< SBR sampling frequency. */
+  INT frameSize;
+  INT xOverFreq;    /**< The SBR start frequency. */
+  INT dynXOverFreq; /**< Used crossover frequency when dynamic bandwidth is
+                   enabled. */
 
-    INT noQmfBands; /**< Number of QMF frequency bands. */
-    INT noQmfSlots; /**< Number of QMF slots. */
+  INT noQmfBands; /**< Number of QMF frequency bands. */
+  INT noQmfSlots; /**< Number of QMF slots. */
 
-    UCHAR *freqBandTable[2]; /**< Frequency table for low and hires, only
-                            MAX_FREQ_COEFFS/2 +1 coeffs actually needed for
-                            lowres. */
-    UCHAR
-    *v_k_master; /**< Master BandTable where freqBandTable is derived from. */
+  UCHAR *freqBandTable[2]; /**< Frequency table for low and hires, only
+                          MAX_FREQ_COEFFS/2 +1 coeffs actually needed for
+                          lowres. */
+  UCHAR
+  *v_k_master; /**< Master BandTable where freqBandTable is derived from. */
 
-    SBR_STEREO_MODE stereoMode;
-    INT noEnvChannels; /**< Number of envelope channels. */
+  SBR_STEREO_MODE stereoMode;
+  INT noEnvChannels; /**< Number of envelope channels. */
 
-    INT useWaveCoding; /**< Flag indicates whether to use wave coding at all. */
-    INT useParametricCoding; /**< Flag indicates whether to use para coding at
-                            all.      */
-    INT xposCtrlSwitch;    /**< Flag indicates whether to switch xpos ctrl on the
-                          fly. */
-    INT switchTransposers; /**< Flag indicates whether to switch xpos on the fly .
+  INT useWaveCoding; /**< Flag indicates whether to use wave coding at all. */
+  INT useParametricCoding; /**< Flag indicates whether to use para coding at
+                          all.      */
+  INT xposCtrlSwitch;    /**< Flag indicates whether to switch xpos ctrl on the
+                        fly. */
+  INT switchTransposers; /**< Flag indicates whether to switch xpos on the fly .
                           */
-    UCHAR initAmpResFF;
-    FIXP_DBL thresholdAmpResFF_m;
-    SCHAR thresholdAmpResFF_e;
+  UCHAR initAmpResFF;
+  FIXP_DBL thresholdAmpResFF_m;
+  SCHAR thresholdAmpResFF_e;
 } SBR_CONFIG_DATA, *HANDLE_SBR_CONFIG_DATA;
 
 typedef struct {
-    MP4_ELEMENT_ID elType;
-    INT bitRate;
-    int instanceTag;
-    UCHAR fParametricStereo;
-    UCHAR fDualMono; /**< This flags allows to disable coupling in sbr channel
-                    pair element */
-    UCHAR nChannelsInEl;
-    UCHAR ChannelIndex[2];
+  MP4_ELEMENT_ID elType;
+  INT bitRate;
+  int instanceTag;
+  UCHAR fParametricStereo;
+  UCHAR fDualMono; /**< This flags allows to disable coupling in sbr channel
+                  pair element */
+  UCHAR nChannelsInEl;
+  UCHAR ChannelIndex[2];
 } SBR_ELEMENT_INFO;
 
 #ifdef __cplusplus

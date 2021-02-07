@@ -107,12 +107,8 @@ amm-info@iis.fraunhofer.de
 
 #if defined(__x86_64__)
 
-inline INT fixabs_D(INT x) {
-    return ((x) > (INT)(0)) ? (x) : -(x);
-}
-inline INT fixabs_S(INT x) {
-    return ((x) > (INT)(0)) ? (x) : -(x);
-}
+inline INT fixabs_D(INT x) { return ((x) > (INT)(0)) ? (x) : -(x); }
+inline INT fixabs_S(INT x) { return ((x) > (INT)(0)) ? (x) : -(x); }
 
 #define fixabs_I(x) fixabs_D(x)
 

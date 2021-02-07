@@ -30,7 +30,7 @@
 - (void)addWidget:(DdbWidget *)widget;
 - (void)removeWidget:(DdbWidget *)widget;
 - (int)widgetMessage:(uint32_t)_id
-    ctx:(uintptr_t)ctx
-    p1:(uint32_t)p1
-    p2:(uint32_t)p2;
+                 ctx:(uintptr_t)ctx
+                  p1:(uint32_t)p1
+                  p2:(uint32_t)p2;
 @end

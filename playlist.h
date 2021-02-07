@@ -41,55 +41,55 @@
 // :DURATION - length in seconds
 
 typedef struct playItem_s {
-    int32_t startsample;
-    int32_t endsample;
-    int32_t shufflerating; // sort order for shuffle mode
+  int32_t startsample;
+  int32_t endsample;
+  int32_t shufflerating; // sort order for shuffle mode
 
-    int64_t startsample64;
-    int64_t endsample64;
-    // private area, must not be visible to plugins
-    float _duration;
-    uint32_t _flags;
-    int _refc;
-    struct playItem_s *next[PL_MAX_ITERATORS]; // next item in linked list
-    struct playItem_s *prev[PL_MAX_ITERATORS]; // prev item in linked list
-    struct DB_metaInfo_s *meta;                // linked list storing metainfo
-    unsigned selected : 1;
-    unsigned played : 1;      // mark as played in shuffle mode
-    unsigned in_playlist : 1; // 1 if item is in playlist
-    unsigned has_startsample64 : 1;
-    unsigned has_endsample64 : 1;
+  int64_t startsample64;
+  int64_t endsample64;
+  // private area, must not be visible to plugins
+  float _duration;
+  uint32_t _flags;
+  int _refc;
+  struct playItem_s *next[PL_MAX_ITERATORS]; // next item in linked list
+  struct playItem_s *prev[PL_MAX_ITERATORS]; // prev item in linked list
+  struct DB_metaInfo_s *meta;                // linked list storing metainfo
+  unsigned selected : 1;
+  unsigned played : 1;      // mark as played in shuffle mode
+  unsigned in_playlist : 1; // 1 if item is in playlist
+  unsigned has_startsample64 : 1;
+  unsigned has_endsample64 : 1;
 } playItem_t;
 
 typedef struct playlist_s {
-    char *title;
-    struct playlist_s *next;
-    int count[2];
-    float totaltime;
-    float seltime;
-    int modification_idx; // this value gets incremented each time playlist
-    // changes, and requires to be saved
-    int last_save_modification_idx;     // a value of modification_idx at the time
-    // when the playlist was saved last time
-    playItem_t *head[PL_MAX_ITERATORS]; // head of linked list
-    playItem_t *tail[PL_MAX_ITERATORS]; // tail of linked list
-    int current_row[PL_MAX_ITERATORS];  // current row (cursor)
-    int scroll;
-    struct DB_metaInfo_s *meta; // linked list storing metainfo
-    int refc;
-    int files_add_visibility;
+  char *title;
+  struct playlist_s *next;
+  int count[2];
+  float totaltime;
+  float seltime;
+  int modification_idx; // this value gets incremented each time playlist
+  // changes, and requires to be saved
+  int last_save_modification_idx; // a value of modification_idx at the time
+  // when the playlist was saved last time
+  playItem_t *head[PL_MAX_ITERATORS]; // head of linked list
+  playItem_t *tail[PL_MAX_ITERATORS]; // tail of linked list
+  int current_row[PL_MAX_ITERATORS];  // current row (cursor)
+  int scroll;
+  struct DB_metaInfo_s *meta; // linked list storing metainfo
+  int refc;
+  int files_add_visibility;
 
-    int64_t cue_numsamples;
-    int cue_samplerate;
+  int64_t cue_numsamples;
+  int cue_samplerate;
 
-    int search_cmpidx;
+  int search_cmpidx;
 
-    unsigned fast_mode : 1;
-    unsigned files_adding : 1;
-    unsigned recalc_seltime : 1;
-    unsigned loading_cue : 1;
-    unsigned ignore_archives : 1;
-    unsigned follow_symlinks : 1;
+  unsigned fast_mode : 1;
+  unsigned files_adding : 1;
+  unsigned recalc_seltime : 1;
+  unsigned loading_cue : 1;
+  unsigned ignore_archives : 1;
+  unsigned follow_symlinks : 1;
 } playlist_t;
 
 // global playlist control functions
@@ -372,9 +372,9 @@ int listen_file_added(int (*callback)(ddb_fileadd_data_t *data,
 void unlisten_file_added(int id);
 
 int listen_file_add_beginend(void (*callback_begin)(ddb_fileadd_data_t *data,
-                             void *user_data),
+                                                    void *user_data),
                              void (*callback_end)(ddb_fileadd_data_t *data,
-                                     void *user_data),
+                                                  void *user_data),
                              void *user_data);
 
 void unlisten_file_add_beginend(int id);
@@ -425,7 +425,7 @@ playItem_t *plt_process_cue(playlist_t *plt, playItem_t *after, playItem_t *it,
 void pl_configchanged(void);
 
 int register_fileadd_filter(int (*callback)(ddb_file_found_data_t *data,
-                            void *user_data),
+                                            void *user_data),
                             void *user_data);
 
 void unregister_fileadd_filter(int id);

@@ -162,73 +162,73 @@ amm-info@iis.fraunhofer.de
 #define SHIFT_START_SB 1 /*!< lowest subband of source range */
 
 typedef enum {
-    INVF_OFF = 0,
-    INVF_LOW_LEVEL,
-    INVF_MID_LEVEL,
-    INVF_HIGH_LEVEL,
-    INVF_SWITCHED /* not a real choice but used here to control behaviour */
+  INVF_OFF = 0,
+  INVF_LOW_LEVEL,
+  INVF_MID_LEVEL,
+  INVF_HIGH_LEVEL,
+  INVF_SWITCHED /* not a real choice but used here to control behaviour */
 } INVF_MODE;
 
 /** parameter set for one single patch */
 typedef struct {
-    UCHAR sourceStartBand; /*!< first band in lowbands where to take the samples
-                          from */
-    UCHAR
-    sourceStopBand;       /*!< first band in lowbands which is not included in the
-                         patch anymore */
-    UCHAR guardStartBand; /*!< first band in highbands to be filled with zeros in
-                         order to reduce interferences between patches */
-    UCHAR
-    targetStartBand;       /*!< first band in highbands to be filled with whitened
-                          lowband signal */
-    UCHAR targetBandOffs;  /*!< difference between 'startTargetBand' and
-                          'startSourceBand' */
-    UCHAR numBandsInPatch; /*!< number of consecutive bands in this one patch */
+  UCHAR sourceStartBand; /*!< first band in lowbands where to take the samples
+                        from */
+  UCHAR
+  sourceStopBand;       /*!< first band in lowbands which is not included in the
+                       patch anymore */
+  UCHAR guardStartBand; /*!< first band in highbands to be filled with zeros in
+                       order to reduce interferences between patches */
+  UCHAR
+  targetStartBand;       /*!< first band in highbands to be filled with whitened
+                        lowband signal */
+  UCHAR targetBandOffs;  /*!< difference between 'startTargetBand' and
+                        'startSourceBand' */
+  UCHAR numBandsInPatch; /*!< number of consecutive bands in this one patch */
 } PATCH_PARAM;
 
 /** whitening factors for different levels of whitening
     need to be initialized corresponding to crossover frequency */
 typedef struct {
-    FIXP_DBL off; /*!< bw factor for signal OFF */
-    FIXP_DBL transitionLevel;
-    FIXP_DBL lowLevel;  /*!< bw factor for signal LOW_LEVEL */
-    FIXP_DBL midLevel;  /*!< bw factor for signal MID_LEVEL */
-    FIXP_DBL highLevel; /*!< bw factor for signal HIGH_LEVEL */
+  FIXP_DBL off; /*!< bw factor for signal OFF */
+  FIXP_DBL transitionLevel;
+  FIXP_DBL lowLevel;  /*!< bw factor for signal LOW_LEVEL */
+  FIXP_DBL midLevel;  /*!< bw factor for signal MID_LEVEL */
+  FIXP_DBL highLevel; /*!< bw factor for signal HIGH_LEVEL */
 } WHITENING_FACTORS;
 
 /*! The transposer settings are calculated on a header reset and are shared by
  * both channels. */
 typedef struct {
-    UCHAR nCols;           /*!< number subsamples of a codec frame */
-    UCHAR noOfPatches;     /*!< number of patches */
-    UCHAR lbStartPatching; /*!< first band of lowbands that will be patched */
-    UCHAR lbStopPatching;  /*!< first band that won't be patched anymore*/
-    UCHAR bwBorders[MAX_NUM_NOISE_VALUES]; /*!< spectral bands with different
-                                          inverse filtering levels */
+  UCHAR nCols;           /*!< number subsamples of a codec frame */
+  UCHAR noOfPatches;     /*!< number of patches */
+  UCHAR lbStartPatching; /*!< first band of lowbands that will be patched */
+  UCHAR lbStopPatching;  /*!< first band that won't be patched anymore*/
+  UCHAR bwBorders[MAX_NUM_NOISE_VALUES]; /*!< spectral bands with different
+                                        inverse filtering levels */
 
-    PATCH_PARAM
-    patchParam[MAX_NUM_PATCHES]; /*!< new parameter set for patching */
-    WHITENING_FACTORS
-    whFactors;     /*!< the pole moving factors for certain
-                  whitening levels as indicated     in the bitstream
-                  depending on the crossover frequency */
-    UCHAR overlap; /*!< Overlap size */
+  PATCH_PARAM
+  patchParam[MAX_NUM_PATCHES]; /*!< new parameter set for patching */
+  WHITENING_FACTORS
+  whFactors;     /*!< the pole moving factors for certain
+                whitening levels as indicated     in the bitstream
+                depending on the crossover frequency */
+  UCHAR overlap; /*!< Overlap size */
 } TRANSPOSER_SETTINGS;
 
 typedef struct {
-    TRANSPOSER_SETTINGS *pSettings; /*!< Common settings for both channels */
-    FIXP_DBL
-    bwVectorOld[MAX_NUM_PATCHES]; /*!< pole moving factors of past frame */
-    FIXP_DBL lpcFilterStatesRealLegSBR[LPC_ORDER + (3 * (4))][(
-                32)]; /*!< pointer array to save filter states */
+  TRANSPOSER_SETTINGS *pSettings; /*!< Common settings for both channels */
+  FIXP_DBL
+  bwVectorOld[MAX_NUM_PATCHES]; /*!< pole moving factors of past frame */
+  FIXP_DBL lpcFilterStatesRealLegSBR[LPC_ORDER + (3 * (4))][(
+      32)]; /*!< pointer array to save filter states */
 
-    FIXP_DBL lpcFilterStatesImagLegSBR[LPC_ORDER + (3 * (4))][(
-                32)]; /*!< pointer array to save filter states */
+  FIXP_DBL lpcFilterStatesImagLegSBR[LPC_ORDER + (3 * (4))][(
+      32)]; /*!< pointer array to save filter states */
 
-    FIXP_DBL lpcFilterStatesRealHBE[LPC_ORDER + (3 * (4))][(
-                64)]; /*!< pointer array to save filter states */
-    FIXP_DBL lpcFilterStatesImagHBE[LPC_ORDER + (3 * (4))][(
-                64)]; /*!< pointer array to save filter states */
+  FIXP_DBL lpcFilterStatesRealHBE[LPC_ORDER + (3 * (4))][(
+      64)]; /*!< pointer array to save filter states */
+  FIXP_DBL lpcFilterStatesImagHBE[LPC_ORDER + (3 * (4))][(
+      64)]; /*!< pointer array to save filter states */
 } SBR_LPP_TRANS;
 
 typedef SBR_LPP_TRANS *HANDLE_SBR_LPP_TRANS;
