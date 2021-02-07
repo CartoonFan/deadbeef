@@ -406,7 +406,7 @@ FDK_drcDec_SetParam(HANDLE_DRC_DECODER hDrcDec,
 
   if (hDrcDec->functionalRange == DRC_DEC_GAIN)
     return DRC_DEC_NOT_OK; /* not supported for DRC_DEC_GAIN. All parameters are
-                      handed over to selection process lib. */
+                  handed over to selection process lib. */
 
   switch (requestType) {
   case DRC_DEC_BOOST:

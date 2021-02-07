@@ -126,7 +126,7 @@ struct MPS_ENCODER {
   UINT pOutBufferType[2];
 
   UCHAR sacOutBuffer[1024]; /* Worst case memory consumption for ELDv2: 768
-                           bytes => 6144 bits (Core + SBR + MPS) */
+                         bytes => 6144 bits (Core + SBR + MPS) */
 };
 
 struct MPS_CONFIG_TAB {

@@ -123,7 +123,7 @@ amm-info@iis.fraunhofer.de
 
 struct FILTER_PARAM {
   const FIXP_SGL *coeffa; /*! SOS matrix One row/section. Scaled using BQC().
-                         Order of coefficients: B1,B2,A1,A2. B0=A0=1.0 */
+                       Order of coefficients: B1,B2,A1,A2. B0=A0=1.0 */
   FIXP_DBL g;             /*! overall gain */
   int Wc;       /*! normalized passband bandwidth at input samplerate * 1000 */
   int noCoeffs; /*! number of filter coeffs */

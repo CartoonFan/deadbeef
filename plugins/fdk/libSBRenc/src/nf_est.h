@@ -119,19 +119,19 @@ typedef struct {
                  [MAX_NUM_NOISE_VALUES]; /*!< The previous noise levels. */
   FIXP_DBL
   noiseFloorOffset[MAX_NUM_NOISE_VALUES]; /*!< Noise floor offset, scaled
-                                               with
-                                                 NOISE_FLOOR_OFFSET_SCALING */
+                                             with
+                                               NOISE_FLOOR_OFFSET_SCALING */
   const FIXP_DBL *smoothFilter;           /*!< Smoothing filter to use. */
   FIXP_DBL ana_max_level;                 /*!< Max level allowed.   */
   FIXP_DBL weightFac; /*!< Weightening factor for the difference between orig
-                     and sbr. */
+                   and sbr. */
   INT freqBandTableQmf[MAX_NUM_NOISE_VALUES +
                        1]; /*!< Frequncy band table for the noise floor bands.*/
   INT noNoiseBands;        /*!< Number of noisebands. */
   INT noiseBands;          /*!< NoiseBands switch 4 bit.*/
   INT timeSlots;           /*!< Number of timeslots in a frame. */
   INVF_MODE diffThres;     /*!< Threshold value to control the inverse filtering
-                          decision */
+                        decision */
 } SBR_NOISE_FLOOR_ESTIMATE;
 
 typedef SBR_NOISE_FLOOR_ESTIMATE *HANDLE_SBR_NOISE_FLOOR_ESTIMATE;

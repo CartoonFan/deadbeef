@@ -164,7 +164,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
   if (IsLongBlock(pIcsInfo)) {
     if (!(flags & (AC_ELD | AC_SCALABLE | AC_BSAC | AC_USAC | AC_RSVD50 |
                    AC_RSV603DA))) /* If not ELD nor Scalable nor BSAC nor USAC
-                             syntax then ... */
+                         syntax then ... */
     {
       if ((UCHAR)FDKreadBits(bs, 1) != 0) /* UCHAR PredictorDataPresent */
       {

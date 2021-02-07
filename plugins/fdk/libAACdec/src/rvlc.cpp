@@ -171,10 +171,10 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
   pRvlc->bsAnchor = (INT)FDKgetValidBits(bs);
 
   pRvlc->bitstreamIndexRvlFwd = 0; /* first bit within RVL coded block as start
-                                  address for  forward decoding */
+                                address for  forward decoding */
   pRvlc->bitstreamIndexRvlBwd =
       pRvlc->length_of_rvlc_sf - 1; /* last bit within RVL coded block as start
-                                   address for backward decoding */
+                                 address for backward decoding */
 
   /* skip RVLC-bitstream-part -- pointing now to escapes (if present) or to TNS
    * data (if present) */
@@ -265,7 +265,7 @@ static SCHAR rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
                                  pRvlc->bsAnchor, pBitstreamIndexEsc, FWD);
 
     CarryBitToBranchValue(carryBit, /* huffman decoding, do a single step in
-                               huffman decoding tree */
+                           huffman decoding tree */
                           treeNode, &branchValue, &branchNode);
 
     if ((branchNode & TEST_BIT_10) == TEST_BIT_10) {
@@ -377,7 +377,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
                                  pRvlc->bsAnchor, pBitstrIndxRvl, direction);
 
     CarryBitToBranchValue(carryBit, /* huffman decoding, do a single step in
-                               huffman decoding tree */
+                           huffman decoding tree */
                           treeNode, &branchValue, &branchNode);
 
     if ((branchNode & TEST_BIT_10) == TEST_BIT_10) {
@@ -395,7 +395,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
           pRvlc->errorLogRvlc |= RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_BWD;
         }
         value = -1; /* signalize an error in return value, because too many bits
-       was decoded */
+was decoded */
       }
 
       /* check max value of dpcm value */
@@ -406,7 +406,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
           pRvlc->errorLogRvlc |= RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD;
         }
         value = -1; /* signalize an error in return value, because a forbidden
-       cw was detected*/
+cw was detected*/
       }
 
       return value; /* return a dpcm value with offset +7 or an error status */

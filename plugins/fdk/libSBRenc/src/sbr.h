@@ -143,7 +143,7 @@ typedef struct SBR_ELEMENT {
   SBR_BITSTREAM_DATA sbrBitstreamData;
   COMMON_DATA CmonData;
   INT dynXOverFreqDelay[5]; /**< to delay a frame (I don't like it that much
-                           that way - hrc) */
+                         that way - hrc) */
   SBR_ELEMENT_INFO elInfo;
 
   UCHAR payloadDelayLine[1 + MAX_DELAY_FRAMES][MAX_PAYLOAD_SIZE];
@@ -161,13 +161,13 @@ typedef struct SBR_ENCODER {
   int nChannels;    /* Total channel count across all elements. */
   int frameSize;    /* SBR framelength. */
   int bufferOffset; /* Offset for SBR parameter extraction in time domain input
-                   buffer. */
+                 buffer. */
   int downsampledOffset; /* Offset of downsampled/mixed output for core encoder.
                           */
   int downmixSize;       /* Size in samples of downsampled/mixed output for core
-                        encoder. */
+                      encoder. */
   INT downSampleFactor;  /* Sampling rate relation between the SBR and the core
-                        encoder. */
+                      encoder. */
   SBRENC_DS_TYPE
   downsamplingMethod; /* Method of downsmapling, time-domain, QMF or none.
                        */
@@ -176,7 +176,7 @@ typedef struct SBR_ENCODER {
   int sbrDecDelay;    /* SBR decoder delay in samples */
   INT estimateBitrate; /* Estimate bitrate of SBR encoder. */
   INT inputDataDelay;  /* Delay caused by downsampler, in/out buffer at
-                      sbrEncoder_EncodeFrame. */
+                    sbrEncoder_EncodeFrame. */
 
   UCHAR *dynamicRam;
   UCHAR *pSBRdynamic_RAM;

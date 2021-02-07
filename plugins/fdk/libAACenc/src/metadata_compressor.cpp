@@ -174,7 +174,7 @@ struct DRC_COMP {
   UINT channels;     /*!< Number of channels. */
   UINT fullChannels; /*!< Number of full range channels. */
   INT channelIdx[9]; /*!< Offsets of interleaved channel samples (L, R, C, LFE,
-                    Ls, Rs, S, Ls2, Rs2). */
+                  Ls, Rs, S, Ls2, Rs2). */
 
   FIXP_DBL smoothLevel[2]; /*!< level smoothing states */
   FIXP_DBL smoothGain[2];  /*!< gain smoothing states */
@@ -1202,7 +1202,7 @@ INT FDK_DRC_Generator_setDrcProfile(HDRC_COMP drcComp,
       drcComp->maxEarlyCut[i] =
           -fMult((drcComp->cutThr[i] - drcComp->earlyCutThr[i]),
                  drcComp->earlyCutFac[i]); /* no scaling after mult needed,
-                                  earlyCutFac is in FIXP_DBL */
+                            earlyCutFac is in FIXP_DBL */
 
       drcComp->fastAttack[i] = tc2Coeff(
           tabFastAttack[profileIdx], drcComp->sampleRate, drcComp->blockLength);

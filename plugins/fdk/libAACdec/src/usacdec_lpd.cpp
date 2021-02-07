@@ -1894,9 +1894,10 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
             pAacDecoderChannelInfo->data.usac.tcx_gain[k],
             (last_frame_lost || !frameOk), 0 /* is not FD FAC */
             ,
-            last_lpd_mode, k, pAacDecoderChannelInfo->currAliasingSymmetry /* Note:
-                                        The current aliasing symmetry for a TCX
-                                        (i.e. LPD) frame must always be 0 */
+            last_lpd_mode, k,
+            pAacDecoderChannelInfo->currAliasingSymmetry /* Note:
+ The current aliasing symmetry for a TCX
+ (i.e. LPD) frame must always be 0 */
         );
 
         pitch[(k * nbSubfr) + synSfd + 1] = pitch[(k * nbSubfr) + synSfd] =

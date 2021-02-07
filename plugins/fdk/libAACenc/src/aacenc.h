@@ -123,12 +123,12 @@ typedef enum {
   AAC_ENC_OK = 0x0000, /*!< All fine. */
 
   AAC_ENC_UNKNOWN = 0x0002, /*!< Error condition is of unknown reason, or from
-                           another module.              */
+                         another module.              */
 
   /* initialization errors */
   aac_enc_init_error_start = 0x2000,
   AAC_ENC_INVALID_HANDLE = 0x2020, /*!< The handle passed to the function call
-                                  was invalid (probably NULL).        */
+                                was invalid (probably NULL).        */
   AAC_ENC_INVALID_FRAME_LENGTH =
       0x2080, /*!< Invalid frame length (must be 1024 or 960). */
   AAC_ENC_INVALID_N_CHANNELS =
@@ -154,7 +154,7 @@ typedef enum {
       0x30c0, /*!< The error protection format is not supported. */
   AAC_ENC_UNSUPPORTED_CHANNELCONFIG =
       0x30e0, /*!< The channel configuration (either number or arrangement) is
-             not supported. */
+           not supported. */
   AAC_ENC_UNSUPPORTED_SAMPLINGRATE =
       0x3100, /*!< Sample rate of audio input is not supported. */
   AAC_ENC_NO_MEMORY = 0x3120,               /*!< Could not allocate memory. */
@@ -165,9 +165,8 @@ typedef enum {
   /* encode errors */
   aac_enc_error_start = 0x4000,
   AAC_ENC_QUANT_ERROR = 0x4020, /*!< Too many bits used in quantization. */
-  AAC_ENC_WRITTEN_BITS_ERROR =
-      0x4040, /*!< Unexpected number of written bits, differs to
-               calculated number of bits.                      */
+  AAC_ENC_WRITTEN_BITS_ERROR = 0x4040,   /*!< Unexpected number of written bits,
+                                        differs to   calculated number of bits.   */
   AAC_ENC_PNS_TABLE_ERROR = 0x4060,      /*!< PNS level out of range.      */
   AAC_ENC_GLOBAL_GAIN_TOO_HIGH = 0x4080, /*!< Internal quantizer error. */
   AAC_ENC_BITRES_TOO_LOW = 0x40a0, /*!< Too few  bits in bit reservoir.       */
@@ -207,9 +206,9 @@ typedef enum {
   CH_ORDER_MPEG =
       0, /*!< MPEG channel ordering (e. g. 5.1: C, L, R, SL, SR, LFE)       */
   CH_ORDER_WAV, /*!< WAV fileformat channel ordering (e. g. 5.1: L, R, C, LFE,
-               SL, SR) */
+             SL, SR) */
   CH_ORDER_WG4 /*!< WG4 fileformat channel ordering (e. g. 5.1: L, R, SL, SR, C,
-                LFE) */
+              LFE) */
 
 } CHANNEL_ORDER;
 
@@ -219,7 +218,7 @@ struct AACENC_CONFIG {
   INT sampleRate;     /* encoder sample rate */
   INT bitRate;        /* encoder bit rate in bits/sec */
   INT ancDataBitRate; /* additional bits consumed by anc data or sbr have to be
-                     consiedered while configuration */
+                   consiedered while configuration */
 
   INT nSubFrames; /* number of frames in super frame (not ADTS/LATM subframes !)
                    */
@@ -261,7 +260,7 @@ typedef struct {
   UINT dataSize;             /* extension payload data size in bits */
   EXT_PAYLOAD_TYPE dataType; /* extension payload data type */
   INT associatedChElement; /* number of the channel element the data is assigned
-                          to */
+                        to */
 } AACENC_EXT_PAYLOAD;
 
 typedef struct AAC_ENC *HANDLE_AAC_ENC;

@@ -172,17 +172,17 @@ typedef enum {
 /** parameter set for one single patch */
 typedef struct {
   UCHAR sourceStartBand; /*!< first band in lowbands where to take the samples
-                        from */
+                      from */
   UCHAR
   sourceStopBand;       /*!< first band in lowbands which is not included in the
-                       patch anymore */
+                     patch anymore */
   UCHAR guardStartBand; /*!< first band in highbands to be filled with zeros in
-                       order to reduce interferences between patches */
+                     order to reduce interferences between patches */
   UCHAR
   targetStartBand;       /*!< first band in highbands to be filled with whitened
-                        lowband signal */
+                      lowband signal */
   UCHAR targetBandOffs;  /*!< difference between 'startTargetBand' and
-                        'startSourceBand' */
+                      'startSourceBand' */
   UCHAR numBandsInPatch; /*!< number of consecutive bands in this one patch */
 } PATCH_PARAM;
 
@@ -204,14 +204,14 @@ typedef struct {
   UCHAR lbStartPatching; /*!< first band of lowbands that will be patched */
   UCHAR lbStopPatching;  /*!< first band that won't be patched anymore*/
   UCHAR bwBorders[MAX_NUM_NOISE_VALUES]; /*!< spectral bands with different
-                                        inverse filtering levels */
+                                      inverse filtering levels */
 
   PATCH_PARAM
   patchParam[MAX_NUM_PATCHES]; /*!< new parameter set for patching */
   WHITENING_FACTORS
   whFactors;     /*!< the pole moving factors for certain
-                whitening levels as indicated     in the bitstream
-                depending on the crossover frequency */
+              whitening levels as indicated     in the bitstream
+              depending on the crossover frequency */
   UCHAR overlap; /*!< Overlap size */
 } TRANSPOSER_SETTINGS;
 

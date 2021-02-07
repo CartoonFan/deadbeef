@@ -120,13 +120,13 @@ typedef enum {
 
   MPS_UNSUPPORTED_UPMIX_TYPE, /* CheckLevelTreeUpmixType() */
   MPS_UNSUPPORTED_FORMAT, /* various functions; unknown aot or no_channels in
-                         filterbank */
+                       filterbank */
   MPS_OUTPUT_BUFFER_TOO_SMALL, /* Size of provided output time buffer is too
-                              small */
+                            small */
 
   /* ssc errors */
   MPS_INVALID_PARAMETERBANDS, /* unsupported numParameterBands in
-                             SpatialDecDecodeHeader() */
+                           SpatialDecDecodeHeader() */
   MPS_INVALID_TREECONFIG,
   MPS_INVALID_HRTFSET,   /* SpatialDecDecodeHeader() */
   MPS_INVALID_TTT,       /* SpatialDecDecodeHeader() */

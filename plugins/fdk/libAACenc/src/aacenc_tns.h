@@ -133,15 +133,15 @@ amm-info@iis.fraunhofer.de
 typedef struct { /* stuff that is tabulated dependent on bitrate etc. */
   INT filterEnabled[MAX_NUM_OF_FILTERS];
   INT threshOn[MAX_NUM_OF_FILTERS];        /* min. prediction gain for using tns
-                                          TABUL*/
+                                        TABUL*/
   INT filterStartFreq[MAX_NUM_OF_FILTERS]; /* lowest freq for lpc TABUL*/
   INT tnsLimitOrder[MAX_NUM_OF_FILTERS];   /* Limit for TNS order TABUL*/
   INT tnsFilterDirection[MAX_NUM_OF_FILTERS]; /* Filtering direction, 0=up,
-                                             1=down TABUL */
+                                           1=down TABUL */
   INT acfSplit[MAX_NUM_OF_FILTERS];
   FIXP_DBL tnsTimeResolution[MAX_NUM_OF_FILTERS]; /* TNS max. time resolution
-                                                 TABUL. Should be fract but
-                                                 MSVC won't compile then */
+                                               TABUL. Should be fract but
+                                               MSVC won't compile then */
   INT seperateFiltersAllowed;
 } TNS_PARAMETER_TABULATED;
 

@@ -250,7 +250,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
       mdctData[(tl / 2) - nr - i - 1] =
           -fMultAddDiv2(tmp1, (FIXP_PCM)timeData[(tl * 2) - nr - i - 1],
                         wrs[i].v.im); /* -(C*window+Dr*window) and flip before
-                             placing -> -Cr - D */
+                       placing -> -Cr - D */
     }
 
     /* We pass the shortened folded data (-D-Cr,A-Br) to the MDCT function */
@@ -289,7 +289,7 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
      which cannot be included into the exponent above */
   switch ((tl) >> (log2_tl - 2)) {
   case 0x7: /* 10 ms, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) *
-             0.53333333333333333333) */
+           0.53333333333333333333) */
     if (gain_m == (FIXP_DBL)0) {
       gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
     } else {

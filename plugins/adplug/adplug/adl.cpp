@@ -121,10 +121,11 @@ public:
   // 				callback();
   // 				_samplesTillCallback = _samplesPerCallback;
   // 				_samplesTillCallbackRemainder +=
-  // _samplesPerCallbackRemainder; 				if (_samplesTillCallbackRemainder
+  // _samplesPerCallbackRemainder; 				if
+  // (_samplesTillCallbackRemainder
   // >= CALLBACKS_PER_SECOND) {
-  // _samplesTillCallback++; 					_samplesTillCallbackRemainder -=
-  // CALLBACKS_PER_SECOND;
+  // _samplesTillCallback++; 					_samplesTillCallbackRemainder
+  // -= CALLBACKS_PER_SECOND;
   // 				}
   // 			}
 

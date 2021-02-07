@@ -127,8 +127,8 @@ typedef struct {
   UCHAR Esg_slot_index; /**< Ring buffer index to current Esg time slot */
   UCHAR pvcBorder0;     /**< Start SBR time slot of PVC frame */
   FIXP_DBL Esg[PVC_NS_MAX][PVC_NBLOW]; /**< Esg(ksg,t) of current and 15
-                                      previous time slots (ring buffer) in
-                                      logarithmical domain */
+                                    previous time slots (ring buffer) in
+                                    logarithmical domain */
 } PVC_STATIC_DATA;
 
 /** Data for each PVC instance which is valid during one SBR frame */
@@ -141,14 +141,14 @@ typedef struct {
   const UCHAR
       *pPvcID; /**< Pointer to prediction coefficient matrix index table */
   UCHAR pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
-                            for smoothing filter */
+                          for smoothing filter */
   const FIXP_SGL *pSCcoeffs; /**< Pointer to smoothing window table */
   SCHAR
   sg_offset_low[PVC_NBLOW + 1]; /**< Offset table for PVC grouping of SBR
-                               subbands below SBR range */
+                             subbands below SBR range */
   SCHAR sg_offset_high_kx[PVC_NBHIGH_MAX + 1]; /**< Offset table for PVC
-                                              grouping of SBR subbands in
-                                              SBR range (relativ to kx) */
+                                            grouping of SBR subbands in
+                                            SBR range (relativ to kx) */
   UCHAR nbHigh; /**< Number of grouped QMF subbands in the SBR range */
   const SCHAR *pScalingCoef; /**< Pointer to scaling coeff table */
   const UCHAR *pPVCTab1;     /**< PVC mode 1 table */
@@ -157,7 +157,7 @@ typedef struct {
   FIXP_DBL predEsg[PVC_NTIMESLOT]
                   [PVC_NBHIGH_MAX]; /**< Predicted Energy in linear domain */
   int predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
-                                   domain */
+                                 domain */
   int predEsg_expMax;               /**< Maximum of predEsg_exp[] */
 } PVC_DYNAMIC_DATA;
 

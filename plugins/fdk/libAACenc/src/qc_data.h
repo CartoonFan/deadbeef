@@ -160,16 +160,16 @@ struct QC_INIT {
   INT chBitrate; /* Bitrate/channel */
   INT invQuant;
   INT maxIterations; /* Maximum number of allowed iterations before
-                    FDKaacEnc_crashRecovery() is applied. */
+                  FDKaacEnc_crashRecovery() is applied. */
   FIXP_DBL maxBitFac;
   INT bitrate;
   INT nSubFrames;                /* helper variable */
   INT minBits;                   /* minimal number of bits in one frame*/
   AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
-                                bitreservoir, 2: disabled bitreservoir */
+                              bitreservoir, 2: disabled bitreservoir */
   INT bitDistributionMode; /* Configure element-wise execution or execution over
-                          all elements for the pe-dependent
-                          threshold-adaption */
+                        all elements for the pe-dependent
+                        threshold-adaption */
 
   PADDING padding;
 };
@@ -224,13 +224,13 @@ typedef struct {
 
   UCHAR
   *dynMem_Ah_Flag; /* pointer to dynamic buffer used by AhFlag in function
-                  FDKaacEnc_adaptThresholdsToPe() */
+                FDKaacEnc_adaptThresholdsToPe() */
   UCHAR
   *dynMem_Thr_Exp; /* pointer to dynamic buffer used by ThrExp in function
-                  FDKaacEnc_adaptThresholdsToPe() */
+                FDKaacEnc_adaptThresholdsToPe() */
   UCHAR *dynMem_SfbNActiveLinesLdData; /* pointer to dynamic buffer used by
-                                      sfbNActiveLinesLdData in function
-                                      FDKaacEnc_correctThresh() */
+                                    sfbNActiveLinesLdData in function
+                                    FDKaacEnc_correctThresh() */
 
 } QC_OUT_ELEMENT;
 
@@ -243,9 +243,9 @@ typedef struct {
   INT grantedDynBits; /* granted dynamic bits in frame */
   INT totFillBits;    /* fill bits */
   INT elementExtBits; /* element associated extension payload bits, e.g. sbr,
-                     drc ... */
+                   drc ... */
   INT globalExtBits;  /* frame/au associated extension payload bits (anc data
-                     ...) */
+                   ...) */
   INT staticBits;     /* aac side info bits */
 
   INT totalNoRedPe;
@@ -259,10 +259,10 @@ typedef struct {
 
 typedef struct {
   INT chBitrateEl;         /* channel bitrate in element
-                          (totalbitrate*el_relativeBits/el_channels) */
+                        (totalbitrate*el_relativeBits/el_channels) */
   INT maxBitsEl;           /* used in crash recovery */
   INT bitResLevelEl;       /* update bitreservoir level in each call of
-                          FDKaacEnc_QCMain */
+                        FDKaacEnc_QCMain */
   INT maxBitResBitsEl;     /* nEffChannels*6144 - averageBitsInFrame */
   FIXP_DBL relativeBitsEl; /* Bits relative to total Bits*/
 } ELEMENT_BITS;
@@ -276,11 +276,11 @@ typedef struct {
   INT nElements;
   QCDATA_BR_MODE bitrateMode;
   AACENC_BITRES_MODE bitResMode; /* 0: full bitreservoir, 1: reduced
-                                bitreservoir, 2: disabled bitreservoir */
+                              bitreservoir, 2: disabled bitreservoir */
   INT bitResTot;
   INT bitResTotMax;
   INT maxIterations; /* Maximum number of allowed iterations before
-                    FDKaacEnc_crashRecovery() is applied. */
+                  FDKaacEnc_crashRecovery() is applied. */
   INT invQuant;
 
   FIXP_DBL vbrQualFactor;

@@ -296,7 +296,7 @@ static INT aacDecoder_ConfigCallback(void *handle,
          (self->concealMethodUser == ConcealMethodNone) &&
          CConcealment_GetDelay(&self->concealCommonData) >
              0) /* might not be meaningful but allow if user has set it
-             expicitly */
+          expicitly */
         || (self->flags[0] & (AC_USAC | AC_RSVD50 | AC_RSV603DA) &&
             CConcealment_GetDelay(&self->concealCommonData) >
                 0) /* not implemented */
@@ -1147,7 +1147,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
   int fEndAuNotAdjusted = 0;  /* The end of the access unit was not adjusted */
   int applyCrossfade = 1;     /* flag indicates if flushing was possible */
   FIXP_PCM *pTimeDataFixpPcm; /* Signal buffer for decoding process before PCM
-                             processing */
+                           processing */
   INT timeDataFixpPcmSize;
   PCM_DEC *pTimeDataPcmPost; /* Signal buffer for PCM post-processing */
   INT timeDataPcmPostSize;
@@ -1238,7 +1238,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
         (self->hasAudioPreRoll ||
          (self->buildUpStatus == AACDEC_RSV60_BUILD_UP_IDLE_IN_BAND)) &&
         !fTpInterruption && !fTpConceal /* Bit stream pointer needs to be at the
-                           beginning of a (valid) AU. */
+                   beginning of a (valid) AU. */
     ) {
       ErrorStatus = CAacDecoder_PreRollExtensionPayloadParse(
           self, &numPrerollAU, prerollAUOffset, prerollAULength);
@@ -1435,7 +1435,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
           self->pAacDecoderStaticChannelInfo[0]->concealmentInfo.concealState >
               ConcealState_FadeIn) {
         self->frameOK = 0; /* if an error has occured do concealment in the SBR
-              decoder too */
+      decoder too */
       }
 
       if (self->sbrEnabled && (!(self->flags[0] & AC_USAC_SCFGI3))) {
@@ -1744,7 +1744,7 @@ aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData_extern,
               self->hUniDrcDecoder, reverseInChannelMap, reverseOutChannelMap,
               drcWorkBuffer,
               &self->streamInfo.numChannels); /* self->streamInfo.numChannels
-                             may change here */
+                   may change here */
           /* apply DRC2/3 gain sequence */
           for (ch = 0; ch < self->streamInfo.numChannels; ch++) {
             FDK_drcDec_ProcessTime(self->hUniDrcDecoder, drcDelay,

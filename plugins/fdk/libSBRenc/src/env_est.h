@@ -183,10 +183,10 @@ typedef struct {
   const SBR_FRAME_INFO *frame_info;
   FIXP_DBL noiseFloor[MAX_NUM_NOISE_VALUES];
   SCHAR sfb_nrg_coupling[MAX_NUM_ENVELOPE_VALUES]; /* only used if stereomode =
-                                                    SWITCH_L_R_C */
+                                                  SWITCH_L_R_C */
   SCHAR sfb_nrg[MAX_NUM_ENVELOPE_VALUES];
   SCHAR noise_level_coupling[MAX_NUM_NOISE_VALUES]; /* only used if stereomode =
-                                                     SWITCH_L_R_C */
+                                                   SWITCH_L_R_C */
   SCHAR noise_level[MAX_NUM_NOISE_VALUES];
   UCHAR transient_info[3];
   UCHAR nEnvelopes;

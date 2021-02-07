@@ -147,7 +147,7 @@ struct STRUCT_ADTS {
   FDK_CRCINFO crcInfo;        /* CRC state info */
   USHORT crcReadValue;        /* CRC value read from bitstream data */
   USHORT rawDataBlockDist[4]; /* distance between each raw data block. Not the
-                             same as found in the bitstream */
+                           same as found in the bitstream */
 };
 
 typedef struct STRUCT_ADTS *HANDLE_ADTS;

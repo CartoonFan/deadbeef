@@ -540,7 +540,7 @@ static void coupleNoiseFloor(
       temp1 = CalcInvLdData(NOISE_FLOOR_OFFSET_64 - noise_level_right[i]);
       temp1 = temp1 << (DFRACT_BITS - 1 - LD_DATA_SHIFT -
                         1); /* INT to fract conversion of result, if input of
-                   CalcInvLdData is positiv */
+             CalcInvLdData is positiv */
     }
 
     if (cmpValLeft < FL2FXCONST_DBL(0.0f)) {
@@ -549,7 +549,7 @@ static void coupleNoiseFloor(
       temp2 = CalcInvLdData(NOISE_FLOOR_OFFSET_64 - noise_level_left[i]);
       temp2 = temp2 << (DFRACT_BITS - 1 - LD_DATA_SHIFT -
                         1); /* INT to fract conversion of result, if input of
-                   CalcInvLdData is positiv */
+             CalcInvLdData is positiv */
     }
 
     if ((cmpValLeft < FL2FXCONST_DBL(0.0f)) &&
@@ -673,11 +673,11 @@ static FIXP_DBL mhLoweringEnergy(FIXP_DBL nrg, INT M) {
     tmpScale = CountLeadingBits(nrg);
     nrg <<= tmpScale;
     nrg = fMult(nrg, FL2FXCONST_DBL(0.398107267f)); /* The maximum boost
-                                               is 1.584893, so the
-                                               maximum attenuation
-                                               should be
-                                               square(1/1.584893) =
-                                               0.398107267 */
+                                           is 1.584893, so the
+                                           maximum attenuation
+                                           should be
+                                           square(1/1.584893) =
+                                           0.398107267 */
     nrg >>= tmpScale;
   } else {
     if (M > 1) {
@@ -789,7 +789,7 @@ static void calculateSbrEnvelope(
     envNrg_scale = DFRACT_BITS - fNormz((FIXP_DBL)no_of_bands);
     if (env == short_env) {
       j = fMax(2, timeStep); /* consider at least 2 QMF slots less for short
-                    envelopes (envelopes just before transients) */
+              envelopes (envelopes just before transients) */
       if ((stop_pos - start_pos - j) > 0) {
         stop_pos = stop_pos - j;
       }
@@ -1973,5 +1973,5 @@ INT FDKsbrEnc_GetEnvEstDelay(HANDLE_SBR_EXTRACT_ENVELOPE hSbr) {
          ((hSbr->YBufferWriteOffset) *
               2 /* mult 2 because nrg's are grouped half */
           - hSbr->rBufferReadOffset); /* in reference hold half spec and calc
-                                     nrg's on overlapped spec */
+                                   nrg's on overlapped spec */
 }

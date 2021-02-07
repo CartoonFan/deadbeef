@@ -145,10 +145,10 @@ typedef struct {
   SCHAR BufferFullnessAchieved;
   UCHAR
   usacExplicitCfgChanged;      /* explicit config in case of USAC and LOAS/LATM
-                              must be compared to IPF cfg */
+                            must be compared to IPF cfg */
   UCHAR applyAsc;              /* apply ASC immediate without flushing */
   UCHAR newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
-                              AudioPreRoll */
+                            AudioPreRoll */
 } CLatmDemux;
 
 int CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
