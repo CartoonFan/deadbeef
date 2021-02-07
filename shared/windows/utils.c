@@ -121,6 +121,10 @@ int path_long(const char * path_in, char * path_out, int len) {
     wchar_t out_w[PATH_MAX/*strlen(in_c)*/];
     int win_ret = GetLongPathNameW (in_w, out_w, 256);
 
+    // GetLongPathNameW can fail if path is like "/c/dir/..."" (msys2 style)
+    // this is not checked and will later resolve to deadbeef.exe location
+
+
     // convert to absolute path
     wchar_t abs_path_w[PATH_MAX*2];
     _wfullpath(abs_path_w, out_w, PATH_MAX*2);
@@ -169,6 +173,17 @@ int startup_fixes(char *out_p) {
     // FIX 2: GTK to disable client-side decorations
     // since gtk 3.24.12 on windows (msys) client-side decorations are not forced, we need to disable them
     putenv ("GTK_CSD=0");
+
+    // FIX 3: set path to certs for curl
+    // curl can't find certs by default
+    if (getenv("CURL_CA_BUNDLE") == NULL) {
+        char capath[PATH_MAX + strlen("CURL_CA_BUNDLE=\\share\\ssl\\certs\\ca-bundle.crt")];
+        strcpy (capath,"CURL_CA_BUNDLE=");
+        strcat (capath, out_p);
+        *(strrchr(capath,'\\')+1) = 0;
+        strcat (capath, "share\\ssl\\certs\\ca-bundle.crt");
+        putenv (capath);
+    }
 
     // End of fixes
     return ret;

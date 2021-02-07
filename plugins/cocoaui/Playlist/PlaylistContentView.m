@@ -10,6 +10,7 @@
 #import "PlaylistContentView.h"
 #import "PlaylistView.h"
 #import "DdbShared.h"
+#import "MedialibItemDragDropHolder.h"
 #import "PlaylistLocalDragDropHolder.h"
 #include "deadbeef.h"
 
@@ -57,7 +58,7 @@ static int grouptitleheight = 22;
 
     self.groups_build_idx = -1;
 
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:ddbPlaylistItemsUTIType, NSFilenamesPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:ddbPlaylistItemsUTIType, ddbMedialibItemUTIType, NSFilenamesPboardType, nil]];
 
     _pinnedGroupTitleView = [PinnedGroupTitleView new];
     _pinnedGroupTitleView.hidden = YES;
@@ -83,7 +84,7 @@ static int grouptitleheight = 22;
 
 #pragma mark - Drag and drop
 
-- (void) drawLineIndicator:(NSRect)dirtyRect yy:(int)yy  {
+- (void)drawLineIndicator:(NSRect)dirtyRect yy:(int)yy  {
 
     int yyline = yy;
     float indicatorLineWith = 1.f;
@@ -141,39 +142,56 @@ static int grouptitleheight = 22;
 
     NSPasteboard *pboard = [sender draggingPasteboard];
 
-    DdbListviewGroup_t *grp;
-    int grp_index;
     int sel;
 
     NSPoint draggingLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
     id<DdbListviewDelegate> delegate = self.delegate;
 
     DdbListviewRow_t row = [delegate invalidRow];
-    if ( -1 != [self pickPoint:draggingLocation.y group:&grp groupIndex:&grp_index index:&sel]) {
+    sel = [self dragInsertPointForYPos:draggingLocation.y];
+    if (-1 != sel) {
         row = [delegate rowForIndex:sel];
     }
 
-    if ( [[pboard types] containsObject:ddbPlaylistItemsUTIType ] ) {
+    if ([pboard.types containsObject:ddbPlaylistItemsUTIType]) {
         NSArray *classes = [[NSArray alloc] initWithObjects:[PlaylistLocalDragDropHolder class], nil];
         NSDictionary *options = [NSDictionary dictionary];
-        NSArray *draggedItems = [pboard readObjectsForClasses:classes options:options];
+        NSArray<PlaylistLocalDragDropHolder *> *draggedItems = [pboard readObjectsForClasses:classes options:options];
 
-        PlaylistLocalDragDropHolder *holder = [draggedItems firstObject];
-        NSInteger from_playlist = holder.playlistIdx;
-        uint32_t * indices = malloc (sizeof (uint32_t *) * holder.count);
-        int i = 0;
-        for (NSNumber * number in holder.itemsIndices) {
-            indices[i] = [number unsignedIntValue];
-            ++i;
+        for (PlaylistLocalDragDropHolder *holder in draggedItems) {
+            NSInteger from_playlist = holder.playlistIdx;
+            uint32_t *indices = calloc (sizeof (uint32_t), holder.itemsIndices.count);
+            int i = 0;
+            for (NSNumber * number in holder.itemsIndices) {
+                indices[i] = (uint32_t)number.unsignedIntValue;
+                ++i;
+            }
+
+            NSUInteger length = holder.itemsIndices.count;
+
+            NSDragOperation op = sender.draggingSourceOperationMask;
+            [delegate dropItems:(int)from_playlist before:row indices:indices count:(int)length copy:op==NSDragOperationCopy];
+            free(indices);
         }
-
-        int length = holder.count;
-
-        NSDragOperation op = sender.draggingSourceOperationMask;
-        [delegate dropItems:(int)from_playlist before:row indices:indices count:length copy:op==NSDragOperationCopy];
-        free(indices);
     }
-    else if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+    if ([pboard.types containsObject:ddbMedialibItemUTIType]) {
+        NSArray *classes = [[NSArray alloc] initWithObjects:[MedialibItemDragDropHolder class], nil];
+        NSDictionary *options = [NSDictionary dictionary];
+        NSArray<MedialibItemDragDropHolder *> *draggedItems = [pboard readObjectsForClasses:classes options:options];
+
+        NSInteger count = draggedItems.count;
+        DdbListviewRow_t *items = calloc (count, sizeof (DdbListviewRow_t));
+        size_t itemCount = 0;
+        for (MedialibItemDragDropHolder *holder in draggedItems) {
+            ddb_playItem_t *it = holder.playItem;
+            if (it) {
+                items[itemCount++] = (DdbListviewRow_t)it;
+            }
+        }
+        [delegate dropPlayItems:items before:row count:(int)itemCount];
+        free (items);
+    }
+    else if ([pboard.types containsObject:NSFilenamesPboardType]) {
 
         NSArray *paths = [pboard propertyListForType:NSFilenamesPboardType];
         if (row != [delegate invalidRow]) {
@@ -183,7 +201,7 @@ static int grouptitleheight = 22;
         else {
             // no selected row, add to end
             DdbListviewRow_t lastRow = [delegate rowForIndex:([delegate rowCount]-1)];
-            [delegate externalDropItems:paths after: lastRow];
+            [delegate externalDropItems:paths after:lastRow];
         }
     }
 
@@ -298,6 +316,16 @@ static int grouptitleheight = 22;
     [self updatePinnedGroup];
 }
 
+- (BOOL)becomeFirstResponder {
+    self.needsDisplay = YES;
+    return YES;
+}
+
+- (BOOL)resignFirstResponder {
+    self.needsDisplay = YES;
+    return YES;
+}
+
 - (void)drawListView:(NSRect)dirtyRect {
     id<DdbListviewDelegate> delegate = self.delegate;
 
@@ -328,11 +356,24 @@ static int grouptitleheight = 22;
 
     int title_height = [self grouptitle_height];
 
-    BOOL focused = [self.window isKeyWindow];
+    BOOL focused = self == self.window.firstResponder;
+
+    int dragIdx = -1;
+    if (_draggingInView) {
+        dragIdx = [self dragInsertPointForYPos:_lastDragLocation.y];
+    }
 
     while (grp && grp_y < clip_y + clip_h) {
         DdbListviewRow_t it = grp->head;
         [self.delegate refRow:it];
+
+        if (clip_y <= grp_y + title_height) {
+            // draw group title
+            if (title_height > 0) {
+                [self drawGroupTitle:grp grp_y:grp_y title_height:title_height];
+            }
+        }
+
 
         int ii = 0;
         for (int i = 0, yy = grp_y + title_height; it && i < grp->num_items && yy < clip_y + clip_h; i++, yy += rowheight) {
@@ -367,13 +408,8 @@ static int grouptitleheight = 22;
                 }
 
                 // draw dnd line
-                if (_draggingInView) {
-                    if ( _lastDragLocation.y > self.fullheight ) {
-                        [self drawLineIndicator:dirtyRect yy: self.fullheight];
-                    }
-                    else if ( _lastDragLocation.y > yy && _lastDragLocation.y < yy + rowheight ) {
-                        [self drawLineIndicator:dirtyRect yy:yy];
-                    }
+                if (dragIdx != -1 && dragIdx == idx + i) {
+                    [self drawLineIndicator:dirtyRect yy:yy];
                 }
 
             }
@@ -391,13 +427,6 @@ static int grouptitleheight = 22;
         // draw album art
         int grp_next_y = grp_y + grp->height;
         [self renderAlbumArtForGroup:grp groupIndex:groupIndex isPinnedGroup:NO nextGroupCoord:grp_next_y yPos:grp_y + title_height viewportY:dirtyRect.origin.y clipRegion:dirtyRect];
-
-        if (clip_y <= grp_y + title_height) {
-            // draw group title
-            if (title_height > 0) {
-                [self drawGroupTitle:grp grp_y:grp_y title_height:title_height];
-            }
-        }
 
         idx += grp->num_items;
         grp_y += grp->height;
@@ -672,7 +701,7 @@ static int grouptitleheight = 22;
         }
     }
     else if (_areaselect) {
-        DdbListviewGroup_t *grp;
+        DdbListviewGroup_t *grp = NULL;
         int grp_index;
         int sel;
         if ([self pickPoint:pt.y group:&grp groupIndex:&grp_index index:&sel] == -1) {
@@ -879,6 +908,37 @@ static int grouptitleheight = 22;
 
     _area_selection_start = sel;
     _area_selection_end = sel;
+}
+
+- (int)dragInsertPointForYPos:(CGFloat)y {
+    int idx = 0;
+    int grp_y = 0;
+    int gidx = 0;
+    [self groupCheck];
+    DdbListviewGroup_t *grp = _groups;
+    while (grp) {
+        int h = grp->height;
+        if (y >= grp_y - _grouptitle_height/2 && y < grp_y + h - rowheight/2) {
+            y -= grp_y;
+            // over title
+            if (y < _grouptitle_height) {
+                return idx;
+            }
+            // within group
+            else if (y < _grouptitle_height + grp->num_items * rowheight - rowheight/2) {
+                return idx + (int)((y - _grouptitle_height + rowheight/2) / rowheight);
+            }
+            // just before the next group
+            else {
+                return idx + grp->num_items;
+            }
+        }
+        grp_y += grp->height;
+        idx += grp->num_items;
+        grp = grp->next;
+        gidx++;
+    }
+    return -1;
 }
 
 - (int)pickPoint:(CGFloat)y group:(DdbListviewGroup_t **)group groupIndex:(int *)group_idx index:(int *)global_idx {
@@ -1293,7 +1353,10 @@ static int grouptitleheight = 22;
     }
 
     self.contentSize = NSMakeSize(_fullwidth, _fullheight);
+    // FIXME: this causes a crash
     [self invalidateIntrinsicContentSize];
+
+    [self updatePinnedGroup];
 }
 
 - (NSSize)intrinsicContentSize {

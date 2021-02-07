@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSInteger playlistIdx;
 @property (nonatomic) NSArray *itemsIndices;
-@property (nonatomic,readonly) int count;
 
 - (instancetype)init NS_UNAVAILABLE; 
 - (instancetype)initWithSelectedItemsOfPlaylist:(ddb_playlist_t *)playlist;

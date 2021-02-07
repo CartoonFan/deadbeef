@@ -74,6 +74,7 @@
 #include "threading.h"
 #include "messagepump.h"
 #include "streamer.h"
+#include "playmodes.h"
 #include "conf.h"
 #include "volume.h"
 #include "plugins.h"
@@ -85,9 +86,12 @@
 #include "playqueue.h"
 #include "tf.h"
 #include "logger.h"
+
+#ifdef OSX_APPBUNDLE
 #include "scriptable/scriptable.h"
 #include "scriptable/scriptable_dsp.h"
 #include "scriptable/scriptable_encoder.h"
+#endif
 
 #ifndef PREFIX
 #error PREFIX must be defined
@@ -111,6 +115,7 @@ char dbplugindir[PATH_MAX]; // see deadbeef->get_plugin_dir
 char dbpixmapdir[PATH_MAX]; // see deadbeef->get_pixmap_dir
 char dbcachedir[PATH_MAX];
 char dbruntimedir[PATH_MAX]; // /run/user/<uid>/deadbeef
+char dbresourcedir[PATH_MAX];
 
 char use_gui_plugin[100];
 
@@ -518,7 +523,7 @@ int db_socket_set_unix (struct sockaddr_un *remote, int *len) {
     *len = offsetof(struct sockaddr_un, sun_path) + sizeof (server_id)-1;
 #else
     char *socketdirenv = getenv ("DDB_SOCKET_DIR");
-    snprintf (remote->sun_path, sizeof (remote->sun_path), "%s/socket", socketdirenv ? socketdirenv : dbconfdir);
+    snprintf (remote->sun_path, sizeof (remote->sun_path), "%s/socket", socketdirenv ? socketdirenv : dbruntimedir);
     *len = offsetof(struct sockaddr_un, sun_path) + (int)strlen (remote->sun_path);
 #endif
     return s;
@@ -814,6 +819,10 @@ player_mainloop (void) {
                         streamer_notify_track_deleted ();
                         break;
                     }
+                case DB_EV_SONGFINISHED:
+                    save_resume_state();
+                    conf_save();
+                    break;
                 }
             }
             if (msg >= DB_EV_FIRST && ctx) {
@@ -1136,7 +1145,7 @@ main (int argc, char *argv[]) {
     }
     else if (portable) {
 #ifdef OSX_APPBUNDLE
-        cocoautil_get_resources_path (dbplugindir, sizeof (dbplugindir));
+        cocoautil_get_plugins_path (dbplugindir, sizeof (dbplugindir));
 #else
         if (snprintf (dbplugindir, sizeof (dbplugindir), "%s/plugins", dbinstalldir) > sizeof (dbplugindir)) {
             trace_err ("fatal: install path is too long: %s\n", dbinstalldir);
@@ -1152,15 +1161,30 @@ main (int argc, char *argv[]) {
         }
     }
 
+    if (portable) {
+#ifdef OSX_APPBUNDLE
+        cocoautil_get_resources_path (dbresourcedir, sizeof (dbresourcedir));
+#else
+        if (snprintf (dbresourcedir, sizeof (dbresourcedir), "%s/plugins", dbinstalldir) > sizeof (dbresourcedir)) {
+            trace_err ("fatal: install path is too long: %s\n", dbinstalldir);
+            return -1;
+        }
+#endif
+        mkdir (dbresourcedir, 0755);
+    }
+    else {
+        strcpy (dbresourcedir, dbplugindir);
+    }
+
     // Get doc and pixmaps dirs
     if (portable) {
 #ifdef OSX_APPBUNDLE
-        if (snprintf (dbdocdir, sizeof (dbdocdir), "%s/doc", dbplugindir) > sizeof (dbdocdir)) {
-            trace_err ("fatal: install path is too long: %s\n", dbplugindir);
+        if (snprintf (dbdocdir, sizeof (dbdocdir), "%s/doc", dbresourcedir) > sizeof (dbdocdir)) {
+            trace_err ("fatal: install path is too long: %s\n", dbresourcedir);
             return -1;
         }
-        if (snprintf (dbpixmapdir, sizeof (dbpixmapdir), "%s/pixmaps", dbplugindir) > sizeof (dbpixmapdir)) {
-            trace_err ("fatal: install path is too long: %s\n", dbplugindir);
+        if (snprintf (dbpixmapdir, sizeof (dbpixmapdir), "%s/pixmaps", dbresourcedir) > sizeof (dbpixmapdir)) {
+            trace_err ("fatal: install path is too long: %s\n", dbresourcedir);
             return -1;
         }
 #else
@@ -1210,6 +1234,20 @@ main (int argc, char *argv[]) {
 //    trace ("docdir: %s\n", dbdocdir);
 //    trace ("plugindir: %s\n", dbplugindir);
 //    trace ("pixmapdir: %s\n", dbpixmapdir);
+
+#ifdef __MINGW32__
+    char *directories[] = {dbconfdir, dbinstalldir, dbdocdir, dbplugindir, dbpixmapdir, dbcachedir, dbresourcedir, NULL};
+    for (int i = 0; directories[i] != NULL; i++) {
+        // replace backslashes with normal slashes
+        if (strchr(directories[i], '\\')) {
+            char *slash_p = directories[i];
+            while (slash_p = strchr(slash_p, '\\')) {
+                *slash_p = '/';
+                slash_p++;
+            }
+        }
+    }
+#endif
 
     mkdir (dbconfdir, 0755);
 
@@ -1278,6 +1316,8 @@ main (int argc, char *argv[]) {
     if (!strcmp (cmdline, "--nowplaying")) {
         char nothing[] = "nothing";
         fwrite (nothing, 1, sizeof (nothing)-1, stdout);
+        free (cmdline);
+        cmdline = NULL;
         return 0;
     }
 
@@ -1297,6 +1337,9 @@ main (int argc, char *argv[]) {
     if (plug_load_all ()) { // required to add files to playlist from commandline
         exit (-1);
     }
+
+    streamer_playmodes_init ();
+
     pl_load_all ();
 
     // execute server commands in local context

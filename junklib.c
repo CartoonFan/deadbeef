@@ -81,6 +81,9 @@ int enable_shift_jis_detection = 0;
 #define min(x,y) ((x)<(y)?(x):(y))
 #define max(x,y) ((x)>(y)?(x):(y))
 
+#ifndef _O_BINARY
+#define _O_BINARY 0
+#endif
 
 // mapping between ddb metadata names and id3v2/apev2 names
 #define FRAME_MAPPINGS 5
@@ -597,10 +600,11 @@ ddb_iconv (const char *cs_out, const char *cs_in, char *out, int outlen, const c
 
                         ConversionResult res = ConvertUTF16toUTF8 ((const UTF16**)&src, (const UTF16 *)(src+2), (UTF8**)&dst, dst+5, strictConversion);
                         if (res == conversionOK) {
-                            if (src - utf8_val < outlen-len) {
-                                memcpy (out, utf8_val, src - utf8_val);
-                                out += src - utf8_val;
-                                len += src - utf8_val;
+                            size_t converted_len = dst - utf8_val;
+                            if (converted_len < outlen-len) {
+                                memcpy (out, utf8_val, converted_len);
+                                out += converted_len;
+                                len += converted_len;
                                 inlen -= 2;
                                 in += 2;
                             }
@@ -2322,14 +2326,6 @@ junk_id3v2_convert_24_to_23 (DB_id3v2_tag_t *tag24, DB_id3v2_tag_t *tag23) {
         "TALB", "TBPM", "TCOM", "TCON", "TCOP", "TDLY", "TENC", "TEXT", "TFLT", "TIT1", "TIT2", "TIT3", "TKEY", "TLAN", "TLEN", "TMED", "TOAL", "TOFN", "TOLY", "TOPE", "TOWN", "TPE1", "TPE2", "TPE3", "TPE4", "TPOS", "TPUB", "TRCK", "TRSN", "TRSO", "TSRC", "TSSE", "TXXX", "TDRC", NULL
     };
 
-    // NOTE: 2.4 TMCL (musician credits list) is discarded for 2.3
-    // NOTE: 2.4 TMOO (mood) is discarded for 2.3
-    // NOTE: 2.4 TPRO (produced notice) is discarded for 2.3
-    // NOTE: 2.4 TSOA (album sort order) is discarded for 2.3
-    // NOTE: 2.4 TSOP (performer sort order) is discarded for 2.3
-    // NOTE: 2.4 TSOT (title sort order) is discarded for 2.3
-    // NOTE: 2.4 TSST (set subtitle) is discarded for 2.3
-
     for (f24 = tag24->frames; f24; f24 = f24->next) {
         DB_id3v2_frame_t *f23 = NULL;
         // we are altering the tag, so check for tag alter preservation
@@ -2492,6 +2488,16 @@ junk_id3v2_convert_24_to_23 (DB_id3v2_tag_t *tag24, DB_id3v2_tag_t *tag23) {
                 }
                 else {
                     trace ("junk_id3v2_add_text_frame: 2.4 TDOR doesn't have month/day info; discarded\n");
+                }
+            }
+            else if (f24->id[0] == 'T') {
+                for (int f = 0; frame_mapping[f]; f += FRAME_MAPPINGS) {
+                    if (frame_mapping[f+MAP_ID3V24] && !strcmp (frame_mapping[f+MAP_ID3V24], f24->id)) {
+                        if (!frame_mapping[f+MAP_ID3V23]) {
+                            f23 = junk_id3v2_add_text_frame (tag23, frame_mapping[f+MAP_DDB], decoded);
+                        }
+                        break;
+                    }
                 }
             }
             else {
@@ -2675,11 +2681,32 @@ junk_id3v2_convert_23_to_24 (DB_id3v2_tag_t *tag23, DB_id3v2_tag_t *tag24) {
                 }
             }
             else {
-                // encode for 2.4
-                f24 = junk_id3v2_add_text_frame2 (tag24, f23->id, decoded, decoded_size);
-                if (f24) {
-                    tail = f24;
-                    f24 = NULL;
+                int added = 0;
+                if (!strcmp (f23->id, "TXXX")) {
+                    // does TXXX map to another frame name in 2.4?
+                    for (int f = 0; frame_mapping[f]; f += FRAME_MAPPINGS) {
+                        if (!strcasecmp (decoded, frame_mapping[f+MAP_DDB])) {
+                            if (!frame_mapping[f+MAP_ID3V23] && frame_mapping[f+MAP_ID3V24] && frame_mapping[f+MAP_ID3V24][0] == 'T') {
+                                // add the appropriate t-frame
+                                const char *value = decoded + strlen (decoded) + 1;
+                                f24 = junk_id3v2_add_text_frame (tag24, frame_mapping[f+MAP_ID3V24], value);
+                                if (f24) {
+                                    tail = f24;
+                                    f24 = NULL;
+                                }
+                                added = 1;
+                            }
+                            break;
+                        }
+                    }
+                }
+                // encode as TXXX for 2.4
+                if (!added) {
+                    f24 = junk_id3v2_add_text_frame2 (tag24, f23->id, decoded, decoded_size);
+                    if (f24) {
+                        tail = f24;
+                        f24 = NULL;
+                    }
                 }
             }
             free (decoded);
@@ -3535,15 +3562,17 @@ junk_apev2_free (DB_apev2_tag_t *tag) {
     }
 }
 
-int
-junklib_id3v2_sync_frame (uint8_t *data, int size) {
+static int
+junklib_id3v2_sync_frame (int version_major, uint8_t *data, int size) {
     char *writeptr = data;
     int written = 0;
     while (size > 0) {
         *writeptr = *data;
         if (data[0] == 0xff && size >= 2 && data[1] == 0) {
             data++;
-            size--;
+            if (version_major == 4) {
+                size--;
+            }
         }
         writeptr++;
         data++;
@@ -3599,10 +3628,14 @@ junk_load_comm_frame (int version_major, const char *field_name, playItem_t *it,
     size_t len = strlen (descr) + strlen (value) + 3;
     char comment[len];
 
-    if (*descr) {
-        snprintf (comment, len, "%s: %s", descr, value);
-    }
-    else {
+// FIXME: COMM frames can have multiple unique content descriptors,
+// which uniquely identify each comment,
+// but there's no UI to display or edit this, so they are ignored.
+//    if (*descr) {
+//        snprintf (comment, len, "%s: %s", descr, value);
+//    }
+//    else
+    {
         strcpy (comment, value);
     }
 
@@ -3902,16 +3935,16 @@ junk_id3v2_load_txx (const char *sb_charset, int version_major, playItem_t *it, 
         }
 
         if (!strcasecmp (txx, "replaygain_album_gain")) {
-            pl_set_item_replaygain (it, DDB_REPLAYGAIN_ALBUMGAIN, atof (val));
+            pl_set_item_replaygain (it, DDB_REPLAYGAIN_ALBUMGAIN, (float)atof (val));
         }
         else if (!strcasecmp (txx, "replaygain_album_peak")) {
-            pl_set_item_replaygain (it, DDB_REPLAYGAIN_ALBUMPEAK, atof (val));
+            pl_set_item_replaygain (it, DDB_REPLAYGAIN_ALBUMPEAK, (float)atof (val));
         }
         else if (!strcasecmp (txx, "replaygain_track_gain")) {
-            pl_set_item_replaygain (it, DDB_REPLAYGAIN_TRACKGAIN, atof (val));
+            pl_set_item_replaygain (it, DDB_REPLAYGAIN_TRACKGAIN, (float)atof (val));
         }
         else if (!strcasecmp (txx, "replaygain_track_peak")) {
-            pl_set_item_replaygain (it, DDB_REPLAYGAIN_TRACKPEAK, atof (val));
+            pl_set_item_replaygain (it, DDB_REPLAYGAIN_TRACKPEAK, (float)atof (val));
         }
         else if (!strcasecmp (txx, "date")) { // HACK: fb2k date support
             pl_append_meta (it, "year", val);
@@ -4340,7 +4373,7 @@ junk_id3v2_read_full (playItem_t *it, DB_id3v2_tag_t *tag_store, DB_FILE *fp) {
             }
             int synched_size = sz;
             if (unsync) {
-                synched_size = junklib_id3v2_sync_frame (readptr, sz);
+                synched_size = junklib_id3v2_sync_frame (version_major, readptr, sz);
                 trace ("size: %d/%d\n", synched_size, sz);
             }
 
@@ -4471,7 +4504,7 @@ junk_id3v2_read_full (playItem_t *it, DB_id3v2_tag_t *tag_store, DB_FILE *fp) {
             }
             int synched_size = sz;
             if (unsync) {
-                synched_size = junklib_id3v2_sync_frame (readptr, sz);
+                synched_size = junklib_id3v2_sync_frame (version_major, readptr, sz);
             }
 
             DB_id3v2_frame_t *frm = malloc (sizeof (DB_id3v2_frame_t) + sz);
@@ -4664,7 +4697,7 @@ junk_rewrite_tags (playItem_t *it, uint32_t junk_flags, int id3v2_version, const
     if (stat(fname, &stat_struct) != 0) {
         stat_struct.st_mode = 00640;
     }
-    out = open (tmppath, O_CREAT | O_LARGEFILE | O_WRONLY, stat_struct.st_mode);
+    out = open (tmppath, O_CREAT | O_LARGEFILE | O_WRONLY | _O_BINARY, stat_struct.st_mode);
     trace ("will write tags into %s\n", tmppath);
     if (out < 0) {
         fprintf (stderr, "cmp3_write_metadata: failed to open temp file %s\n", tmppath);
@@ -4811,26 +4844,53 @@ junk_rewrite_tags (playItem_t *it, uint32_t junk_flags, int id3v2_version, const
             if (strchr (":!_", meta->key[0])) {
                 break;
             }
-            int i;
-            for (i = 0; frame_mapping[i]; i += FRAME_MAPPINGS) {
+
+            int noremap = 0;
+            int mapidx = -1;
+            for (int i = 0; frame_mapping[i]; i += FRAME_MAPPINGS) {
                 if (!strcasecmp (meta->key, frame_mapping[i+MAP_DDB])) {
                     const char *frm_name = id3v2_version == 3 ? frame_mapping[i+MAP_ID3V23] : frame_mapping[i+MAP_ID3V24];
                     if (frm_name) {
                         // field is known and supported for this tag version
                         trace ("add_frame %s %s\n", frm_name, meta->value);
                         _id3v2_append_combined_text_frame_from_meta (&id3v2, frm_name, meta);
+                        noremap = 1;
                     }
+                    mapidx = i;
                     break;
                 }
             }
-            if (!frame_mapping[i]
-                    && strcasecmp (meta->key, "comment")
-                    && strcasecmp (meta->key, "unsynced lyrics")
-                    && strcasecmp (meta->key, "track")
-                    && strcasecmp (meta->key, "numtracks")
-                    && strcasecmp (meta->key, "disc")
-                    && strcasecmp (meta->key, "numdiscs")
-               ) {
+
+            // frames which should not remap to TXXX
+            static const char *txxx_no_fallbacks[] = {
+                "comment",
+                "unsynced lyrics",
+                "track"
+                "numtracks"
+                "disc"
+                "numdiscs",
+                NULL
+            };
+
+            if (!noremap) {
+                if (mapidx >= 0) {
+                    for (int i = 0; txxx_no_fallbacks[i]; i++) {
+                        if (!strcasecmp (txxx_no_fallbacks[i], meta->key)) {
+                            noremap = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // is this a text frame that needs remapping to TXXX?
+            if (!noremap) {
+                if (!frame_mapping[mapidx+MAP_ID3V24] && frame_mapping[mapidx+MAP_ID3V24][0] != 'T') {
+                    noremap = 1;
+                }
+            }
+
+            if (!noremap) {
                 // add as txxx
                 int out_size;
 

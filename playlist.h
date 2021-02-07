@@ -145,11 +145,17 @@ plt_get_sel_count (int plt);
 int
 plt_add (int before, const char *title);
 
+playlist_t *
+plt_append (const char *title);
+
 void
 plt_remove (int plt);
 
 int
 plt_find (const char *name);
+
+playlist_t *
+plt_find_by_name (const char *name);
 
 void
 plt_set_curr_idx (int plt);
@@ -528,5 +534,17 @@ pl_item_set_endsample (playItem_t *it, int64_t sample);
 
 int
 plt_is_loading_cue (playlist_t *plt);
+
+int
+fileadd_filter_test (ddb_file_found_data_t *data);
+
+void
+pl_set_selected_in_playlist (playlist_t *playlist, playItem_t *it, int sel);
+
+playItem_t *
+plt_get_head_item(playlist_t *p, int iter);
+
+playItem_t *
+plt_get_tail_item(playlist_t *p, int iter);
 
 #endif // __PLAYLIST_H

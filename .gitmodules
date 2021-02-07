@@ -1,3 +1,9 @@
 [submodule "osx/deps"]
 	path = osx/deps
 	url = https://github.com/DeaDBeeF-Player/deadbeef-osx-deps.git
+[submodule "external/mp4p"]
+	path = external/mp4p
+	url = https://github.com/DeaDBeeF-Player/mp4p.git
+[submodule "external/apbuild"]
+	path = external/apbuild
+	url = https://github.com/DeaDBeeF-Player/apbuild.git

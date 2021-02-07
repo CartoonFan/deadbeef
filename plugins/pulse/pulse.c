@@ -34,7 +34,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 #include "../../deadbeef.h"
 
 #define trace(...) { deadbeef->log_detailed (&plugin.plugin, 0, __VA_ARGS__); }
@@ -53,6 +52,7 @@ static int pulse_terminate;
 
 static pa_simple *s;
 static pa_sample_spec ss;
+static int _setformat_requested;
 static ddb_waveformat_t requested_fmt;
 static ddb_playback_state_t state = DDB_PLAYBACK_STATE_STOPPED;
 static uintptr_t mutex;
@@ -160,13 +160,16 @@ static int pulse_set_spec(ddb_waveformat_t *fmt)
     return 0;
 }
 
-static int pulse_init(void)
-{
+static int
+pulse_init(void) {
     trace ("pulse_init\n");
     deadbeef->mutex_lock (mutex);
     state = DDB_PLAYBACK_STATE_STOPPED;
     trace ("pulse_terminate=%d\n", pulse_terminate);
-    assert (!pulse_terminate);
+    if (pulse_terminate) {
+        deadbeef->mutex_unlock (mutex);
+        return -1;
+    }
 
     if (requested_fmt.samplerate != 0) {
         memcpy (&plugin.fmt, &requested_fmt, sizeof (ddb_waveformat_t));
@@ -187,26 +190,24 @@ static int pulse_free(void);
 static int pulse_play(void);
 static int pulse_pause(void);
 
-static int pulse_setformat (ddb_waveformat_t *fmt)
-{
-    int st = state;
-    memcpy (&requested_fmt, fmt, sizeof (ddb_waveformat_t));
-    if (!s
-        || !memcmp (fmt, &plugin.fmt, sizeof (ddb_waveformat_t))) {
+static int
+_setformat_apply (void) {
+    _setformat_requested = 0;
+    if (!memcmp (&requested_fmt, &plugin.fmt, sizeof (ddb_waveformat_t))) {
         return 0;
     }
 
-    pulse_free ();
-    pulse_init ();
-    int res = 0;
-    if (st == DDB_PLAYBACK_STATE_PLAYING) {
-        res = pulse_play ();
-    }
-    else if (st == DDB_PLAYBACK_STATE_PAUSED) {
-        res = pulse_pause ();
-    }
+    return pulse_set_spec(&requested_fmt);
+}
 
-    return res;
+static int
+pulse_setformat (ddb_waveformat_t *fmt)
+{
+    deadbeef->mutex_lock(mutex);
+    _setformat_requested = 1;
+    memcpy (&requested_fmt, fmt, sizeof (ddb_waveformat_t));
+    deadbeef->mutex_unlock(mutex);
+    return 0;
 }
 
 static int pulse_free(void)
@@ -304,6 +305,20 @@ static void pulse_thread(void *context)
             continue;
         }
 
+        // setformat
+        deadbeef->mutex_lock (mutex);
+        int res = 0;
+        if (_setformat_requested) {
+            res = _setformat_apply ();
+        }
+        if (res != 0) {
+            deadbeef->thread_detach (pulse_tid);
+            pulse_terminate = 1;
+            deadbeef->mutex_unlock(mutex);
+            break;
+        }
+        deadbeef->mutex_unlock(mutex);
+
         int sample_size = plugin.fmt.channels * (plugin.fmt.bps / 8);
         char buf[buffer_size];
 
@@ -319,7 +334,7 @@ static void pulse_thread(void *context)
 
         int error;
 
-        int res = 0;
+        res = 0;
         if (bytesread > 0) {
             deadbeef->mutex_lock (mutex);
             res = pa_simple_write(s, buf, bytesread, &error);

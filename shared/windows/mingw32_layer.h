@@ -74,11 +74,31 @@
 
 // used by plugin artwork / defined in libwin
 #ifndef fnmatch
-#define  fnmatch(x,y,z) PathMatchSpec(y,x)
+#define  fnmatch(x,y,z) !PathMatchSpec(y,x)
 #endif
 
 // used by plugin converter
 # define WEXITSTATUS(x) (x)
+
+// used by shn
+/*
+ * File type macros.  Note that block devices, sockets and links cannot be
+ * distinguished on Windows and the macros S_ISBLK, S_ISSOCK and S_ISLNK are
+ * only defined for compatibility.  These macros should always return false
+ * on Windows.
+ */
+#ifndef S_IFMT /* File type mask */
+#define S_IFMT _S_IFMT
+#endif
+#ifndef S_IFSOCK /* Socket */
+#define S_IFSOCK 0
+#endif
+#define S_ISFIFO(mode) (((mode) & S_IFMT) == S_IFIFO)
+#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
+#define S_ISSOCK(mode) (((mode) & S_IFMT) == S_IFSOCK)
+#define S_ISCHR(mode)  (((mode) & S_IFMT) == S_IFCHR)
+#define S_ISBLK(mode)  (((mode) & S_IFMT) == S_IFBLK)
 
 // ?
 #include <pthread.h>

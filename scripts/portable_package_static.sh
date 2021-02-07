@@ -17,6 +17,7 @@ fi
 # main distro
 SRCDIR=deadbeef-$VERSION
 PLUGDIR=$SRCDIR/plugins
+LIBDIR=$SRCDIR/lib
 DOCDIR=$SRCDIR/doc
 PIXMAPDIR=$SRCDIR/pixmaps
 OUTNAME=deadbeef-static_${VERSION}-${BUILD}_${ARCH}.tar.bz2
@@ -29,6 +30,7 @@ tar jcvf ../../portable_out/build/$OUTNAME\
     $SRCDIR/deadbeef\
     $SRCDIR/deadbeef.png\
     $DOCDIR\
+    $LIBDIR\
     $PLUGDIR/aac.so\
     $PLUGDIR/adplug.so\
     $PLUGDIR/alsa.so\
@@ -80,6 +82,7 @@ tar jcvf ../../portable_out/build/$OUTNAME\
     $PLUGDIR/pltbrowser_gtk2.so\
     $PLUGDIR/pltbrowser_gtk3.so\
     $PLUGDIR/in_sc68.so\
+    $PLUGDIR/ddb_soundtouch.so\
     $PLUGDIR/data68\
     $PIXMAPDIR\
     $SRCDIR/locale\

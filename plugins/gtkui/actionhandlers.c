@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include "../../gettext.h"
 #include "../../deadbeef.h"
+#include "../../shared/deletefromdisk.h"
 #include "gtkui.h"
 #include "progress.h"
 #include "ddblistview.h"
@@ -41,6 +42,7 @@
 #include "callbacks.h"
 #include <sys/stat.h>
 #include "gtkui_api.h"
+#include <gio/gio.h>
 
 // disable custom title function, until we have new title formatting (0.7)
 #define DISABLE_CUSTOM_TITLE
@@ -60,7 +62,7 @@ action_open_files_handler_cb (void *userdata) {
 }
 
 int
-action_open_files_handler (struct DB_plugin_action_s *action, int ctx) {
+action_open_files_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_open_files_handler_cb, NULL);
     return 0;
 }
@@ -75,7 +77,7 @@ action_add_files_handler_cb (void *user_data) {
 }
 
 int
-action_add_files_handler (struct DB_plugin_action_s *action, int ctx) {
+action_add_files_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_add_files_handler_cb, NULL);
     return 0;
 }
@@ -90,7 +92,7 @@ action_add_folders_handler_cb (void *user_data) {
 }
 
 int
-action_add_folders_handler (struct DB_plugin_action_s *action, int ctx) {
+action_add_folders_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_add_folders_handler_cb, NULL);
     return 0;
 }
@@ -102,7 +104,7 @@ action_quit_handler_cb (void *user_data) {
 }
 
 int
-action_quit_handler (DB_plugin_action_t *act, int ctx) {
+action_quit_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_quit_handler_cb, NULL);
     return 0;
 }
@@ -125,7 +127,7 @@ action_deselect_all_handler_cb (void *user_data) {
 }
 
 int
-action_deselect_all_handler (struct DB_plugin_action_s *action, int ctx) {
+action_deselect_all_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     g_idle_add (action_deselect_all_handler_cb, NULL);
     return 0;
 }
@@ -138,7 +140,7 @@ action_select_all_handler_cb (void *user_data) {
 }
 
 int
-action_select_all_handler (struct DB_plugin_action_s *action, int ctx) {
+action_select_all_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     g_idle_add (action_select_all_handler_cb, NULL);
     return 0;
 }
@@ -154,13 +156,13 @@ action_new_playlist_handler_cb (void *user_data) {
 }
 
 int
-action_new_playlist_handler (struct DB_plugin_action_s *action, int ctx) {
+action_new_playlist_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_new_playlist_handler_cb, NULL);
     return 0;
 }
 
 int
-action_remove_current_playlist_handler (struct DB_plugin_action_s *action, int ctx) {
+action_remove_current_playlist_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     int idx = deadbeef->plt_get_curr_idx ();
     if (idx != -1) {
         deadbeef->plt_remove (idx);
@@ -175,7 +177,7 @@ action_toggle_mainwin_handler_cb (void *user_data) {
 }
 
 int
-action_toggle_mainwin_handler (struct DB_plugin_action_s *action, int ctx) {
+action_toggle_mainwin_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_mainwin_handler_cb, NULL);
     return 0;
 }
@@ -196,7 +198,7 @@ action_show_mainwin_handler_cb (void *user_data) {
 }
 
 int
-action_show_mainwin_handler (struct DB_plugin_action_s *action, int ctx) {
+action_show_mainwin_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     g_idle_add (action_show_mainwin_handler_cb, NULL);
     return 0;
 }
@@ -211,7 +213,7 @@ action_hide_mainwin_handler_cb (void *user_data) {
 }
 
 int
-action_hide_mainwin_handler (struct DB_plugin_action_s *action, int ctx) {
+action_hide_mainwin_handler (struct DB_plugin_action_s *action, ddb_action_context_t ctx) {
     g_idle_add (action_hide_mainwin_handler_cb, NULL);
     return 0;
 }
@@ -291,7 +293,7 @@ action_add_location_handler_cb (void *user_data) {
 }
 
 int
-action_add_location_handler (DB_plugin_action_t *act, int ctx) {
+action_add_location_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_add_location_handler_cb, NULL);
     return 0;
 }
@@ -307,13 +309,13 @@ action_show_help_handler_cb (void *user_data) {
 }
 
 int
-action_show_help_handler (DB_plugin_action_t *act, int ctx) {
+action_show_help_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_show_help_handler_cb, NULL);
     return 0;
 }
 
 int
-action_remove_from_playlist_handler (DB_plugin_action_t *act, int ctx) {
+action_remove_from_playlist_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     if (ctx == DDB_ACTION_CTX_SELECTION) {
         ddb_playlist_t *plt = deadbeef->plt_get_curr ();
         if (plt) {
@@ -363,56 +365,15 @@ action_remove_from_playlist_handler (DB_plugin_action_t *act, int ctx) {
 }
 
 static void
-_remove_file_from_all_playlists (const char *search_uri) {
-    // The caller is responsible for pl_lock
-    int n = deadbeef->plt_get_count ();
-    for (int i = 0; i < n; ++i) {
-        ddb_playlist_t *plt = deadbeef->plt_get_for_idx (i);
-        DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-        while (it) {
-            DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-            const char *uri = deadbeef->pl_find_meta (it, ":URI");
-            if (strcmp (uri, search_uri) == 0) {
-                deadbeef->plt_remove_item (plt, it);
-            }
-            deadbeef->pl_item_unref (it);
-            it = next;
-        }
-
-        deadbeef->plt_unref (plt);
-    }
-}
-
-static void
-_delete_and_remove_track_from_all_playlists (const char *uri, ddb_playlist_t *plt, ddb_playItem_t *it) {
-    (void)unlink (uri);
-
-    // check if file exists
-    struct stat buf;
-    memset (&buf, 0, sizeof (buf));
-    int stat_res = stat (uri, &buf);
-    
-    if (stat_res != 0) {
-        _remove_file_from_all_playlists (uri);
-    } else {
-        trace ("Failed to delete file: %s\n", uri);
-    }
-}
-
-gboolean
-action_delete_from_disk_handler_cb (void *data) {
-    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-    if (!plt) {
-        return FALSE;
-    }
-    
-    int ctx = (int)(intptr_t)data;
+_warningMessageForCtx (ddbDeleteFromDiskController_t ctl, ddb_action_context_t ctx, unsigned trackcount, ddbDeleteFromDiskControllerWarningCallback_t callback) {
     if (deadbeef->conf_get_int ("gtkui.delete_files_ask", 1)) {
         char buf[1000];
-        const char *buf2 = _(" The files will be lost.\n\n(This dialog can be turned off in GTKUI plugin settings)");
+        const char *buf2 = deadbeef->conf_get_int ("gtkui.move_to_trash", 1) ?
+        _(" The files will be moved to trash.\n\n(This dialog can be turned off in GTKUI plugin settings)") :
+        _(" The files will be lost.\n\n(This dialog can be turned off in GTKUI plugin settings)");
 
         if (ctx == DDB_ACTION_CTX_SELECTION) {
-            int selected_files = deadbeef->pl_getselcount ();
+            int selected_files = trackcount;
             if (selected_files == 1) {
                 snprintf(buf, sizeof (buf), _("Do you really want to delete the selected file?%s"), buf2);
             } else {
@@ -420,7 +381,7 @@ action_delete_from_disk_handler_cb (void *data) {
             }
         }
         else if (ctx == DDB_ACTION_CTX_PLAYLIST) {
-            int files = deadbeef->plt_get_item_count (plt, PL_MAIN);
+            int files = trackcount;
             snprintf(buf, sizeof (buf), _("Do you really want to delete all %d files from the current playlist?%s"), files, buf2);
         }
         else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
@@ -434,114 +395,101 @@ action_delete_from_disk_handler_cb (void *data) {
         int response = gtk_dialog_run (GTK_DIALOG (dlg));
         gtk_widget_destroy (dlg);
         if (response != GTK_RESPONSE_YES) {
-            return FALSE;
-        }
-    }
-    deadbeef->pl_lock ();
-
-    DB_playItem_t **tracklist = NULL;
-    unsigned trackcount = 0;
-    
-    DB_playItem_t *it_current_song = deadbeef->streamer_get_playing_track ();
-    int idx_current_song = -1;
-    if (ctx == DDB_ACTION_CTX_SELECTION) {
-        unsigned selcount = deadbeef->plt_getselcount (plt);
-        tracklist = calloc (selcount, sizeof (DB_playItem_t *));
-        DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-        while (it) {
-            if (trackcount == selcount) {
-                break;
-            }
-            DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-            const char *uri = deadbeef->pl_find_meta (it, ":URI");
-            if (deadbeef->pl_is_selected (it) && deadbeef->is_local_file (uri)) {
-                if (it == it_current_song) {
-                    idx_current_song = deadbeef->plt_get_item_idx (plt, it, PL_MAIN);
-                }
-                deadbeef->pl_item_ref (it);
-                tracklist[trackcount++] = it;
-            }
-            deadbeef->pl_item_unref (it);
-            it = next;
-        }
-    }
-    else if (ctx == DDB_ACTION_CTX_PLAYLIST) {
-        unsigned count = deadbeef->plt_get_item_count (plt, PL_MAIN);
-        tracklist = calloc (count, sizeof (DB_playItem_t *));
-        DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-        while (it) {
-            if (trackcount == count) {
-                break;
-            }
-            DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-            const char *uri = deadbeef->pl_find_meta (it, ":URI");
-            if (deadbeef->is_local_file (uri)) {
-                deadbeef->pl_item_ref (it);
-                tracklist[trackcount++] = it;
-            }
-            deadbeef->pl_item_unref (it);
-            it = next;
-        }
-    }
-    else if (ctx == DDB_ACTION_CTX_NOWPLAYING) {
-        DB_playItem_t *it = deadbeef->streamer_get_playing_track ();
-        if (it) {
-            const char *uri = deadbeef->pl_find_meta (it, ":URI");
-            if (deadbeef->is_local_file (uri)) {
-                int idx = idx_current_song = deadbeef->plt_get_item_idx (plt, it, PL_MAIN);
-                if (idx != -1) {
-                    tracklist = calloc (1, sizeof (DB_playItem_t *));
-                    deadbeef->pl_item_ref (it);
-                    tracklist[trackcount++] = it;
-                }
-            }
-            deadbeef->pl_item_unref (it);
+            callback(ctl, 1);
+            return;
         }
     }
 
-    if (tracklist) {
-        for (unsigned i = 0; i < trackcount; i++) {
-            const char *uri = deadbeef->pl_find_meta (tracklist[i], ":URI");
-            _delete_and_remove_track_from_all_playlists (uri, plt, tracklist[i]);
-            deadbeef->pl_item_unref (tracklist[i]);
-        }
-        free (tracklist);
-        tracklist = NULL;
-    }
-    
-    if (deadbeef->conf_get_int ("gtkui.skip_deleted_songs", 0) 
-        && deadbeef->plt_get_item_idx (plt, it_current_song, PL_MAIN) == -1 
-        && deadbeef->streamer_get_current_playlist () == deadbeef->plt_get_curr_idx () 
-        && deadbeef->get_output ()->state () == OUTPUT_STATE_PLAYING) {
-        
-        if (idx_current_song != -1 
-            && deadbeef->playqueue_get_count () == 0 
-            && deadbeef->streamer_get_shuffle () == DDB_SHUFFLE_OFF) {
-            deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, idx_current_song, 0);
-        }
-        else {
-            deadbeef->sendmessage(DB_EV_NEXT, 0, 0, 0);
-        }
+    callback(ctl, 0);
+}
+
+static int
+_deleteFile (ddbDeleteFromDiskController_t ctl, const char *uri) {
+    if (deadbeef->conf_get_int ("gtkui.move_to_trash", 1)) {
+        GFile *file = g_file_new_for_path (uri);
+        g_file_trash (file, NULL, NULL);
+        g_object_unref (file);
+    } else {
+        (void)unlink (uri);
     }
 
-    deadbeef->pl_save_all ();
-    if (it_current_song) {
-        deadbeef->pl_item_unref (it_current_song);
+    // check if file still exists
+    struct stat buf;
+    memset (&buf, 0, sizeof (buf));
+    int stat_res = stat (uri, &buf);
+
+    if (stat_res == 0) {
+        trace ("Failed to delete file: %s\n", uri);
+        return 0;
     }
-    deadbeef->pl_unlock ();
+    return 1;
+}
+
+static ddbDeleteFromDiskController_t _deleteCtl;
+
+static void
+_deleteCompleted (ddbDeleteFromDiskController_t ctl) {
+    ddbDeleteFromDiskControllerFree(ctl);
+    _deleteCtl = NULL;
+}
+
+gboolean
+action_delete_from_disk_handler_cb (void *data) {
+    if (_deleteCtl) {
+        return FALSE;
+    }
+
+    ddbDeleteFromDiskControllerDelegate_t delegate = {
+        .warningMessageForCtx = _warningMessageForCtx,
+        .deleteFile = _deleteFile,
+        .completed = _deleteCompleted,
+    };
+
+    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
+    if (!plt) {
+        return FALSE;
+    }
+
+    ddb_action_context_t ctx = (int)(intptr_t)data;
+
+    _deleteCtl = ddbDeleteFromDiskControllerInitWithPlaylist(ddbDeleteFromDiskControllerAlloc(), plt, ctx);
+
+    ddbDeleteFromDiskControllerSetShouldSkipDeletedTracks(_deleteCtl, deadbeef->conf_get_int ("gtkui.skip_deleted_songs", 0));
+
+    ddbDeleteFromDiskControllerRunWithDelegate(_deleteCtl, delegate);
+
     deadbeef->plt_unref (plt);
-    deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
+
     return FALSE;
 }
 
+void
+delete_from_disk_with_track_list (ddbUtilTrackList_t trackList) {
+    if (_deleteCtl) {
+        return;
+    }
+
+    ddbDeleteFromDiskControllerDelegate_t delegate = {
+        .warningMessageForCtx = _warningMessageForCtx,
+        .deleteFile = _deleteFile,
+        .completed = _deleteCompleted,
+    };
+
+    _deleteCtl =  ddbDeleteFromDiskControllerInitWithTrackList(ddbDeleteFromDiskControllerAlloc(), trackList);
+
+    ddbDeleteFromDiskControllerSetShouldSkipDeletedTracks(_deleteCtl, deadbeef->conf_get_int ("gtkui.skip_deleted_songs", 0));
+
+    ddbDeleteFromDiskControllerRunWithDelegate(_deleteCtl, delegate);
+}
+
 int
-action_delete_from_disk_handler (DB_plugin_action_t *act, int ctx) {
+action_delete_from_disk_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_delete_from_disk_handler_cb, (void *)(intptr_t)ctx);
     return 0;
 }
 
 typedef struct {
-    int ctx;
+    ddb_action_context_t ctx;
     ddb_playlist_t *plt;
 } trkproperties_action_ctx_t;
 
@@ -555,7 +503,7 @@ action_show_track_properties_handler_cb (void *data) {
 }
 
 int
-action_show_track_properties_handler (DB_plugin_action_t *act, int ctx) {
+action_show_track_properties_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     trkproperties_action_ctx_t *data = calloc (1, sizeof (trkproperties_action_ctx_t));
     data->ctx = ctx;
     data->plt = deadbeef->action_get_playlist ();
@@ -570,7 +518,7 @@ action_find_handler_cb (void *data) {
 }
 
 int
-action_find_handler (DB_plugin_action_t *act, int ctx) {
+action_find_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_find_handler_cb, NULL);
     return 0;
 }
@@ -584,7 +532,7 @@ action_scroll_follows_playback_handler_cb (void *data) {
 }
 
 int
-action_scroll_follows_playback_handler (DB_plugin_action_t *act, int ctx) {
+action_scroll_follows_playback_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_scroll_follows_playback_handler_cb, NULL);
     return 0;
 }
@@ -598,7 +546,7 @@ action_cursor_follows_playback_handler_cb (void *data) {
 }
 
 int
-action_cursor_follows_playback_handler (DB_plugin_action_t *act, int ctx) {
+action_cursor_follows_playback_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_cursor_follows_playback_handler_cb, NULL);
     return 0;
 }
@@ -638,7 +586,7 @@ action_load_playlist_handler_cb (void *data) {
 }
 
 int
-action_load_playlist_handler (DB_plugin_action_t *act, int ctx) {
+action_load_playlist_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_load_playlist_handler_cb, NULL);
     return 0;
 }
@@ -669,7 +617,7 @@ action_save_playlist_handler_cb (void *data) {
 }
 
 int
-action_save_playlist_handler (DB_plugin_action_t *act, int ctx) {
+action_save_playlist_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_save_playlist_handler_cb, NULL);
     return 0;
 }
@@ -684,7 +632,7 @@ action_toggle_menu_handler_cb (void *data) {
 }
 
 int
-action_toggle_menu_handler (DB_plugin_action_t *act, int ctx) {
+action_toggle_menu_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_menu_handler_cb, NULL);
     return 0;
 }
@@ -703,7 +651,7 @@ action_toggle_statusbar_handler_cb (void *data) {
 }
 
 int
-action_toggle_statusbar_handler (DB_plugin_action_t *act, int ctx) {
+action_toggle_statusbar_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_statusbar_handler_cb, NULL);
     return 0;
 }
@@ -718,7 +666,7 @@ action_toggle_designmode_handler_cb (void *data) {
 }
 
 int
-action_toggle_designmode_handler (DB_plugin_action_t *act, int ctx) {
+action_toggle_designmode_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_designmode_handler_cb, NULL);
     return 0;
 }
@@ -730,7 +678,7 @@ action_preferences_handler_cb (void *data) {
 }
 
 int
-action_preferences_handler (DB_plugin_action_t *act, int ctx) {
+action_preferences_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_preferences_handler_cb, NULL);
     return 0;
 }
@@ -773,13 +721,13 @@ action_sort_custom_handler_cb (void *data) {
 }
 
 int
-action_sort_custom_handler (DB_plugin_action_t *act, int ctx) {
+action_sort_custom_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     gdk_threads_add_idle (action_sort_custom_handler_cb, NULL);
     return 0;
 }
 
 int
-action_crop_selected_handler (DB_plugin_action_t *act, int ctx) {
+action_crop_selected_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     deadbeef->pl_crop_selected ();
     deadbeef->pl_save_current ();
     deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
@@ -796,7 +744,7 @@ action_toggle_eq_handler_cb (void *data) {
 }
 
 int
-action_toggle_eq_handler (DB_plugin_action_t *act, int ctx) {
+action_toggle_eq_handler (DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_eq_handler_cb, NULL);
     return 0;
 }
@@ -812,7 +760,7 @@ action_show_eq_handler_cb (void *data) {
 }
 
 int
-action_show_eq_handler(DB_plugin_action_t *act, int ctx) {
+action_show_eq_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_show_eq_handler_cb, NULL);
     return 0;
 }
@@ -828,7 +776,7 @@ action_hide_eq_handler_cb (void *data) {
 }
 
 int
-action_hide_eq_handler(DB_plugin_action_t *act, int ctx) {
+action_hide_eq_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_hide_eq_handler_cb, NULL);
     return 0;
 }
@@ -840,7 +788,7 @@ action_playback_loop_off_handler_cb (void *data) {
 }
 
 int
-action_playback_loop_off_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_loop_off_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_loop_off_handler_cb, NULL);
     return 0;
 }
@@ -852,7 +800,7 @@ action_playback_loop_single_handler_cb (void *data) {
 }
 
 int
-action_playback_loop_single_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_loop_single_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_loop_single_handler_cb, NULL);
     return 0;
 }
@@ -864,7 +812,7 @@ action_playback_loop_all_handler_cb (void *data) {
 }
 
 int
-action_playback_loop_all_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_loop_all_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_loop_all_handler_cb, NULL);
     return 0;
 }
@@ -876,7 +824,7 @@ action_playback_order_random_handler_cb (void *data) {
 }
 
 int
-action_playback_order_random_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_order_random_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_order_random_handler_cb, NULL);
     return 0;
 }
@@ -888,7 +836,7 @@ action_playback_order_shuffle_albums_handler_cb (void *data) {
 }
 
 int
-action_playback_order_shuffle_albums_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_order_shuffle_albums_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_order_shuffle_albums_handler_cb, NULL);
     return 0;
 }
@@ -900,7 +848,7 @@ action_playback_order_shuffle_handler_cb (void *data) {
 }
 
 int
-action_playback_order_shuffle_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_order_shuffle_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_order_shuffle_handler_cb, NULL);
     return 0;
 }
@@ -912,7 +860,7 @@ action_playback_order_linear_handler_cb (void *data) {
 }
 
 int
-action_playback_order_linear_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_order_linear_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_order_linear_handler_cb, NULL);
     return 0;
 }
@@ -938,7 +886,7 @@ action_playback_order_cycle_handler_cb (void *data) {
 }
 
 int
-action_playback_order_cycle_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_order_cycle_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_order_cycle_handler_cb, NULL);
     return 0;
 }
@@ -961,7 +909,7 @@ action_playback_loop_cycle_handler_cb (void *data) {
 }
 
 int
-action_playback_loop_cycle_handler(DB_plugin_action_t *act, int ctx) {
+action_playback_loop_cycle_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_playback_loop_cycle_handler_cb, NULL);
     return 0;
 }
@@ -973,7 +921,7 @@ action_toggle_logwindow_handler_cb (void *data) {
 }
 
 int
-action_toggle_logwindow_handler(DB_plugin_action_t *act, int ctx) {
+action_toggle_logwindow_handler(DB_plugin_action_t *act, ddb_action_context_t ctx) {
     g_idle_add (action_toggle_logwindow_handler_cb, NULL);
     return 0;
 }

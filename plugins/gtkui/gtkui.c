@@ -55,9 +55,6 @@
 #include "gtkui_api.h"
 #include "wingeom.h"
 #include "widgets.h"
-#ifdef __APPLE__
-#include "retina.h"
-#endif
 #include "actionhandlers.h"
 #include "clipboard.h"
 #include "hotkeys.h"
@@ -88,6 +85,7 @@ GtkWidget *logwindow;
 static int gtkui_accept_messages = 0;
 
 static gint refresh_timeout = 0;
+static guint set_title_timeout_id;
 
 int fileadded_listener_id;
 int fileadd_beginend_listener_id;
@@ -427,6 +425,12 @@ gtkui_titlebar_tf_init (void) {
     statusbar_stopped_bc = deadbeef->tf_compile (statusbar_stopped_tf);
 }
 
+static gboolean
+set_title_cb (gpointer data) {
+    gtkui_set_titlebar (NULL);
+    return FALSE;
+}
+
 void
 gtkui_set_titlebar (DB_playItem_t *it) {
     if (!it) {
@@ -453,6 +457,9 @@ gtkui_set_titlebar (DB_playItem_t *it) {
         deadbeef->pl_item_unref (it);
     }
     set_tray_tooltip (str);
+    if (ctx.update > 0) {
+        set_title_timeout_id = g_timeout_add(ctx.update, set_title_cb, NULL);
+    }
 }
 
 static gboolean
@@ -819,11 +826,6 @@ gtkui_pl_add_files_end (void);
 DB_playItem_t *
 gtkui_plt_load (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname, int *pabort, int (*cb)(DB_playItem_t *it, void *data), void *user_data);
 
-static gboolean
-set_title_cb (gpointer data) {
-    gtkui_set_titlebar (NULL);
-    return FALSE;
-}
 
 static int
 is_current_playlist (DB_playItem_t *it) {
@@ -1144,8 +1146,10 @@ gtkui_show_log_window_internal(gboolean show) {
 
 #if GTK_CHECK_VERSION(3,10,0)
 #if USE_GTK_APPLICATION
-    g_simple_action_set_state ( deadbeef_app_get_log_action (gapp),
-        g_variant_new_boolean (show));
+    GSimpleAction *act = deadbeef_app_get_log_action (gapp);
+    if (act) {
+        g_simple_action_set_state (act, g_variant_new_boolean (show));
+    }
 #endif
 #endif
 }
@@ -1167,9 +1171,27 @@ on_gtkui_log_window_delete (GtkWidget *widget, GdkEventAny *event, GtkWidget **p
     return TRUE; // don't destroy window
 }
 
+static int logwindow_scroll_bottomed=1;
+
+void
+logwindow_scroll_changed (GtkAdjustment *adjustment, gpointer user_data)
+{
+    if (gtk_adjustment_get_value (adjustment) >=
+        gtk_adjustment_get_upper (adjustment) -
+        gtk_adjustment_get_page_size (adjustment) - 1e-12)
+    {
+        logwindow_scroll_bottomed = 1;
+    } else {
+        logwindow_scroll_bottomed = 0;
+    }
+}
+
 GtkWidget *
 gtkui_create_log_window (void) {
     GtkWidget *pwindow = create_log_window ();
+    GtkWidget *scrolledwindow14=lookup_widget(pwindow, "scrolledwindow14");
+    GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment ( GTK_SCROLLED_WINDOW (scrolledwindow14));
+    g_signal_connect (adjustment, "value-changed", G_CALLBACK (logwindow_scroll_changed), NULL);
     g_signal_connect (pwindow, "delete_event", G_CALLBACK (on_gtkui_log_window_delete), pwindow);
     gtk_window_set_transient_for (GTK_WINDOW (pwindow), GTK_WINDOW (mainwin));
     return pwindow;
@@ -1199,9 +1221,7 @@ logwindow_addtext_cb (gpointer data) {
         gtk_text_buffer_insert(buffer, &iter, "\n", 1);
     }
     GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment ( GTK_SCROLLED_WINDOW (scrolledwindow14));
-    if (gtk_adjustment_get_value(adjustment) >=
-        gtk_adjustment_get_upper(adjustment) -
-        gtk_adjustment_get_page_size(adjustment) -1e-12 ) {
+    if (logwindow_scroll_bottomed) {
         gtk_text_buffer_get_end_iter(buffer, &iter);
         GtkTextMark *mark = gtk_text_buffer_create_mark (buffer, NULL, &iter, FALSE);
         gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (textview), mark);
@@ -1298,7 +1318,13 @@ gtkui_mainwin_init(void) {
         // try loading icon from $prefix/deadbeef.png (for static build)
         char iconpath[1024];
         snprintf (iconpath, sizeof (iconpath), "%s/deadbeef.png", deadbeef->get_system_dir(DDB_SYS_DIR_PREFIX));
-        gtk_window_set_icon_from_file (GTK_WINDOW (mainwin), iconpath, NULL);
+        struct stat st = {0};
+        if (stat (iconpath, &st)) {
+            snprintf (iconpath, sizeof (iconpath), "%s/deadbeef.png", deadbeef->get_system_dir(DDB_SYS_DIR_PLUGIN_RESOURCES));
+        }
+        if (!stat (iconpath, &st)) {
+            gtk_window_set_icon_from_file (GTK_WINDOW (mainwin), iconpath, NULL);
+        }
     }
 
     gtkui_on_configchanged (NULL);
@@ -1363,6 +1389,11 @@ gtkui_mainwin_free(void) {
     if (refresh_timeout) {
         g_source_remove (refresh_timeout);
         refresh_timeout = 0;
+    }
+
+    if (set_title_timeout_id) {
+        g_source_remove (set_title_timeout_id);
+        set_title_timeout_id = 0;
     }
 
     clipboard_free_current ();

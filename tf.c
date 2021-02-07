@@ -86,7 +86,7 @@ typedef struct {
  * String functions: Returns the number of bytes in the output buffer,
  *                   not including a null terminator, which is not written.
  * Integer functions: As with string functions. Returns a number in string format.
- * Boolean functions: Returns a postive value to indicate truthiness,
+ * Boolean functions: Returns a positive value to indicate truthiness,
  *                    but with an empty output string (*out == 0).
  *
  * In any context, -1 indicates an error.
@@ -2616,11 +2616,13 @@ tf_eval_int (ddb_tf_context_t *ctx, const char *code, int size, char *out, int o
                 // special cases
                 // most if not all of this stuff is to make tf scripts
                 // compatible with fb2k syntax
-                pl_lock ();
+                if (!(ctx->flags&DDB_TF_CONTEXT_NO_MUTEX_LOCK)) {
+                    pl_lock ();
+                }
                 const char *val = NULL;
                 int needs_free = 0;
                 const char *aa_fields[] = { "album artist", "albumartist", "band", "artist", "composer", "performer", NULL };
-                const char *a_fields[] = { "artist", "album artist", "albumartist", "composer", "performer", NULL };
+                const char *a_fields[] = { "artist", "album artist", "albumartist", "band", "composer", "performer", NULL };
                 const char *alb_fields[] = { "album", "venue", NULL };
 
                 // set to 1 if special case handler successfully wrote the output
@@ -3162,7 +3164,9 @@ tf_eval_int (ddb_tf_context_t *ctx, const char *code, int size, char *out, int o
                     out += l;
                     outlen -= l;
                 }
-                pl_unlock ();
+                if (!(ctx->flags&DDB_TF_CONTEXT_NO_MUTEX_LOCK)) {
+                    pl_unlock ();
+                }
                 if (!skip_out && !val && fail_on_undef) {
                     return -1;
                 }
@@ -3347,6 +3351,7 @@ tf_compile_func (tf_compiler_t *c) {
             memmove (arglens+num_args+1, arglens+num_args, c->o - start - num_args*sizeof(uint16_t));
             c->o += 2;
             // store arg length
+            // FIXME: `arglens` comes in a byte stream without 16 bit alignment, this may cause unaligned access and crash.
             arglens[*start] = (uint16_t)len;
             (*start)++; // num args++
             argstart = c->o;

@@ -31,8 +31,8 @@ done
 cp -uv translation/help.ru.txt  "$1/doc/"
 
 # Libraries
-rm -fv "$1/plugins/*.lib" | true
-rm -fv "$1/libwin.lib" | true
+rm -fv "$1"/plugins/*.lib | true
+rm -fv "$1"/*.lib | true
 
 ldd "$1/plugins/"*.dll "$1/deadbeef.exe" | awk 'NF == 4 {print $3}; NF == 2 {print $1}' \
 									 | grep -iv "???" \
@@ -43,6 +43,9 @@ ldd "$1/plugins/"*.dll "$1/deadbeef.exe" | awk 'NF == 4 {print $3}; NF == 2 {pri
 									 | sort -u > .libraries.tmp
 
 cp -uv `cat .libraries.tmp` "$1/"
+
+# libdispatch
+cp -uv xdispatch_ddb/lib/* "$1/"
 
 # gdk_pixbuf libs
 for i in /mingw32 /mingw64 /usr; do
@@ -84,3 +87,8 @@ done
 
 echo "output_plugin PortAudio output plugin" > "$1/config/config"
 echo "gui_plugin GTK3" >> "$1/config/config"
+
+# ca-certs
+
+mkdir -p "$1/share/ssl"
+cp -ru "/mingw64/ssl/certs" "$1/share/ssl/"

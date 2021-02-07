@@ -53,6 +53,10 @@ static ddb_converter_t plugin;
 #define trace(...) { deadbeef->log_detailed (&plugin.misc.plugin, 0, __VA_ARGS__); }
 #define trace_err(...) { deadbeef->log_detailed (&plugin.misc.plugin, DDB_LOG_LAYER_DEFAULT, __VA_ARGS__); }
 
+#ifndef _O_BINARY
+#define _O_BINARY 0
+#endif
+
 static ddb_converter_t plugin;
 DB_functions_t *deadbeef;
 
@@ -435,7 +439,7 @@ load_encoder_presets (void) {
     }
 
     char syspath[PATH_MAX];
-    if (snprintf (syspath, sizeof (syspath), "%s/convpresets", deadbeef->get_system_dir (DDB_SYS_DIR_PLUGIN)) < 0) {
+    if (snprintf (syspath, sizeof (syspath), "%s/convpresets", deadbeef->get_system_dir (DDB_SYS_DIR_PLUGIN_RESOURCES)) < 0) {
         return -1;
     }
 
@@ -1421,14 +1425,14 @@ convert2 (ddb_converter_settings_t *settings, DB_playItem_t *it, const char *out
 
                 if (!encoder_preset->encoder[0]) {
                     // write to wave file
-                    temp_file = open (out, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC, wrmode);
+                    temp_file = open (out, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC | _O_BINARY, wrmode);
                     if (temp_file == -1) {
                         trace ("Failed to open output wave file %s\n", out);
                         goto error;
                     }
                 }
                 else if (encoder_preset->method == DDB_ENCODER_METHOD_FILE) {
-                    temp_file = open (input_file_name, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC, wrmode);
+                    temp_file = open (input_file_name, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC | _O_BINARY, wrmode);
                     if (temp_file == -1) {
                         trace ("Failed to open temp file %s\n", input_file_name);
                         goto error;

@@ -512,6 +512,13 @@ static DB_functions_t deadbeef_api = {
     .pl_find_meta_with_override = (const char *(*) (ddb_playItem_t *it, const char *key))pl_find_meta_with_override,
     .pl_get_meta_with_override = (int (*) (ddb_playItem_t *it, const char *key, char *val, size_t size))pl_get_meta_with_override,
     .pl_meta_exists_with_override = (int (*) (ddb_playItem_t *it, const char *key))pl_meta_exists_with_override,
+
+    .plt_item_set_selected = (void (*)(ddb_playlist_t *plt, ddb_playItem_t *it, int sel))pl_set_selected_in_playlist,
+    .plt_find_by_name = (ddb_playlist_t * (*) (const char *name))plt_find_by_name,
+    .plt_append = (ddb_playlist_t * (*) (const char *title))plt_append,
+
+    .plt_get_head_item = (ddb_playItem_t * (*) (ddb_playlist_t *p, int iter))plt_get_head_item,
+    .plt_get_tail_item = (ddb_playItem_t * (*) (ddb_playlist_t *p, int iter))plt_get_tail_item,
 };
 
 DB_functions_t *deadbeef = &deadbeef_api;
@@ -556,6 +563,8 @@ plug_get_system_dir (int dir_id) {
         return dbpixmapdir;
     case DDB_SYS_DIR_CACHE:
         return dbcachedir;
+    case DDB_SYS_DIR_PLUGIN_RESOURCES:
+        return dbresourcedir;
     }
     return NULL;
 }
@@ -1556,7 +1565,7 @@ is_relative_path_win32 (const char *path_or_url) {
         if (isalpha(path_or_url[0]) && path_or_url[1] == ':' && (path_or_url[2] == '\\' || path_or_url[2] == '/')) {
             return 0;
         }
-        else if (path_or_url[0] == '\\' && path_or_url[1] == '\\') {
+        else if ((path_or_url[0] == '\\' && path_or_url[1] == '\\') || (path_or_url[0] == '/' && path_or_url[1] == '/')) {
             return 0;
         }
     }

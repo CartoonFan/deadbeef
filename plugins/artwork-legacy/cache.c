@@ -35,6 +35,7 @@
 #include <limits.h>
 #include "artwork_internal.h"
 #include "../../deadbeef.h"
+#include "../../common.h"
 
 //#define trace(...) { fprintf(stderr, __VA_ARGS__); }
 #define trace(...)
@@ -60,12 +61,14 @@ void cache_unlock (void)
 
 int make_cache_root_path (char *path, const size_t size)
 {
-    const char *xdg_cache = getenv ("XDG_CACHE_HOME");
-    const char *cache_root = xdg_cache ? xdg_cache : getenv ("HOME");
-    if (snprintf (path, size, xdg_cache ? "%s/deadbeef/" : "%s/.cache/deadbeef/", cache_root) >= size) {
-        trace ("Cache root path truncated at %d bytes\n", (int)size);
+    const char *ddb_cache = deadbeef->get_system_dir (DDB_SYS_DIR_CACHE);
+
+    int ret = snprintf (path, size, (ddb_cache[strlen(ddb_cache)-1] == '/') ? "%s" : "%s/", ddb_cache);
+    if (ret >= 0 && ret > size) {
+        trace ("Cache root path is too long (>%d bytes)\n", (int)size);
         return -1;
     }
+
     return 0;
 }
 

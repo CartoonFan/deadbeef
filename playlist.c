@@ -332,15 +332,32 @@ plt_get_count (void) {
     return playlists_count;
 }
 
+playItem_t *plt_get_head_item(playlist_t *p, int iter) {
+    pl_lock ();
+    playItem_t *head = p->head[iter];
+    if (head) {
+        pl_item_ref (head);
+    }
+    pl_unlock ();
+    return head;
+}
+
+playItem_t *plt_get_tail_item(playlist_t *p, int iter) {
+    pl_lock ();
+    playItem_t *tail = p->tail[iter];
+    if (tail) {
+        pl_item_ref (tail);
+    }
+    pl_unlock ();
+    return tail;
+}
+
 playItem_t *
 plt_get_head (int plt) {
     playlist_t *p = playlists_head;
     for (int i = 0; p && i <= plt; i++, p = p->next) {
         if (i == plt) {
-            if (p->head[PL_MAIN]) {
-                pl_item_ref (p->head[PL_MAIN]);
-            }
-            return p->head[PL_MAIN];
+            return plt_get_head_item(p, PL_MAIN);
         }
     }
     return NULL;
@@ -431,6 +448,14 @@ plt_add (int before, const char *title) {
         messagepump_push (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CREATED, 0);
     }
     return before;
+}
+
+playlist_t *
+plt_append (const char *title) {
+    plt_add(plt_get_count(), title);
+    playlist_t *p;
+    for (p = playlists_head; p && p->next; p = p->next);
+    return p;
 }
 
 // NOTE: caller must ensure that configuration is saved after that call
@@ -534,6 +559,16 @@ plt_find (const char *name) {
     return -1;
 }
 
+playlist_t *
+plt_find_by_name (const char *name) {
+    playlist_t *p = playlists_head;
+    for (; p; p = p->next) {
+        if (!strcmp (p->title, name)) {
+            return p;
+        }
+    }
+    return NULL;
+}
 
 void
 plt_set_curr (playlist_t *plt) {
@@ -846,7 +881,7 @@ plt_insert_dir_int (int visibility, playlist_t *playlist, DB_vfs_t *vfs, playIte
 static playItem_t *
 plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fname, int *pabort, int (*cb)(playItem_t *it, void *data), void *user_data);
 
-static int
+int
 fileadd_filter_test (ddb_file_found_data_t *data) {
     for (ddb_fileadd_filter_t *f = file_add_filters; f; f = f->next) {
         int res = f->callback (data, f->user_data);
@@ -1428,13 +1463,14 @@ pl_getcount (int iter) {
 
 int
 plt_getselcount (playlist_t *playlist) {
-    // FIXME: slow!
+    LOCK;
     int cnt = 0;
     for (playItem_t *it = playlist->head[PL_MAIN]; it; it = it->next[PL_MAIN]) {
         if (it->selected) {
             cnt++;
         }
     }
+    UNLOCK;
     return cnt;
 }
 
@@ -1995,6 +2031,31 @@ pl_save_all (void) {
 
 static playItem_t *
 plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fname, int *pabort, int (*cb)(playItem_t *it, void *data), void *user_data) {
+    playItem_t *it = NULL;
+    playItem_t *last_added = NULL;
+
+    #ifdef __MINGW32__
+    if (!strncmp (fname, "file://", 7)) {
+        fname += 7;
+    }
+    // replace backslashes with normal slashes
+    char fname_conv[strlen(fname)+1];
+    if (strchr(fname, '\\')) {
+        trace ("plt_load_int: backslash(es) detected: %s\n", fname);
+        strcpy (fname_conv, fname);
+        char *slash_p = fname_conv;
+        while (slash_p = strchr(slash_p, '\\')) {
+            *slash_p = '/';
+            slash_p++;
+        }
+        fname = fname_conv;
+    }
+    // path should start with "X:/", not "/X:/", fixing to avoid file opening problems
+    if (fname[0] == '/' && isalpha(fname[1]) && fname[2] == ':') {
+        fname++;
+    }
+    #endif
+
     // try plugins 1st
     char *escaped = uri_unescape (fname, (int)strlen (fname));
     if (escaped) {
@@ -2028,11 +2089,8 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
         return NULL;
     }
 
-    playItem_t *last_added = NULL;
-
     uint8_t majorver;
     uint8_t minorver;
-    playItem_t *it = NULL;
     char magic[4];
     if (fread (magic, 1, 4, fp) != 4) {
 //        trace ("failed to read magic\n");
@@ -2186,7 +2244,7 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
         if (fread (&nm, 1, 2, fp) != 2) {
             goto load_fail;
         }
-        for (int i = 0; i < nm; i++) {
+        for (int j = 0; j < nm; j++) {
             if (fread (&l, 1, 2, fp) != 2) {
                 goto load_fail;
             }
@@ -2237,6 +2295,7 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
             pl_item_unref (last_added);
         }
         last_added = it;
+        it = NULL;
     }
 
     // load playlist metadata
@@ -2285,6 +2344,10 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
     }
     return last_added;
 load_fail:
+    if (it) {
+        pl_item_unref (it);
+        it = NULL;
+    }
 //    trace ("playlist load fail (%s)!\n", fname);
     if (fp) {
         fclose (fp);
@@ -2365,7 +2428,7 @@ pl_load_all (void) {
     return err;
 }
 
-static inline void
+void
 pl_set_selected_in_playlist (playlist_t *playlist, playItem_t *it, int sel)
 {
     it->selected = sel;
@@ -3887,34 +3950,50 @@ pl_configchanged (void) {
 
 int64_t
 pl_item_get_startsample (playItem_t *it) {
+    int64_t res;
+    pl_lock ();
     if (!it->has_startsample64) {
-        return it->startsample;
+        res = it->startsample;
     }
-    return it->startsample64;
+    else {
+        res = it->startsample64;
+    }
+    pl_unlock();
+    return res;
 }
 
 int64_t
 pl_item_get_endsample (playItem_t *it) {
+    int64_t res = 0;
+    pl_lock ();
     if (!it->has_endsample64) {
-        return it->endsample;
+        res = it->endsample;
     }
-    return it->endsample64;
+    else {
+        res = it->endsample64;
+    }
+    pl_unlock();
+    return res;
 }
 
 void
 pl_item_set_startsample (playItem_t *it, int64_t sample) {
+    pl_lock ();
     it->startsample64 = sample;
     it->startsample = sample >= 0x7fffffff ? 0x7fffffff : (int32_t)sample;
     it->has_startsample64 = 1;
     pl_set_meta_int64 (it, ":STARTSAMPLE", sample);
+    pl_unlock ();
 }
 
 void
 pl_item_set_endsample (playItem_t *it, int64_t sample) {
+    pl_lock ();
     it->endsample64 = sample;
     it->endsample = sample >= 0x7fffffff ? 0x7fffffff : (int32_t)sample;
     it->has_endsample64 = 1;
     pl_set_meta_int64 (it, ":ENDSAMPLE", sample);
+    pl_unlock();
 }
 
 int

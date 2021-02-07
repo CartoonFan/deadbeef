@@ -148,6 +148,7 @@ read_gzfile (const char *fname, char **buffer, int *size) {
         nb = gzread (gz, *buffer + pos, readsize);
         if (nb < 0) {
             free (*buffer);
+            *buffer = NULL;
             trace ("failed to gzread from %s\n", fname);
             gzclose (gz);
             goto error;
@@ -311,17 +312,17 @@ cgme_add_meta (DB_playItem_t *it, const char *key, const char *value) {
     size_t len = strlen (value);
     char out[1024];
     // check for utf8 (hack)
-    if (deadbeef->junk_iconv (value, len, out, sizeof (out), "utf-8", "utf-8") >= 0) {
+    if (deadbeef->junk_iconv (value, (int)len, out, sizeof (out), "utf-8", "utf-8") >= 0) {
         deadbeef->pl_add_meta (it, key, out);
         return;
     }
 
-    if (deadbeef->junk_iconv (value, len, out, sizeof (out), "cp1252", "utf-8") >= 0) {
+    if (deadbeef->junk_iconv (value, (int)len, out, sizeof (out), "cp1252", "utf-8") >= 0) {
         deadbeef->pl_add_meta (it, key, out);
         return;
     }
 
-    if (deadbeef->junk_iconv (value, len, out, sizeof (out), "SHIFT-JIS", "utf-8") >= 0) {
+    if (deadbeef->junk_iconv (value, (int)len, out, sizeof (out), "SHIFT-JIS", "utf-8") >= 0) {
         deadbeef->pl_add_meta (it, key, out);
         return;
     }
@@ -479,9 +480,6 @@ static const char * exts[]=
 
 static int
 cgme_start (void) {
-    conf_fadeout = deadbeef->conf_get_int ("gme.fadeout", 10);
-    conf_loopcount = deadbeef->conf_get_int ("gme.loopcount", 2);
-    conf_play_forever = deadbeef->streamer_get_repeat () == DDB_REPEAT_SINGLE;
     return 0;
 }
 

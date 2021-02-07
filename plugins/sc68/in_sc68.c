@@ -91,6 +91,10 @@ in_sc68_init (DB_fileinfo_t *_info, DB_playItem_t *it) {
         info->totalsamples = deadbeef->conf_get_float ("c68.songlength", 2) * 60 * samplerate;
     }
 
+    ddb_playlist_t *plt = deadbeef->pl_get_playlist (it);
+    deadbeef->plt_set_item_duration (plt, it, (float)info->totalsamples/samplerate);
+    deadbeef->plt_unref (plt);
+
     _info->plugin = &plugin;
     _info->fmt.bps = 16;
     _info->fmt.channels = 2;
@@ -329,7 +333,7 @@ in_sc68_start (void) {
     }
 
     char datadir[PATH_MAX];
-    snprintf (datadir, sizeof (datadir), "%s/data68", deadbeef->get_system_dir (DDB_SYS_DIR_PLUGIN));
+    snprintf (datadir, sizeof (datadir), "%s/data68", deadbeef->get_system_dir (DDB_SYS_DIR_PLUGIN_RESOURCES));
     sc68_cntl (0, SC68_SET_OPT_STR, "share-path", datadir);
 
     return 0;

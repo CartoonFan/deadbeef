@@ -8,7 +8,6 @@
 
 #import "PlaylistLocalDragDropHolder.h"
 #import "DdbShared.h"
-#include "deadbeef.h"
 
 extern DB_functions_t *deadbeef;
 
@@ -31,14 +30,13 @@ extern DB_functions_t *deadbeef;
     self = [super init];
     if (self) {
         _playlistIdx = [aDecoder decodeIntegerForKey:@"Playlist"];
-        _itemsIndices = [aDecoder decodeObjectOfClass:[NSMutableArray class] forKey:@"Items"];
+        _itemsIndices = [aDecoder decodeObjectOfClass:[NSArray class] forKey:@"Items"];
     }
 
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-
     [aCoder encodeInteger:_playlistIdx forKey:@"Playlist"];
     [aCoder encodeObject:_itemsIndices forKey:@"Items"];
 }
@@ -51,7 +49,6 @@ extern DB_functions_t *deadbeef;
 }
 
 + (NSPasteboardReadingOptions)readingOptionsForType:(NSString *)type pasteboard:(NSPasteboard *)pasteboard {
-
     return NSPasteboardReadingAsKeyedArchive;
 }
 
@@ -69,10 +66,6 @@ extern DB_functions_t *deadbeef;
     }
 
     return nil;
-}
-
-- (int) count {
-    return (int)[_itemsIndices count];
 }
 
 - (NSInteger) playlistIdx {

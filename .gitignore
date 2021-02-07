@@ -88,3 +88,6 @@ osx/build
 *.make
 Makefile
 *.a
+docker-artifacts
+compile_commands.json
+plugins/gtkui/gtkui-gresources.c

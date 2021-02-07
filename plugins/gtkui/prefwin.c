@@ -286,6 +286,9 @@ gtkui_run_preferences_dlg (void) {
     // hide tray icon
     set_toggle_button("hide_tray_icon", deadbeef->conf_get_int ("gtkui.hide_tray_icon", 0));
 
+    // move_to_trash
+    set_toggle_button("move_to_trash", deadbeef->conf_get_int ("gtkui.move_to_trash", 1));
+
     // mmb_delete_playlist
     set_toggle_button("mmb_delete_playlist", deadbeef->conf_get_int ("gtkui.mmb_delete_playlist", 1));
 
@@ -566,15 +569,6 @@ on_pref_replaygain_processing_changed  (GtkComboBox     *combobox,
 
 
 void
-on_pref_replaygain_scale_clicked       (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    int active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-    deadbeef->conf_set_int ("replaygain_scale", active);
-    deadbeef->sendmessage (DB_EV_CONFIGCHANGED, 0, 0, 0);
-}
-
-void
 on_replaygain_preamp_value_changed     (GtkRange        *range,
                                         gpointer         user_data)
 {
@@ -602,6 +596,15 @@ on_minimize_on_startup_clicked     (GtkButton       *button,
         set_toggle_button("hide_tray_icon", 0);
         deadbeef->conf_set_int ("gtkui.hide_tray_icon", 0);
     }
+    deadbeef->sendmessage (DB_EV_CONFIGCHANGED, 0, 0, 0);
+}
+
+void
+on_move_to_trash_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    int active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+    deadbeef->conf_set_int ("gtkui.move_to_trash", active);
     deadbeef->sendmessage (DB_EV_CONFIGCHANGED, 0, 0, 0);
 }
 

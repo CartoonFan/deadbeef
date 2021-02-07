@@ -77,12 +77,16 @@ extern DB_functions_t *deadbeef;
 @interface MainWindowController () {
     NSTimer *_updateTimer;
     char *_titlebar_playing_script;
+    char *_titlebar_playing_subtitle_script;
     char *_titlebar_stopped_script;
+    char *_titlebar_stopped_subtitle_script;
     char *_statusbar_playing_script;
     int _prevSeekBarPos;
 }
 
 @property (weak) IBOutlet NSView *designableContainerView;
+@property (weak) IBOutlet NSView *playlistWithTabsView;
+@property (nonatomic, readwrite) DesignableViewController *rootViewController;
 
 @end
 
@@ -95,8 +99,10 @@ extern DB_functions_t *deadbeef;
         [_updateTimer invalidate];
         _updateTimer = nil;
     }
-
+    // FIXME: this should not be needed, since PlaylistViewController dealloc is supposed to handle everything,
+    // but for some reason some stuff remains unreleased if we rely on dealloc to call this method.
     [self.rootViewController cleanup];
+    self.rootViewController = nil;
 }
 
 - (void)dealloc {
@@ -111,29 +117,54 @@ extern DB_functions_t *deadbeef;
     PlaylistView *view = [PlaylistView new];
     pvc.view = view;
     [pvc setup];
+
     self.rootViewController = pvc;
 
     view.translatesAutoresizingMaskIntoConstraints = NO;
     [self.designableContainerView addSubview:view];
-
     [view.topAnchor constraintEqualToAnchor:self.designableContainerView.topAnchor].active = YES;
     [view.bottomAnchor constraintEqualToAnchor:self.designableContainerView.bottomAnchor].active = YES;
     [view.leadingAnchor constraintEqualToAnchor:self.designableContainerView.leadingAnchor].active = YES;
     [view.trailingAnchor constraintEqualToAnchor:self.designableContainerView.trailingAnchor].active = YES;
 
+    [view.window makeFirstResponder:view.contentView];
+
+    NSLayoutYAxisAnchor *topAnchor;
+    if (self.window.contentLayoutGuide && self.playlistWithTabsView) {
+        // HACK: this is not well-documented and not safe.
+        // This code constrains the contentview to contentLayoutGuide object,
+        // in order to avoid clipping of the playlist header view.
+        // The information was obtained from https://developer.apple.com/videos/play/wwdc2016/239/
+        topAnchor = [self.window.contentLayoutGuide valueForKey:@"topAnchor"];
+
+        NSLayoutConstraint *constraint = [self.playlistWithTabsView.topAnchor constraintEqualToAnchor:topAnchor];
+        constraint.priority = NSLayoutPriorityRequired;
+        constraint.active = YES;
+    }
     // seekbar value formatter
     self.seekBar.formatter = [TrackPositionFormatter new];
 
-    // add tab strip to the window titlebar
-    NSTitlebarAccessoryViewController* vc = [NSTitlebarAccessoryViewController new];
+    if (!self.tabStrip.superview) {
+        // add tab strip to the window titlebar
+        NSTitlebarAccessoryViewController* vc = [NSTitlebarAccessoryViewController new];
 
-    vc.view = _tabStrip;
-    vc.fullScreenMinHeight = _tabStrip.bounds.size.height;
-    vc.layoutAttribute = NSLayoutAttributeBottom;
+        vc.view = _tabStrip;
+        vc.fullScreenMinHeight = _tabStrip.bounds.size.height;
+        vc.layoutAttribute = NSLayoutAttributeBottom;
 
-    [self.window addTitlebarAccessoryViewController:vc];
+        [self.window addTitlebarAccessoryViewController:vc];
 
-    _updateTimer = [NSTimer timerWithTimeInterval:1.0f/10.0f target:self selector:@selector(frameUpdate:) userInfo:nil repeats:YES];
+        _tabStrip.frame = NSMakeRect(0,0,NSWidth(_tabStrip.frame),24);
+    }
+
+    __weak MainWindowController *weakself = self;
+    _updateTimer = [NSTimer timerWithTimeInterval:1.0f/10.0f repeats:YES block:^(NSTimer * _Nonnull timer) {
+        MainWindowController *strongself = weakself;
+        if (strongself) {
+            [self frameUpdate];
+        }
+    }];
+
     [[NSRunLoop currentRunLoop] addTimer:_updateTimer forMode:NSRunLoopCommonModes];
 }
 
@@ -182,7 +213,7 @@ static char sb_text[512];
     
     if (strcmp (sbtext_new, sb_text)) {
         strcpy (sb_text, sbtext_new);
-        [self statusBar].stringValue = [NSString stringWithUTF8String:sb_text];
+        self.statusBar.stringValue = [NSString stringWithUTF8String:sb_text];
     }
     
     if (track) {
@@ -223,8 +254,7 @@ static char sb_text[512];
     }
 }
 
-- (void)frameUpdate:(id)userData
-{
+- (void)frameUpdate {
     if (![self.window isVisible]) {
         return;
     }
@@ -328,8 +358,14 @@ static char sb_text[512];
     deadbeef->conf_get_str ("cocoaui.titlebar_playing", DEFAULT_TITLEBAR_PLAYING_VALUE, script, sizeof (script));
     _titlebar_playing_script = deadbeef->tf_compile (script);
 
+    deadbeef->conf_get_str ("cocoaui.titlebar_subtitle_playing", DEFAULT_TITLEBAR_SUBTITLE_PLAYING_VALUE, script, sizeof (script));
+    _titlebar_playing_subtitle_script = deadbeef->tf_compile (script);
+
     deadbeef->conf_get_str ("cocoaui.titlebar_stopped", DEFAULT_TITLEBAR_STOPPED_VALUE, script, sizeof (script));
     _titlebar_stopped_script = deadbeef->tf_compile (script);
+
+    deadbeef->conf_get_str ("cocoaui.titlebar_stopped", DEFAULT_TITLEBAR_SUBTITLE_STOPPED_VALUE, script, sizeof (script));
+    _titlebar_stopped_subtitle_script = deadbeef->tf_compile (script);
 
     _statusbar_playing_script = deadbeef->tf_compile ("$if2($strcmp(%ispaused%,),Paused | )$if2($upper(%codec%),-) |[ %playback_bitrate% kbps |][ %samplerate%Hz |][ %:BPS% bit |][ %channels% |] %playback_time% / %length%");
 }
@@ -345,14 +381,28 @@ static char sb_text[512];
         .iter = PL_MAIN,
     };
 
-    char buffer[200];
-    deadbeef->tf_eval (&ctx, ctx.it ? _titlebar_playing_script : _titlebar_stopped_script, buffer, sizeof (buffer));
+    char titleBuffer[200];
+    deadbeef->tf_eval (&ctx, ctx.it ? _titlebar_playing_script : _titlebar_stopped_script, titleBuffer, sizeof (titleBuffer));
+
+    char subtitleBuffer[200];
+    deadbeef->tf_eval (&ctx, ctx.it ? _titlebar_playing_subtitle_script : _titlebar_stopped_subtitle_script, subtitleBuffer, sizeof (subtitleBuffer));
 
     if (ctx.it) {
         deadbeef->pl_item_unref (ctx.it);
     }
 
-    self.window.title = [NSString stringWithUTF8String:buffer];
+#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 101600
+    if (@available(macOS 10.16, *)) {
+        self.window.title = [NSString stringWithUTF8String:titleBuffer];
+        self.window.subtitle = [NSString stringWithUTF8String:subtitleBuffer];
+    } else
+#endif
+    {
+        NSString *title = [NSString stringWithUTF8String:titleBuffer];
+        NSString *subTitle = [NSString stringWithUTF8String:subtitleBuffer];
+
+        self.window.title = [NSString stringWithFormat:@"%@%@%@", subTitle, (titleBuffer[0] && subtitleBuffer[0]) ? @" - " : @"", title];
+    }
 }
 
 @end

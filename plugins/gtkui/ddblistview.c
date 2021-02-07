@@ -593,6 +593,45 @@ ddb_listview_reconf_scrolling (void *ps) {
 }
 
 static void
+ddb_listview_update_scroll_ref_point (DdbListview *ps);
+
+static void
+set_fwidth (DdbListview *ps, float list_width);
+
+static void
+autoresize_columns (DdbListview *listview, int list_width, int list_height);
+
+static void
+_update_fwidth (DdbListview *ps, int prev_width) {
+    GtkAllocation a;
+    gtk_widget_get_allocation (GTK_WIDGET (ps), &a);
+    if (ps->lock_columns != -1 && ps->view_realized) {
+        if (!deadbeef->conf_get_int ("gtkui.autoresize_columns", 0) || ps->header_sizing != -1) {
+            set_fwidth (ps, a.width);
+        }
+        else if (a.width != prev_width) {
+            int prev_scrollpos = ps->scrollpos;
+            ddb_listview_update_scroll_ref_point (ps);
+            if (ps->fwidth == -1) {
+                set_fwidth (ps, prev_width);
+            }
+            autoresize_columns (ps, a.width, a.height);
+        }
+    }
+}
+
+static gboolean
+_initial_resizing_finished (void *ctx) {
+    DdbListview *ps = ctx;
+    ps->view_realized = 1;
+    GtkAllocation a;
+    gtk_widget_get_allocation (GTK_WIDGET (ps), &a);
+    _update_fwidth (ps, a.width);
+    gtk_widget_queue_draw (GTK_WIDGET(ps));
+    return FALSE;
+}
+
+static void
 ddb_listview_list_realize                    (GtkWidget       *widget,
         gpointer         user_data)
 {
@@ -608,6 +647,9 @@ ddb_listview_list_realize                    (GtkWidget       *widget,
         gtk_drag_dest_add_uri_targets (widget);
     }
     ddb_listview_update_fonts(listview);
+
+    // defer column autoresizing until after the initial window resizing settles down
+    g_timeout_add (100, _initial_resizing_finished, listview);
 }
 
 static int
@@ -1083,7 +1125,7 @@ ddb_listview_list_expose_event (GtkWidget *widget, GdkEventExpose *event, gpoint
 {
     DdbListview *ps = DDB_LISTVIEW (g_object_get_data(G_OBJECT (widget), "owner"));
 
-    if (!list_is_realized (ps)) {
+    if (!ps->view_realized) {
         return FALSE; // drawing was called too early
     }
 
@@ -2479,23 +2521,11 @@ ddb_listview_header_render (DdbListview *ps, cairo_t *cr, int x1, int x2) {
 
             // Add a vertical line near the right side of the column width, but not right next to an empty slot
             if (c->width > 0 && ps->header_dragging != idx + 1) {
-                if (gtkui_override_tabstrip_colors()) {
-                    GdkColor clr;
-                    gtkui_get_tabstrip_dark_color (&clr);
-                    draw_cairo_line(cr, &clr, xx-2, 2, xx-2, h-4);
-                    gtkui_get_tabstrip_light_color (&clr);
-                    draw_cairo_line(cr, &clr, xx-1, 2, xx-1, h-4);
-                }
-                else {
-#if GTK_CHECK_VERSION(3,0,0)
-                    GtkStyleContext *context = gtk_widget_get_style_context(theme_treeview);
-                    gtk_style_context_add_class(context, "separator");
-                    gtk_render_line(context, cr, xx-3, 2, xx-3, h-4);
-                    gtk_style_context_remove_class(context, "separator");
-#else
-                    gtk_paint_vline (ps->header->style, ps->header->window, GTK_STATE_NORMAL, NULL, ps->header, NULL, 2, h-4, xx-2);
-#endif
-                }
+                GdkColor clr;
+                gtkui_get_tabstrip_dark_color (&clr);
+                draw_cairo_line(cr, &clr, xx-2, 2, xx-2, h-4);
+                gtkui_get_tabstrip_light_color (&clr);
+                draw_cairo_line(cr, &clr, xx-1, 2, xx-1, h-4);
             }
         }
         x = xx;
@@ -2791,19 +2821,7 @@ ddb_listview_list_configure_event            (GtkWidget       *widget,
         ddb_listview_list_update_total_width (ps, total_columns_width(ps), a.width);
     }
 
-    if (ps->lock_columns != -1) {
-        if (!deadbeef->conf_get_int ("gtkui.autoresize_columns", 0) || ps->header_sizing != -1) {
-            set_fwidth (ps, a.width);
-        }
-        else if (a.width != prev_width) {
-            int prev_scrollpos = ps->scrollpos;
-            ddb_listview_update_scroll_ref_point (ps);
-            if (ps->fwidth == -1) {
-                set_fwidth (ps, prev_width);
-            }
-            autoresize_columns (ps, a.width, a.height);
-        }
-    }
+    _update_fwidth (ps, prev_width);
 
     return FALSE;
 }

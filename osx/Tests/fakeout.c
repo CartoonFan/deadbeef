@@ -34,7 +34,7 @@
 #define trace(fmt,...)
 
 static DB_output_t plugin;
-DB_functions_t *deadbeef;
+static DB_functions_t *deadbeef;
 
 static intptr_t fakeout_tid;
 static int fakeout_terminate;
@@ -241,7 +241,7 @@ fakeout_consume (int nbytes) {
             nbytes -= rb;
         }
         if (_realtime) {
-            usleep ((uint64_t)n * 1000 / (44100 * 4) * 2);
+            usleep ((useconds_t)((uint64_t)n * 1000 / (44100 * 4) * 2));
         }
     }
 }
