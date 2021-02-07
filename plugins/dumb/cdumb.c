@@ -131,7 +131,7 @@ cdumb_startrenderer (DB_fileinfo_t *_info) {
     dumb_it_set_resampling_quality (itsr, q);
     dumb_it_set_xm_speed_zero_callback (itsr, &dumb_it_callback_terminate, NULL);
     dumb_it_set_global_volume_zero_callback (itsr, &dumb_it_callback_terminate, NULL);
-    
+
     int rq = conf_ramping_style;
     if (rq < 0) {
         rq = 0;
@@ -197,7 +197,7 @@ cdumb_seek (DB_fileinfo_t *_info, float time) {
     if (skiptime < _info->readpos) {
         if (cdumb_startrenderer (_info) < 0) {
             return -1;
-        }       
+        }
     }
     else {
         skiptime -= _info->readpos;
@@ -453,7 +453,7 @@ static const char settings_dlg[] =
     "property \"Internal DUMB volume\" spinbtn[0,128,16] dumb.globalvolume 64;\n"
     "property \"Volume ramping\" select[3] dumb.volume_ramping 0 None \"On/Off Only\" \"Full\";\n"
     "property \"8-bit output\" checkbox dumb.8bitoutput 0;\n"
-;
+    ;
 
 // define plugin interface
 static DB_decoder_t plugin = {
@@ -464,31 +464,31 @@ static DB_decoder_t plugin = {
     .plugin.id = "stddumb",
     .plugin.name = "DUMB module player",
     .plugin.descr = "module player based on DUMB library",
-    .plugin.copyright = 
-        "DUMB Plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2016 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "Uses a fork of DUMB (Dynamic Universal Music Bibliotheque), Version 0.9.3\n"
-        "Copyright (C) 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere\n"
-        "Uses code from kode54's foobar2000 plugin, http://kode54.foobar2000.org/\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    .plugin.copyright =
+    "DUMB Plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2016 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "Uses a fork of DUMB (Dynamic Universal Music Bibliotheque), Version 0.9.3\n"
+    "Copyright (C) 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere\n"
+    "Uses code from kode54's foobar2000 plugin, http://kode54.foobar2000.org/\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = cdumb_start,

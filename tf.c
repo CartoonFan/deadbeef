@@ -151,7 +151,7 @@ tf_eval (ddb_tf_context_t *ctx, const char *code, char *out, int outlen) {
         ctx->_size != (char *)&ctx->dimmed - (char *)ctx
         // 0.8
         && ctx->_size != sizeof (ddb_tf_context_t)
-        ) {
+    ) {
         *out = 0;
         return -1;
     }
@@ -1041,7 +1041,7 @@ tf_func_extremest_impl(ddb_tf_context_t *ctx, int argc, const uint16_t *arglens,
             best_clen = this_clen;
             best_blen = this_blen;
             u8_strnbcpy(out, tmp, min(best_blen, outlen));
-       }
+        }
     }
 
     return best_blen;
@@ -1715,7 +1715,7 @@ tf_func_ext (ddb_tf_context_t *ctx, int argc, const uint16_t *arglens, const cha
 
     int len;
     TF_EVAL_CHECK(len, ctx, args, arglens[0], out, outlen, fail_on_undef);
-    
+
     char *e = out + len;
     char *c = e - 1;
     char *p = NULL;
@@ -2895,11 +2895,11 @@ tf_eval_int (ddb_tf_context_t *ctx, const char *code, int size, char *out, int o
                 }
                 else if ((tmp_a = !strcmp (name, "isplaying")) || (tmp_b = !strcmp (name, "ispaused"))) {
                     playItem_t *playing = streamer_get_playing_track ();
-                    
-                    if (playing && 
+
+                    if (playing &&
                             (
-                            (tmp_a && plug_get_output ()->state () == DDB_PLAYBACK_STATE_PLAYING)
-                            || (tmp_b && plug_get_output ()->state () == DDB_PLAYBACK_STATE_PAUSED)
+                                (tmp_a && plug_get_output ()->state () == DDB_PLAYBACK_STATE_PLAYING)
+                                || (tmp_b && plug_get_output ()->state () == DDB_PLAYBACK_STATE_PAUSED)
                             )) {
                         *out++ = '1';
                         outlen--;
@@ -2977,19 +2977,19 @@ tf_eval_int (ddb_tf_context_t *ctx, const char *code, int size, char *out, int o
                     const char *v = pl_find_meta_raw (it, ":URI");
 
                     if (v) {
-                        #ifdef _WIN32
+#ifdef _WIN32
                         int is_absolute = (isalpha (v[0]) && v[1] == ':' && v[2] == '/');
-                        #else
+#else
                         int is_absolute = (v[0] == '/');
-                        #endif
+#endif
 
                         if (is_absolute) {
                             // This is an absolute path, just prepend proper prefix
-                            #ifdef _WIN32
+#ifdef _WIN32
                             const char prefix[] = "file:///";
-                            #else
+#else
                             const char prefix[] = "file://";
-                            #endif
+#endif
                             tf_append_out (&out, &outlen, prefix, sizeof (prefix) - 1);
                             tf_append_out (&out, &outlen, v, (int)strlen (v));
                         }

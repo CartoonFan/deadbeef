@@ -23,7 +23,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-    #include "../../config.h"
+#include "../../config.h"
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,20 +37,20 @@
 #include <errno.h>
 #include <sys/stat.h>
 #ifdef __linux__
-    #include <sys/prctl.h>
+#include <sys/prctl.h>
 #endif
 #if HAVE_SYS_CDEFS_H
-    #include <sys/cdefs.h>
+#include <sys/cdefs.h>
 #endif
 #include <limits.h>
 #ifdef USE_METAFLAC
-    #include <FLAC/metadata.h>
+#include <FLAC/metadata.h>
 #endif
 #ifdef USE_IMLIB2
-    #include <Imlib2.h>
+#include <Imlib2.h>
 #else
-    #include <jpeglib.h>
-    #include <png.h>
+#include <jpeglib.h>
+#include <png.h>
 #endif
 #include "../../deadbeef.h"
 #include "artwork_internal.h"
@@ -96,10 +96,10 @@ static uintptr_t queue_cond;
 static int artwork_enable_embedded;
 static int artwork_enable_local;
 #ifdef USE_VFS_CURL
-    static int artwork_enable_lfm;
-    static int artwork_enable_mb;
-    static int artwork_enable_aao;
-    static int artwork_enable_wos;
+static int artwork_enable_lfm;
+static int artwork_enable_mb;
+static int artwork_enable_aao;
+static int artwork_enable_wos;
 #endif
 static int scale_towards_longer;
 static int missing_artwork;
@@ -139,8 +139,8 @@ static float cerp (float p0, float p1, float p2, float p3, float d, float d2, fl
 }
 
 static int_fast16_t bcerp (const png_byte *row0, const png_byte *row1, const png_byte *row2, const png_byte *row3,
-                      const uint_fast32_t x0, const uint_fast32_t x1, const uint_fast32_t x2, const uint_fast32_t x3, const uint_fast8_t component,
-                      float dx, float dx2, float dx3, float dy, float dy2, float dy3) {
+                           const uint_fast32_t x0, const uint_fast32_t x1, const uint_fast32_t x2, const uint_fast32_t x3, const uint_fast8_t component,
+                           float dx, float dx2, float dx3, float dy, float dy2, float dy3) {
     const uint_fast32_t index0 = x0 + component;
     const uint_fast32_t index1 = x1 + component;
     const uint_fast32_t index2 = x2 + component;
@@ -153,7 +153,7 @@ static int_fast16_t bcerp (const png_byte *row0, const png_byte *row1, const png
 }
 #endif
 static uint_fast32_t blerp_pixel (const png_byte *row, const png_byte *next_row, const uint_fast32_t x_index, const uint_fast32_t next_x_index,
-                                 const uint_fast32_t weight, const uint_fast32_t weightx, const uint_fast32_t weighty, const uint_fast32_t weightxy)
+                                  const uint_fast32_t weight, const uint_fast32_t weightx, const uint_fast32_t weighty, const uint_fast32_t weightxy)
 {
     return row[x_index]*weight + row[next_x_index]*weightx + next_row[x_index]*weighty + next_row[next_x_index]*weightxy;
 }
@@ -184,13 +184,13 @@ typedef struct {
 METHODDEF (void)
 my_error_exit (j_common_ptr cinfo)
 {
-  /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
-  my_error_mgr_t *myerr = (my_error_mgr_t *) cinfo->err;
+    /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
+    my_error_mgr_t *myerr = (my_error_mgr_t *) cinfo->err;
 
 //  (*cinfo->err->output_message)(cinfo);
 
-  /* Return control to the setjmp point */
-  longjmp (myerr->setjmp_buffer, 1);
+    /* Return control to the setjmp point */
+    longjmp (myerr->setjmp_buffer, 1);
 }
 
 
@@ -943,15 +943,15 @@ make_cache_path2 (char *path, int size, const char *fname, const char *album, co
         artist = "Unknown artist";
     }
 
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     if (make_cache_dir_path (path, size, artist, img_size)) {
         return -1;
     }
-    #else
+#else
     if (make_cache_dir_path (path, size-NAME_MAX, artist, img_size)) {
         return -1;
     }
-    #endif
+#endif
 
     int max_album_chars = min (NAME_MAX, size - strlen (path)) - sizeof ("1.jpg.part");
     if (max_album_chars <= 0) {
@@ -1260,8 +1260,8 @@ local_image_file (const char *cache_path, const char *local_path, const char *ur
         }
     }
     if (!scan_local_path ("*.jpg", cache_path, local_path, uri, vfsplug) ||
-        !scan_local_path ("*.jpeg", cache_path, local_path, uri, vfsplug) ||
-        !scan_local_path ("*.png", cache_path, local_path, uri, vfsplug)) {
+            !scan_local_path ("*.jpeg", cache_path, local_path, uri, vfsplug) ||
+            !scan_local_path ("*.png", cache_path, local_path, uri, vfsplug)) {
         return 0;
     }
 
@@ -2107,14 +2107,14 @@ artwork_configchanged (void)
     }
 
     if (old_artwork_enable_embedded != artwork_enable_embedded ||
-        old_artwork_enable_local != artwork_enable_local ||
+            old_artwork_enable_local != artwork_enable_local ||
 #ifdef USE_VFS_CURL
-        old_artwork_enable_lfm != artwork_enable_lfm ||
-        old_artwork_enable_mb != artwork_enable_mb ||
-        old_artwork_enable_aao != artwork_enable_aao ||
-        old_artwork_enable_wos != artwork_enable_wos ||
+            old_artwork_enable_lfm != artwork_enable_lfm ||
+            old_artwork_enable_mb != artwork_enable_mb ||
+            old_artwork_enable_aao != artwork_enable_aao ||
+            old_artwork_enable_wos != artwork_enable_wos ||
 #endif
-        old_artwork_filemask != artwork_filemask) {
+            old_artwork_filemask != artwork_filemask) {
         trace ("artwork config changed, invalidating cache...\n");
         deadbeef->mutex_lock (queue_mutex);
         insert_cache_reset (&cache_reset_time);
@@ -2283,7 +2283,7 @@ static const char settings_dlg[] =
     "property \"When no artwork is found\" select[3] artwork.missing_artwork 1 \"leave blank\" \"use DeaDBeeF default cover\" \"display custom image\";"
     "property \"Custom image path\" file artwork.nocover_path \"\";\n"
     "property \"Scale artwork towards longer side\" checkbox artwork.scale_towards_longer 1;\n"
-;
+    ;
 
 // define plugin interface
 static DB_artwork_plugin_t plugin = {
@@ -2296,27 +2296,27 @@ static DB_artwork_plugin_t plugin = {
     .plugin.plugin.name = "Album Artwork",
     .plugin.plugin.descr = "Loads album artwork from embedded tags, local directories, or internet services",
     .plugin.plugin.copyright =
-        "Album Art plugin for DeaDBeeF\n"
-        "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
-        "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    "Album Art plugin for DeaDBeeF\n"
+    "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
+    "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.plugin.website = "http://deadbeef.sf.net",
     .plugin.plugin.start = artwork_plugin_start,

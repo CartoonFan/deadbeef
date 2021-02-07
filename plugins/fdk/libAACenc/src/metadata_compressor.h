@@ -114,14 +114,14 @@ amm-info@iis.fraunhofer.de
  *  DRC compression profiles.
  */
 typedef enum DRC_PROFILE {
-  DRC_NONE = 0,
-  DRC_FILMSTANDARD = 1,
-  DRC_FILMLIGHT = 2,
-  DRC_MUSICSTANDARD = 3,
-  DRC_MUSICLIGHT = 4,
-  DRC_SPEECH = 5,
-  DRC_DELAY_TEST = 6,
-  DRC_NOT_PRESENT = -2
+    DRC_NONE = 0,
+    DRC_FILMSTANDARD = 1,
+    DRC_FILMLIGHT = 2,
+    DRC_MUSICSTANDARD = 3,
+    DRC_MUSICLIGHT = 4,
+    DRC_SPEECH = 5,
+    DRC_DELAY_TEST = 6,
+    DRC_NOT_PRESENT = -2
 
 } DRC_PROFILE;
 

@@ -224,7 +224,7 @@ void SpatialDequantGetCLD2Values(int index, FIXP_DBL* x);
 
 /* External helper functions */
 static inline int SacGetHybridSubbands(int qmfSubbands) {
-  return qmfSubbands - MAX_QMF_BANDS_TO_HYBRID + 10;
+    return qmfSubbands - MAX_QMF_BANDS_TO_HYBRID + 10;
 }
 
 #endif /* SAC_ROM_H */

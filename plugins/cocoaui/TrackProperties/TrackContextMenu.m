@@ -160,13 +160,13 @@ extern DB_functions_t *deadbeef;
     ddb_replaygain_settings_t __block s;
     s._size = sizeof (ddb_replaygain_settings_t);
 
-    [self forEachTrack:^(DB_playItem_t *it){
-        if (deadbeef->pl_is_selected (it)) {
-            if (deadbeef->is_local_file (deadbeef->pl_find_meta (it, ":URI"))) {
-                if (deadbeef->pl_get_item_duration (it) > 0) {
-                    can_be_rg_scanned = YES;
-                }
-                deadbeef->replaygain_init_settings (&s, it);
+    [self forEachTrack:^(DB_playItem_t *it) {
+             if (deadbeef->pl_is_selected (it)) {
+                 if (deadbeef->is_local_file (deadbeef->pl_find_meta (it, ":URI"))) {
+                     if (deadbeef->pl_get_item_duration (it) > 0) {
+                         can_be_rg_scanned = YES;
+                     }
+                     deadbeef->replaygain_init_settings (&s, it);
                 if (s.has_album_gain || s.has_track_gain) {
                     has_rg_info = YES;
                     return NO;
@@ -186,8 +186,8 @@ extern DB_functions_t *deadbeef;
 
 - (void)reloadMetadata {
     [self forEachTrack:^BOOL(DB_playItem_t *it) {
-        char decoder_id[100];
-        const char *dec = deadbeef->pl_find_meta (it, ":DECODER");
+             char decoder_id[100];
+             const char *dec = deadbeef->pl_find_meta (it, ":DECODER");
         if (dec) {
             strncpy (decoder_id, dec, sizeof (decoder_id));
         }
@@ -267,9 +267,9 @@ extern DB_functions_t *deadbeef;
     ddb_playItem_t __block **tracks = calloc (sizeof (ddb_playItem_t *), numtracks);
     int __block n = 0;
     [self forEachTrack:^(DB_playItem_t *it) {
-        assert (n < numtracks);
-        BOOL hasRgTags = NO;
-        if (withRgTags) {
+             assert (n < numtracks);
+             BOOL hasRgTags = NO;
+             if (withRgTags) {
             deadbeef->replaygain_init_settings (&s, it);
             if (s.has_album_gain || s.has_track_gain) {
                 hasRgTags = YES;
@@ -325,8 +325,8 @@ extern DB_functions_t *deadbeef;
 
     [self addActionItemsForContext:DDB_ACTION_CTX_SELECTION track:track filter:^BOOL(DB_plugin_action_t * _Nonnull action) {
 
-        return (selcount==1 && (action->flags&DB_ACTION_SINGLE_TRACK)) || (selcount > 1 && (action->flags&DB_ACTION_MULTIPLE_TRACKS));
-    }];
+             return (selcount==1 && (action->flags&DB_ACTION_SINGLE_TRACK)) || (selcount > 1 && (action->flags&DB_ACTION_MULTIPLE_TRACKS));
+         }];
 #endif
 }
 
@@ -358,8 +358,8 @@ _deleteFile (ddbDeleteFromDiskController_t ctl, const char *uri) {
     }
     if (deadbeef->conf_get_int ("cocoaui.delete_use_bin", 1)) {
         [NSWorkspace.sharedWorkspace recycleURLs:@[url] completionHandler:^(NSDictionary<NSURL *,NSURL *> * _Nonnull newURLs, NSError * _Nullable error) {
-            //            trace ("Failed to delete file: %s\n", uri);
-        }];
+                                        //            trace ("Failed to delete file: %s\n", uri);
+                                    }];
     } else {
         (void)unlink (uri);
 
@@ -389,8 +389,8 @@ _deleteCompleted (ddbDeleteFromDiskController_t ctl) {
     if (self.view != nil && deadbeef->conf_get_int ("cocoaui.delete_files_confirm", 1)) {
         NSString *buf;
         NSString *buf2 = deadbeef->conf_get_int ("cocoaui.delete_use_bin", 1) ?
-        @" The files will be moved to Recycle Bin.\n\n(This dialog can be turned off in the Preferences)" :
-        @" The files will be deleted permanently.\n\n(This dialog can be turned off in the Preferences)";
+                         @" The files will be moved to Recycle Bin.\n\n(This dialog can be turned off in the Preferences)" :
+                         @" The files will be deleted permanently.\n\n(This dialog can be turned off in the Preferences)";
 
         if (ctx == DDB_ACTION_CTX_SELECTION) {
             int selected_files = trackcount;
@@ -421,8 +421,8 @@ _deleteCompleted (ddbDeleteFromDiskController_t ctl) {
 #endif
 
         [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
-            callback(ctl, returnCode != NSAlertSecondButtonReturn);
-        }];
+                  callback(ctl, returnCode != NSAlertSecondButtonReturn);
+              }];
     }
     else {
         callback(ctl, 0);
@@ -472,16 +472,16 @@ _deleteCompleted (ddbDeleteFromDiskController_t ctl) {
 
 - (void)addToPlaybackQueue {
     [self forEachTrack:^BOOL(DB_playItem_t *it) {
-        deadbeef->playqueue_push (it);
-        return YES;
-    }];
+             deadbeef->playqueue_push (it);
+             return YES;
+         }];
 }
 
 - (void)removeFromPlaybackQueue {
     [self forEachTrack:^BOOL(DB_playItem_t *it) {
-        deadbeef->playqueue_remove (it);
-        return YES;
-    }];
+             deadbeef->playqueue_remove (it);
+             return YES;
+         }];
 }
 
 - (void)trackProperties {

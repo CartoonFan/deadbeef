@@ -114,10 +114,13 @@ static int close_btn_left_offs = 8;
     NSFont *font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize weight:NSFontWeightSemibold];
     NSColor *textColor = self.isDarkMode ? NSColor.controlTextColor : self.accentColor;
 
-    self.titleAttributesSelectedCurrent = @{
-        NSParagraphStyleAttributeName: textStyle,
-        NSFontAttributeName:font,
-        NSForegroundColorAttributeName:textColor
+    self.titleAttributesSelectedCurrent = @ {
+NSParagraphStyleAttributeName:
+        textStyle,
+NSFontAttributeName:
+        font,
+NSForegroundColorAttributeName:
+        textColor
     };
 
     textStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -127,10 +130,13 @@ static int close_btn_left_offs = 8;
     font = [NSFont systemFontOfSize:[NSFont smallSystemFontSize] weight:NSFontWeightMedium];
     textColor = self.tabTextColor;
 
-    self.titleAttributesCurrent = @{
-        NSParagraphStyleAttributeName: textStyle,
-        NSFontAttributeName:font,
-        NSForegroundColorAttributeName:textColor
+    self.titleAttributesCurrent = @ {
+NSParagraphStyleAttributeName:
+        textStyle,
+NSFontAttributeName:
+        font,
+NSForegroundColorAttributeName:
+        textColor
     };
 }
 
@@ -190,13 +196,13 @@ static int close_btn_left_offs = 8;
     [self registerForDraggedTypes:[NSArray arrayWithObjects:ddbPlaylistItemsUTIType, NSFilenamesPboardType, nil]];
 
     [NSNotificationCenter.defaultCenter addObserver:self
-                                             selector:@selector(windowDidBecomeKey:)
-                                                 name:NSWindowDidBecomeKeyNotification
-                                               object:self.window];
+                                        selector:@selector(windowDidBecomeKey:)
+                                        name:NSWindowDidBecomeKeyNotification
+                                        object:self.window];
     [NSNotificationCenter.defaultCenter addObserver:self
-                                             selector:@selector(windowDidBecomeKey:)
-                                                 name:NSWindowDidResignKeyNotification
-                                               object:self.window];
+                                        selector:@selector(windowDidBecomeKey:)
+                                        name:NSWindowDidResignKeyNotification
+                                        object:self.window];
 }
 
 - (void)windowDidBecomeKey:(id)sender {
@@ -209,7 +215,7 @@ plt_get_title_wrapper (int plt) {
         return @"";
     }
     ddb_playlist_t *p = deadbeef->plt_get_for_idx (plt);
-    
+
     char buffer[1000];
     deadbeef->plt_get_title (p, buffer, sizeof (buffer));
     deadbeef->plt_unref (p);
@@ -389,14 +395,14 @@ plt_get_title_wrapper (int plt) {
     [super drawRect:dirtyRect];
     int cnt = deadbeef->plt_get_count ();
     int hscroll = self.scrollPos;
-    
+
     int x = -hscroll;
     int w = 0;
     int tab_selected = deadbeef->plt_get_curr_idx ();
     if (tab_selected == -1) {
         return;
     }
-    
+
     int tab_playing = -1;
     DB_playItem_t *playing = deadbeef->streamer_get_playing_track ();
     if (playing) {
@@ -407,14 +413,14 @@ plt_get_title_wrapper (int plt) {
         }
         deadbeef->pl_item_unref (playing);
     }
-    
+
     int need_draw_moving = 0;
     int idx;
     int widths[cnt];
     for (idx = 0; idx < cnt; idx++) {
         widths[idx] = [self tabWidthForIndex:idx];
     }
-    
+
     [NSGraphicsContext.currentContext saveGraphicsState];
 
     // draw selected
@@ -672,8 +678,8 @@ plt_get_title_wrapper (int plt) {
         self.playlistConfirmationAlertOpen = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-            self.playlistConfirmationAlertOpen = NO;
-            if (returnCode == NSAlertFirstButtonReturn) {
+                  self.playlistConfirmationAlertOpen = NO;
+                  if (returnCode == NSAlertFirstButtonReturn) {
                 self.needsDisplay = YES;
                 return;
             }
@@ -698,8 +704,8 @@ plt_get_title_wrapper (int plt) {
     NSPoint coord = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     _tab_clicked = [self tabUnderCursor:coord.x];
     if ((theEvent.type == NSEventTypeRightMouseDown || theEvent.type == NSEventTypeLeftMouseDown)
-        && (theEvent.buttonNumber == 1
-            || (theEvent.buttonNumber == 0 && (theEvent.modifierFlags & NSEventModifierFlagControl)))) {
+            && (theEvent.buttonNumber == 1
+                || (theEvent.buttonNumber == 0 && (theEvent.modifierFlags & NSEventModifierFlagControl)))) {
         NSMenu *menu = [[NSMenu alloc] initWithTitle:@"TabMenu"];
         menu.delegate = self;
         menu.autoenablesItems = YES;
@@ -714,11 +720,11 @@ plt_get_title_wrapper (int plt) {
 
         [menu addActionItemsForContext:DDB_ACTION_CTX_PLAYLIST track:NULL filter:^BOOL(DB_plugin_action_t * _Nonnull action) {
 
-            if (!(action->flags & DB_ACTION_MULTIPLE_TRACKS)) {
-                return NO;
-            }
+                 if (!(action->flags & DB_ACTION_MULTIPLE_TRACKS)) {
+                     return NO;
+                 }
 
-            if (action->flags & DB_ACTION_EXCLUDE_FROM_CTX_PLAYLIST) {
+                 if (action->flags & DB_ACTION_EXCLUDE_FROM_CTX_PLAYLIST) {
                 return NO;
             }
 
@@ -909,7 +915,7 @@ plt_get_title_wrapper (int plt) {
 - (int)widgetMessage:(uint32_t)_id ctx:(uintptr_t)ctx p1:(uint32_t)p1 p2:(uint32_t)p2 {
     // redraw if playlist switches, recalculate tabs when title changes
     if (_id == DB_EV_PLAYLISTSWITCHED || _id == DB_EV_PLAYLISTCHANGED) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^ {
             switch (_id) {
             case DB_EV_PLAYLISTSWITCHED:
                 [self frameDidChange];
@@ -937,9 +943,9 @@ plt_get_title_wrapper (int plt) {
     deadbeef->plt_get_title (plt, buf, (int)sizeof buf);
     self.renamePlaylistTitle.stringValue = [NSString stringWithUTF8String:buf];
     [self.window beginSheet:self.renamePlaylistWindow completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode == NSModalResponseOK) {
-            deadbeef->plt_set_title (plt, [[self.renamePlaylistTitle stringValue] UTF8String]);
-            deadbeef->plt_save_config (plt);
+                    if (returnCode == NSModalResponseOK) {
+                        deadbeef->plt_set_title (plt, [[self.renamePlaylistTitle stringValue] UTF8String]);
+                        deadbeef->plt_save_config (plt);
             deadbeef->plt_unref (plt);
             [self scrollToTab:clicked];
         }

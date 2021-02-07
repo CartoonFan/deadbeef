@@ -153,67 +153,67 @@ FIXP_DBL fixp_sin(FIXP_DBL x, int scale);
  * Returns delta x residual.
  */
 static inline FIXP_DBL fixp_sin_cos_residual_inline(FIXP_DBL x, int scale,
-                                                    FIXP_DBL *sine,
-                                                    FIXP_DBL *cosine) {
-  FIXP_DBL residual;
-  int s;
-  int shift = (31 - scale - LD - 1);
-  int ssign = 1;
-  int csign = 1;
+        FIXP_DBL *sine,
+        FIXP_DBL *cosine) {
+    FIXP_DBL residual;
+    int s;
+    int shift = (31 - scale - LD - 1);
+    int ssign = 1;
+    int csign = 1;
 
-  residual = fMult(x, FL2FXCONST_DBL(1.0 / M_PI));
-  s = ((LONG)residual) >> shift;
+    residual = fMult(x, FL2FXCONST_DBL(1.0 / M_PI));
+    s = ((LONG)residual) >> shift;
 
-  residual &= ((1 << shift) - 1);
-  residual = fMult(residual, FL2FXCONST_DBL(M_PI / 4.0)) << 2;
-  residual <<= scale;
+    residual &= ((1 << shift) - 1);
+    residual = fMult(residual, FL2FXCONST_DBL(M_PI / 4.0)) << 2;
+    residual <<= scale;
 
-  /* Sine sign symmetry */
-  if (s & ((1 << LD) << 1)) {
-    ssign = -ssign;
-  }
-  /* Cosine sign symmetry */
-  if ((s + (1 << LD)) & ((1 << LD) << 1)) {
-    csign = -csign;
-  }
-
-  s = fAbs(s);
-
-  s &= (((1 << LD) << 1) - 1); /* Modulo PI */
-
-  if (s > (1 << LD)) {
-    s = ((1 << LD) << 1) - s;
-  }
-
-  {
-    LONG sl, cl;
-    /* Because of packed table */
-    if (s > (1 << (LD - 1))) {
-      FIXP_STP tmp;
-      /* Cosine/Sine simetry for angles greater than PI/4 */
-      s = (1 << LD) - s;
-      tmp = SINETAB[s];
-      sl = (LONG)tmp.v.re;
-      cl = (LONG)tmp.v.im;
-    } else {
-      FIXP_STP tmp;
-      tmp = SINETAB[s];
-      sl = (LONG)tmp.v.im;
-      cl = (LONG)tmp.v.re;
+    /* Sine sign symmetry */
+    if (s & ((1 << LD) << 1)) {
+        ssign = -ssign;
+    }
+    /* Cosine sign symmetry */
+    if ((s + (1 << LD)) & ((1 << LD) << 1)) {
+        csign = -csign;
     }
 
-#ifdef SINETABLE_16BIT
-    *sine = (FIXP_DBL)((sl * ssign) << (DFRACT_BITS - FRACT_BITS));
-    *cosine = (FIXP_DBL)((cl * csign) << (DFRACT_BITS - FRACT_BITS));
-#else
-    /* scale down by 1 for overflow prevention. This is undone at the calling
-     * function. */
-    *sine = (FIXP_DBL)(sl * ssign) >> 1;
-    *cosine = (FIXP_DBL)(cl * csign) >> 1;
-#endif
-  }
+    s = fAbs(s);
 
-  return residual;
+    s &= (((1 << LD) << 1) - 1); /* Modulo PI */
+
+    if (s > (1 << LD)) {
+        s = ((1 << LD) << 1) - s;
+    }
+
+    {
+        LONG sl, cl;
+        /* Because of packed table */
+        if (s > (1 << (LD - 1))) {
+            FIXP_STP tmp;
+            /* Cosine/Sine simetry for angles greater than PI/4 */
+            s = (1 << LD) - s;
+            tmp = SINETAB[s];
+            sl = (LONG)tmp.v.re;
+            cl = (LONG)tmp.v.im;
+        } else {
+            FIXP_STP tmp;
+            tmp = SINETAB[s];
+            sl = (LONG)tmp.v.im;
+            cl = (LONG)tmp.v.re;
+        }
+
+#ifdef SINETABLE_16BIT
+        *sine = (FIXP_DBL)((sl * ssign) << (DFRACT_BITS - FRACT_BITS));
+        *cosine = (FIXP_DBL)((cl * csign) << (DFRACT_BITS - FRACT_BITS));
+#else
+        /* scale down by 1 for overflow prevention. This is undone at the calling
+         * function. */
+        *sine = (FIXP_DBL)(sl * ssign) >> 1;
+        *cosine = (FIXP_DBL)(cl * csign) >> 1;
+#endif
+    }
+
+    return residual;
 }
 
 /**
@@ -227,30 +227,30 @@ static inline FIXP_DBL fixp_sin_cos_residual_inline(FIXP_DBL x, int scale,
  */
 static inline void inline_fixp_cos_sin(FIXP_DBL x1, FIXP_DBL x2,
                                        const int scale, FIXP_DBL *out) {
-  FIXP_DBL residual, error0, error1, sine, cosine;
-  residual = fixp_sin_cos_residual_inline(x1, scale, &sine, &cosine);
-  error0 = fMultDiv2(sine, residual);
-  error1 = fMultDiv2(cosine, residual);
+    FIXP_DBL residual, error0, error1, sine, cosine;
+    residual = fixp_sin_cos_residual_inline(x1, scale, &sine, &cosine);
+    error0 = fMultDiv2(sine, residual);
+    error1 = fMultDiv2(cosine, residual);
 
 #ifdef SINETABLE_16BIT
-  *out++ = cosine - (error0 << 1);
-  *out++ = sine + (error1 << 1);
+    *out++ = cosine - (error0 << 1);
+    *out++ = sine + (error1 << 1);
 #else
-  /* Undo downscaling by 1 which was done at fixp_sin_cos_residual_inline */
-  *out++ = SATURATE_LEFT_SHIFT(cosine - (error0 << 1), 1, DFRACT_BITS);
-  *out++ = SATURATE_LEFT_SHIFT(sine + (error1 << 1), 1, DFRACT_BITS);
+    /* Undo downscaling by 1 which was done at fixp_sin_cos_residual_inline */
+    *out++ = SATURATE_LEFT_SHIFT(cosine - (error0 << 1), 1, DFRACT_BITS);
+    *out++ = SATURATE_LEFT_SHIFT(sine + (error1 << 1), 1, DFRACT_BITS);
 #endif
 
-  residual = fixp_sin_cos_residual_inline(x2, scale, &sine, &cosine);
-  error0 = fMultDiv2(sine, residual);
-  error1 = fMultDiv2(cosine, residual);
+    residual = fixp_sin_cos_residual_inline(x2, scale, &sine, &cosine);
+    error0 = fMultDiv2(sine, residual);
+    error1 = fMultDiv2(cosine, residual);
 
 #ifdef SINETABLE_16BIT
-  *out++ = cosine - (error0 << 1);
-  *out++ = sine + (error1 << 1);
+    *out++ = cosine - (error0 << 1);
+    *out++ = sine + (error1 << 1);
 #else
-  *out++ = SATURATE_LEFT_SHIFT(cosine - (error0 << 1), 1, DFRACT_BITS);
-  *out++ = SATURATE_LEFT_SHIFT(sine + (error1 << 1), 1, DFRACT_BITS);
+    *out++ = SATURATE_LEFT_SHIFT(cosine - (error0 << 1), 1, DFRACT_BITS);
+    *out++ = SATURATE_LEFT_SHIFT(sine + (error1 << 1), 1, DFRACT_BITS);
 #endif
 }
 #endif

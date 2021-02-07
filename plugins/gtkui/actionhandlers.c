@@ -253,8 +253,8 @@ action_add_location_handler_cb (void *user_data) {
 
 #ifndef DISABLE_CUSTOM_TITLE
     g_signal_connect ((gpointer) sct, "toggled",
-            G_CALLBACK (on_toggle_set_custom_title),
-            dlg);
+                      G_CALLBACK (on_toggle_set_custom_title),
+                      dlg);
 #endif
 
     gtk_dialog_set_default_response (GTK_DIALOG (dlg), GTK_RESPONSE_OK);
@@ -369,8 +369,8 @@ _warningMessageForCtx (ddbDeleteFromDiskController_t ctl, ddb_action_context_t c
     if (deadbeef->conf_get_int ("gtkui.delete_files_ask", 1)) {
         char buf[1000];
         const char *buf2 = deadbeef->conf_get_int ("gtkui.move_to_trash", 1) ?
-        _(" The files will be moved to trash.\n\n(This dialog can be turned off in GTKUI plugin settings)") :
-        _(" The files will be lost.\n\n(This dialog can be turned off in GTKUI plugin settings)");
+                           _(" The files will be moved to trash.\n\n(This dialog can be turned off in GTKUI plugin settings)") :
+                           _(" The files will be lost.\n\n(This dialog can be turned off in GTKUI plugin settings)");
 
         if (ctx == DDB_ACTION_CTX_SELECTION) {
             int selected_files = trackcount;

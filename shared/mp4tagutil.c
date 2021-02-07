@@ -114,7 +114,7 @@ _remove_known_fields (mp4p_atom_t *ilst) {
             // NOTE: atom names are case sensitive,
             // but custom fields are not
             if ((!meta->custom && !strcmp (type, _mp4_atom_map[i])) // all non-custom mapped fields
-                || (meta->custom && meta->data_version_flags == 1)) { // all custom text fields
+                    || (meta->custom && meta->data_version_flags == 1)) { // all custom text fields
                 mp4p_atom_remove_subatom (ilst, meta_atom);
                 break;
             }
@@ -217,10 +217,10 @@ _mp4tagutil_add_metadata_fields(mp4p_atom_t *ilst, DB_playItem_t *it) {
         }
 
         if (!strcasecmp (m->key, "track")
-            || !strcasecmp (m->key, "numtracks")
-            || !strcasecmp (m->key, "disc")
-            || !strcasecmp (m->key, "numdiscs")
-            || !strcasecmp (m->key, "genre")) {
+                || !strcasecmp (m->key, "numtracks")
+                || !strcasecmp (m->key, "disc")
+                || !strcasecmp (m->key, "numdiscs")
+                || !strcasecmp (m->key, "genre")) {
             m = m->next;
             continue;
         }
@@ -370,8 +370,8 @@ mp4tagutil_modify_meta (mp4p_atom_t *mp4file, DB_playItem_t *it) {
     mp4p_atom_t *before_moov_begin = NULL;
     for (mp4p_atom_t *curr = mp4file; curr->next; curr = curr->next) {
         if (mp4p_atom_type_compare(curr->next, "moov")
-            || mp4p_atom_type_compare(curr->next, "free")
-            || mp4p_atom_type_compare(curr->next, "mdat")) {
+                || mp4p_atom_type_compare(curr->next, "free")
+                || mp4p_atom_type_compare(curr->next, "mdat")) {
             before_moov_begin = curr;
             break;
         }
@@ -405,7 +405,7 @@ mp4tagutil_modify_meta (mp4p_atom_t *mp4file, DB_playItem_t *it) {
 
     // does moov + free fit before eop?
     if (before_moov_begin->pos + before_moov_begin->size + moov->size == eop->pos
-        || before_moov_begin->pos + before_moov_begin->size + moov->size < eop->pos - 8) {
+            || before_moov_begin->pos + before_moov_begin->size + moov->size < eop->pos - 8) {
         // moov fits: put to the beginning
         mp4p_atom_remove_sibling(mp4file, moov, 0);
         moov->pos = before_moov_begin->pos + before_moov_begin->size;

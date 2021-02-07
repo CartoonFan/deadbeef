@@ -211,7 +211,7 @@ wmaplug_read (DB_fileinfo_t *_info, char *bytes, int size) {
             uint8_t* audiobuf = audiobuf_mem;
             int audiobufsize = 0;
             int packetlength = 0;
-    new_packet:
+new_packet:
             {
                 int pos = deadbeef->ftell (info->info.file);
                 res = asf_read_packet(&audiobuf, &audiobufsize, &packetlength, &info->wfx, info->info.file);
@@ -228,7 +228,7 @@ wmaplug_read (DB_fileinfo_t *_info, char *bytes, int size) {
                     for (int i=0; i < info->wmadec.nb_frames; i++)
                     {
                         int wmares = wma_decode_superframe_frame(&info->wmadec,
-                                audiobuf + b * info->wfx.blockalign, info->wfx.blockalign);
+                                     audiobuf + b * info->wfx.blockalign, info->wfx.blockalign);
 
                         if (wmares < 0) {
                             /* Do the above, but for errors in decode. */
@@ -297,12 +297,12 @@ wmaplug_read (DB_fileinfo_t *_info, char *bytes, int size) {
             uint8_t* audiobuf = audiobuf_mem;
             int audiobufsize = 0;
             int packetlength = 0;
-    new_packet:
+new_packet:
             {
-            int pos = deadbeef->ftell (info->info.file);
-            res = asf_read_packet(&audiobuf, &audiobufsize, &packetlength, &info->wfx, info->info.file);
-            int endpos = deadbeef->ftell (info->info.file);
-            trace ("[2] packet pos: %d, packet size: %d, data size: %d\n", pos, endpos-pos, packetlength);
+                int pos = deadbeef->ftell (info->info.file);
+                res = asf_read_packet(&audiobuf, &audiobufsize, &packetlength, &info->wfx, info->info.file);
+                int endpos = deadbeef->ftell (info->info.file);
+                trace ("[2] packet pos: %d, packet size: %d, data size: %d\n", pos, endpos-pos, packetlength);
             }
             if (res > 0) {
                 int nblocks = audiobufsize / info->wfx.blockalign;
@@ -437,7 +437,7 @@ wmaplug_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
 
     deadbeef->plt_set_item_duration (plt, it, totalsamples / (float)wfx.rate);
     deadbeef->pl_append_meta (it, ":FILETYPE", "WMA");
-    
+
     deadbeef->pl_item_set_startsample (it, 0);
     deadbeef->pl_item_set_endsample (it, totalsamples-1);
 
@@ -463,28 +463,28 @@ static DB_decoder_t plugin = {
     .plugin.id = "wma",
     .plugin.name = "WMA player",
     .plugin.descr = "plays WMA files",
-    .plugin.copyright = 
-        "WMA plugin for deadbeef\n"
-        "Copyright (C) 2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "WMA and ASF libraries (C) RockBox & FFMPEG developers\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    .plugin.copyright =
+    "WMA plugin for deadbeef\n"
+    "Copyright (C) 2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "WMA and ASF libraries (C) RockBox & FFMPEG developers\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .open = wmaplug_open,

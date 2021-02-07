@@ -294,9 +294,9 @@ _check_xing_header (mp3info_t *info, mp3packet_t *packet, uint8_t *buffer, int b
     uint8_t rev = READ_UINT8();
 
     switch (rev & 0x0f) {
-        case XING_CBR ... XING_ABR2:
-            info->vbr_type = rev & 0x0f;
-            break;
+    case XING_CBR ... XING_ABR2:
+        info->vbr_type = rev & 0x0f;
+        break;
     }
     if (lame_header) {
         if (buffer_size < 22) {
@@ -348,9 +348,9 @@ _check_xing_header (mp3info_t *info, mp3packet_t *packet, uint8_t *buffer, int b
 static int
 _process_packet (mp3info_t *info, mp3packet_t *packet, int64_t seek_to_sample) {
     if (info->vbr_type != DETECTED_VBR
-        && (!info->have_xing_header || !info->vbr_type)
-        && info->prev_packet.bitrate
-        && info->prev_packet.bitrate != packet->bitrate) {
+            && (!info->have_xing_header || !info->vbr_type)
+            && info->prev_packet.bitrate
+            && info->prev_packet.bitrate != packet->bitrate) {
         info->vbr_type = DETECTED_VBR;
     }
 
@@ -395,9 +395,9 @@ _process_packet (mp3info_t *info, mp3packet_t *packet, int64_t seek_to_sample) {
 static int
 _packet_same_fmt (mp3packet_t *ref_packet, mp3packet_t *packet) {
     return packet->layer == ref_packet->layer
-        && packet->nchannels == ref_packet->nchannels
-        && packet->samplerate == ref_packet->samplerate
-        && packet->ver == ref_packet->ver;
+           && packet->nchannels == ref_packet->nchannels
+           && packet->samplerate == ref_packet->samplerate
+           && packet->ver == ref_packet->ver;
 }
 
 int
@@ -606,9 +606,9 @@ mp3_parse_file (mp3info_t *info, uint32_t flags, DB_FILE *fp, int64_t fsize, int
 
             // for streaming tracks -- approximate duration
             if (seek_to_sample == -1
-                && fsize > 0
-                && offs > (startoffs+50000)
-                && (info->is_streaming || (flags&MP3_PARSE_ESTIMATE_DURATION))) {
+                    && fsize > 0
+                    && offs > (startoffs+50000)
+                    && (info->is_streaming || (flags&MP3_PARSE_ESTIMATE_DURATION))) {
                 if (!info->valid_packets) {
                     goto error;
                 }

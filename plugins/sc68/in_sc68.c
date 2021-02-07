@@ -349,10 +349,10 @@ in_sc68_stop (void) {
 }
 
 static const char settings_dlg[] =
-"property \"Default song length (in minutes)\" entry c68.songlength 2;\n" // 0..1440
-"property \"Samplerate\" entry c68.samplerate 44100;\n" // 6000-50000
-"property \"Skip when shorter than (sec)\" entry c68.skip_time 4;\n" // 4..86400
-;
+    "property \"Default song length (in minutes)\" entry c68.songlength 2;\n" // 0..1440
+    "property \"Samplerate\" entry c68.samplerate 44100;\n" // 6000-50000
+    "property \"Skip when shorter than (sec)\" entry c68.skip_time 4;\n" // 4..86400
+    ;
 
 // define plugin interface
 static DB_decoder_t plugin = {
@@ -363,51 +363,51 @@ static DB_decoder_t plugin = {
     .plugin.name = "SC68 player (Atari ST SNDH YM2149)",
     .plugin.id = "in_sc68",
     .plugin.descr = "SC68 player (Atari ST SNDH YM2149)",
-    .plugin.copyright = 
-        "in_sc68 (Atari ST SNDH YM2149) input plugin for deadbeef\n"
-        "Copyright (C) 2015 Alexey Yakovenko\n"
-        "based on sc68 library, see below for more information\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
-        "\n"
-        "\n"
-        "\n"
-        "sc68 - Atari ST and Amiga music player\n"
-        "Copyright (C) 1998-2015  Benjamin Gerard\n"
-        "<ben@sashipa.com>\n"
-        "<http://sashipa.ben.free.fr/sc68/>\n"
-        "<http://sourceforge.net/projects/sc68/>\n"
-        "\n"
-        "This program is free software: you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License as\n"
-        "published by the Free Software Foundation, either version 3 of the\n"
-        "License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful, but\n"
-        "WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
-        "General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program.\n"
-        "\n"
-        "If not, see <http://www.gnu.org/licenses/>.\n",
+    .plugin.copyright =
+    "in_sc68 (Atari ST SNDH YM2149) input plugin for deadbeef\n"
+    "Copyright (C) 2015 Alexey Yakovenko\n"
+    "based on sc68 library, see below for more information\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
+    "\n"
+    "\n"
+    "\n"
+    "sc68 - Atari ST and Amiga music player\n"
+    "Copyright (C) 1998-2015  Benjamin Gerard\n"
+    "<ben@sashipa.com>\n"
+    "<http://sashipa.ben.free.fr/sc68/>\n"
+    "<http://sourceforge.net/projects/sc68/>\n"
+    "\n"
+    "This program is free software: you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License as\n"
+    "published by the Free Software Foundation, either version 3 of the\n"
+    "License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful, but\n"
+    "WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
+    "General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program.\n"
+    "\n"
+    "If not, see <http://www.gnu.org/licenses/>.\n",
     .plugin.start = in_sc68_start,
     .plugin.stop = in_sc68_stop,
     .plugin.configdialog = settings_dlg,

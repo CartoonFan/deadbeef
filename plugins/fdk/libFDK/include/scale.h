@@ -154,19 +154,19 @@ INT getScalefactor(const FIXP_SGL *vector, INT len);
 #define FUNCTION_scaleValue
 inline FIXP_DBL scaleValue(const FIXP_DBL value, /*!< Value */
                            INT scalefactor       /*!< Scalefactor */
-) {
-  if (scalefactor > 0)
-    return (value << scalefactor);
-  else
-    return (value >> (-scalefactor));
+                          ) {
+    if (scalefactor > 0)
+        return (value << scalefactor);
+    else
+        return (value >> (-scalefactor));
 }
 inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
                            INT scalefactor       /*!< Scalefactor */
-) {
-  if (scalefactor > 0)
-    return (value << scalefactor);
-  else
-    return (value >> (-scalefactor));
+                          ) {
+    if (scalefactor > 0)
+        return (value << scalefactor);
+    else
+        return (value >> (-scalefactor));
 }
 #endif
 
@@ -182,28 +182,28 @@ inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
 #define FUNCTION_scaleValueSaturate
 inline FIXP_DBL scaleValueSaturate(const FIXP_DBL value,
                                    INT scalefactor /* in range -31 ... +31 */
-) {
-  int headroom = fixnormz_D(
-      (INT)value ^ (INT)((value >> 31))); /* headroom in range 1...32 */
-  if (scalefactor >= 0) {
-    /* shift left: saturate in case of headroom less/equal scalefactor */
-    if (headroom <= scalefactor) {
-      if (value > (FIXP_DBL)0)
-        return (FIXP_DBL)MAXVAL_DBL; /* 0x7FFF.FFFF */
-      else
-        return (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1; /* 0x8000.0001 */
+                                  ) {
+    int headroom = fixnormz_D(
+                       (INT)value ^ (INT)((value >> 31))); /* headroom in range 1...32 */
+    if (scalefactor >= 0) {
+        /* shift left: saturate in case of headroom less/equal scalefactor */
+        if (headroom <= scalefactor) {
+            if (value > (FIXP_DBL)0)
+                return (FIXP_DBL)MAXVAL_DBL; /* 0x7FFF.FFFF */
+            else
+                return (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1; /* 0x8000.0001 */
+        } else {
+            return fMax((value << scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
+        }
     } else {
-      return fMax((value << scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
+        scalefactor = -scalefactor;
+        /* shift right: clear in case of 32-headroom greater/equal -scalefactor */
+        if ((DFRACT_BITS - headroom) <= scalefactor) {
+            return (FIXP_DBL)0;
+        } else {
+            return fMax((value >> scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
+        }
     }
-  } else {
-    scalefactor = -scalefactor;
-    /* shift right: clear in case of 32-headroom greater/equal -scalefactor */
-    if ((DFRACT_BITS - headroom) <= scalefactor) {
-      return (FIXP_DBL)0;
-    } else {
-      return fMax((value >> scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
-    }
-  }
 }
 #endif
 
@@ -218,26 +218,26 @@ inline FIXP_DBL scaleValueSaturate(const FIXP_DBL value,
 #define FUNCTION_scaleValueInPlace
 inline void scaleValueInPlace(FIXP_DBL *value, /*!< Value */
                               INT scalefactor  /*!< Scalefactor */
-) {
-  INT newscale;
-  /* Note: The assignment inside the if conditional allows combining a load with
-   * the compare to zero (on ARM and maybe others) */
-  if ((newscale = (scalefactor)) >= 0) {
-    *(value) <<= newscale;
-  } else {
-    *(value) >>= -newscale;
-  }
+                             ) {
+    INT newscale;
+    /* Note: The assignment inside the if conditional allows combining a load with
+     * the compare to zero (on ARM and maybe others) */
+    if ((newscale = (scalefactor)) >= 0) {
+        *(value) <<= newscale;
+    } else {
+        *(value) >>= -newscale;
+    }
 }
 #endif
 
-  /*!
-   *
-   *  \brief  Scale input value by 2^{scale} and saturate output to 2^{dBits-1}
-   *  \return scaled and saturated value
-   *
-   *  This macro scales src value right or left and applies saturation to
-   * (2^dBits)-1 maxima output.
-   */
+/*!
+ *
+ *  \brief  Scale input value by 2^{scale} and saturate output to 2^{dBits-1}
+ *  \return scaled and saturated value
+ *
+ *  This macro scales src value right or left and applies saturation to
+ * (2^dBits)-1 maxima output.
+ */
 
 #ifndef SATURATE_RIGHT_SHIFT
 #define SATURATE_RIGHT_SHIFT(src, scale, dBits)                            \

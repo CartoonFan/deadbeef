@@ -236,7 +236,7 @@ cgme_init (DB_fileinfo_t *_info, DB_playItem_t *it) {
     _info->fmt.samplerate = samplerate;
     _info->fmt.channelmask = _info->fmt.channels == 1 ? DDB_SPEAKER_FRONT_LEFT : (DDB_SPEAKER_FRONT_LEFT | DDB_SPEAKER_FRONT_RIGHT);
     info->duration = deadbeef->pl_get_item_duration (it);
-    info->reallength = inf->length; 
+    info->reallength = inf->length;
     _info->readpos = 0;
     info->eof = 0;
     return 0;
@@ -423,7 +423,7 @@ cgme_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
                 deadbeef->pl_add_meta (it, ":GME_LOOP_LENGTH", str);
                 if (inf->length == -1 || inf->length == 0) {
                     float songlength;
-                    
+
                     if (inf->loop_length > 0 && conf_loopcount > 0) {
                         songlength = inf->intro_length / 1000.f;
                         if (songlength < 0) {
@@ -475,7 +475,7 @@ cgme_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
 
 static const char * exts[]=
 {
-	"ay","gbs","gym","hes","kss","nsf","nsfe","sap","sfm","spc","vgm","vgz","sgc",NULL
+    "ay","gbs","gym","hes","kss","nsf","nsfe","sap","sfm","spc","vgm","vgz","sgc",NULL
 };
 
 static int
@@ -551,7 +551,7 @@ static const char settings_dlg[] =
     "property \"Fadeout length (seconds)\" entry gme.fadeout 10;\n"
     "property \"Play loops nr. of times (if available)\" entry gme.loopcount 2;\n"
     "property \"ColecoVision BIOS (for SGC file format)\" file gme.coleco_rom \"\";\n"
-;
+    ;
 
 // define plugin interface
 static DB_decoder_t plugin = {
@@ -563,84 +563,84 @@ static DB_decoder_t plugin = {
     .plugin.id = "stdgme",
     .plugin.name = "Game-Music-Emu player",
     .plugin.descr = "chiptune/game music player based on GME library",
-    .plugin.copyright = 
-        "Game_Music_Emu plugin for DeaDBeeF\n"
-        "Copyright (C) 2009-2015 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
-        "\n"
-        "\n"
-        "\n"
-        "Game_Music_Emu (modified)\n"
-        "Copyright (C) 2003-2009 Shay Green.\n"
-        "Foobar2000-related modifications (C) Chris Moeller\n"
-        "DeaDBeeF-related modifications (C) Alexey Yakovenko.\n"
-        "\n"
-        "This library is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU Lesser General Public\n"
-        "License as published by the Free Software Foundation; either\n"
-        "version 2.1 of the License, or (at your option) any later version.\n"
-        "\n"
-        "This library is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
-        "Lesser General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU Lesser General Public\n"
-        "License along with this library; if not, write to the Free Software\n"
-        "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
-        "\n"
-        "\n"
-        "\n"
-        "VGMPlay\n"
-        "Copyright Nicola Salmoria and the MAME team\n"
-        "All rights reserved.\n"
-        "\n"
-        "Redistribution and use of this code or any derivative works are permitted\n"
-        "provided that the following conditions are met:\n"
-        "\n"
-        "* Redistributions may not be sold, nor may they be used in a commercial\n"
-        "product or activity.\n"
-        "\n"
-        "* Redistributions that are modified from the original source must include the\n"
-        "complete source code, including the source code for all components used by a\n"
-        "binary built from the modified sources. However, as a special exception, the\n"
-        "source code distributed need not include anything that is normally distributed\n"
-        "(in either source or binary form) with the major components (compiler, kernel,\n"
-        "and so on) of the operating system on which the executable runs, unless that\n"
-        "component itself accompanies the executable.\n"
-        "\n"
-        "* Redistributions must reproduce the above copyright notice, this list of\n"
-        "conditions and the following disclaimer in the documentation and/or other\n"
-        "materials provided with the distribution.\n"
-        "\n"
-        "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
-        "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
-        "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
-        "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE\n"
-        "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
-        "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
-        "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
-        "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
-        "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
-        "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
-        "POSSIBILITY OF SUCH DAMAGE.\n"
+    .plugin.copyright =
+    "Game_Music_Emu plugin for DeaDBeeF\n"
+    "Copyright (C) 2009-2015 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
+    "\n"
+    "\n"
+    "\n"
+    "Game_Music_Emu (modified)\n"
+    "Copyright (C) 2003-2009 Shay Green.\n"
+    "Foobar2000-related modifications (C) Chris Moeller\n"
+    "DeaDBeeF-related modifications (C) Alexey Yakovenko.\n"
+    "\n"
+    "This library is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU Lesser General Public\n"
+    "License as published by the Free Software Foundation; either\n"
+    "version 2.1 of the License, or (at your option) any later version.\n"
+    "\n"
+    "This library is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
+    "Lesser General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU Lesser General Public\n"
+    "License along with this library; if not, write to the Free Software\n"
+    "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+    "\n"
+    "\n"
+    "\n"
+    "VGMPlay\n"
+    "Copyright Nicola Salmoria and the MAME team\n"
+    "All rights reserved.\n"
+    "\n"
+    "Redistribution and use of this code or any derivative works are permitted\n"
+    "provided that the following conditions are met:\n"
+    "\n"
+    "* Redistributions may not be sold, nor may they be used in a commercial\n"
+    "product or activity.\n"
+    "\n"
+    "* Redistributions that are modified from the original source must include the\n"
+    "complete source code, including the source code for all components used by a\n"
+    "binary built from the modified sources. However, as a special exception, the\n"
+    "source code distributed need not include anything that is normally distributed\n"
+    "(in either source or binary form) with the major components (compiler, kernel,\n"
+    "and so on) of the operating system on which the executable runs, unless that\n"
+    "component itself accompanies the executable.\n"
+    "\n"
+    "* Redistributions must reproduce the above copyright notice, this list of\n"
+    "conditions and the following disclaimer in the documentation and/or other\n"
+    "materials provided with the distribution.\n"
+    "\n"
+    "THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n"
+    "AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n"
+    "IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n"
+    "ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE\n"
+    "LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n"
+    "CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n"
+    "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
+    "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n"
+    "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n"
+    "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n"
+    "POSSIBILITY OF SUCH DAMAGE.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = cgme_start,

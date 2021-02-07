@@ -544,7 +544,7 @@ plt_remove (int plt) {
     if (!plt_loading) {
         messagepump_push (DB_EV_PLAYLISTSWITCHED, 0, 0, 0);
         messagepump_push (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_DELETED, 0);
-   }
+    }
 }
 
 int
@@ -989,7 +989,7 @@ plt_insert_file_int (int visibility, playlist_t *playlist, playItem_t *after, co
         fname += 7;
     }
 
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     // replace backslashes with normal slashes
     char fname_conv[strlen(fname)+1];
     if (strchr(fname, '\\')) {
@@ -1006,7 +1006,7 @@ plt_insert_file_int (int visibility, playlist_t *playlist, playItem_t *after, co
     if (fname[0] == '/' && isalpha(fname[1]) && fname[2] == ':') {
         fname++;
     }
-    #endif
+#endif
 
     // now that it's known we're not dealing with URL, check if it's a relative path
     if (is_relative_path (fname)) {
@@ -1166,7 +1166,7 @@ _get_fullname_and_dir (char *fullname, int sz, char *dir, int dirsz, DB_vfs_t *v
         }
     }
 
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     if (fullname && strchr(fullname, '\\')) {
         char *slash_p = fullname;
         while (slash_p = strchr(slash_p, '\\')) {
@@ -1183,7 +1183,7 @@ _get_fullname_and_dir (char *fullname, int sz, char *dir, int dirsz, DB_vfs_t *v
         }
         trace ("_get_fullname_and_dir backslash(es) found, converted: %s\n", dir);
     }
-    #endif
+#endif
 }
 
 static playItem_t *
@@ -1192,7 +1192,7 @@ plt_insert_dir_int (int visibility, playlist_t *playlist, DB_vfs_t *vfs, playIte
         dirname += 7;
     }
 
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     // replace backslashes with normal slashes
     char dirname_conv[strlen(dirname)+1];
     if (strchr(dirname, '\\')) {
@@ -1209,7 +1209,7 @@ plt_insert_dir_int (int visibility, playlist_t *playlist, DB_vfs_t *vfs, playIte
     if (dirname[0] == '/' && isalpha(dirname[1]) && dirname[2] == ':') {
         dirname++;
     }
-    #endif
+#endif
 
     if (is_relative_path (dirname)) {
         return NULL;
@@ -1238,11 +1238,11 @@ plt_insert_dir_int (int visibility, playlist_t *playlist, DB_vfs_t *vfs, playIte
         n = vfs->scandir (dirname, &namelist, NULL, dirent_alphasort);
         // we can't rely on vfs plugins to set d_type
         // windows/svr4 unixes: missing dirent[]->d_type
-        #if !defined(__MINGW32__) && !defined(__SVR4)
+#if !defined(__MINGW32__) && !defined(__SVR4)
         for (int i = 0; i < n; i++) {
             namelist[i]->d_type = DT_REG;
         }
-        #endif
+#endif
     }
     else {
         n = scandir (dirname, &namelist, NULL, dirent_alphasort);
@@ -1261,11 +1261,11 @@ plt_insert_dir_int (int visibility, playlist_t *playlist, DB_vfs_t *vfs, playIte
     for (int i = 0; i < n; i++) {
         // no hidden files
         // windows/svr4 unixes: missing dirent[]->d_type
-        #if defined(__MINGW32__) || defined(__SVR4)
+#if defined(__MINGW32__) || defined(__SVR4)
         if (namelist[i]->d_name[0] == '.') {
-        #else
+#else
         if (namelist[i]->d_name[0] == '.' || (namelist[i]->d_type != DT_REG && namelist[i]->d_type != DT_UNKNOWN)) {
-        #endif
+#endif
             continue;
         }
 
@@ -2034,7 +2034,7 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
     playItem_t *it = NULL;
     playItem_t *last_added = NULL;
 
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     if (!strncmp (fname, "file://", 7)) {
         fname += 7;
     }
@@ -2054,7 +2054,7 @@ plt_load_int (int visibility, playlist_t *plt, playItem_t *after, const char *fn
     if (fname[0] == '/' && isalpha(fname[1]) && fname[2] == ':') {
         fname++;
     }
-    #endif
+#endif
 
     // try plugins 1st
     char *escaped = uri_unescape (fname, (int)strlen (fname));
@@ -2775,9 +2775,9 @@ pl_format_title_int (const char *escape_chars, playItem_t *it, int idx, char *s,
 #endif
                 if (!meta
 #ifndef DISABLE_CUSTOM_TITLE
-                && !custom
+                        && !custom
 #endif
-                ) {
+                   ) {
                     meta = "Unknown artist";
                 }
 
@@ -2928,7 +2928,7 @@ pl_format_title_int (const char *escape_chars, playItem_t *it, int idx, char *s,
             }
             else if (*fmt == 'F') {
                 meta = pl_find_meta_raw (it, ":URI");
-                #ifdef __MINGW32__
+#ifdef __MINGW32__
                 int len = strlen(meta);
                 strncpy (dirname, meta, len);
                 dirname[len] = 0;
@@ -2938,7 +2938,7 @@ pl_format_title_int (const char *escape_chars, playItem_t *it, int idx, char *s,
                     *str_p = '\\';
                 }
                 meta = dirname;
-                #endif
+#endif
             }
             else if (*fmt == 'T') {
                 char *t = tags;
@@ -3026,7 +3026,7 @@ pl_format_title_int (const char *escape_chars, playItem_t *it, int idx, char *s,
                     len = min (len, sizeof (dirname)-1);
                     strncpy (dirname, f, len);
                     dirname[len] = 0;
-                    #ifdef __MINGW32__
+#ifdef __MINGW32__
                     {
                         // Convert to backslashes on windows
                         char *str_p = dirname;
@@ -3034,7 +3034,7 @@ pl_format_title_int (const char *escape_chars, playItem_t *it, int idx, char *s,
                             *str_p = '\\';
                         }
                     }
-                    #endif
+#endif
                     meta = dirname;
                 }
             }
@@ -3188,7 +3188,7 @@ plt_get_selection_playback_time (playlist_t *playlist) {
     LOCK;
 
     float t = 0;
-    
+
     if (!playlist->recalc_seltime) {
         t = playlist->seltime;
         UNLOCK;
@@ -3196,7 +3196,7 @@ plt_get_selection_playback_time (playlist_t *playlist) {
     }
 
     for (playItem_t *it = playlist->head[PL_MAIN]; it; it = it->next[PL_MAIN]) {
-        if (it->selected){
+        if (it->selected) {
             t += roundf(it->_duration);
         }
     }
@@ -3887,7 +3887,7 @@ plt_add_files_end (playlist_t *plt, int visibility) {
         l->callback_end (&d, l->user_data);
     }
     background_job_decrement ();
-    
+
     plt_autosort (plt);
 }
 

@@ -350,9 +350,9 @@ static NSMutableArray *g_converterControllers;
     panel.message = @"Choose output folder";
 
     // Display the panel attached to the document's window.
-    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result){
-        if (result == NSModalResponseOK) {
-            NSURL * url = [panel URL];
+    [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
+              if (result == NSModalResponseOK) {
+                  NSURL * url = [panel URL];
             self.outputFolder.stringValue =  [url path];
         }
     }];
@@ -389,17 +389,17 @@ static NSMutableArray *g_converterControllers;
 
     int selected_format = (int)[_outputFormat indexOfSelectedItem];
     switch (selected_format) {
-        case 1 ... 4:
-            self.output_bps = selected_format * 8;
-            self.output_is_float = 0;
-            break;
-        case 5:
-            self.output_bps = 32;
-            self.output_is_float = 1;
-            break;
-        default:
-            self.output_bps = -1; // same as input, or encoder default
-            break;
+    case 1 ... 4:
+        self.output_bps = selected_format * 8;
+        self.output_is_float = 0;
+        break;
+    case 5:
+        self.output_bps = 32;
+        self.output_is_float = 1;
+        break;
+    default:
+        self.output_bps = -1; // same as input, or encoder default
+        break;
     }
 
     NSInteger selectedEncoderPreset = self.encoderSelectViewController.indexOfSelectedItem;
@@ -417,7 +417,7 @@ static NSMutableArray *g_converterControllers;
         alert.informativeText = @"Please select one of the encoders from the list.";
         alert.alertStyle = NSAlertStyleCritical;
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-        }];
+              }];
 
         return;
     }
@@ -449,7 +449,7 @@ static NSMutableArray *g_converterControllers;
     self.retagAfterCopyState = self.retagAfterCopy.state;
 
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(aQueue, ^{
+    dispatch_async(aQueue, ^ {
         [self converterWorker];
     });
 }
@@ -510,7 +510,7 @@ static NSMutableArray *g_converterControllers;
         self.converter_plugin->get_output_path2 (_convert_items[n], self.convert_playlist, [self.outfolder UTF8String], [self.outfile UTF8String], self.encoder_preset, self.preserve_folder_structure, root, self.write_to_source_folder, outpath, sizeof (outpath));
         NSString *nsoutpath = [NSString stringWithUTF8String:outpath];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^ {
             self.progressBar.doubleValue = n;
             self.progressText.stringValue = text;
             self.progressOutText.stringValue = nsoutpath;
@@ -553,7 +553,7 @@ static NSMutableArray *g_converterControllers;
             break;
         }
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [self.progressPanel close];
         [self converterFinished:self withResult:1];
     });
@@ -565,7 +565,7 @@ static NSMutableArray *g_converterControllers;
 
 - (NSInteger)overwritePrompt:(NSString *)path {
     self.overwritePromptCondition = [NSCondition new];
-    dispatch_sync(dispatch_get_main_queue(), ^{
+    dispatch_sync(dispatch_get_main_queue(), ^ {
         NSAlert *alert = [NSAlert new];
         [alert addButtonWithTitle:@"No"];
         [alert addButtonWithTitle:@"Yes"];
@@ -575,8 +575,8 @@ static NSMutableArray *g_converterControllers;
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert beginSheetModalForWindow:_progressPanel completionHandler:^(NSModalResponse returnCode) {
-            [self.overwritePromptCondition lock];
-            self.overwritePromptResult = returnCode;
+                  [self.overwritePromptCondition lock];
+                  self.overwritePromptResult = returnCode;
             [self.overwritePromptCondition signal];
             [self.overwritePromptCondition unlock];
         }];

@@ -299,14 +299,14 @@ csid_mute_voices (sid_info_t *info, int chip_voices) {
 int
 csid_init (DB_fileinfo_t *_info, DB_playItem_t *it) {
     sid_info_t *info = (sid_info_t *)_info;
-    
+
     // libsidplay crashes if file doesn't exist
     // so i have to check it here
     deadbeef->pl_lock ();
     const char *uri = strdupa (deadbeef->pl_find_meta (it, ":URI"));
     deadbeef->pl_unlock ();
     DB_FILE *fp = deadbeef->fopen (uri);
-    if (!fp ){
+    if (!fp ) {
         return -1;
     }
     deadbeef->fclose (fp);

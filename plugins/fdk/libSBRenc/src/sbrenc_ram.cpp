@@ -214,12 +214,12 @@ C_ALLOC_MEM(Ram_ParamStereo, PARAMETRIC_STEREO, 1)
 C_ALLOC_MEM2(Ram_Sbr_envYBuffer, FIXP_DBL, (32 / 2 * 64), (8))
 
 FIXP_DBL* GetRam_Sbr_envYBuffer(int n, UCHAR* dynamic_RAM) {
-  FDK_ASSERT(dynamic_RAM != 0);
-  /* The reinterpret_cast is used to suppress a compiler warning. We know that
-   * (dynamic_RAM + OFFSET_NRG + (n*Y_2_BUF_BYTE)) is sufficiently aligned, so
-   * the cast is safe */
-  return reinterpret_cast<FIXP_DBL*>(
-      reinterpret_cast<void*>(dynamic_RAM + OFFSET_NRG + (n * Y_2_BUF_BYTE)));
+    FDK_ASSERT(dynamic_RAM != 0);
+    /* The reinterpret_cast is used to suppress a compiler warning. We know that
+     * (dynamic_RAM + OFFSET_NRG + (n*Y_2_BUF_BYTE)) is sufficiently aligned, so
+     * the cast is safe */
+    return reinterpret_cast<FIXP_DBL*>(
+               reinterpret_cast<void*>(dynamic_RAM + OFFSET_NRG + (n * Y_2_BUF_BYTE)));
 }
 
 /*
@@ -228,22 +228,22 @@ FIXP_DBL* GetRam_Sbr_envYBuffer(int n, UCHAR* dynamic_RAM) {
 /* The SBR encoder uses a single channel overlapping buffer set (always n=0),
  * but PS does not. */
 FIXP_DBL* GetRam_Sbr_envRBuffer(int n, UCHAR* dynamic_RAM) {
-  FDK_ASSERT(dynamic_RAM != 0);
-  /* The reinterpret_cast is used to suppress a compiler warning. We know that
-   * (dynamic_RAM + OFFSET_QMF + (n*(ENV_R_BUFF_BYTE+ENV_I_BUFF_BYTE))) is
-   * sufficiently aligned, so the cast is safe */
-  return reinterpret_cast<FIXP_DBL*>(reinterpret_cast<void*>(
-      dynamic_RAM + OFFSET_QMF + (n * (ENV_R_BUFF_BYTE + ENV_I_BUFF_BYTE))));
+    FDK_ASSERT(dynamic_RAM != 0);
+    /* The reinterpret_cast is used to suppress a compiler warning. We know that
+     * (dynamic_RAM + OFFSET_QMF + (n*(ENV_R_BUFF_BYTE+ENV_I_BUFF_BYTE))) is
+     * sufficiently aligned, so the cast is safe */
+    return reinterpret_cast<FIXP_DBL*>(reinterpret_cast<void*>(
+                                           dynamic_RAM + OFFSET_QMF + (n * (ENV_R_BUFF_BYTE + ENV_I_BUFF_BYTE))));
 }
 FIXP_DBL* GetRam_Sbr_envIBuffer(int n, UCHAR* dynamic_RAM) {
-  FDK_ASSERT(dynamic_RAM != 0);
-  /* The reinterpret_cast is used to suppress a compiler warning. We know that
-   * (dynamic_RAM + OFFSET_QMF + (ENV_R_BUFF_BYTE) +
-   * (n*(ENV_R_BUFF_BYTE+ENV_I_BUFF_BYTE))) is sufficiently aligned, so the cast
-   * is safe */
-  return reinterpret_cast<FIXP_DBL*>(
-      reinterpret_cast<void*>(dynamic_RAM + OFFSET_QMF + (ENV_R_BUFF_BYTE) +
-                              (n * (ENV_R_BUFF_BYTE + ENV_I_BUFF_BYTE))));
+    FDK_ASSERT(dynamic_RAM != 0);
+    /* The reinterpret_cast is used to suppress a compiler warning. We know that
+     * (dynamic_RAM + OFFSET_QMF + (ENV_R_BUFF_BYTE) +
+     * (n*(ENV_R_BUFF_BYTE+ENV_I_BUFF_BYTE))) is sufficiently aligned, so the cast
+     * is safe */
+    return reinterpret_cast<FIXP_DBL*>(
+               reinterpret_cast<void*>(dynamic_RAM + OFFSET_QMF + (ENV_R_BUFF_BYTE) +
+                                       (n * (ENV_R_BUFF_BYTE + ENV_I_BUFF_BYTE))));
 }
 
 /* @} */

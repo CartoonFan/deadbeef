@@ -119,19 +119,19 @@ palsa_set_hw_params (ddb_waveformat_t *fmt) {
 
     if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) {
         fprintf (stderr, "cannot allocate hardware parameter structure (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
 
     if ((err = snd_pcm_hw_params_any (audio, hw_params)) < 0) {
         fprintf (stderr, "cannot initialize hardware parameter structure (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
 
     if ((err = snd_pcm_hw_params_set_access (audio, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
         fprintf (stderr, "cannot set access type (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
 
@@ -221,13 +221,13 @@ palsa_set_hw_params (ddb_waveformat_t *fmt) {
 
     if ((err = snd_pcm_hw_params_set_rate_resample (audio, hw_params, conf_alsa_resample)) < 0) {
         fprintf (stderr, "cannot setup resampling (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
 
     if ((err = snd_pcm_hw_params_set_rate_near (audio, hw_params, &val, &ret)) < 0) {
         fprintf (stderr, "cannot set sample rate (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
     plugin.fmt.samplerate = val;
@@ -248,7 +248,7 @@ palsa_set_hw_params (ddb_waveformat_t *fmt) {
     trace ("setting chan=%d\n", nchan);
     if ((err = snd_pcm_hw_params_set_channels (audio, hw_params, nchan)) < 0) {
         fprintf (stderr, "cannot set channel count (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
     }
 
     snd_pcm_hw_params_get_channels (hw_params, &nchan);
@@ -267,7 +267,7 @@ palsa_set_hw_params (ddb_waveformat_t *fmt) {
 
     if ((err = snd_pcm_hw_params (audio, hw_params)) < 0) {
         fprintf (stderr, "cannot set parameters (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto error;
     }
 
@@ -350,7 +350,7 @@ palsa_init (void) {
     //const char *conf_alsa_soundcard = conf_get_str ("alsa_soundcard", "default");
     if ((err = snd_pcm_open (&audio, conf_alsa_soundcard, SND_PCM_STREAM_PLAYBACK, 0))) {
         fprintf (stderr, "could not open audio device (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         return -1;
     }
 
@@ -364,12 +364,12 @@ palsa_init (void) {
 
     if ((err = snd_pcm_sw_params_malloc (&sw_params)) < 0) {
         fprintf (stderr, "cannot allocate software parameters structure (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
     if ((err = snd_pcm_sw_params_current (audio, sw_params)) < 0) {
         fprintf (stderr, "cannot initialize software parameters structure (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
 
@@ -377,14 +377,14 @@ palsa_init (void) {
 
     if ((err = snd_pcm_sw_params_set_avail_min (audio, sw_params, period_size)) < 0) {
         fprintf (stderr, "cannot set minimum available count (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
 
     snd_pcm_uframes_t av;
     if ((err = snd_pcm_sw_params_get_avail_min (sw_params, &av)) < 0) {
         fprintf (stderr, "snd_pcm_sw_params_get_avail_min failed (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
     trace ("alsa avail_min: %d frames\n", (int)av);
@@ -398,7 +398,7 @@ palsa_init (void) {
 
     if ((err = snd_pcm_sw_params (audio, sw_params)) < 0) {
         fprintf (stderr, "cannot set software parameters (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
     snd_pcm_sw_params_free (sw_params);
@@ -410,7 +410,7 @@ palsa_init (void) {
 
     if ((err = snd_pcm_prepare (audio)) < 0) {
         fprintf (stderr, "cannot prepare audio interface for use (%s)\n",
-                snd_strerror (err));
+                 snd_strerror (err));
         goto open_error;
     }
 
@@ -436,22 +436,22 @@ _setformat_apply (void) {
 
     trace ("palsa_setformat %dbit %s %dch %dHz channelmask=%X\n", requested_fmt.bps, requested_fmt.is_float ? "float" : "int", requested_fmt.channels, requested_fmt.samplerate, requested_fmt.channelmask);
     if (!audio
-        || !memcmp (&requested_fmt, &plugin.fmt, sizeof (ddb_waveformat_t))) {
+            || !memcmp (&requested_fmt, &plugin.fmt, sizeof (ddb_waveformat_t))) {
         return 0;
     }
     else {
         trace ("switching format to (requsted -> actual):\n"
-        "bps %d -> %d\n"
-        "is_float %d -> %d\n"
-        "channels %d -> %d\n"
-        "samplerate %d -> %d\n"
-        "channelmask %d -> %d\n"
-        , requested_fmt.bps, plugin.fmt.bps
-        , requested_fmt.is_float, plugin.fmt.is_float
-        , requested_fmt.channels, plugin.fmt.channels
-        , requested_fmt.samplerate, plugin.fmt.samplerate
-        , requested_fmt.channelmask, plugin.fmt.channelmask
-        );
+               "bps %d -> %d\n"
+               "is_float %d -> %d\n"
+               "channels %d -> %d\n"
+               "samplerate %d -> %d\n"
+               "channelmask %d -> %d\n"
+               , requested_fmt.bps, plugin.fmt.bps
+               , requested_fmt.is_float, plugin.fmt.is_float
+               , requested_fmt.channels, plugin.fmt.channels
+               , requested_fmt.samplerate, plugin.fmt.samplerate
+               , requested_fmt.channelmask, plugin.fmt.channelmask
+              );
     }
     int ret = palsa_set_hw_params (&requested_fmt);
     if (ret < 0) {
@@ -685,7 +685,7 @@ palsa_thread (void *context) {
 
         // sleep up to 1 period
         if (avail < 0) {
-           avail = 0;
+            avail = 0;
         }
         else if (avail > period_size) {
             continue;
@@ -731,9 +731,9 @@ alsa_configchanged (void) {
     int period = deadbeef->conf_get_int ("alsa.period", DEFAULT_PERIOD_SIZE);
     if (audio &&
             (alsa_resample != conf_alsa_resample
-            || strcmp (alsa_soundcard, conf_alsa_soundcard)
-            || buffer != req_buffer_size
-            || period != req_period_size)) {
+             || strcmp (alsa_soundcard, conf_alsa_soundcard)
+             || buffer != req_buffer_size
+             || period != req_period_size)) {
         trace ("alsa: config option changed, restarting\n");
         deadbeef->sendmessage (DB_EV_REINIT_SOUND, 0, 0, 0);
     }
@@ -810,7 +810,7 @@ static const char settings_dlg[] =
     "property \"Use ALSA resampling\" checkbox alsa.resample 1;\n"
     "property \"Preferred buffer size\" entry alsa.buffer " DEFAULT_BUFFER_SIZE_STR ";\n"
     "property \"Preferred period size\" entry alsa.period " DEFAULT_PERIOD_SIZE_STR ";\n"
-;
+    ;
 
 // define plugin interface
 static DB_output_t plugin = {
@@ -823,21 +823,21 @@ static DB_output_t plugin = {
     .plugin.name = "ALSA output plugin",
     .plugin.descr = "plays sound through linux standard alsa library",
     .plugin.copyright =
-        "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = alsa_start,

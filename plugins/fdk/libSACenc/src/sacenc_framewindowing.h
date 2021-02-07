@@ -121,14 +121,14 @@ amm-info@iis.fraunhofer.de
 #define DALDATATYPE_WIN DALDATATYPE_DFRACT
 
 typedef enum {
-  FW_INTP = 0,
-  FW_HOLD = 1
+    FW_INTP = 0,
+    FW_HOLD = 1
 
 } FW_SLOTTYPE;
 
 typedef enum {
-  FW_LEAVE_DIM = 0,
-  FW_CHANGE_DIM = 1
+    FW_LEAVE_DIM = 0,
+    FW_CHANGE_DIM = 1
 
 } FW_DIMENSION;
 
@@ -136,20 +136,20 @@ typedef enum {
 typedef struct T_FRAMEWINDOW *HANDLE_FRAMEWINDOW;
 
 typedef struct T_FRAMEWINDOW_CONFIG {
-  INT nTimeSlotsMax;
-  INT bFrameKeep;
+    INT nTimeSlotsMax;
+    INT bFrameKeep;
 
 } FRAMEWINDOW_CONFIG;
 
 typedef struct {
-  INT slot;
-  FW_SLOTTYPE hold;
+    INT slot;
+    FW_SLOTTYPE hold;
 
 } FRAMEWIN_DATA;
 
 typedef struct {
-  FRAMEWIN_DATA dat[MAX_NUM_PARAMS];
-  INT n;
+    FRAMEWIN_DATA dat[MAX_NUM_PARAMS];
+    INT n;
 
 } FRAMEWIN_LIST;
 

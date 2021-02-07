@@ -6,12 +6,12 @@
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
     of the License, or (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -44,7 +44,7 @@
 #if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(55, 28, 0)
 #    define avcodec_free_frame(frame) av_frame_free(frame)
 #elif LIBAVCODEC_VERSION_INT > AV_VERSION_INT(54, 59, 100)
-     // has avcodec_free_frame
+// has avcodec_free_frame
 #elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53, 40, 0)
 #    define avcodec_free_frame(frame) av_freep(frame) // newest -- av_freep
 #endif
@@ -466,7 +466,7 @@ ffmpeg_seek_sample (DB_fileinfo_t *_info, int sample) {
         trace ("ffmpeg: seek error\n");
         return -1;
     }
-    
+
     // update readpos
     info->currentsample = sample;
     _info->readpos = (float)(sample - info->startsample) / _info->fmt.samplerate;
@@ -690,9 +690,9 @@ ffmpeg_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
         ctx = fctx->streams[i]->codec;
         if (ctx->codec_type ==
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
-            AVMEDIA_TYPE_AUDIO)
+                AVMEDIA_TYPE_AUDIO)
 #else
-            CODEC_TYPE_AUDIO)
+                CODEC_TYPE_AUDIO)
 #endif
         {
             codec = avcodec_find_decoder(ctx->codec_id);
@@ -744,7 +744,7 @@ ffmpeg_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
 
     // add metainfo
     ffmpeg_read_metadata_internal (it, fctx);
-    
+
     int64_t fsize = -1;
 
     DB_FILE *fp = deadbeef->fopen (fname);
@@ -839,13 +839,13 @@ ffmpeg_init_exts (void) {
     if (!use_all_ext) {
         n = add_new_exts (n, new_exts, ';');
     }
-	else {
+    else {
         AVInputFormat *ifmt  = NULL;
         /*
           * It's quite complicated to enumerate all supported extensions in
          * ffmpeg. If a decoder defines extensions in ffmpeg, the probing
          * mechanisim is disabled (see comments in avformat.h).
-         * Thus some decoders doesn't claim its extensions (e.g. WavPack) 
+         * Thus some decoders doesn't claim its extensions (e.g. WavPack)
          *
          * To get these missing extensions, we need to search corresponding
          * encoders for the same format, which will provide extensions for
@@ -984,7 +984,7 @@ ffmpeg_read_metadata (DB_playItem_t *it) {
 static const char settings_dlg[] =
     "property \"Use all extensions supported by ffmpeg\" checkbox ffmpeg.enable_all_exts 0;\n"
     "property \"File Extensions (separate with ';')\" entry ffmpeg.extensions \"" DEFAULT_EXTS "\";\n"
-;
+    ;
 
 // define plugin interface
 static DB_decoder_t plugin = {
@@ -995,22 +995,22 @@ static DB_decoder_t plugin = {
     .plugin.id = "ffmpeg",
     .plugin.name = "FFMPEG audio player",
     .plugin.descr = "decodes audio formats using FFMPEG libavcodec",
-    .plugin.copyright = 
-        "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .plugin.copyright =
+    "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = ffmpeg_start,

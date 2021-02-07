@@ -626,7 +626,7 @@ w_draw_event (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
 
         if (!gtk_widget_get_has_window (widget)) {
 #if GTK_CHECK_VERSION(3,0,0)
-        cairo_translate (cr, -allocation.x, -allocation.y);
+            cairo_translate (cr, -allocation.x, -allocation.y);
 #endif
             cairo_reset_clip (cr);
             cairo_rectangle (cr, allocation.x, allocation.y, allocation.width, allocation.height);
@@ -673,7 +673,7 @@ save_widget_to_string (char *str, int sz, ddb_gtkui_widget_t *w) {
 void
 w_save (void) {
     if (rootwidget == NULL) return;
-    
+
     char buf[20000] = "";
     save_widget_to_string (buf, sizeof (buf), rootwidget->children);
     deadbeef->conf_set_str (DDB_GTKUI_CONF_LAYOUT, buf);
@@ -848,8 +848,8 @@ create_widget_menu(ddb_gtkui_widget_t *ui_widget) {
             gtk_container_add (GTK_CONTAINER (submenu), item);
             g_object_set_data(item, associated_widget_data_id, ui_widget);
             g_signal_connect ((gpointer) item, "activate",
-                    G_CALLBACK (on_replace_activate),
-                    (void *)cr->type);
+                              G_CALLBACK (on_replace_activate),
+                              (void *)cr->type);
         }
     }
 
@@ -858,30 +858,30 @@ create_widget_menu(ddb_gtkui_widget_t *ui_widget) {
         gtk_widget_show (item);
         gtk_container_add (GTK_CONTAINER (menu), item);
         g_signal_connect ((gpointer) item, "activate",
-                G_CALLBACK (on_delete_activate),
-                ui_widget);
+                          G_CALLBACK (on_delete_activate),
+                          ui_widget);
 
         item = gtk_menu_item_new_with_mnemonic (_("Cut"));
         gtk_widget_show (item);
         gtk_container_add (GTK_CONTAINER (menu), item);
         g_signal_connect ((gpointer) item, "activate",
-                G_CALLBACK (on_cut_activate),
-                ui_widget);
+                          G_CALLBACK (on_cut_activate),
+                          ui_widget);
 
         item = gtk_menu_item_new_with_mnemonic (_("Copy"));
         gtk_widget_show (item);
         gtk_container_add (GTK_CONTAINER (menu), item);
         g_signal_connect ((gpointer) item, "activate",
-                G_CALLBACK (on_copy_activate),
-                ui_widget);
+                          G_CALLBACK (on_copy_activate),
+                          ui_widget);
     }
 
     item = gtk_menu_item_new_with_mnemonic (_("Paste"));
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_paste_activate),
-            ui_widget);
+                      G_CALLBACK (on_paste_activate),
+                      ui_widget);
 
     if (ui_widget->initmenu) {
         add_menu_separator (menu);
@@ -1097,7 +1097,7 @@ w_placeholder_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     checker = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 12, 12);
     cr2 = cairo_create (checker);
 
-    cairo_set_source_rgb (cr2, 0.5, 0.5 ,0.5);
+    cairo_set_source_rgb (cr2, 0.5, 0.5,0.5);
     cairo_paint (cr2);
     cairo_set_source_rgb (cr2, 0, 0, 0);
     cairo_move_to (cr2, 0, 0);
@@ -1326,8 +1326,8 @@ w_splitter_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     }
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_splitter_lock_prop_toggled),
-            w);
+                      G_CALLBACK (on_splitter_lock_prop_toggled),
+                      w);
 
     if (orientation == GTK_ORIENTATION_VERTICAL) {
         item = gtk_radio_menu_item_new_with_mnemonic (group, _("Lock Top Pane Height"));
@@ -1342,8 +1342,8 @@ w_splitter_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     }
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_splitter_lock_c1_toggled),
-            w);
+                      G_CALLBACK (on_splitter_lock_c1_toggled),
+                      w);
 
     if (orientation == GTK_ORIENTATION_VERTICAL) {
         item = gtk_radio_menu_item_new_with_mnemonic (group, _("Lock Bottom Pane Height"));
@@ -1358,8 +1358,8 @@ w_splitter_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     }
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_splitter_lock_c2_toggled),
-            w);
+                      G_CALLBACK (on_splitter_lock_c2_toggled),
+                      w);
 }
 
 void
@@ -1668,10 +1668,10 @@ on_move_tab_left_activate (GtkMenuItem *menuitem, gpointer user_data) {
             gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
             gtk_misc_set_padding (GTK_MISC (label), 0, 0);
             gtk_container_child_set (GTK_CONTAINER (w->base.widget),
-                    newchild->widget,
-                    "tab-expand", TRUE,
-                    "tab-fill", TRUE,
-                    NULL);
+                                     newchild->widget,
+                                     "tab-expand", TRUE,
+                                     "tab-fill", TRUE,
+                                     NULL);
 #endif
             gtk_notebook_set_current_page (GTK_NOTEBOOK (w->base.widget), w->clicked_page-1);
             w->clicked_page--;
@@ -1712,22 +1712,22 @@ on_tab_popup_menu (GtkWidget *widget, gpointer user_data)
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_rename_tab_activate),
-            w);
+                      G_CALLBACK (on_rename_tab_activate),
+                      w);
 
     item = gtk_menu_item_new_with_mnemonic (_("Remove Tab"));
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_remove_tab_activate),
-            w);
+                      G_CALLBACK (on_remove_tab_activate),
+                      w);
 
     item = gtk_menu_item_new_with_mnemonic (_("Add New Tab"));
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_add_tab_activate),
-            w);
+                      G_CALLBACK (on_add_tab_activate),
+                      w);
 
     add_menu_separator (menu);
 
@@ -1735,15 +1735,15 @@ on_tab_popup_menu (GtkWidget *widget, gpointer user_data)
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_move_tab_left_activate),
-            w);
+                      G_CALLBACK (on_move_tab_left_activate),
+                      w);
 
     item = gtk_menu_item_new_with_mnemonic (_("Move Tab Right"));
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_move_tab_right_activate),
-            w);
+                      G_CALLBACK (on_move_tab_right_activate),
+                      w);
 
     gtk_menu_attach_to_widget (GTK_MENU (menu), GTK_WIDGET (widget), NULL);
     gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
@@ -1760,10 +1760,10 @@ w_tabs_add (ddb_gtkui_widget_t *cont, ddb_gtkui_widget_t *child) {
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
     gtk_misc_set_padding (GTK_MISC (label), 0, 0);
     gtk_container_child_set (GTK_CONTAINER (cont->widget),
-                           child->widget,
-                           "tab-expand", TRUE,
-                           "tab-fill", TRUE,
-                           NULL);
+                             child->widget,
+                             "tab-expand", TRUE,
+                             "tab-fill", TRUE,
+                             NULL);
 #endif
 }
 
@@ -1793,10 +1793,10 @@ w_tabs_replace (ddb_gtkui_widget_t *cont, ddb_gtkui_widget_t *child, ddb_gtkui_w
             gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
             gtk_misc_set_padding (GTK_MISC (label), 0, 0);
             gtk_container_child_set (GTK_CONTAINER (cont->widget),
-                           newchild->widget,
-                           "tab-expand", TRUE,
-                           "tab-fill", TRUE,
-                           NULL);
+                                     newchild->widget,
+                                     "tab-expand", TRUE,
+                                     "tab-fill", TRUE,
+                                     NULL);
 #endif
             gtk_notebook_set_current_page (GTK_NOTEBOOK (cont->widget), pos);
             break;
@@ -1806,9 +1806,9 @@ w_tabs_replace (ddb_gtkui_widget_t *cont, ddb_gtkui_widget_t *child, ddb_gtkui_w
 
 static gboolean
 get_event_coordinates_in_widget (GtkWidget *widget,
-			GdkEventButton  *event,
-			gint      *x,
-			gint      *y)
+                                 GdkEventButton  *event,
+                                 gint      *x,
+                                 gint      *y)
 {
     GdkWindow *window = event->window;
     gdouble tx, ty;
@@ -1906,8 +1906,8 @@ w_tabs_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     gtk_widget_show (item);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "activate",
-            G_CALLBACK (on_add_tab_activate),
-            w);
+                      G_CALLBACK (on_add_tab_activate),
+                      w);
 }
 
 static void
@@ -1994,9 +1994,9 @@ w_tabstrip_message (ddb_gtkui_widget_t *w, uint32_t id, uintptr_t ctx, uint32_t 
     switch (id) {
     case DB_EV_PLAYLISTCHANGED:
         if (p1 == DDB_PLAYLIST_CHANGE_TITLE
-            || p1 == DDB_PLAYLIST_CHANGE_POSITION
-            || p1 == DDB_PLAYLIST_CHANGE_DELETED
-            || p1 == DDB_PLAYLIST_CHANGE_CREATED) {
+                || p1 == DDB_PLAYLIST_CHANGE_POSITION
+                || p1 == DDB_PLAYLIST_CHANGE_DELETED
+                || p1 == DDB_PLAYLIST_CHANGE_CREATED) {
             g_idle_add (tabstrip_refresh_cb, w);
         }
         break;
@@ -2268,8 +2268,8 @@ w_playlist_message (ddb_gtkui_widget_t *w, uint32_t id, uintptr_t ctx, uint32_t 
             g_idle_add (playlist_sort_reset_cb, p->list);
         }
         if (p1 == DDB_PLAYLIST_CHANGE_CONTENT ||
-            p1 == DDB_PLAYLIST_CHANGE_SELECTION && (p2 != PL_MAIN || (DdbListview *)ctx != p->list) ||
-            p1 == DDB_PLAYLIST_CHANGE_PLAYQUEUE) {
+                p1 == DDB_PLAYLIST_CHANGE_SELECTION && (p2 != PL_MAIN || (DdbListview *)ctx != p->list) ||
+                p1 == DDB_PLAYLIST_CHANGE_PLAYQUEUE) {
             g_idle_add (playlist_list_refresh_cb, p->list);
         }
         break;
@@ -2301,7 +2301,7 @@ w_playlist_message (ddb_gtkui_widget_t *w, uint32_t id, uintptr_t ctx, uint32_t 
                 g_idle_add (playlist_header_refresh_cb, p->list);
             }
             else if (gtkui_listview_font_style_conf(conf_str) || !strcmp (conf_str, "playlist.pin.groups") ||
-                    !strcmp (conf_str, "playlist.groups.spacing") ) {
+                     !strcmp (conf_str, "playlist.groups.spacing") ) {
                 g_idle_add (playlist_list_refresh_cb, p->list);
             }
             else if (gtkui_tabstrip_override_conf(conf_str) || gtkui_tabstrip_colors_conf(conf_str)) {
@@ -2330,9 +2330,9 @@ w_tabbed_playlist_message (ddb_gtkui_widget_t *w, uint32_t id, uintptr_t ctx, ui
         break;
     case DB_EV_PLAYLISTCHANGED:
         if (p1 == DDB_PLAYLIST_CHANGE_TITLE
-            || p1 == DDB_PLAYLIST_CHANGE_POSITION
-            || p1 == DDB_PLAYLIST_CHANGE_DELETED
-            || p1 == DDB_PLAYLIST_CHANGE_CREATED) {
+                || p1 == DDB_PLAYLIST_CHANGE_POSITION
+                || p1 == DDB_PLAYLIST_CHANGE_DELETED
+                || p1 == DDB_PLAYLIST_CHANGE_CREATED) {
             g_idle_add (playlist_tabstriprefresh_cb, w);
         }
         break;
@@ -2397,8 +2397,8 @@ w_playlist_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), !((w_playlist_t *)w)->hideheaders);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_playlist_showheaders_toggled),
-            w);
+                      G_CALLBACK (on_playlist_showheaders_toggled),
+                      w);
 }
 
 ddb_gtkui_widget_t *
@@ -2576,8 +2576,8 @@ w_selproperties_initmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), showheaders);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_selproperties_showheaders_toggled),
-            w);
+                      G_CALLBACK (on_selproperties_showheaders_toggled),
+                      w);
 }
 
 ddb_gtkui_widget_t *
@@ -2903,13 +2903,19 @@ _draw_line (uint8_t *data, int stride, int x0, int y0, int x1, int y1) {
     int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
     int err = (dx>dy ? dx : -dy)/2, e2;
 
-    for(;;){
+    for(;;) {
         uint32_t *ptr = (uint32_t*)&data[y0*stride+x0*4];
         *ptr = 0xffffffff;
         if (x0==x1 && y0==y1) break;
         e2 = err;
-        if (e2 >-dx) { err -= dy; x0 += sx; }
-        if (e2 < dy) { err += dx; y0 += sy; }
+        if (e2 >-dx) {
+            err -= dy;
+            x0 += sx;
+        }
+        if (e2 < dy) {
+            err += dx;
+            y0 += sy;
+        }
     }
 }
 #endif
@@ -3161,10 +3167,10 @@ w_spectrum_draw_cb (void *data) {
 
 static void calculate_bands(w_spectrum_t *w, int bands)
 {
-	int i;
+    int i;
 
-	for (i = 0; i <= bands; i++)
-		w->xscale[i] = powf((float)(MAX_BANDS+1), ((float) i / (float) bands)) - 1;
+    for (i = 0; i <= bands; i++)
+        w->xscale[i] = powf((float)(MAX_BANDS+1), ((float) i / (float) bands)) - 1;
 }
 
 static void
@@ -3207,51 +3213,51 @@ spectrum_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     bands = CLAMP(bands, 4, MAX_BANDS);
     width = a.width;
     height = a.height;
-	calculate_bands(w, bands);
+    calculate_bands(w, bands);
 
-	for (int i = 0; i <= bands; i ++)
-	{
-		int a = ceil (w->xscale[i]);
-		int b = floor (w->xscale[i + 1]);
-		float n = 0;
+    for (int i = 0; i <= bands; i ++)
+    {
+        int a = ceil (w->xscale[i]);
+        int b = floor (w->xscale[i + 1]);
+        float n = 0;
 
-		if (b < a)
-			n += freq[b] * (w->xscale[i + 1] - w->xscale[i]);
-		else
-		{
-			if (a > 0)
-				n += freq[a - 1] * (a - w->xscale[i]);
-			for (; a < b; a ++)
-				n += freq[a];
-			if (b < MAX_BANDS)
-				n += freq[b] * (w->xscale[i + 1] - b);
-		}
+        if (b < a)
+            n += freq[b] * (w->xscale[i + 1] - w->xscale[i]);
+        else
+        {
+            if (a > 0)
+                n += freq[a - 1] * (a - w->xscale[i]);
+            for (; a < b; a ++)
+                n += freq[a];
+            if (b < MAX_BANDS)
+                n += freq[b] * (w->xscale[i + 1] - b);
+        }
 
-		/* 40 dB range */
-		int x = 20 * log10 (n * 200);
-		x = CLAMP (x, 0, 40);
+        /* 40 dB range */
+        int x = 20 * log10 (n * 200);
+        x = CLAMP (x, 0, 40);
 
-		w->bars[i] -= MAX (0, VIS_FALLOFF - w->delay[i]);
-		w->peaks[i] -= MAX (0, VIS_FALLOFF_PEAK - w->delay_peak[i]);;
+        w->bars[i] -= MAX (0, VIS_FALLOFF - w->delay[i]);
+        w->peaks[i] -= MAX (0, VIS_FALLOFF_PEAK - w->delay_peak[i]);;
 
-		if (w->delay[i])
-			w->delay[i]--;
-		if (w->delay_peak[i])
-			w->delay_peak[i]--;
+        if (w->delay[i])
+            w->delay[i]--;
+        if (w->delay_peak[i])
+            w->delay_peak[i]--;
 
-		if (x > w->bars[i])
-		{
-			w->bars[i] = x;
-			w->delay[i] = VIS_DELAY;
-		}
-		if (x > w->peaks[i]) {
+        if (x > w->bars[i])
+        {
+            w->bars[i] = x;
+            w->delay[i] = VIS_DELAY;
+        }
+        if (x > w->peaks[i]) {
             w->peaks[i] = x;
             w->delay_peak[i] = VIS_DELAY_PEAK;
         }
         if (w->peaks[i] < w->bars[i]) {
             w->peaks[i] = w->bars[i];
         }
-	}
+    }
 
 #if USE_OPENGL
     GdkGLDrawable *d = gtk_widget_get_gl_drawable (widget);
@@ -3265,26 +3271,26 @@ spectrum_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     glViewport (0, 0, a.width, a.height);
 
     glBegin (GL_QUADS);
-	float base_s = (height / 40.f);
+    float base_s = (height / 40.f);
 
-	for (gint i = 0; i <= bands; i++)
-	{
-		gint x = ((width / bands) * i) + 2;
+    for (gint i = 0; i <= bands; i++)
+    {
+        gint x = ((width / bands) * i) + 2;
         int y = a.height - w->bars[i] * base_s;
         glColor3f (0, 0.5, 1);
-		glVertex2f (x + 1, y);
-		glVertex2f (x + 1 + (width / bands) - 1, y);
-		glVertex2f (x + 1 + (width / bands) - 1, a.height);
-		glVertex2f (x + 1, a.height);
+        glVertex2f (x + 1, y);
+        glVertex2f (x + 1 + (width / bands) - 1, y);
+        glVertex2f (x + 1 + (width / bands) - 1, a.height);
+        glVertex2f (x + 1, a.height);
 
         // peak
         glColor3f (1, 1, 1);
         y = a.height - w->peaks[i] * base_s;
-		glVertex2f (x + 1, y);
-		glVertex2f (x + 1 + (width / bands) - 1, y);
-		glVertex2f (x + 1 + (width / bands) - 1, y+1);
-		glVertex2f (x + 1, y+1);
-	}
+        glVertex2f (x + 1, y);
+        glVertex2f (x + 1 + (width / bands) - 1, y);
+        glVertex2f (x + 1 + (width / bands) - 1, y+1);
+        glVertex2f (x + 1, y+1);
+    }
     glEnd();
     gdk_gl_drawable_swap_buffers (d);
 
@@ -3297,7 +3303,7 @@ spectrum_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
         }
         w->surf = cairo_image_surface_create (CAIRO_FORMAT_RGB24, a.width, a.height);
     }
-	float base_s = (height / 40.f);
+    float base_s = (height / 40.f);
 
     cairo_surface_flush (w->surf);
     unsigned char *data = cairo_image_surface_get_data (w->surf);
@@ -3308,9 +3314,9 @@ spectrum_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     memset (data, 0, a.height * stride);
 
     int barw = width / bands;
-	for (gint i = 0; i <= bands; i++)
-	{
-		int x = barw * i;
+    for (gint i = 0; i <= bands; i++)
+    {
+        int x = barw * i;
         int y = a.height - w->bars[i] * base_s;
         if (y < 0) {
             y = 0;
@@ -3324,7 +3330,7 @@ spectrum_draw (GtkWidget *widget, cairo_t *cr, gpointer user_data) {
         if (y < a.height-1) {
             _draw_bar (data, stride, x + 1, y, bw, 1, 0xffffffff);
         }
-	}
+    }
     cairo_surface_mark_dirty (w->surf);
     cairo_save (cr);
     cairo_set_source_surface (cr, w->surf, 0, 0);
@@ -3358,7 +3364,7 @@ w_spectrum_init (ddb_gtkui_widget_t *w) {
 #endif
     ddb_playback_state_t playback_state = deadbeef->get_output ()->state ();
 
-    if (playback_state == DDB_PLAYBACK_STATE_PLAYING) { 
+    if (playback_state == DDB_PLAYBACK_STATE_PLAYING) {
         _spectrum_run (w);
     }
 }
@@ -3375,12 +3381,12 @@ static int
 w_spectrum_message (ddb_gtkui_widget_t *w, uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
     switch (id) {
     case DB_EV_SONGCHANGED: {
-            ddb_event_trackchange_t *ev = (ddb_event_trackchange_t *)ctx;
-            if (!ev->to) {
-                _spectrum_stop (w);
-            }
+        ddb_event_trackchange_t *ev = (ddb_event_trackchange_t *)ctx;
+        if (!ev->to) {
+            _spectrum_stop (w);
         }
-        break;
+    }
+    break;
     case DB_EV_SONGSTARTED:
         _spectrum_run (w);
         break;
@@ -3673,16 +3679,16 @@ w_hvbox_initchildmenu (struct ddb_gtkui_widget_s *w, GtkWidget *menu) {
     gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), expand);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_hvbox_child_toggle_expand),
-            w);
+                      G_CALLBACK (on_hvbox_child_toggle_expand),
+                      w);
 
     item = gtk_check_menu_item_new_with_mnemonic (_("Fill"));
     gtk_widget_show (item);
     gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), fill);
     gtk_container_add (GTK_CONTAINER (menu), item);
     g_signal_connect ((gpointer) item, "toggled",
-            G_CALLBACK (on_hvbox_child_toggle_fill),
-            w);
+                      G_CALLBACK (on_hvbox_child_toggle_fill),
+                      w);
 }
 
 GtkWidget *
@@ -3845,7 +3851,7 @@ w_button_save (struct ddb_gtkui_widget_s *w, char *s, int sz) {
 
 static void
 on_button_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
+                                 gpointer         user_data)
 {
     w_button_t *w = user_data;
     DB_plugin_t **plugins = deadbeef->plug_get_list();
@@ -3913,8 +3919,8 @@ w_button_init (ddb_gtkui_widget_t *ww) {
 
     if (w->action) {
         g_signal_connect ((gpointer) w->button, "clicked",
-                G_CALLBACK (on_button_clicked),
-                w);
+                          G_CALLBACK (on_button_clicked),
+                          w);
     }
 
     w_override_signals (w->button, w);
@@ -3989,8 +3995,8 @@ on_button_config (GtkMenuItem *menuitem, gpointer user_data) {
     gtk_entry_set_text (GTK_ENTRY (label), b->label ? b->label : _("Button"));
     set_button_action_label (b->action, b->action_ctx, action);
     g_signal_connect ((gpointer) action, "clicked",
-            G_CALLBACK (on_button_set_action_clicked),
-            user_data);
+                      G_CALLBACK (on_button_set_action_clicked),
+                      user_data);
 
     GtkListStore *store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
 
@@ -4267,20 +4273,20 @@ w_playtb_create (void) {
     w_override_signals (w->base.widget, w);
 
     g_signal_connect ((gpointer) stopbtn, "clicked",
-            G_CALLBACK (on_stopbtn_clicked),
-            NULL);
+                      G_CALLBACK (on_stopbtn_clicked),
+                      NULL);
     g_signal_connect ((gpointer) playbtn, "clicked",
-            G_CALLBACK (on_playbtn_clicked),
-            NULL);
+                      G_CALLBACK (on_playbtn_clicked),
+                      NULL);
     g_signal_connect ((gpointer) pausebtn, "clicked",
-            G_CALLBACK (on_pausebtn_clicked),
-            NULL);
+                      G_CALLBACK (on_pausebtn_clicked),
+                      NULL);
     g_signal_connect ((gpointer) prevbtn, "clicked",
-            G_CALLBACK (on_prevbtn_clicked),
-            NULL);
+                      G_CALLBACK (on_prevbtn_clicked),
+                      NULL);
     g_signal_connect ((gpointer) nextbtn, "clicked",
-            G_CALLBACK (on_nextbtn_clicked),
-            NULL);
+                      G_CALLBACK (on_nextbtn_clicked),
+                      NULL);
     return (ddb_gtkui_widget_t*)w;
 }
 
@@ -4393,8 +4399,8 @@ w_logviewer_scroll_changed (GtkAdjustment *adjustment, gpointer user_data)
     w_logviewer_t *w = (w_logviewer_t *)user_data;
 
     if (gtk_adjustment_get_value (adjustment) >=
-        gtk_adjustment_get_upper (adjustment) -
-        gtk_adjustment_get_page_size (adjustment) - 1e-12)
+            gtk_adjustment_get_upper (adjustment) -
+            gtk_adjustment_get_page_size (adjustment) - 1e-12)
     {
         w->scroll_bottomed = 1;
     } else {

@@ -199,7 +199,7 @@ encoder_preset_save (ddb_encoder_preset_t *p, int overwrite) {
         FILE *fp = fopen (path, "rb");
         if (fp) {
             fclose (fp);
-            return -2; 
+            return -2;
         }
     }
 
@@ -405,7 +405,7 @@ dsp_preset_save (ddb_dsp_preset_t *p, int overwrite) {
         FILE *fp = fopen (path, "rb");
         if (fp) {
             fclose (fp);
-            return -2; 
+            return -2;
         }
     }
 
@@ -456,7 +456,7 @@ load_encoder_presets (void) {
         int i;
         for (i = 0; i < n; i++) {
             char s[PATH_MAX];
-            if (snprintf (s, sizeof (s), "%s/%s", path, namelist[i]->d_name) > 0){
+            if (snprintf (s, sizeof (s), "%s/%s", path, namelist[i]->d_name) > 0) {
                 ddb_encoder_preset_t *p = encoder_preset_load (s);
                 if (p) {
                     if (path == syspath) {
@@ -531,7 +531,7 @@ load_dsp_presets (void) {
     int i;
     for (i = 0; i < n; i++) {
         char s[PATH_MAX];
-        if (snprintf (s, sizeof (s), "%s/%s", path, namelist[i]->d_name) > 0){
+        if (snprintf (s, sizeof (s), "%s/%s", path, namelist[i]->d_name) > 0) {
             ddb_dsp_preset_t *p = dsp_preset_load (s);
             if (p) {
                 if (tail) {
@@ -1197,11 +1197,11 @@ _converter_write_tags (ddb_encoder_preset_t *encoder_preset, DB_playItem_t *it, 
     DB_playItem_t *out_it = NULL;
 
     if (!(encoder_preset->tag_id3v2
-        || encoder_preset->tag_id3v1
-        || encoder_preset->tag_apev2
-        || encoder_preset->tag_flac
-        || encoder_preset->tag_oggvorbis
-        || encoder_preset->tag_mp4)) {
+            || encoder_preset->tag_id3v1
+            || encoder_preset->tag_apev2
+            || encoder_preset->tag_flac
+            || encoder_preset->tag_oggvorbis
+            || encoder_preset->tag_mp4)) {
         // encoder doesn't specify tagging format
         return 0;
     }
@@ -1292,8 +1292,8 @@ _converter_write_tags (ddb_encoder_preset_t *encoder_preset, DB_playItem_t *it, 
         int res = -1;
         for (int i = 0; plugs[i]; i++) {
             if (!strcmp (plugs[i]->plugin.id, "stdogg")
-                || !strcmp (plugs[i]->plugin.id, "opus")
-                || !strcmp (plugs[i]->plugin.id, "stdopus")) {
+                    || !strcmp (plugs[i]->plugin.id, "opus")
+                    || !strcmp (plugs[i]->plugin.id, "stdopus")) {
                 res = plugs[i]->write_metadata (out_it);
                 if (!res) {
                     break;
@@ -1398,23 +1398,23 @@ convert2 (ddb_converter_settings_t *settings, DB_playItem_t *it, const char *out
                 }
 
                 switch (encoder_preset->method) {
-                    case DDB_ENCODER_METHOD_FILE:
-                    {
-                        const char *tmp = getenv ("TMPDIR");
-                        if (!tmp) {
-                            tmp = "/tmp";
-                        }
-                        snprintf (input_file_name, sizeof (input_file_name), "%s/ddbconvXXXXXX", tmp);
-                        (void)mktemp (input_file_name);
-                        strcat (input_file_name, ".wav");
+                case DDB_ENCODER_METHOD_FILE:
+                {
+                    const char *tmp = getenv ("TMPDIR");
+                    if (!tmp) {
+                        tmp = "/tmp";
                     }
-                        break;
-                    case DDB_ENCODER_METHOD_PIPE:
-                        strcpy (input_file_name, "-");
-                        break;
-                    default:
-                        trace ("Invalid encoder method: %d, check your encoder preset\n", encoder_preset->method);
-                        goto error;
+                    snprintf (input_file_name, sizeof (input_file_name), "%s/ddbconvXXXXXX", tmp);
+                    (void)mktemp (input_file_name);
+                    strcat (input_file_name, ".wav");
+                }
+                break;
+                case DDB_ENCODER_METHOD_PIPE:
+                    strcpy (input_file_name, "-");
+                    break;
+                default:
+                    trace ("Invalid encoder method: %d, check your encoder preset\n", encoder_preset->method);
+                    goto error;
                 }
 
                 if (_get_encoder_cmdline (encoder_preset, enc, sizeof (enc), escaped_out, input_file_name) < 0) {
@@ -1567,28 +1567,28 @@ static ddb_converter_t plugin = {
     .misc.plugin.name = "Converter",
     .misc.plugin.id = "converter",
     .misc.plugin.descr = "Converts any supported formats to other formats.\n"
-        "Requires separate GUI plugin, e.g. Converter GTK UI\n",
-    .misc.plugin.copyright = 
-        "Converter for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2015 Alexey Yakovenko and other contributors\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    "Requires separate GUI plugin, e.g. Converter GTK UI\n",
+    .misc.plugin.copyright =
+    "Converter for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2015 Alexey Yakovenko and other contributors\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .misc.plugin.website = "http://deadbeef.sf.net",
     .misc.plugin.start = converter_start,

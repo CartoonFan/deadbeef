@@ -95,27 +95,27 @@ AppDelegate *g_appDelegate;
         _orderShuffleAlbums,
         nil
     };
-    
+
     ddb_shuffle_t shuffle = deadbeef->streamer_get_shuffle ();
     for (ddb_shuffle_t i = 0; shuffle_items[i]; i++) {
         shuffle_items[i].state = i==shuffle?NSOnState:NSOffState;
     }
-    
+
     NSMenuItem *repeat_items[] = {
         _loopAll,
         _loopNone,
         _loopSingle,
         nil
     };
-    
+
     ddb_repeat_t repeat = deadbeef->streamer_get_repeat ();
     for (ddb_repeat_t i = 0; repeat_items[i]; i++) {
         repeat_items[i].state = i==repeat?NSOnState:NSOffState;
     }
-    
+
     _scrollFollowsPlayback.state = deadbeef->conf_get_int ("playlist.scroll.followplayback", 1)?NSOnState:NSOffState;
     _cursorFollowsPlayback.state = deadbeef->conf_get_int ("playlist.scroll.cursorfollowplayback", 1)?NSOnState:NSOffState;
-    
+
     _stopAfterCurrent.state = deadbeef->conf_get_int ("playlist.stop_after_current", 0)?NSOnState:NSOffState;
     _stopAfterCurrentAlbum.state = deadbeef->conf_get_int ("playlist.stop_after_album", 0)?NSOnState:NSOffState;
 
@@ -131,15 +131,15 @@ static int fileadd_cancelled = 0;
 
 static void fileadd_begin (ddb_fileadd_data_t *data, void *user_data) {
     fileadd_cancelled = 0;
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [g_appDelegate.mainWindow.window beginSheet:g_appDelegate.addFilesWindow completionHandler:^(NSModalResponse returnCode) {
 
-        }];
+                                        }];
     });
 }
 
 static void fileadd_end (ddb_fileadd_data_t *data, void *user_data) {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [g_appDelegate.mainWindow.window endSheet:g_appDelegate.addFilesWindow returnCode:NSModalResponseOK];
         [[[g_appDelegate mainWindow] window] makeKeyAndOrderFront:g_appDelegate];
     });
@@ -155,7 +155,7 @@ static int file_added (ddb_fileadd_data_t *data, void *user_data) {
         // So we use a basic flag, to see if the label is being set already.
         NSString *s = [NSString stringWithUTF8String:uri];
         _settingLabel = YES;
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^ {
             g_appDelegate.addFilesLabel.stringValue = s;
             _settingLabel = NO;
         });
@@ -200,8 +200,8 @@ static int file_added (ddb_fileadd_data_t *data, void *user_data) {
 - (void)initMainMenu {
     // add new actions
     [self.mainMenu addActionItemsForContext:DDB_ACTION_CTX_MAIN track:nil filter:^BOOL(DB_plugin_action_t * _Nonnull action) {
-        return (action->flags & (DB_ACTION_COMMON|DB_ACTION_ADD_MENU)) == (DB_ACTION_COMMON|DB_ACTION_ADD_MENU);
-    }];
+                      return (action->flags & (DB_ACTION_COMMON|DB_ACTION_ADD_MENU)) == (DB_ACTION_COMMON|DB_ACTION_ADD_MENU);
+                  }];
 }
 
 - (BOOL)equalizerAvailable {
@@ -269,9 +269,9 @@ main_cleanup_and_quit (void);
     [_mainWindowToggleMenuItem bind:@"state" toObject:_mainWindow.window withKeyPath:@"visible" options:nil];
     [_logWindowToggleMenuItem bind:@"state" toObject:_logWindow.window withKeyPath:@"visible" options:nil];
     [_equalizerWindowToggleMenuItem bind:@"state" toObject:_equalizerWindow.window withKeyPath:@"visible" options:nil];
-    [_equalizerMenuItem bind:@"hidden" toObject:self withKeyPath:@"equalizerAvailable" options:@{
-        NSValueTransformerNameBindingOption:NSNegateBooleanTransformerName
-    }];
+    [_equalizerMenuItem bind:@"hidden" toObject:self withKeyPath:@"equalizerAvailable" options:@ {
+                   NSValueTransformerNameBindingOption:NSNegateBooleanTransformerName
+                       }];
 }
 
 - (void)unbind {
@@ -290,7 +290,7 @@ main_cleanup_and_quit (void);
 
     // initialize gui from settings
     [self configChanged];
-    
+
     deadbeef->listen_file_add_beginend (fileadd_begin, fileadd_end, NULL);
     deadbeef->listen_file_added (file_added, NULL);
 
@@ -303,14 +303,14 @@ main_cleanup_and_quit (void);
     [self updateDockNowPlaying];
 }
 
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag{
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     _mainWindow.window.isVisible = YES;
     return YES;
 }
 
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(aQueue, ^{
+    dispatch_async(aQueue, ^ {
         char str[100];
         add_paths([filename UTF8String], (int)[filename length], 0, str, 100);
     });
@@ -320,7 +320,7 @@ main_cleanup_and_quit (void);
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(aQueue, ^{
+    dispatch_async(aQueue, ^ {
         char str[100];
         // building single paths string for the deadbeef function, paths must be separated by '\0'
         NSString *paths =[filenames componentsJoinedByString:@"\0"];
@@ -363,10 +363,10 @@ main_cleanup_and_quit (void);
         NSUInteger __block i = 0;
         DB_playItem_t __block *it = deadbeef->plt_get_first(plt, PL_MAIN);
         [proposedSelectionIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-            if (self.firstSelected == -1) {
-                self.firstSelected = idx;
-            }
-            while (i < idx && it) {
+                                     if (self.firstSelected == -1) {
+                                         self.firstSelected = idx;
+                                     }
+                                     while (i < idx && it) {
                 deadbeef->pl_set_selected (it, 0);
                 DB_playItem_t *prev = it;
                 it = deadbeef->pl_get_next(prev, PL_MAIN);
@@ -409,7 +409,7 @@ main_cleanup_and_quit (void);
                 deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);
             }
             dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(aQueue, ^{
+            dispatch_async(aQueue, ^ {
                 for (NSUInteger i = 0; i < files.count; i++) {
                     NSString* fileName = [[files objectAtIndex:i] path];
                     if (fileName) {
@@ -450,7 +450,7 @@ main_cleanup_and_quit (void);
         ddb_playlist_t *plt = deadbeef->plt_get_curr ();
         if (!deadbeef->plt_add_files_begin (plt, 0)) {
             dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(aQueue, ^{
+            dispatch_async(aQueue, ^ {
                 for (NSUInteger i = 0; i < files.count; i++) {
                     NSString *fileName = [[files objectAtIndex:i] path];
                     if (fileName) {
@@ -472,13 +472,13 @@ main_cleanup_and_quit (void);
 - (IBAction)addLocationAction:(id)sender {
     _addLocationTextField.stringValue = @"";
     [_mainWindow.window beginSheet:_addLocationPanel completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode == NSModalResponseOK) {
-            NSString *text = [_addLocationTextField stringValue];
+                           if (returnCode == NSModalResponseOK) {
+                               NSString *text = [_addLocationTextField stringValue];
 
-            ddb_playlist_t *plt = deadbeef->plt_get_curr ();
+                               ddb_playlist_t *plt = deadbeef->plt_get_curr ();
             if (!deadbeef->plt_add_files_begin (plt, 0)) {
                 dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-                dispatch_async(aQueue, ^{
+                dispatch_async(aQueue, ^ {
                     DB_playItem_t *tail = deadbeef->plt_get_last (plt, PL_MAIN);
                     deadbeef->plt_insert_file2 (0, plt, tail, [text UTF8String], NULL, NULL, NULL);
                     if (tail) {
@@ -552,9 +552,9 @@ main_cleanup_and_quit (void);
     deadbeef->pl_unlock ();
     _customSortDescending.state = deadbeef->conf_get_int ("cocoaui.sort_desc", 0) ? NSOnState : NSOffState;
     [_mainWindow.window beginSheet:_customSortPanel completionHandler:^(NSModalResponse returnCode) {
-        NSInteger state = _customSortDescending.state;
-        _descendingSortMode.state =  state;
-        deadbeef->conf_set_int ("cocoaui.sort_desc", state == NSOnState ? 1 : 0);
+                           NSInteger state = _customSortDescending.state;
+                           _descendingSortMode.state =  state;
+                           deadbeef->conf_set_int ("cocoaui.sort_desc", state == NSOnState ? 1 : 0);
         deadbeef->conf_set_str ("cocoaui.custom_sort_tf", [[_customSortEntry stringValue] UTF8String]);
 
         if (returnCode == NSModalResponseOK) {
@@ -817,14 +817,14 @@ main_cleanup_and_quit (void);
         }
         NSString *fname = [[files firstObject] path];
         dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(aQueue, ^{
+        dispatch_async(aQueue, ^ {
             ddb_playlist_t *plt = deadbeef->plt_get_curr ();
             if (!deadbeef->plt_add_files_begin (plt, 0)) {
-                    deadbeef->plt_clear (plt);
-                    int abort = 0;
-                    deadbeef->plt_load2 (0, plt, NULL, [fname UTF8String], &abort, NULL, NULL);
-                    deadbeef->plt_save_config (plt);
-                    deadbeef->plt_add_files_end (plt, 0);
+                deadbeef->plt_clear (plt);
+                int abort = 0;
+                deadbeef->plt_load2 (0, plt, NULL, [fname UTF8String], &abort, NULL, NULL);
+                deadbeef->plt_save_config (plt);
+                deadbeef->plt_add_files_end (plt, 0);
             }
             deadbeef->plt_unref (plt);
             deadbeef->sendmessage (DB_EV_PLAYLISTCHANGED, 0, DDB_PLAYLIST_CHANGE_CONTENT, 0);

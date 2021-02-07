@@ -117,44 +117,44 @@ amm-info@iis.fraunhofer.de
 #include "ton_corr.h"
 
 typedef struct {
-  FIXP_DBL *rBuffer[32];
-  FIXP_DBL *iBuffer[32];
+    FIXP_DBL *rBuffer[32];
+    FIXP_DBL *iBuffer[32];
 
-  FIXP_DBL *p_YBuffer;
+    FIXP_DBL *p_YBuffer;
 
-  FIXP_DBL *YBuffer[32];
-  int YBufferScale[2];
+    FIXP_DBL *YBuffer[32];
+    int YBufferScale[2];
 
-  UCHAR envelopeCompensation[MAX_FREQ_COEFFS];
-  UCHAR pre_transient_info[2];
+    UCHAR envelopeCompensation[MAX_FREQ_COEFFS];
+    UCHAR pre_transient_info[2];
 
-  int YBufferWriteOffset;
-  int YBufferSzShift;
-  int rBufferReadOffset;
+    int YBufferWriteOffset;
+    int YBufferSzShift;
+    int rBufferReadOffset;
 
-  int no_cols;
-  int no_rows;
-  int start_index;
+    int no_cols;
+    int no_rows;
+    int start_index;
 
-  int time_slots;
-  int time_step;
+    int time_slots;
+    int time_step;
 } SBR_EXTRACT_ENVELOPE;
 typedef SBR_EXTRACT_ENVELOPE *HANDLE_SBR_EXTRACT_ENVELOPE;
 
 struct ENV_CHANNEL {
-  FAST_TRAN_DETECTOR sbrFastTransientDetector;
-  SBR_TRANSIENT_DETECTOR sbrTransientDetector;
-  SBR_CODE_ENVELOPE sbrCodeEnvelope;
-  SBR_CODE_ENVELOPE sbrCodeNoiseFloor;
-  SBR_EXTRACT_ENVELOPE sbrExtractEnvelope;
+    FAST_TRAN_DETECTOR sbrFastTransientDetector;
+    SBR_TRANSIENT_DETECTOR sbrTransientDetector;
+    SBR_CODE_ENVELOPE sbrCodeEnvelope;
+    SBR_CODE_ENVELOPE sbrCodeNoiseFloor;
+    SBR_EXTRACT_ENVELOPE sbrExtractEnvelope;
 
-  SBR_ENVELOPE_FRAME SbrEnvFrame;
-  SBR_TON_CORR_EST TonCorr;
+    SBR_ENVELOPE_FRAME SbrEnvFrame;
+    SBR_TON_CORR_EST TonCorr;
 
-  struct SBR_ENV_DATA encEnvData;
+    struct SBR_ENV_DATA encEnvData;
 
-  int qmfScale;
-  UCHAR fLevelProtect;
+    int qmfScale;
+    UCHAR fLevelProtect;
 };
 typedef struct ENV_CHANNEL *HANDLE_ENV_CHANNEL;
 
@@ -174,22 +174,22 @@ INT FDKsbrEnc_InitExtractSbrEnvelope(HANDLE_SBR_EXTRACT_ENVELOPE hSbr,
 void FDKsbrEnc_deleteExtractSbrEnvelope(HANDLE_SBR_EXTRACT_ENVELOPE hSbrCut);
 
 typedef struct {
-  FREQ_RES res[MAX_NUM_NOISE_VALUES];
-  int maxQuantError;
+    FREQ_RES res[MAX_NUM_NOISE_VALUES];
+    int maxQuantError;
 
 } SBR_FRAME_TEMP_DATA;
 
 typedef struct {
-  const SBR_FRAME_INFO *frame_info;
-  FIXP_DBL noiseFloor[MAX_NUM_NOISE_VALUES];
-  SCHAR sfb_nrg_coupling
-      [MAX_NUM_ENVELOPE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
-  SCHAR sfb_nrg[MAX_NUM_ENVELOPE_VALUES];
-  SCHAR noise_level_coupling
-      [MAX_NUM_NOISE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
-  SCHAR noise_level[MAX_NUM_NOISE_VALUES];
-  UCHAR transient_info[3];
-  UCHAR nEnvelopes;
+    const SBR_FRAME_INFO *frame_info;
+    FIXP_DBL noiseFloor[MAX_NUM_NOISE_VALUES];
+    SCHAR sfb_nrg_coupling
+    [MAX_NUM_ENVELOPE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
+    SCHAR sfb_nrg[MAX_NUM_ENVELOPE_VALUES];
+    SCHAR noise_level_coupling
+    [MAX_NUM_NOISE_VALUES]; /* only used if stereomode = SWITCH_L_R_C */
+    SCHAR noise_level[MAX_NUM_NOISE_VALUES];
+    UCHAR transient_info[3];
+    UCHAR nEnvelopes;
 } SBR_ENV_TEMP_DATA;
 
 /*

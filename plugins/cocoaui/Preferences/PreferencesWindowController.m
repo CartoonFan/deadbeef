@@ -73,14 +73,14 @@
 - (NSArray *)toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar
 {
     return [NSArray arrayWithObjects:
-            @"Sound",
-            @"Playback",
-            @"DSP",
-            @"GUI",
-            @"Medialib",
-            @"Network",
-            @"Plugins",
-            nil];
+                    @"Sound",
+                    @"Playback",
+                    @"DSP",
+                    @"GUI",
+                    @"Medialib",
+                    @"Network",
+                    @"Plugins",
+                    nil];
 }
 
 - (void)switchToView:(NSView *)view {

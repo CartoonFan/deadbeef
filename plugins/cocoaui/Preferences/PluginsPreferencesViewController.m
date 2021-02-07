@@ -118,8 +118,8 @@ extern DB_functions_t *deadbeef;
 
     self.wwwButton.toolTip = nil;
     if (p->website
-        && (!strncmp (p->website, "http://", 7)
-            || !strncmp (p->website, "https://", 8))) {
+            && (!strncmp (p->website, "http://", 7)
+                || !strncmp (p->website, "https://", 8))) {
         NSString *urlString = [NSString stringWithUTF8String:p->website];
         self.wwwButton.toolTip = urlString;
         self.website = [NSURL URLWithString:urlString];
@@ -151,7 +151,7 @@ extern DB_functions_t *deadbeef;
     }
 
     _pluginVersion.stringValue = version;
-    NSAttributedString *str = [[NSAttributedString alloc] initWithString:description attributes:@{NSForegroundColorAttributeName:NSColor.controlTextColor}];
+    NSAttributedString *str = [[NSAttributedString alloc] initWithString:description attributes:@ {NSForegroundColorAttributeName:NSColor.controlTextColor}];
     [_pluginDescription textStorage].attributedString = str;
     _pluginDescription.string = description;
     _pluginLicense.string = license;

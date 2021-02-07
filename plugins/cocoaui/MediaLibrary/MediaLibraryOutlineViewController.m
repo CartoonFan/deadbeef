@@ -109,7 +109,7 @@ extern DB_functions_t *deadbeef;
 
 static void _medialib_listener (ddb_mediasource_event_type_t event, void *user_data) {
     MediaLibraryOutlineViewController *ctl = (__bridge MediaLibraryOutlineViewController *)user_data;
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [ctl medialibEvent:event];
     });
 }
@@ -138,10 +138,10 @@ static void _medialib_listener (ddb_mediasource_event_type_t event, void *user_d
     self.medialibRootItem = [[MediaLibraryItem alloc] initWithItem:self.medialibItemTree];
 
     self.topLevelItems = @[
-        self.selectorItem,
-        self.searchItem,
-        self.medialibRootItem,
-    ];
+                             self.selectorItem,
+                             self.searchItem,
+                             self.medialibRootItem,
+                         ];
 
     if (self.outlineViewInitialized) {
         [self.outlineView insertItemsAtIndexes:[NSIndexSet indexSetWithIndex:itemIndex] inParent:nil withAnimation:NSTableViewAnimationEffectNone];
@@ -353,7 +353,7 @@ static void cover_get_callback (int error, ddb_cover_query_t *query, ddb_cover_i
         self.artworkPlugin->cover_info_free (cover);
         cover = NULL;
 
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^ {
             data.item.coverImage = image;
 
             NSInteger row = [self.outlineView rowForItem:data.item];
@@ -490,8 +490,8 @@ static void cover_get_callback (int error, ddb_cover_query_t *query, ddb_cover_i
     NSInteger clickedRow = self.outlineView.clickedRow;
     if (clickedRow != -1 && [self.outlineView isRowSelected:clickedRow]) {
         [self.outlineView.selectedRowIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL * _Nonnull stop) {
-            [self addSelectedItemsRecursively:[self.outlineView itemAtRow:row]];
-        }];
+                                                [self addSelectedItemsRecursively:[self.outlineView itemAtRow:row]];
+                                            }];
     }
     else if (clickedRow != -1) {
         [self addSelectedItemsRecursively:[self.outlineView itemAtRow:clickedRow]];
@@ -518,10 +518,10 @@ static void cover_get_callback (int error, ddb_cover_query_t *query, ddb_cover_i
 
     // prevent selecting filter items
     [proposedSelectionIndexes enumerateIndexesUsingBlock:^(NSUInteger row, BOOL * _Nonnull stop) {
-        id item = [self.outlineView itemAtRow:row];
-        if (item != self.selectorItem
-            && item != self.medialibRootItem
-            && item != self.searchItem) {
+                                 id item = [self.outlineView itemAtRow:row];
+                                 if (item != self.selectorItem
+                                         && item != self.medialibRootItem
+                                         && item != self.searchItem) {
             [selectionIndexes addIndex:row];
         }
     }];

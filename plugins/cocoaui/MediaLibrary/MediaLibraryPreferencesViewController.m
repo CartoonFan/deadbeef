@@ -85,9 +85,9 @@ extern DB_functions_t *deadbeef;
     }
 
     // Display the panel attached to the document's window.
-    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result){
-        [NSUserDefaults.standardUserDefaults setObject:panel.directoryURL.absoluteString forKey:kMedialibBrowseInitialFolder];
-        if (result == NSModalResponseOK) {
+    [panel beginSheetModalForWindow:self.view.window completionHandler:^(NSInteger result) {
+              [NSUserDefaults.standardUserDefaults setObject:panel.directoryURL.absoluteString forKey:kMedialibBrowseInitialFolder];
+              if (result == NSModalResponseOK) {
             [self.tableView beginUpdates];
             for (NSURL *url in panel.URLs) {
                 [self.tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:index] withAnimation:NSTableViewAnimationEffectFade];

@@ -122,9 +122,9 @@ amm-info@iis.fraunhofer.de
 */
 /************************************************************************/
 static inline FIXP_SGL FDK_getNumOctavesDiv8(INT a, /*!< lower band */
-                                             INT b) /*!< upper band */
+        INT b) /*!< upper band */
 {
-  return ((SHORT)((LONG)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
+    return ((SHORT)((LONG)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
 }
 
 /************************************************************************/
@@ -142,36 +142,36 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
                             FIXP_SGL *ptrSum_m, /*!< Mantissa of result */
                             SCHAR *ptrSum_e)    /*!< Exponent of result */
 {
-  FIXP_DBL accu;
-  int shift;
-  int shiftAbs;
+    FIXP_DBL accu;
+    int shift;
+    int shiftAbs;
 
-  FIXP_DBL shiftedMantissa;
-  FIXP_DBL otherMantissa;
+    FIXP_DBL shiftedMantissa;
+    FIXP_DBL otherMantissa;
 
-  /* Equalize exponents of the summands.
-     For the smaller summand, the exponent is adapted and
-     for compensation, the mantissa is shifted right. */
+    /* Equalize exponents of the summands.
+       For the smaller summand, the exponent is adapted and
+       for compensation, the mantissa is shifted right. */
 
-  shift = (int)(a_e - b_e);
+    shift = (int)(a_e - b_e);
 
-  shiftAbs = (shift > 0) ? shift : -shift;
-  shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
-  shiftedMantissa = (shift > 0) ? (FX_SGL2FX_DBL(b_m) >> shiftAbs)
-                                : (FX_SGL2FX_DBL(a_m) >> shiftAbs);
-  otherMantissa = (shift > 0) ? FX_SGL2FX_DBL(a_m) : FX_SGL2FX_DBL(b_m);
-  *ptrSum_e = (shift > 0) ? a_e : b_e;
+    shiftAbs = (shift > 0) ? shift : -shift;
+    shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
+    shiftedMantissa = (shift > 0) ? (FX_SGL2FX_DBL(b_m) >> shiftAbs)
+                      : (FX_SGL2FX_DBL(a_m) >> shiftAbs);
+    otherMantissa = (shift > 0) ? FX_SGL2FX_DBL(a_m) : FX_SGL2FX_DBL(b_m);
+    *ptrSum_e = (shift > 0) ? a_e : b_e;
 
-  accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
-  /* shift by 1 bit to avoid overflow */
+    accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
+    /* shift by 1 bit to avoid overflow */
 
-  if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
-      (accu <= FL2FXCONST_DBL(-0.5f)))
-    *ptrSum_e += 1;
-  else
-    accu = (shiftedMantissa + otherMantissa);
+    if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
+            (accu <= FL2FXCONST_DBL(-0.5f)))
+        *ptrSum_e += 1;
+    else
+        accu = (shiftedMantissa + otherMantissa);
 
-  *ptrSum_m = FX_DBL2FX_SGL(accu);
+    *ptrSum_m = FX_DBL2FX_SGL(accu);
 }
 
 inline void FDK_add_MantExp(FIXP_DBL a,       /*!< Mantissa of 1st operand a */
@@ -181,35 +181,35 @@ inline void FDK_add_MantExp(FIXP_DBL a,       /*!< Mantissa of 1st operand a */
                             FIXP_DBL *ptrSum, /*!< Mantissa of result */
                             SCHAR *ptrSum_e)  /*!< Exponent of result */
 {
-  FIXP_DBL accu;
-  int shift;
-  int shiftAbs;
+    FIXP_DBL accu;
+    int shift;
+    int shiftAbs;
 
-  FIXP_DBL shiftedMantissa;
-  FIXP_DBL otherMantissa;
+    FIXP_DBL shiftedMantissa;
+    FIXP_DBL otherMantissa;
 
-  /* Equalize exponents of the summands.
-     For the smaller summand, the exponent is adapted and
-     for compensation, the mantissa is shifted right. */
+    /* Equalize exponents of the summands.
+       For the smaller summand, the exponent is adapted and
+       for compensation, the mantissa is shifted right. */
 
-  shift = (int)(a_e - b_e);
+    shift = (int)(a_e - b_e);
 
-  shiftAbs = (shift > 0) ? shift : -shift;
-  shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
-  shiftedMantissa = (shift > 0) ? (b >> shiftAbs) : (a >> shiftAbs);
-  otherMantissa = (shift > 0) ? a : b;
-  *ptrSum_e = (shift > 0) ? a_e : b_e;
+    shiftAbs = (shift > 0) ? shift : -shift;
+    shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
+    shiftedMantissa = (shift > 0) ? (b >> shiftAbs) : (a >> shiftAbs);
+    otherMantissa = (shift > 0) ? a : b;
+    *ptrSum_e = (shift > 0) ? a_e : b_e;
 
-  accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
-  /* shift by 1 bit to avoid overflow */
+    accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
+    /* shift by 1 bit to avoid overflow */
 
-  if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
-      (accu <= FL2FXCONST_DBL(-0.5f)))
-    *ptrSum_e += 1;
-  else
-    accu = (shiftedMantissa + otherMantissa);
+    if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
+            (accu <= FL2FXCONST_DBL(-0.5f)))
+        *ptrSum_e += 1;
+    else
+        accu = (shiftedMantissa + otherMantissa);
 
-  *ptrSum = accu;
+    *ptrSum = accu;
 }
 
 /************************************************************************/
@@ -232,51 +232,51 @@ static inline void FDK_divide_MantExp(
     SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
-  int preShift, postShift, index, shift;
-  FIXP_DBL ratio_m;
-  FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
+    int preShift, postShift, index, shift;
+    FIXP_DBL ratio_m;
+    FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
-  preShift = CntLeadingZeros(FX_SGL2FX_DBL(b_m));
+    preShift = CntLeadingZeros(FX_SGL2FX_DBL(b_m));
 
-  /*
-    Shift b into the range from 0..INV_TABLE_SIZE-1,
+    /*
+      Shift b into the range from 0..INV_TABLE_SIZE-1,
 
-    E.g. 10 bits must be skipped for INV_TABLE_BITS 8:
-    - leave 8 bits as index for table
-    - skip sign bit,
-    - skip first bit of mantissa, because this is always the same (>0.5)
+      E.g. 10 bits must be skipped for INV_TABLE_BITS 8:
+      - leave 8 bits as index for table
+      - skip sign bit,
+      - skip first bit of mantissa, because this is always the same (>0.5)
 
-    We are dealing with energies, so we need not care
-    about negative numbers
-  */
+      We are dealing with energies, so we need not care
+      about negative numbers
+    */
 
-  /*
-    The first interval has half width so the lowest bit of the index is
-    needed for a doubled resolution.
-  */
-  shift = (FRACT_BITS - 2 - INV_TABLE_BITS - preShift);
+    /*
+      The first interval has half width so the lowest bit of the index is
+      needed for a doubled resolution.
+    */
+    shift = (FRACT_BITS - 2 - INV_TABLE_BITS - preShift);
 
-  index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
+    index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
 
-  /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
-  index &= (1 << (INV_TABLE_BITS + 1)) - 1;
+    /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
+    index &= (1 << (INV_TABLE_BITS + 1)) - 1;
 
-  /* Remove offset of half an interval */
-  index--;
+    /* Remove offset of half an interval */
+    index--;
 
-  /* Now the lowest bit is shifted out */
-  index = index >> 1;
+    /* Now the lowest bit is shifted out */
+    index = index >> 1;
 
-  /* Fetch inversed mantissa from table: */
-  bInv_m = (index < 0) ? bInv_m : FDK_sbrDecoder_invTable[index];
+    /* Fetch inversed mantissa from table: */
+    bInv_m = (index < 0) ? bInv_m : FDK_sbrDecoder_invTable[index];
 
-  /* Multiply a with the inverse of b: */
-  ratio_m = (index < 0) ? FX_SGL2FX_DBL(a_m >> 1) : fMultDiv2(bInv_m, a_m);
+    /* Multiply a with the inverse of b: */
+    ratio_m = (index < 0) ? FX_SGL2FX_DBL(a_m >> 1) : fMultDiv2(bInv_m, a_m);
 
-  postShift = CntLeadingZeros(ratio_m) - 1;
+    postShift = CntLeadingZeros(ratio_m) - 1;
 
-  *ptrResult_m = FX_DBL2FX_SGL(ratio_m << postShift);
-  *ptrResult_e = a_e - b_e + 1 + preShift - postShift;
+    *ptrResult_m = FX_DBL2FX_SGL(ratio_m << postShift);
+    *ptrResult_e = a_e - b_e + 1 + preShift - postShift;
 }
 
 static inline void FDK_divide_MantExp(
@@ -288,51 +288,51 @@ static inline void FDK_divide_MantExp(
     SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
-  int preShift, postShift, index, shift;
-  FIXP_DBL ratio_m;
-  FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
+    int preShift, postShift, index, shift;
+    FIXP_DBL ratio_m;
+    FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
-  preShift = CntLeadingZeros(b_m);
+    preShift = CntLeadingZeros(b_m);
 
-  /*
-    Shift b into the range from 0..INV_TABLE_SIZE-1,
+    /*
+      Shift b into the range from 0..INV_TABLE_SIZE-1,
 
-    E.g. 10 bits must be skipped for INV_TABLE_BITS 8:
-    - leave 8 bits as index for table
-    - skip sign bit,
-    - skip first bit of mantissa, because this is always the same (>0.5)
+      E.g. 10 bits must be skipped for INV_TABLE_BITS 8:
+      - leave 8 bits as index for table
+      - skip sign bit,
+      - skip first bit of mantissa, because this is always the same (>0.5)
 
-    We are dealing with energies, so we need not care
-    about negative numbers
-  */
+      We are dealing with energies, so we need not care
+      about negative numbers
+    */
 
-  /*
-    The first interval has half width so the lowest bit of the index is
-    needed for a doubled resolution.
-  */
-  shift = (DFRACT_BITS - 2 - INV_TABLE_BITS - preShift);
+    /*
+      The first interval has half width so the lowest bit of the index is
+      needed for a doubled resolution.
+    */
+    shift = (DFRACT_BITS - 2 - INV_TABLE_BITS - preShift);
 
-  index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
+    index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
 
-  /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
-  index &= (1 << (INV_TABLE_BITS + 1)) - 1;
+    /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
+    index &= (1 << (INV_TABLE_BITS + 1)) - 1;
 
-  /* Remove offset of half an interval */
-  index--;
+    /* Remove offset of half an interval */
+    index--;
 
-  /* Now the lowest bit is shifted out */
-  index = index >> 1;
+    /* Now the lowest bit is shifted out */
+    index = index >> 1;
 
-  /* Fetch inversed mantissa from table: */
-  bInv_m = (index < 0) ? bInv_m : FDK_sbrDecoder_invTable[index];
+    /* Fetch inversed mantissa from table: */
+    bInv_m = (index < 0) ? bInv_m : FDK_sbrDecoder_invTable[index];
 
-  /* Multiply a with the inverse of b: */
-  ratio_m = (index < 0) ? (a_m >> 1) : fMultDiv2(bInv_m, a_m);
+    /* Multiply a with the inverse of b: */
+    ratio_m = (index < 0) ? (a_m >> 1) : fMultDiv2(bInv_m, a_m);
 
-  postShift = CntLeadingZeros(ratio_m) - 1;
+    postShift = CntLeadingZeros(ratio_m) - 1;
 
-  *ptrResult_m = ratio_m << postShift;
-  *ptrResult_e = a_e - b_e + 1 + preShift - postShift;
+    *ptrResult_m = ratio_m << postShift;
+    *ptrResult_e = a_e - b_e + 1 + preShift - postShift;
 }
 
 /*!
@@ -348,25 +348,25 @@ static inline void FDK_divide_MantExp(
 static inline void FDK_sqrt_MantExp(
     FIXP_DBL *mantissa, /*!< Pointer to mantissa */
     SCHAR *exponent, const SCHAR *destScale) {
-  FIXP_DBL input_m = *mantissa;
-  int input_e = (int)*exponent;
-  FIXP_DBL result = FL2FXCONST_DBL(0.0f);
-  int result_e = -FRACT_BITS;
+    FIXP_DBL input_m = *mantissa;
+    int input_e = (int)*exponent;
+    FIXP_DBL result = FL2FXCONST_DBL(0.0f);
+    int result_e = -FRACT_BITS;
 
-  /* Call lookup square root, which does internally normalization. */
-  result = sqrtFixp_lookup(input_m, &input_e);
-  result_e = input_e;
+    /* Call lookup square root, which does internally normalization. */
+    result = sqrtFixp_lookup(input_m, &input_e);
+    result_e = input_e;
 
-  /* Write result */
-  if (exponent == destScale) {
-    *mantissa = result;
-    *exponent = result_e;
-  } else {
-    int shift = result_e - *destScale;
-    *mantissa = (shift >= 0) ? result << (INT)fixMin(DFRACT_BITS - 1, shift)
-                             : result >> (INT)fixMin(DFRACT_BITS - 1, -shift);
-    *exponent = *destScale;
-  }
+    /* Write result */
+    if (exponent == destScale) {
+        *mantissa = result;
+        *exponent = result_e;
+    } else {
+        int shift = result_e - *destScale;
+        *mantissa = (shift >= 0) ? result << (INT)fixMin(DFRACT_BITS - 1, shift)
+                    : result >> (INT)fixMin(DFRACT_BITS - 1, -shift);
+        *exponent = *destScale;
+    }
 }
 
 #endif

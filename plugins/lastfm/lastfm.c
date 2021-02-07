@@ -1,17 +1,17 @@
 /*
     Last.fm scrobbler plugin for DeaDBeeF Player
-    Copyright (C) 2009-2014 Alexey Yakovenko 
+    Copyright (C) 2009-2014 Alexey Yakovenko
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
     of the License, or (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -102,7 +102,7 @@ static size_t
 lastfm_curl_res (void *ptr, size_t size, size_t nmemb, void *stream)
 {
     __block int need_cancel = 0;
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         need_cancel = terminate;
     });
     if (need_cancel) {
@@ -122,7 +122,7 @@ lastfm_curl_res (void *ptr, size_t size, size_t nmemb, void *stream)
 static int
 lfm_curl_control (void *stream, double dltotal, double dlnow, double ultotal, double ulnow) {
     __block int need_cancel = 0;
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         need_cancel = terminate;
     });
     if (need_cancel) {
@@ -396,11 +396,11 @@ lfm_uri_encode (char *out, size_t outl, const char *str) {
         }
 
         if (!(
-            (*str >= '0' && *str <= '9') ||
-            (*str >= 'a' && *str <= 'z') ||
-            (*str >= 'A' && *str <= 'Z') ||
-            (*str == ' ')
-        ))
+                    (*str >= '0' && *str <= '9') ||
+                    (*str >= 'a' && *str <= 'z') ||
+                    (*str >= 'A' && *str <= 'Z') ||
+                    (*str == ' ')
+                ))
         {
             if (outl <= 3) {
                 //trace ("no space left for 3 bytes in the buffer\n");
@@ -544,7 +544,7 @@ lastfm_songstarted (ddb_event_track_t *ev, uintptr_t data) {
     ddb_playItem_t *it = ev->track;
     time_t started_timestamp = ev->started_timestamp;
     deadbeef->pl_item_ref (it);
-    dispatch_async(request_queue, ^{
+    dispatch_async(request_queue, ^ {
         __block int need_cancel = 0;
         dispatch_sync(sync_queue, ^{
             need_cancel = terminate;
@@ -607,7 +607,7 @@ lastfm_songchanged (ddb_event_trackchange_t *ev, uintptr_t data) {
     time_t started_timestamp = ev->started_timestamp;
     float playtime = ev->playtime;
 
-    dispatch_async(request_queue, ^{
+    dispatch_async(request_queue, ^ {
         lfm_submit (it, started_timestamp, playtime);
     });
 
@@ -721,7 +721,7 @@ lfm_send_submission (ddb_playItem_t *it, time_t started_timestamp, float playtim
 static void
 lfm_submit (ddb_playItem_t *it, time_t started_timestamp, float playtime) {
     __block int need_cancel = 0;
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         need_cancel = terminate;
     });
     if (need_cancel) {
@@ -762,10 +762,10 @@ lastfm_start (void) {
 static int
 lastfm_stop (void) {
     trace ("lastfm_stop\n");
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         terminate = 1; // prevent any new items from being scheduled
     });
-    dispatch_sync(request_queue, ^{
+    dispatch_sync(request_queue, ^ {
         // wait for the queue to finish all jobs
     });
 
@@ -852,8 +852,8 @@ lfm_get_actions (DB_playItem_t *it)
 {
     deadbeef->pl_lock ();
     if (!it ||
-        !deadbeef->pl_find_meta_with_override (it, "artist") ||
-        !deadbeef->pl_find_meta_with_override (it, "title"))
+            !deadbeef->pl_find_meta_with_override (it, "artist") ||
+            !deadbeef->pl_find_meta_with_override (it, "title"))
     {
         lookup_action.flags |= DB_ACTION_DISABLED;
     }
@@ -874,7 +874,7 @@ static const char settings_dlg[] =
     "property \"Prefer Album Artist over Artist field\" checkbox lastfm.prefer_album_artist 0;"
     "property \"Send MusicBrainz ID\" checkbox lastfm.mbid 0;"
     "property \"Submit tracks shorter than 30 seconds (not recommended)\" checkbox lastfm.submit_tiny_tracks 0;"
-;
+    ;
 
 // define plugin interface
 static DB_misc_t plugin = {
@@ -886,22 +886,22 @@ static DB_misc_t plugin = {
     .plugin.name = "last.fm scrobbler",
     .plugin.descr = "Sends played songs information to your last.fm account, or other service that use AudioScrobbler protocol",
     .plugin.copyright =
-        "Last.fm scrobbler plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2014 Alexey Yakovenko\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    "Last.fm scrobbler plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2014 Alexey Yakovenko\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = lastfm_start,

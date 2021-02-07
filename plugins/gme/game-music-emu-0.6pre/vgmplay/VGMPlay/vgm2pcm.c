@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     PlayVGM(vgmp);
 
     p = (VGM_PLAYER *) vgmp;
-    
+
     sampleBuffer = (WAVE_16BS*)malloc(SAMPLESIZE * p->SampleRate);
     if (sampleBuffer == NULL) {
         fprintf(stderr, "vgm2pcm: error: failed to allocate %u bytes of memory\n", (unsigned)(SAMPLESIZE * p->SampleRate));

@@ -125,7 +125,7 @@ static ddb_waveformat_t requested_fmt;
 static void
 portaudio_stream_create (void) {
     trace ("> portaudio_stream_start\n");
-    dispatch_async(stream_queue, ^{
+    dispatch_async(stream_queue, ^ {
         trace ("portaudio_stream_start\n");
         dispatch_semaphore_wait(stream_semaphore, DISPATCH_TIME_FOREVER);
         // Soundcard
@@ -191,7 +191,7 @@ portaudio_stream_create (void) {
 static void
 portaudio_stream_destroy (void) {
     trace ("> portaudio_stream_destroy\n");
-    dispatch_async(stream_queue, ^{
+    dispatch_async(stream_queue, ^ {
         if (stream) {
             trace ("portaudio_stream_destroy: closing stream\n");
             dispatch_semaphore_wait(command_semaphore, DISPATCH_TIME_NOW);
@@ -239,7 +239,7 @@ portaudio_setformat (ddb_waveformat_t *fmt) {
     }
     // Enqueue format switch and save new fmt under requested_fmt
     memcpy (&requested_fmt, fmt, sizeof (ddb_waveformat_t));
-    dispatch_async (stream_queue, ^{
+    dispatch_async (stream_queue, ^ {
         ddb_waveformat_t *fmt = &requested_fmt;
         trace ("portaudio_setformat %dbit %s %dch %dHz channelmask=%X\n", requested_fmt.bps, fmt->is_float ? "float" : "int", fmt->channels, fmt->samplerate, fmt->channelmask);
 
@@ -250,17 +250,17 @@ portaudio_setformat (ddb_waveformat_t *fmt) {
         else {
             stream_force_reset = 0;
             trace ("switching format: (requested->actual)\n"
-            "bps %d -> %d\n"
-            "is_float %d -> %d\n"
-            "channels %d -> %d\n"
-            "samplerate %d -> %d\n"
-            "channelmask %d -> %d\n"
-            , fmt->bps, plugin.fmt.bps
-            , fmt->is_float, plugin.fmt.is_float
-            , fmt->channels, plugin.fmt.channels
-            , fmt->samplerate, plugin.fmt.samplerate
-            , fmt->channelmask, plugin.fmt.channelmask
-            );
+                   "bps %d -> %d\n"
+                   "is_float %d -> %d\n"
+                   "channels %d -> %d\n"
+                   "samplerate %d -> %d\n"
+                   "channelmask %d -> %d\n"
+                   , fmt->bps, plugin.fmt.bps
+                   , fmt->is_float, plugin.fmt.is_float
+                   , fmt->channels, plugin.fmt.channels
+                   , fmt->samplerate, plugin.fmt.samplerate
+                   , fmt->channelmask, plugin.fmt.channelmask
+                  );
         }
 
         // Stop stream
@@ -307,7 +307,7 @@ portaudio_play (void) {
     trace ("> portaudio_play\n");
 
     // New plugin structure always keeps at least one stream open (unless plugin not in usage)
-    dispatch_async (command_queue, ^{
+    dispatch_async (command_queue, ^ {
         trace ("portaudio_play\n");
         dispatch_semaphore_wait(command_semaphore, DISPATCH_TIME_FOREVER);
         state = DDB_PLAYBACK_STATE_PLAYING;
@@ -328,7 +328,10 @@ portaudio_play (void) {
     return 0;
 }
 
-static PaSampleFormat pa_GSFerr () { warn ("portaudio: Sample format wrong? Using Int16.\n"); return paInt16; }
+static PaSampleFormat pa_GSFerr () {
+    warn ("portaudio: Sample format wrong? Using Int16.\n");
+    return paInt16;
+}
 static PaSampleFormat
 pa_GetSampleFormat (int bps, int is_float) {
     return bps ==  8 ?  paUInt8   :
@@ -345,7 +348,7 @@ portaudio_stop (void) {
     if (state == DDB_PLAYBACK_STATE_STOPPED) {
         return -1;
     }
-    dispatch_async(command_queue, ^{
+    dispatch_async(command_queue, ^ {
         trace ("portaudio_stop\n");
         dispatch_semaphore_wait(command_semaphore, DISPATCH_TIME_FOREVER);
         PaError err;
@@ -365,7 +368,7 @@ portaudio_stop (void) {
 static int
 portaudio_pause (void) {
     trace ("> portaudio_pause\n");
-    dispatch_async (command_queue, ^{
+    dispatch_async (command_queue, ^ {
         trace ("portaudio_pause\n");
         dispatch_semaphore_wait(command_semaphore, DISPATCH_TIME_FOREVER);
         if (state == DDB_PLAYBACK_STATE_STOPPED) {
@@ -398,7 +401,7 @@ portaudio_unpause (void) {
 // enforce config change when settings differ than on current stream
 static int
 portaudio_configchanged (void) {
-    dispatch_async(stream_queue, ^{
+    dispatch_async(stream_queue, ^ {
         int portaudio_soundcard = 0;
         {
             deadbeef->conf_lock ();
@@ -431,7 +434,7 @@ static void portaudio_enum_soundcards (void (*callback)(const char *name, const 
     PaDeviceIndex i = 0;
     trace ("portaudio_enum_soundcards have %d devices\n",device_count);
     // Charset conversion
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     char * charset = 0;
     int devenc_list = deadbeef->conf_get_int ("portaudio.devenc_list", 0);
     if (devenc_list == 0)
@@ -446,8 +449,8 @@ static void portaudio_enum_soundcards (void (*callback)(const char *name, const 
     }
     if (charset)
         trace ("portaudio: converting device names from charset %s\n", charset);
-    #endif
-    for (i=0;i<device_count;i++) {
+#endif
+    for (i=0; i<device_count; i++) {
         const PaDeviceInfo* device = Pa_GetDeviceInfo (i);
         const PaHostApiInfo * api_info = Pa_GetHostApiInfo(device->hostApi);
         if (!device) {
@@ -456,11 +459,11 @@ static void portaudio_enum_soundcards (void (*callback)(const char *name, const 
         if (device->maxOutputChannels < 1) {
             continue;
         }
-        
+
         char *name_converted = (char *) device->name;
 
         // Convert to UTF-8 on windows
-        #ifdef __MINGW32__
+#ifdef __MINGW32__
         char name_converted_allocated = 0;
         if (api_info->type == paDirectSound || api_info->type == paMME) {
             // it turns out these APIs do not return strings in UTF-8
@@ -470,7 +473,7 @@ static void portaudio_enum_soundcards (void (*callback)(const char *name, const 
                 deadbeef->junk_iconv (device->name, strlen(device->name), name_converted, strlen(device->name)*4, charset, "UTF-8//IGNORE");
             }
         }
-        #endif
+#endif
 
         char full_name[255];
         snprintf (full_name, 255, "%s: %s", api_info->name, name_converted);
@@ -480,18 +483,18 @@ static void portaudio_enum_soundcards (void (*callback)(const char *name, const 
             snprintf (num, 8, "%d", i);
             callback (num, full_name, userdata);
         }
-        #ifdef __MINGW32__
+#ifdef __MINGW32__
         if (name_converted_allocated) {
             free (name_converted);
         }
-        #endif
+#endif
         // trace ("device: %s\n",name_converted);
     }
-    #ifdef __MINGW32__
+#ifdef __MINGW32__
     if (devenc_list == 2 && charset) {
         free (charset);
     }
-    #endif
+#endif
 }
 
 static int
@@ -551,7 +554,7 @@ static const char settings_dlg[] =
     "property \"Device name encoding\" select[3] portaudio.devenc_list 0 \"ASCII / UTF-8\" cp1250 \"Defined below\";\n"
     "property \"Custom device name encoding\" entry portaudio.devenc_custom \"\";\n"
 #endif
-;
+    ;
 
 static int
 p_portaudio_start (void) {

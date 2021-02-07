@@ -95,12 +95,12 @@
 
 - (void)test_CueWithTrackComposer_SetsCueComposerForOneTrack {
     const char cue[] =
-    "FILE \"file.wav\" WAVE\n"
-    "TRACK 01 AUDIO\n"
-    "REM COMPOSER \"TEST_COMPOSER\""
-    "INDEX 01 00:00:00\n"
-    "TRACK 02 AUDIO\n"
-    "INDEX 01 00:01:00\n";
+        "FILE \"file.wav\" WAVE\n"
+        "TRACK 01 AUDIO\n"
+        "REM COMPOSER \"TEST_COMPOSER\""
+        "INDEX 01 00:00:00\n"
+        "TRACK 02 AUDIO\n"
+        "INDEX 01 00:01:00\n";
 
     playlist_t *plt = plt_alloc("test");
 

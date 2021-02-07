@@ -36,7 +36,7 @@ extern DB_functions_t *deadbeef;
               "%s/TestData/chirp-1sec.mp3\n"
               "%s/TestData/comm_id3v2.3.mp3\n",
               dbplugindir, dbplugindir
-              );
+             );
 
     ddb_playlist_t *plt = deadbeef->plt_alloc("plt");
 
@@ -57,7 +57,7 @@ extern DB_functions_t *deadbeef;
               "#EXTINF:123, АБВГД\n"
               "%s/TestData/chirp-1sec.mp3\n",
               dbplugindir
-              );
+             );
 
     ddb_playlist_t *plt = deadbeef->plt_alloc("plt");
 
@@ -86,7 +86,7 @@ extern DB_functions_t *deadbeef;
               "%s/TestData/chirp-1sec.mp3\n"
               "#EXTINF:123, test",
               dbplugindir
-              );
+             );
 
     ddb_playlist_t *plt = deadbeef->plt_alloc("plt");
 
@@ -115,7 +115,7 @@ extern DB_functions_t *deadbeef;
               "#EXTINF:123, АБВГД - Sample title\n"
               "%s/TestData/chirp-1sec.mp3\n",
               dbplugindir
-              );
+             );
 
     ddb_playlist_t *plt = deadbeef->plt_alloc("plt");
 
@@ -143,7 +143,7 @@ extern DB_functions_t *deadbeef;
               "#EXTINF:123, АБВГД - Sample title\n"
               "%s/TestData/chirp-1sec.mp3\n",
               dbplugindir
-              );
+             );
 
     ddb_playlist_t *plt = deadbeef->plt_alloc("plt");
 

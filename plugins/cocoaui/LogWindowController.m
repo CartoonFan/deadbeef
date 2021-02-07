@@ -52,7 +52,7 @@ extern DB_functions_t *deadbeef;
 }
 
 - (void)appendText:(NSString *)text {
-    NSAttributedString* attr = [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:NSColor.controlTextColor}];
+    NSAttributedString* attr = [[NSAttributedString alloc] initWithString:text attributes:@ {NSForegroundColorAttributeName:NSColor.controlTextColor}];
 
     NSRect visibleRect = [_clipView documentVisibleRect];
     NSRect docRect = _textView.frame;
@@ -69,7 +69,7 @@ extern DB_functions_t *deadbeef;
 }
 
 - (IBAction)clearAction:(id)sender {
-    self.textView.textStorage.attributedString =  [[NSAttributedString alloc] initWithString:@"" attributes:@{NSForegroundColorAttributeName:NSColor.controlTextColor}];
+    self.textView.textStorage.attributedString =  [[NSAttributedString alloc] initWithString:@"" attributes:@ {NSForegroundColorAttributeName:NSColor.controlTextColor}];
 }
 
 static void
@@ -84,7 +84,7 @@ _cocoaui_logger_callback (DB_plugin_t *plugin, uint32 layers, const char *text, 
         return; // may happen in case of invalid UTF8 and such
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [self appendText:str];
 
         if (layers == DDB_LOG_LAYER_DEFAULT) {

@@ -81,7 +81,7 @@ typedef struct playlist_s {
     int cue_samplerate;
 
     int search_cmpidx;
-    
+
     unsigned fast_mode : 1;
     unsigned files_adding : 1;
     unsigned recalc_seltime : 1;

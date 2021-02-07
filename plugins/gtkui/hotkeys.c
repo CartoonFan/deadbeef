@@ -659,7 +659,7 @@ typedef struct {
 #define KEY(kname, kcode) { .name=kname, .keysym=kcode },
 
 static const xkey_t keys[] = {
-    #include "../hotkeys/keysyms.inc"
+#include "../hotkeys/keysyms.inc"
 };
 
 static const char *
@@ -767,10 +767,10 @@ on_hotkeys_set_key_key_press_event     (GtkWidget       *widget,
     accel_mods = event->state & gtk_accelerator_get_default_mod_mask ();
 
     gdk_keymap_translate_keyboard_state (gdk_keymap_get_for_display (display),
-            event->hardware_keycode, accel_mods & (~GDK_SHIFT_MASK),
-            0, &accel_key, NULL, NULL, &consumed_modifiers);
+                                         event->hardware_keycode, accel_mods & (~GDK_SHIFT_MASK),
+                                         0, &accel_key, NULL, NULL, &consumed_modifiers);
 
-    if (accel_key == GDK_ISO_Left_Tab) 
+    if (accel_key == GDK_ISO_Left_Tab)
         accel_key = GDK_Tab;
 
 
@@ -846,9 +846,9 @@ hotkey_grab_focus (GtkWidget *widget) {
     }
 
     if (gdk_pointer_grab (gtk_widget_get_window (widget), FALSE,
-                GDK_BUTTON_PRESS_MASK,
-                NULL, NULL,
-                GDK_CURRENT_TIME) != GDK_GRAB_SUCCESS)
+                          GDK_BUTTON_PRESS_MASK,
+                          NULL, NULL,
+                          GDK_CURRENT_TIME) != GDK_GRAB_SUCCESS)
     {
         gdk_display_keyboard_ungrab (display, GDK_CURRENT_TIME);
         return;

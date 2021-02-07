@@ -71,8 +71,8 @@ static DdbWidgetManager *_defaultWidgetManager = nil;
 
 - (int)widgetMessage:(uint32_t)_id ctx:(uintptr_t)ctx p1:(uint32_t)p1 p2:(uint32_t)p2 {
     [self.regWidgets enumerateObjectsUsingBlock:^(WeakRefWrapper *w, NSUInteger idx, BOOL *stop) {
-        [w.object widgetMessage:_id ctx:ctx p1:p1 p2:p2];
-    }];
+                        [w.object widgetMessage:_id ctx:ctx p1:p1 p2:p2];
+                    }];
     return 0;
 }
 

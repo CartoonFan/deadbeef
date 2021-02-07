@@ -6,12 +6,12 @@
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
     of the License, or (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -76,16 +76,16 @@ psfplug_init (DB_fileinfo_t *_info, DB_playItem_t *it) {
     info->filesize = deadbeef->fgetlength (file);
     info->filebuffer = malloc (info->filesize);
     if (!info->filebuffer) {
-		trace ("psf: could not allocate %d bytes of memory\n", (int)info->filesize);
-		deadbeef->fclose (file);
+        trace ("psf: could not allocate %d bytes of memory\n", (int)info->filesize);
+        deadbeef->fclose (file);
         return -1;
     }
 
-	if (deadbeef->fread(info->filebuffer, 1, info->filesize, file) != info->filesize) {
+    if (deadbeef->fread(info->filebuffer, 1, info->filesize, file) != info->filesize) {
         deadbeef->pl_lock ();
-		trace ("psf: file read error: %s\n", deadbeef->pl_find_meta (it, ":URI"));
-		deadbeef->pl_unlock ();
-		deadbeef->fclose (file);
+        trace ("psf: file read error: %s\n", deadbeef->pl_find_meta (it, ":URI"));
+        deadbeef->pl_unlock ();
+        deadbeef->fclose (file);
         return -1;
     }
     deadbeef->fclose (file);
@@ -230,14 +230,14 @@ psfplug_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
     char *buffer = malloc (size);
     if (!buffer) {
         deadbeef->fclose (fp);
-		trace ("psf: could not allocate %d bytes of memory\n", (int)size);
+        trace ("psf: could not allocate %d bytes of memory\n", (int)size);
         return NULL;
     }
 
-	if (deadbeef->fread(buffer, 1, size, fp) != size) {
+    if (deadbeef->fread(buffer, 1, size, fp) != size) {
         deadbeef->fclose (fp);
         free (buffer);
-		trace ("psf: file read error: %s\n", fname);
+        trace ("psf: file read error: %s\n", fname);
         return NULL;
     }
 
@@ -277,8 +277,8 @@ psfplug_insert (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname) {
     ao_stop (type, dec);
     dec = NULL;
 
-	free (buffer);
-	
+    free (buffer);
+
     DB_playItem_t *it = deadbeef->pl_item_alloc_init (fname, plugin.plugin.id);
     const char *ext = fname + strlen (fname);
     while (*ext != '.' && ext > fname) {
@@ -380,26 +380,26 @@ static DB_decoder_t plugin = {
     .plugin.id = "psf",
     .plugin.name = "PSF player using Audio Overload SDK",
     .plugin.descr = "plays psf, psf2, spu, ssf, dsf, qsf file formats",
-    .plugin.copyright = 
-        "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "Uses modified aosdk-1.4.8 - library for playing .PSF (Sony PlayStation), .SPU (Sony PlayStation), .PSF2 (Sony PlayStation 2), .SSF (Sega Saturn), .DSF (Sega Dreamcast), and .QSF (Capcom QSound) audio file formats,\n"
-        "http://rbelmont.mameworld.info/?page_id=221\n"
-        "Copyright © 2007-2009 R. Belmont and Richard Bannister.\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .plugin.copyright =
+    "Copyright (C) 2009-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "Uses modified aosdk-1.4.8 - library for playing .PSF (Sony PlayStation), .SPU (Sony PlayStation), .PSF2 (Sony PlayStation 2), .SSF (Sega Saturn), .DSF (Sega Dreamcast), and .QSF (Capcom QSound) audio file formats,\n"
+    "http://rbelmont.mameworld.info/?page_id=221\n"
+    "Copyright © 2007-2009 R. Belmont and Richard Bannister.\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = psfplug_start,

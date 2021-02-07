@@ -609,7 +609,7 @@ get_next_track (playItem_t *curr, ddb_shuffle_t shuffle, ddb_repeat_t repeat) {
 static playItem_t *
 get_prev_track (playItem_t *curr, ddb_shuffle_t shuffle, ddb_repeat_t repeat) {
     pl_lock ();
-    
+
     // check if prev song is in this playlist
     if (curr && -1 == str_get_idx_of (curr)) {
         curr = NULL;
@@ -620,7 +620,7 @@ get_prev_track (playItem_t *curr, ddb_shuffle_t shuffle, ddb_repeat_t repeat) {
         streamer_set_streamer_playlist (plt);
         plt_unref (plt);
     }
-    
+
     playlist_t *plt = streamer_playlist;
 
     if (!plt->head[PL_MAIN]) {
@@ -2250,11 +2250,11 @@ streamer_configchanged (void) {
     int new_conf_streamer_samplerate_mult_44 = clamp_samplerate (conf_get_int ("streamer.samplerate_mult_44", 44100));
 
     if (conf_streamer_override_samplerate != new_conf_streamer_override_samplerate
-        || conf_streamer_use_dependent_samplerate != new_conf_streamer_use_dependent_samplerate
-        || conf_streamer_samplerate != new_conf_streamer_samplerate
-        || conf_streamer_samplerate_mult_48 != new_conf_streamer_samplerate_mult_48
-        || conf_streamer_samplerate_mult_44 != new_conf_streamer_samplerate_mult_44
-        || formatchanged) {
+            || conf_streamer_use_dependent_samplerate != new_conf_streamer_use_dependent_samplerate
+            || conf_streamer_samplerate != new_conf_streamer_samplerate
+            || conf_streamer_samplerate_mult_48 != new_conf_streamer_samplerate_mult_48
+            || conf_streamer_samplerate_mult_44 != new_conf_streamer_samplerate_mult_44
+            || formatchanged) {
         memset (&last_block_fmt, 0, sizeof (last_block_fmt));
     }
 

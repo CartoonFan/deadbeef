@@ -52,11 +52,15 @@
     textStyle.alignment = NSTextAlignmentLeft;
     textStyle.lineBreakMode = NSLineBreakByTruncatingTail;
 
-    self.titleAttributesCurrent = @{
-        NSFontAttributeName:[NSFont controlContentFontOfSize:NSFont.smallSystemFontSize],
-        NSBaselineOffsetAttributeName: @0,
-        NSForegroundColorAttributeName: self.headerTextColor,
-        NSParagraphStyleAttributeName: textStyle
+    self.titleAttributesCurrent = @ {
+NSFontAttributeName:
+        [NSFont controlContentFontOfSize:NSFont.smallSystemFontSize],
+NSBaselineOffsetAttributeName:
+        @0,
+NSForegroundColorAttributeName:
+        self.headerTextColor,
+NSParagraphStyleAttributeName:
+        textStyle
     };
 
 }
@@ -77,13 +81,13 @@
     [self addTrackingArea:area];
 
     [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(windowDidBecomeOrResignKey:)
-                                               name:NSWindowDidBecomeKeyNotification
-                                             object:self.window];
+                                        selector:@selector(windowDidBecomeOrResignKey:)
+                                        name:NSWindowDidBecomeKeyNotification
+                                        object:self.window];
     [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:@selector(windowDidBecomeOrResignKey:)
-                                               name:NSWindowDidResignKeyNotification
-                                             object:self.window];
+                                        selector:@selector(windowDidBecomeOrResignKey:)
+                                        name:NSWindowDidResignKeyNotification
+                                        object:self.window];
 
     return self;
 }
@@ -351,8 +355,8 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
     if ((event.type == NSEventTypeRightMouseDown || event.type == NSEventTypeLeftMouseDown)
-        && (event.buttonNumber == 1
-        || (event.buttonNumber == 0 && (event.modifierFlags & NSEventModifierFlagControl)))) {
+            && (event.buttonNumber == 1
+                || (event.buttonNumber == 0 && (event.modifierFlags & NSEventModifierFlagControl)))) {
         id <DdbListviewDelegate> delegate = [self.listview delegate];
         DdbListviewCol_t col = [self columnIndexForCoord:[event locationInWindow]];
         return [delegate contextMenuForColumn:col withEvent:event forView:self];

@@ -21,19 +21,19 @@ int resampler_run_blep_sse(resampler * r, float ** out_, float * out_end)
         float last_amp = r->last_amp;
         float inv_phase = r->inv_phase;
         float inv_phase_inc = r->inv_phase_inc;
-        
+
         const int step = RESAMPLER_BLEP_CUTOFF * RESAMPLER_RESOLUTION;
         const int window_step = RESAMPLER_RESOLUTION;
-        
+
         do
         {
             float sample;
-            
+
             if ( out + SINC_WIDTH * 2 > out_end )
                 break;
-            
+
             sample = *in++ - last_amp;
-            
+
             if (sample)
             {
                 float kernel_sum = 0.0f;
@@ -63,24 +63,24 @@ int resampler_run_blep_sse(resampler * r, float ** out_, float * out_end)
                     _mm_storeu_ps( (float *) out + i * 4, temp1 );
                 }
             }
-            
+
             inv_phase += inv_phase_inc;
-            
+
             out += (int)inv_phase;
-            
+
             inv_phase = fmod(inv_phase, 1.0f);
         }
         while ( in < in_end );
-        
+
         r->inv_phase = inv_phase;
         r->last_amp = last_amp;
         *out_ = out;
-        
+
         used = (int)(in - in_);
-        
+
         r->write_filled -= used;
     }
-    
+
     return used;
 }
 
@@ -100,14 +100,14 @@ int resampler_run_blam_sse(resampler * r, float ** out_, float * out_end)
         float phase_inc = r->phase_inc;
         float inv_phase = r->inv_phase;
         float inv_phase_inc = r->inv_phase_inc;
-        
+
         const int step = RESAMPLER_BLAM_CUTOFF * RESAMPLER_RESOLUTION;
         const int window_step = RESAMPLER_RESOLUTION;
 
         do
         {
             float sample;
-            
+
             if ( out + SINC_WIDTH * 2 > out_end )
                 break;
 
@@ -117,7 +117,7 @@ int resampler_run_blam_sse(resampler * r, float ** out_, float * out_end)
                 sample += (in[1] - in[0]) * phase;
             }
             sample -= last_amp;
-            
+
             if (sample)
             {
                 float kernel_sum = 0.0f;
@@ -147,7 +147,7 @@ int resampler_run_blam_sse(resampler * r, float ** out_, float * out_end)
                     _mm_storeu_ps( (float *) out + i * 4, temp1 );
                 }
             }
-            
+
             if (inv_phase_inc < 1.0f)
             {
                 ++in;
@@ -159,7 +159,7 @@ int resampler_run_blam_sse(resampler * r, float ** out_, float * out_end)
             {
                 phase += phase_inc;
                 ++out;
-                
+
                 if (phase >= 1.0f)
                 {
                     ++in;
@@ -173,12 +173,12 @@ int resampler_run_blam_sse(resampler * r, float ** out_, float * out_end)
         r->inv_phase = inv_phase;
         r->last_amp = last_amp;
         *out_ = out;
-        
+
         used = (int)(in - in_);
-        
+
         r->write_filled -= used;
     }
-    
+
     return used;
 }
 
@@ -195,15 +195,15 @@ int resampler_run_cubic_sse(resampler * r, float ** out_, float * out_end)
         float const* const in_end = in + in_size;
         float phase = r->phase;
         float phase_inc = r->phase_inc;
-        
+
         do
         {
             __m128 temp1, temp2;
             __m128 samplex = _mm_setzero_ps();
-            
+
             if ( out >= out_end )
                 break;
-            
+
             temp1 = _mm_loadu_ps( (const float *)( in ) );
             temp2 = _mm_load_ps( (const float *)( cubic_lut + (int)(phase * RESAMPLER_RESOLUTION) * 4 ) );
             temp1 = _mm_mul_ps( temp1, temp2 );
@@ -215,23 +215,23 @@ int resampler_run_cubic_sse(resampler * r, float ** out_, float * out_end)
             samplex = _mm_add_ps( samplex, temp1 );
             _mm_store_ss( out, samplex );
             ++out;
-            
+
             phase += phase_inc;
-            
+
             in += (int)phase;
-            
+
             phase = fmod(phase, 1.0f);
         }
         while ( in < in_end );
-        
+
         r->phase = phase;
         *out_ = out;
-        
+
         used = (int)(in - in_);
-        
+
         r->write_filled -= used;
     }
-    
+
     return used;
 }
 
@@ -248,10 +248,10 @@ int resampler_run_sinc_sse(resampler * r, float ** out_, float * out_end)
         float const* const in_end = in + in_size;
         float phase = r->phase;
         float phase_inc = r->phase_inc;
-        
+
         int step = phase_inc > 1.0f ? (int)(RESAMPLER_RESOLUTION / phase_inc * RESAMPLER_SINC_CUTOFF) : (int)(RESAMPLER_RESOLUTION * RESAMPLER_SINC_CUTOFF);
         int window_step = RESAMPLER_RESOLUTION;
-        
+
         do
         {
             // accumulate in extended precision
@@ -263,10 +263,10 @@ int resampler_run_sinc_sse(resampler * r, float ** out_, float * out_end)
             int i = SINC_WIDTH;
             int phase_reduced = (int)(phase * RESAMPLER_RESOLUTION);
             int phase_adj = phase_reduced * step / RESAMPLER_RESOLUTION;
-            
+
             if ( out >= out_end )
                 break;
-            
+
             for (; i >= -SINC_WIDTH + 1; --i)
             {
                 int pos = i * step;
@@ -290,23 +290,23 @@ int resampler_run_sinc_sse(resampler * r, float ** out_, float * out_end)
             samplex = _mm_mul_ps( samplex, temp1 );
             _mm_store_ss( out, samplex );
             ++out;
-            
+
             phase += phase_inc;
-            
+
             in += (int)phase;
-            
+
             phase = fmod(phase, 1.0f);
         }
         while ( in < in_end );
-        
+
         r->phase = phase;
         *out_ = out;
-        
+
         used = (int)(in - in_);
-        
+
         r->write_filled -= used;
     }
-    
+
     return used;
 }
 #endif

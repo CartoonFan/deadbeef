@@ -80,7 +80,7 @@ http_curl_write_wrapper (HTTP_FILE *fp, void *ptr, size_t size) {
             break;
         }
         int sz = BUFFER_SIZE/2 - fp->remaining; // number of bytes free in buffer
-                                                // don't allow to fill more than half -- used for seeking backwards
+        // don't allow to fill more than half -- used for seeking backwards
 
         if (sz > 5000) { // wait until there are at least 5k bytes free
             size_t cp = min (avail, sz);
@@ -871,7 +871,7 @@ http_read (void *ptr, size_t size, size_t nmemb, DB_FILE *stream) {
             deadbeef->mutex_unlock (fp->mutex);
             usleep (3000);
         }
-    //    trace ("buffer remaining: %d\n", fp->remaining);
+        //    trace ("buffer remaining: %d\n", fp->remaining);
         deadbeef->mutex_lock (fp->mutex);
         //trace ("http_read %lld/%lld/%d\n", fp->pos, fp->length, fp->remaining);
         size_t cp = min (sz, fp->remaining);
@@ -1126,7 +1126,7 @@ vfs_curl_abort_with_identifier (uint64_t identifier) {
 
 static const char settings_dlg[] =
     "property \"Enable logging\" checkbox vfs_curl.trace 0;\n"
-;
+    ;
 
 
 static DB_vfs_t plugin = {
@@ -1138,27 +1138,27 @@ static DB_vfs_t plugin = {
     .plugin.id = "vfs_curl",
     .plugin.name = "cURL vfs",
     .plugin.descr = "http and ftp streaming module using libcurl, with ICY protocol support",
-    .plugin.copyright = 
-        "CURL VFS plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2014 Alexey Yakovenko\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    .plugin.copyright =
+    "CURL VFS plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2014 Alexey Yakovenko\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.configdialog = settings_dlg,

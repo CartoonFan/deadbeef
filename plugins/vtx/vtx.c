@@ -64,7 +64,7 @@ vtx_init (DB_fileinfo_t *_info, DB_playItem_t *it) {
     // prepare to decode the track
     // return -1 on failure
     vtx_info_t *info = (vtx_info_t *)_info;
-    
+
     size_t sz = 0;
     char *buf = NULL;
 
@@ -309,7 +309,7 @@ vtx_stop (void) {
 
 static const char settings_dlg[] =
     "property \"Bits per sample\" select[2] vtx.bps 0 16 8;\n"
-;
+    ;
 
 // define plugin interface
 static DB_decoder_t plugin = {
@@ -320,29 +320,29 @@ static DB_decoder_t plugin = {
     .plugin.id = "vtx",
     .plugin.name = "VTX player",
     .plugin.descr = "AY8910/12 chip emulator and vtx file player",
-    .plugin.copyright = 
-        "VTX plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2014 Alexey Yakovenko\n"
-        "\n"
-        "Based on libayemu (C) 2005-2008 Alexander Sashnov\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    .plugin.copyright =
+    "VTX plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2014 Alexey Yakovenko\n"
+    "\n"
+    "Based on libayemu (C) 2005-2008 Alexander Sashnov\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .plugin.start = vtx_start,

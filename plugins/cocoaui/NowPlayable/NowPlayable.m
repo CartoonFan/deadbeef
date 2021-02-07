@@ -34,8 +34,9 @@ extern DB_functions_t *deadbeef;
 
 
     MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
-    infoCenter.nowPlayingInfo = @{
-        MPNowPlayingInfoPropertyPlaybackRate: @1.0,
+    infoCenter.nowPlayingInfo = @ {
+MPNowPlayingInfoPropertyPlaybackRate:
+        @1.0,
     };
 
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
@@ -61,8 +62,8 @@ extern DB_functions_t *deadbeef;
     __weak NowPlayable *weakSelf = self;
 
     self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        NowPlayable *nowPlayable = weakSelf;
-        if (!nowPlayable) {
+                NowPlayable *nowPlayable = weakSelf;
+                if (!nowPlayable) {
             return;
         }
 

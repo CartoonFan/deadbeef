@@ -115,9 +115,9 @@ extern DB_functions_t *deadbeef;
     [self.editColumnWindowController initAddColumnSheet];
 
     [self.view.window beginSheet:self.editColumnWindowController.window completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode == NSModalResponseOK) {
-            int idx = [self insertColumn:self.menuColumn];
-            if (idx >= 0) {
+                         if (returnCode == NSModalResponseOK) {
+                             int idx = [self insertColumn:self.menuColumn];
+                             if (idx >= 0) {
                 [self updateColumn:idx];
             }
         }
@@ -133,17 +133,17 @@ extern DB_functions_t *deadbeef;
     NSColor *color = [NSColor colorWithDeviceRed:c[0]/255.f green:c[1]/255.f blue:c[2]/255.f alpha:c[3]/255.f];
 
     [self.editColumnWindowController initEditColumnSheetWithTitle:[NSString stringWithUTF8String:self.columns[self.menuColumn].title]
-                                                             type:self.columns[self.menuColumn].type
-                                                           format:[NSString stringWithUTF8String:self.columns[self.menuColumn].format]
-                                                        alignment:self.columns[self.menuColumn].alignment
-                                                     setTextColor:self.columns[self.menuColumn].set_text_color
-                                                        textColor:color];
+                                     type:self.columns[self.menuColumn].type
+                                     format:[NSString stringWithUTF8String:self.columns[self.menuColumn].format]
+                                     alignment:self.columns[self.menuColumn].alignment
+                                     setTextColor:self.columns[self.menuColumn].set_text_color
+                                     textColor:color];
 
 
     [self.view.window beginSheet:self.editColumnWindowController.window completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode == NSModalResponseOK) {
-            int idx = self.menuColumn;
-            if (idx >= 0) {
+                         if (returnCode == NSModalResponseOK) {
+                             int idx = self.menuColumn;
+                             if (idx >= 0) {
                 [self updateColumn:idx];
             }
         }
@@ -207,9 +207,9 @@ extern DB_functions_t *deadbeef;
     [self.groupByCustomWindowController initWithFormat:[NSString stringWithUTF8String:buf]];
 
     [self.view.window beginSheet:self.groupByCustomWindowController.window completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode == NSModalResponseOK) {
-            [self clearGrouping];
-            self.groupStr = self.groupByCustomWindowController.formatTextField.stringValue;
+                         if (returnCode == NSModalResponseOK) {
+                             [self clearGrouping];
+                             self.groupStr = self.groupByCustomWindowController.formatTextField.stringValue;
             deadbeef->conf_set_str([self groupByConfStr], self.groupStr.UTF8String);
             PlaylistView *lv = (PlaylistView *)self.view;
             [lv.contentView reloadData];
@@ -226,14 +226,14 @@ extern DB_functions_t *deadbeef;
     for (int i = 0; i < self.ncolumns; i++) {
         uint8_t *col = self.columns[i].text_color;
         NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                              [NSString stringWithUTF8String:self.columns[i].title], @"title"
-                              , [NSString stringWithFormat:@"%d", self.columns[i].type], @"id"
-                              , [NSString stringWithUTF8String:self.columns[i].format], @"format"
-                              , [NSString stringWithFormat:@"%d", self.columns[i].size], @"size"
-                              , [NSNumber numberWithInt:self.columns[i].alignment], @"alignment"
-                              , [NSNumber numberWithInt:self.columns[i].set_text_color], @"set_text_color"
-                              , [NSString stringWithFormat:@"#%02x%02x%02x%02x", col[3], col[0], col[1], col[2]], @"text_color"
-                              , nil];
+                                                   [NSString stringWithUTF8String:self.columns[i].title], @"title"
+                                                   , [NSString stringWithFormat:@"%d", self.columns[i].type], @"id"
+                                                   , [NSString stringWithUTF8String:self.columns[i].format], @"format"
+                                                   , [NSString stringWithFormat:@"%d", self.columns[i].size], @"size"
+                                                   , [NSNumber numberWithInt:self.columns[i].alignment], @"alignment"
+                                                   , [NSNumber numberWithInt:self.columns[i].set_text_color], @"set_text_color"
+                                                   , [NSString stringWithFormat:@"#%02x%02x%02x%02x", col[3], col[0], col[1], col[2]], @"text_color"
+                                                   , nil];
         [columns addObject:dict];
     }
 
@@ -293,12 +293,12 @@ extern DB_functions_t *deadbeef;
     }
 
     [self initColumn:idx
-           withTitle:self.editColumnWindowController.titleTextField.stringValue.UTF8String
-              withId:(int)type
-            withSize:self.columns[idx].size
+          withTitle:self.editColumnWindowController.titleTextField.stringValue.UTF8String
+          withId:(int)type
+          withSize:self.columns[idx].size
           withFormat:self.editColumnWindowController.formatTextField.stringValue.UTF8String
-       withAlignment:(int)self.editColumnWindowController.alignmentPopUpButton.indexOfSelectedItem withSetColor:(self.editColumnWindowController.setColorButton.state == NSOnState)
-           withColor:rgba];
+          withAlignment:(int)self.editColumnWindowController.alignmentPopUpButton.indexOfSelectedItem withSetColor:(self.editColumnWindowController.setColorButton.state == NSOnState)
+          withColor:rgba];
     [self columnsChanged];
 }
 
@@ -341,24 +341,24 @@ extern DB_functions_t *deadbeef;
     int rowheight = 18;
 
     self.groupTextAttrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSFont boldSystemFontOfSize:[NSFont systemFontSizeForControlSize:rowheight]], NSFontAttributeName
-                                 , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
-                                 , NSColor.controlTextColor, NSForegroundColorAttributeName
-                                 , textStyle, NSParagraphStyleAttributeName
-                                 , nil];
+                                                  [NSFont boldSystemFontOfSize:[NSFont systemFontSizeForControlSize:rowheight]], NSFontAttributeName
+                                                  , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
+                                                  , NSColor.controlTextColor, NSForegroundColorAttributeName
+                                                  , textStyle, NSParagraphStyleAttributeName
+                                                  , nil];
 
     self.cellTextAttrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [NSFont controlContentFontOfSize:[NSFont systemFontSizeForControlSize:rowheight]], NSFontAttributeName
-                                , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
-                                , NSColor.controlTextColor, NSForegroundColorAttributeName
-                                , textStyle, NSParagraphStyleAttributeName
-                                , nil];
+                                                 [NSFont controlContentFontOfSize:[NSFont systemFontSizeForControlSize:rowheight]], NSFontAttributeName
+                                                 , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
+                                                 , NSColor.controlTextColor, NSForegroundColorAttributeName
+                                                 , textStyle, NSParagraphStyleAttributeName
+                                                 , nil];
 
     self.cellSelectedTextAttrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont controlContentFontOfSize:[NSFont systemFontSizeForControlSize:rowheight]], NSFontAttributeName
-                                        , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
-                                        , NSColor.alternateSelectedControlTextColor, NSForegroundColorAttributeName
-                                        , textStyle, NSParagraphStyleAttributeName
-                                        , nil];
+                                                         , [NSNumber numberWithFloat:0], NSBaselineOffsetAttributeName
+                                                         , NSColor.alternateSelectedControlTextColor, NSForegroundColorAttributeName
+                                                         , textStyle, NSParagraphStyleAttributeName
+                                                         , nil];
 
 
     // initialize group by str
@@ -502,7 +502,7 @@ extern DB_functions_t *deadbeef;
 - (void)loadColumns:(NSArray *)cols {
     [self freeColumns];
     [cols enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSDictionary *dict = obj;
+             NSDictionary *dict = obj;
         NSString *title_s = [dict objectForKey:@"title"];
         NSString *id_s = [dict objectForKey:@"id"];
         NSString *format_s = [dict objectForKey:@"format"];
@@ -700,9 +700,9 @@ extern DB_functions_t *deadbeef;
 
         NSColor *tinted = [backgroundColor blendedColorWithFraction:blend ofColor:foregroundColor];
 
-        [str addAttributes:@{
-            NSForegroundColorAttributeName:tinted
-        } range:NSMakeRange(index0, len)];
+        [str addAttributes:@ {
+    NSForegroundColorAttributeName:tinted
+            } range:NSMakeRange(index0, len)];
     }
 
     free (plainString);
@@ -807,7 +807,7 @@ extern DB_functions_t *deadbeef;
             self.playPosUpdateTrack = deadbeef->pl_get_for_idx_and_iter (ctx.idx, [self playlistIter]);
 
             self.playPosUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:ctx.update/1000.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
-                ddb_playlist_t *curr = deadbeef->plt_get_curr ();
+                        ddb_playlist_t *curr = deadbeef->plt_get_curr ();
                 DB_playItem_t *trk = deadbeef->pl_get_for_idx_and_iter (ctx.idx, [self playlistIter]);
 
                 if (ctx.plt == curr && trk == self.playPosUpdateTrack) {
@@ -874,15 +874,15 @@ static void coverAvailCallback (NSImage *img, void *user_data) {
 }
 
 - (void)drawAlbumArtForGroup:(DdbListviewGroup_t *)grp
-                  groupIndex:(int)groupIndex
-                  inColumn:(DdbListviewCol_t)col
-             isPinnedGroup:(BOOL)pinned
-            nextGroupCoord:(int)grp_next_y
-                      xPos:(int)x
-                      yPos:(int)y
-                 viewportY:(CGFloat)viewportY
-                     width:(int)width
-                    height:(int)height {
+    groupIndex:(int)groupIndex
+    inColumn:(DdbListviewCol_t)col
+    isPinnedGroup:(BOOL)pinned
+    nextGroupCoord:(int)grp_next_y
+    xPos:(int)x
+    yPos:(int)y
+    viewportY:(CGFloat)viewportY
+    width:(int)width
+    height:(int)height {
     PlaylistView *lv = (PlaylistView *)self.view;
     DB_playItem_t *it = (DB_playItem_t *)grp->head;
     cover_avail_info_t *inf = calloc (sizeof (cover_avail_info_t), 1);
@@ -1067,174 +1067,174 @@ static void coverAvailCallback (NSImage *img, void *user_data) {
 
 - (int)sendMessage:(uint32_t)_id ctx:(uintptr_t)ctx p1:(uint32_t)p1 p2:(uint32_t)p2 {
     switch (_id) {
-        case DB_EV_SONGCHANGED: {
-            if ([self playlistIter] != PL_MAIN) {
-                break;
+    case DB_EV_SONGCHANGED: {
+        if ([self playlistIter] != PL_MAIN) {
+            break;
+        }
+        ddb_event_trackchange_t *ev = (ddb_event_trackchange_t *)ctx;
+        DB_playItem_t *from = ev->from;
+        DB_playItem_t *to = ev->to;
+        if (from)
+            deadbeef->pl_item_ref (from);
+        if (to)
+            deadbeef->pl_item_ref (to);
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            DB_playItem_t *it;
+            int idx = 0;
+            deadbeef->pl_lock ();
+            for (it = deadbeef->pl_get_first (PL_MAIN); it; idx++) {
+                if (deadbeef->playqueue_test (it) != -1) {
+                    [listview.contentView drawRow:idx];
+                }
+                DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
+                deadbeef->pl_item_unref (it);
+                it = next;
             }
-            ddb_event_trackchange_t *ev = (ddb_event_trackchange_t *)ctx;
-            DB_playItem_t *from = ev->from;
-            DB_playItem_t *to = ev->to;
+            [self songChanged:listview from:from to:to];
             if (from)
-                deadbeef->pl_item_ref (from);
+                deadbeef->pl_item_unref (from);
             if (to)
-                deadbeef->pl_item_ref (to);
-            dispatch_async(dispatch_get_main_queue(), ^{
+                deadbeef->pl_item_unref (to);
+            deadbeef->pl_unlock ();
+        });
+    }
+    break;
+    case DB_EV_TRACKINFOCHANGED: {
+        ddb_event_track_t *ev = (ddb_event_track_t *)ctx;
+        DB_playItem_t *track = ev->track;
+        if (track) {
+            deadbeef->pl_item_ref (track);
+            dispatch_async(dispatch_get_main_queue(), ^ {
                 PlaylistView *listview = (PlaylistView *)self.view;
-                DB_playItem_t *it;
-                int idx = 0;
-                deadbeef->pl_lock ();
-                for (it = deadbeef->pl_get_first (PL_MAIN); it; idx++) {
-                    if (deadbeef->playqueue_test (it) != -1) {
-                        [listview.contentView drawRow:idx];
+                BOOL draw = NO;
+                ddb_playlist_t *plt = deadbeef->plt_get_curr ();
+                if (plt) {
+                    int idx = deadbeef->plt_get_item_idx (plt, track, PL_MAIN);
+                    if (idx != -1) {
+                        draw = YES;
+                    }
+                    deadbeef->plt_unref (plt);
+                }
+                if (draw) {
+                    [listview.contentView drawRow:deadbeef->pl_get_idx_of (track)];
+                }
+                deadbeef->pl_item_unref (track);
+            });
+        }
+    }
+    break;
+    case DB_EV_PAUSED: {
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            DB_playItem_t *curr = deadbeef->streamer_get_playing_track ();
+            if (curr) {
+                int idx = deadbeef->pl_get_idx_of (curr);
+                [listview.contentView drawRow:idx];
+                deadbeef->pl_item_unref (curr);
+            }
+        });
+    }
+    break;
+    case DB_EV_PLAYLISTCHANGED: {
+        if (!p1 || (p1 == DDB_PLAYLIST_CHANGE_SEARCHRESULT)) {
+            dispatch_async(dispatch_get_main_queue(), ^ {
+                PlaylistView *listview = (PlaylistView *)self.view;
+                [listview.contentView reloadData];
+            });
+        }
+        else if (p1 == DDB_PLAYLIST_CHANGE_SELECTION) {
+            dispatch_async(dispatch_get_main_queue(), ^ {
+                PlaylistView *listview = (PlaylistView *)self.view;
+                if (ctx != (uintptr_t)listview) {
+                    [listview.contentView reloadData];
+                }
+            });
+        }
+    }
+    break;
+    case DB_EV_PLAYLISTSWITCHED: {
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            [self setupPlaylist:listview];
+        });
+    }
+    break;
+    case DB_EV_TRACKFOCUSCURRENT: {
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            deadbeef->pl_lock ();
+            DB_playItem_t *it = deadbeef->streamer_get_playing_track ();
+            if (it) {
+                ddb_playlist_t *plt = deadbeef->pl_get_playlist (it);
+
+                if (!plt) {
+                    deadbeef->pl_item_unref (it);
+                    deadbeef->pl_unlock ();
+                    return;
+                }
+
+                ddb_playlist_t *prev_plt = deadbeef->plt_get_curr ();
+
+                if (prev_plt != plt) {
+                    // force group rebuild
+                    deadbeef->plt_set_curr (plt);
+                    [listview.contentView reloadData];
+                }
+
+                int idx = deadbeef->pl_get_idx_of_iter (it, [self playlistIter]);
+                if (idx != -1) {
+                    [listview.contentView setCursor:idx noscroll:YES];
+                    [listview.contentView scrollToRowWithIndex:idx];
+                }
+                deadbeef->plt_unref (plt);
+                deadbeef->plt_unref (prev_plt);
+                deadbeef->pl_item_unref (it);
+            }
+            deadbeef->pl_unlock ();
+        });
+    }
+    break;
+    case DB_EV_CONFIGCHANGED: {
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            [listview.contentView reloadData];
+        });
+    }
+    break;
+    case DB_EV_FOCUS_SELECTION: {
+        if ([self playlistIter] != (int)p1) {
+            break;
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            PlaylistView *listview = (PlaylistView *)self.view;
+            deadbeef->pl_lock ();
+            ddb_playlist_t *plt = deadbeef->plt_get_curr ();
+            if (plt) {
+                DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
+                while (it) {
+                    if (deadbeef->pl_is_selected (it)) {
+                        break;
                     }
                     DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
                     deadbeef->pl_item_unref (it);
                     it = next;
                 }
-                [self songChanged:listview from:from to:to];
-                if (from)
-                    deadbeef->pl_item_unref (from);
-                if (to)
-                    deadbeef->pl_item_unref (to);
-                deadbeef->pl_unlock ();
-            });
-        }
-            break;
-        case DB_EV_TRACKINFOCHANGED: {
-            ddb_event_track_t *ev = (ddb_event_track_t *)ctx;
-            DB_playItem_t *track = ev->track;
-            if (track) {
-                deadbeef->pl_item_ref (track);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    PlaylistView *listview = (PlaylistView *)self.view;
-                    BOOL draw = NO;
-                    ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-                    if (plt) {
-                        int idx = deadbeef->plt_get_item_idx (plt, track, PL_MAIN);
-                        if (idx != -1) {
-                            draw = YES;
-                        }
-                        deadbeef->plt_unref (plt);
-                    }
-                    if (draw) {
-                        [listview.contentView drawRow:deadbeef->pl_get_idx_of (track)];
-                    }
-                    deadbeef->pl_item_unref (track);
-                });
-            }
-        }
-            break;
-        case DB_EV_PAUSED: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PlaylistView *listview = (PlaylistView *)self.view;
-                DB_playItem_t *curr = deadbeef->streamer_get_playing_track ();
-                if (curr) {
-                    int idx = deadbeef->pl_get_idx_of (curr);
-                    [listview.contentView drawRow:idx];
-                    deadbeef->pl_item_unref (curr);
-                }
-            });
-        }
-            break;
-        case DB_EV_PLAYLISTCHANGED: {
-            if (!p1 || (p1 == DDB_PLAYLIST_CHANGE_SEARCHRESULT)) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    PlaylistView *listview = (PlaylistView *)self.view;
-                    [listview.contentView reloadData];
-                });
-            }
-            else if (p1 == DDB_PLAYLIST_CHANGE_SELECTION) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    PlaylistView *listview = (PlaylistView *)self.view;
-                    if (ctx != (uintptr_t)listview) {
-                        [listview.contentView reloadData];
-                    }
-                });
-            }
-        }
-            break;
-        case DB_EV_PLAYLISTSWITCHED: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PlaylistView *listview = (PlaylistView *)self.view;
-                [self setupPlaylist:listview];
-            });
-        }
-            break;
-        case DB_EV_TRACKFOCUSCURRENT: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PlaylistView *listview = (PlaylistView *)self.view;
-                deadbeef->pl_lock ();
-                DB_playItem_t *it = deadbeef->streamer_get_playing_track ();
                 if (it) {
-                    ddb_playlist_t *plt = deadbeef->pl_get_playlist (it);
-
-                    if (!plt) {
-                        deadbeef->pl_item_unref (it);
-                        deadbeef->pl_unlock ();
-                        return;
-                    }
-
-                    ddb_playlist_t *prev_plt = deadbeef->plt_get_curr ();
-
-                    if (prev_plt != plt) {
-                        // force group rebuild
-                        deadbeef->plt_set_curr (plt);
-                        [listview.contentView reloadData];
-                    }
-
-                    int idx = deadbeef->pl_get_idx_of_iter (it, [self playlistIter]);
+                    int idx = deadbeef->pl_get_idx_of (it);
                     if (idx != -1) {
                         [listview.contentView setCursor:idx noscroll:YES];
                         [listview.contentView scrollToRowWithIndex:idx];
                     }
-                    deadbeef->plt_unref (plt);
-                    deadbeef->plt_unref (prev_plt);
                     deadbeef->pl_item_unref (it);
                 }
-                deadbeef->pl_unlock ();
-            });
-        }
-            break;
-        case DB_EV_CONFIGCHANGED: {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PlaylistView *listview = (PlaylistView *)self.view;
-                [listview.contentView reloadData];
-            });
-        }
-            break;
-        case DB_EV_FOCUS_SELECTION: {
-            if ([self playlistIter] != (int)p1) {
-                break;
+
+                deadbeef->plt_unref (plt);
             }
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                PlaylistView *listview = (PlaylistView *)self.view;
-                deadbeef->pl_lock ();
-                ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-                if (plt) {
-                    DB_playItem_t *it = deadbeef->plt_get_first (plt, PL_MAIN);
-                    while (it) {
-                        if (deadbeef->pl_is_selected (it)) {
-                            break;
-                        }
-                        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-                        deadbeef->pl_item_unref (it);
-                        it = next;
-                    }
-                    if (it) {
-                        int idx = deadbeef->pl_get_idx_of (it);
-                        if (idx != -1) {
-                            [listview.contentView setCursor:idx noscroll:YES];
-                            [listview.contentView scrollToRowWithIndex:idx];
-                        }
-                        deadbeef->pl_item_unref (it);
-                    }
-
-                    deadbeef->plt_unref (plt);
-                }
-                deadbeef->pl_unlock ();
-            });
-        }
+            deadbeef->pl_unlock ();
+        });
+    }
     }
     return [super sendMessage:_id ctx:ctx p1:p1 p2:p2];
 }
@@ -1284,7 +1284,7 @@ static void coverAvailCallback (NSImage *img, void *user_data) {
     ddb_playlist_t *plt = deadbeef->plt_get_curr ();
     if (!deadbeef->plt_add_files_begin (plt, 0)) {
         dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(aQueue, ^{
+        dispatch_async(aQueue, ^ {
             DB_playItem_t *first = NULL;
             DB_playItem_t *after = (DB_playItem_t *)_after;
             for(NSUInteger i = 0; i < paths.count; i++ )

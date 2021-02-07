@@ -59,8 +59,8 @@ extern DB_functions_t *deadbeef;
 }
 
 - (BOOL)getObjectValue:(out id *)anObject
-             forString:(NSString *)string
-      errorDescription:(out NSString **)error {
+    forString:(NSString *)string
+    errorDescription:(out NSString **)error {
     *anObject = string;
     return YES;
 }
@@ -80,8 +80,8 @@ extern DB_functions_t *deadbeef;
 }
 
 - (BOOL)getObjectValue:(out id *)anObject
-             forString:(NSString *)string
-      errorDescription:(out NSString **)error {
+    forString:(NSString *)string
+    errorDescription:(out NSString **)error {
     *anObject = string;
     return YES;
 }
@@ -385,7 +385,7 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
         return;
     }
 
-    if([[aTableColumn identifier] isEqualToString:@"value"]){
+    if([[aTableColumn identifier] isEqualToString:@"value"]) {
         ((NSTextFieldCell *)aCell).formatter = [SingleLineFormatter new];
     }
 }
@@ -448,7 +448,7 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
         for (NSString *val in components) {
             NSUInteger j = 0;
             while ((j < val.length)
-                   && [[NSCharacterSet whitespaceCharacterSet] characterIsMember:[val characterAtIndex:j]]) {
+                    && [[NSCharacterSet whitespaceCharacterSet] characterIsMember:[val characterAtIndex:j]]) {
                 j++;
             }
             // whitespace-only?
@@ -493,7 +493,7 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
             }
             // update progress
             deadbeef->pl_item_ref (track);
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^ {
                 self.currentTrackPath.stringValue = uri;
                 deadbeef->pl_item_unref (track);
             });
@@ -510,7 +510,7 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
             }
         }
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         [NSApp endSheet:self.progressPanel];
         ddb_playlist_t *plt = deadbeef->plt_get_curr ();
         if (plt) {
@@ -570,10 +570,10 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
     self.progress_aborted = NO;
 
     [self.window beginSheet:self.progressPanel completionHandler:^(NSModalResponse returnCode) {
-    }];
+                }];
 
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(aQueue, ^{
+    dispatch_async(aQueue, ^ {
         [self writeMetaWorker];
     });
 }
@@ -592,11 +592,11 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
         alert.alertStyle = NSAlertStyleWarning;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-            if (returnCode == NSAlertFirstButtonReturn) {
-                self.close_after_writing = YES;
+                  if (returnCode == NSAlertFirstButtonReturn) {
+                      self.close_after_writing = YES;
                 [self applyTrackPropertiesAction:alert];
             }
-            else if (returnCode == NSAlertSecondButtonReturn){
+            else if (returnCode == NSAlertSecondButtonReturn) {
                 self.modified = NO;
                 [self.window close];
             }
@@ -650,7 +650,7 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
     self.wvStripID3v1.state = wv_strip_id3v1;
 
     [self.window beginSheet:self.tagWriterSettingsPanel completionHandler:^(NSModalResponse returnCode) {
-    }];
+                }];
 }
 
 - (IBAction)reloadTrackPropertiesAction:(id)sender {
@@ -802,12 +802,12 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
         self.multiValueTableView.delegate = self.multipleFieldsTableData;
         self.multiValueTableView.dataSource = self.multipleFieldsTableData;
         [self.window beginSheet:self.editMultipleValuesPanel completionHandler:^(NSModalResponse returnCode) {
-            if (returnCode == NSModalResponseOK) {
-                if ([[[self.multiValueTabView selectedTabViewItem] identifier] isEqualToString:@"singleValue"]) {
-                    [self setSameValuesForIndex:(int)idx value:[[self.multiValueSingle textStorage] string]];
-                }
-                else {
-                    for (int i = 0; i < self.numtracks; i++) {
+                        if (returnCode == NSModalResponseOK) {
+                            if ([[[self.multiValueTabView selectedTabViewItem] identifier] isEqualToString:@"singleValue"]) {
+                                [self setSameValuesForIndex:(int)idx value:[[self.multiValueSingle textStorage] string]];
+                            }
+                            else {
+                                for (int i = 0; i < self.numtracks; i++) {
                         self.store[idx][@"values"] = [[NSMutableArray alloc] initWithArray:self.multipleFieldsTableData.fields copyItems:NO];
                     }
                 }
@@ -821,8 +821,8 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
     self.fieldValue.string =  self.store[idx][@"values"][0];
 
     [self.window beginSheet:self.editValuePanel completionHandler:^(NSModalResponse returnCode) {
-        self.modified = YES;
-    }];
+                    self.modified = YES;
+                }];
 }
 
 - (IBAction)editInPlaceAction:(id)sender {
@@ -863,9 +863,9 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
     NSIndexSet *ind = self.metadataTableView.selectedRowIndexes;
 
     [ind enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [self setSameValuesForIndex:(int)idx value:@""];
-        self.modified = YES;
-    }];
+            [self setSameValuesForIndex:(int)idx value:@""];
+            self.modified = YES;
+        }];
 
     if (self.modified) {
         [self.metadataTableView reloadData];
@@ -910,11 +910,11 @@ add_field (NSMutableArray *store, const char *key, const char *title, int is_pro
     self.addFieldAlreadyExists.hidden =  YES;
 
     [self.window beginSheet:self.addFieldPanel completionHandler:^(NSModalResponse returnCode) {
-        if (returnCode != NSModalResponseOK) {
-            return;
-        }
-        NSString *key = self.addFieldName.stringValue;
-        for (NSUInteger i = 0; i < self.store.count; i++) {
+                    if (returnCode != NSModalResponseOK) {
+                        return;
+                    }
+                    NSString *key = self.addFieldName.stringValue;
+                    for (NSUInteger i = 0; i < self.store.count; i++) {
             if (NSOrderedSame == [key caseInsensitiveCompare:self.store[i][@"key"]]) {
                 self.addFieldAlreadyExists.hidden =  NO;
                 return;

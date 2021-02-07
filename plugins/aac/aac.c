@@ -520,7 +520,7 @@ aac_read (DB_fileinfo_t *_info, char *bytes, int size) {
                         info->remap[0] = 0;
                     }
                     if ((_info->fmt.channels == 1 && info->remap[0] == FRONT_CHANNEL_CENTER)
-                        || (_info->fmt.channels == 2 && info->remap[0] == FRONT_CHANNEL_LEFT && info->remap[1] == FRONT_CHANNEL_RIGHT)) {
+                            || (_info->fmt.channels == 2 && info->remap[0] == FRONT_CHANNEL_LEFT && info->remap[1] == FRONT_CHANNEL_RIGHT)) {
                         info->noremap = 1;
                     }
                 }
@@ -845,9 +845,9 @@ aac_insert_with_chapters (ddb_playlist_t *plt, DB_playItem_t *after, DB_playItem
         deadbeef->pl_item_unref (it);
     }
     deadbeef->pl_item_ref (after);
-    
+
     DB_playItem_t *first = deadbeef->pl_get_next (ins, PL_MAIN);
-    
+
     if (!first) {
         first = deadbeef->plt_get_first (plt, PL_MAIN);
     }
@@ -1127,44 +1127,44 @@ static DB_decoder_t plugin = {
     .plugin.id = "aac",
     .plugin.name = "AAC player",
     .plugin.descr = "plays aac files, supports raw aac files, as well as mp4 container",
-    .plugin.copyright = 
-        "AAC DeaDBeeF Player Plugin\n"
-        "Copyright (c) 2009-2020 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
-        "\n"
-        "\n"
-        "libfaad2 Copyright (c) Nero AG, www.nero.com\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .plugin.copyright =
+    "AAC DeaDBeeF Player Plugin\n"
+    "Copyright (c) 2009-2020 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
+    "\n"
+    "\n"
+    "libfaad2 Copyright (c) Nero AG, www.nero.com\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .open = aac_open,

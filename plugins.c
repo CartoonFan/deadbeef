@@ -680,7 +680,7 @@ plug_init_plugin (DB_plugin_t* (*loadfunc)(DB_functions_t *), void *handle) {
         }
     }
     else {
-            trace_err ("WARNING: plugin \"%s\" has disabled version check. please don't distribute it!\n", plugin_api->name);
+        trace_err ("WARNING: plugin \"%s\" has disabled version check. please don't distribute it!\n", plugin_api->name);
     }
 #endif
 
@@ -1397,7 +1397,7 @@ _select_output_plugin (void) {
     for (int i = 0; g_output_plugins[i]; i++) {
         DB_output_t *p = g_output_plugins[i];
         if (!strcmp (p->plugin.id, outplugname)
-            || !strcmp (p->plugin.name, outplugname)) {
+                || !strcmp (p->plugin.name, outplugname)) {
             return p;
         }
     }

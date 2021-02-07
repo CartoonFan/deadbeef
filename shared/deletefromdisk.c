@@ -250,13 +250,13 @@ _warningCallback (ddbDeleteFromDiskController_t ctl, int shouldCancel) {
     }
 
     if (data->shouldSkipDeletedTracks
-        && deadbeef->plt_get_item_idx (plt, trackListData->it_current_song, PL_MAIN) == -1
-        && deadbeef->streamer_get_current_playlist () == deadbeef->plt_get_curr_idx ()
-        && deadbeef->get_output ()->state () == OUTPUT_STATE_PLAYING) {
+            && deadbeef->plt_get_item_idx (plt, trackListData->it_current_song, PL_MAIN) == -1
+            && deadbeef->streamer_get_current_playlist () == deadbeef->plt_get_curr_idx ()
+            && deadbeef->get_output ()->state () == OUTPUT_STATE_PLAYING) {
 
         if (trackListData->idx_current_song != -1
-            && deadbeef->playqueue_get_count () == 0
-            && deadbeef->streamer_get_shuffle () == DDB_SHUFFLE_OFF) {
+                && deadbeef->playqueue_get_count () == 0
+                && deadbeef->streamer_get_shuffle () == DDB_SHUFFLE_OFF) {
             deadbeef->sendmessage (DB_EV_PLAY_NUM, 0, trackListData->idx_current_song, 0);
         }
         else {

@@ -61,8 +61,8 @@ typedef struct ddb_cover_query_s {
     void *user_data; // Arbitrary user-defined pointer
 
     uint32_t flags; // DDB_ARTWORK_FLAG_*; When 0 is passed, it will use the global settings.
-                    // By default, it means that the files can be stored in disk cache,
-                    // and returned result is always a filename.
+    // By default, it means that the files can be stored in disk cache,
+    // and returned result is always a filename.
 
     struct DB_playItem_s *track; // The track to load artwork for
 

@@ -6,12 +6,12 @@
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
     of the License, or (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -63,7 +63,7 @@ notify_send (DBusMessage *msg) {
 
     reply = dbus_connection_send_with_reply_and_block (conn, msg, -1, &error);
     if (dbus_error_is_set (&error)) {
-        fprintf(stderr, "send_with_reply_and_block error: (%s)\n", error.message); 
+        fprintf(stderr, "send_with_reply_and_block error: (%s)\n", error.message);
         dbus_error_free(&error);
         dbus_message_unref (msg);
         return;
@@ -82,12 +82,12 @@ notify_send (DBusMessage *msg) {
                 }
                 dbus_message_unref (reply);
             } else {
-                fprintf(stderr, "Argument is not uint32\n"); 
+                fprintf(stderr, "Argument is not uint32\n");
             }
         } else {
-            fprintf(stderr, "Reply has no arguments\n"); 
+            fprintf(stderr, "Reply has no arguments\n");
         }
-    } 
+    }
 
     dbus_message_unref (msg);
     dbus_connection_unref (conn);
@@ -169,7 +169,7 @@ cover_avail_callback (const char *fname, const char *artist, const char *album, 
     deadbeef->pl_unlock ();
 
     if (track) {
-        dispatch_async (queue, ^{
+        dispatch_async (queue, ^ {
             show_notification (track);
             deadbeef->pl_item_unref (track);
         });
@@ -226,13 +226,13 @@ show_notification (DB_playItem_t *track) {
     dbus_int32_t v_timeout = -1;
 
     dbus_message_append_args (msg
-            , DBUS_TYPE_STRING, &v_appname
-            , DBUS_TYPE_UINT32, &replaces_id
-            , DBUS_TYPE_STRING, &v_iconname
-            , DBUS_TYPE_STRING, &v_summary
-            , DBUS_TYPE_STRING, &v_body
-            , DBUS_TYPE_INVALID
-            );
+                              , DBUS_TYPE_STRING, &v_appname
+                              , DBUS_TYPE_UINT32, &replaces_id
+                              , DBUS_TYPE_STRING, &v_iconname
+                              , DBUS_TYPE_STRING, &v_summary
+                              , DBUS_TYPE_STRING, &v_body
+                              , DBUS_TYPE_INVALID
+                             );
 
     DBusMessageIter iter, sub;
     // actions
@@ -257,7 +257,7 @@ on_songstarted (ddb_event_track_t *ev) {
         DB_playItem_t *track = ev->track;
         if (track) {
             deadbeef->pl_item_ref (track);
-            dispatch_async (queue, ^{
+            dispatch_async (queue, ^ {
                 show_notification (track);
                 deadbeef->pl_item_unref (track);
             });
@@ -356,7 +356,7 @@ static const char settings_dlg[] =
     "property \"Notification content format\" entry notify.format_content_tf \"" NOTIFY_DEFAULT_CONTENT "\";\n"
     "property \"Show album art\" checkbox notify.albumart 1;\n"
     "property \"Album art size (px)\" entry notify.albumart_size 64;\n"
-;
+    ;
 
 static DB_misc_t plugin = {
     DDB_PLUGIN_SET_API_VERSION
@@ -366,23 +366,23 @@ static DB_misc_t plugin = {
     .plugin.id = "notify",
     .plugin.name = "OSD Notify",
     .plugin.descr = "Displays notifications when new track starts.\nRequires dbus and notification daemon to be running.\nNotification daemon should be provided by your desktop environment.\n",
-    .plugin.copyright = 
-        "OSD Notification plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2014 Alexey Yakovenko and contributors\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .plugin.copyright =
+    "OSD Notification plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2014 Alexey Yakovenko and contributors\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .plugin.website = "http://deadbeef.sourceforge.net",
     .plugin.start = notify_start,

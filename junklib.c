@@ -32,19 +32,19 @@
 #include <stdlib.h>
 #include <string.h>
 #if HAVE_ICONV
-  #ifndef __MINGW32__
-  #define LIBICONV_PLUG
-  #endif
-  #include <iconv.h>
+#ifndef __MINGW32__
+#define LIBICONV_PLUG
+#endif
+#include <iconv.h>
 #elif HAVE_ICU
-  #warning icu
-  #include <unicode/utypes.h>
-  #include <unicode/ucnv.h>
+#warning icu
+#include <unicode/utypes.h>
+#include <unicode/ucnv.h>
 #else
-  #define DDB_RECODE
-  #include "ConvertUTF/ConvertUTF.h"
+#define DDB_RECODE
+#include "ConvertUTF/ConvertUTF.h"
 uint16_t sj_to_unicode[] = {
-  #include "sj_to_unicode.h"
+#include "sj_to_unicode.h"
 };
 #endif
 #include <limits.h>
@@ -219,12 +219,12 @@ _is_multivalue_field (const char *key) {
         if (p) {
             semicolon = strchr (p, ';');
             if ((p == junk_multivalue_fields || *(p-1) == ';')
-                && (
-                    (!semicolon && strlen (p) == strlen (key))
-                    || (semicolon && semicolon - p == strlen (key))
+                    && (
+                        (!semicolon && strlen (p) == strlen (key))
+                        || (semicolon && semicolon - p == strlen (key))
                     )
-                ) {
-            return 1;
+               ) {
+                return 1;
             }
         }
         p = semicolon;
@@ -314,40 +314,40 @@ _get_combined_meta_value (DB_metaInfo_t *meta,  int * restrict out_size, const c
 static int
 cp1251_to_utf8(const uint8_t *in, int inlen, uint8_t *out, int outlen) {
     static const long utf[256] = {
-		0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
-		31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,
-		59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,
-		87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,
-		111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,1026,1027,8218,
-		1107,8222,8230,8224,8225,8364,8240,1033,8249,1034,1036,1035,1039,1106,8216,8217,
-		8220,8221,8226,8211,8212,8250,8482,1113,8250,1114,1116,1115,1119,160,1038,1118,1032,
-		164,1168,166,167,1025,169,1028,171,172,173,174,1031,176,177,1030,1110,1169,181,182,
-		183,1105,8470,1108,187,1112,1029,1109,1111,1040,1041,1042,1043,1044,1045,1046,1047,
-		1048,1049,1050,1051,1052,1053,1054,1055,1056,1057,1058,1059,1060,1061,1062,1063,
-		1064,1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1075,1076,1077,1078,1079,
-		1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1094,1095,
-		1096,1097,1098,1099,1100,1101,1102,1103
-	};
+        0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
+        31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,
+        59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,
+        87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,
+        111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,1026,1027,8218,
+        1107,8222,8230,8224,8225,8364,8240,1033,8249,1034,1036,1035,1039,1106,8216,8217,
+        8220,8221,8226,8211,8212,8250,8482,1113,8250,1114,1116,1115,1119,160,1038,1118,1032,
+        164,1168,166,167,1025,169,1028,171,172,173,174,1031,176,177,1030,1110,1169,181,182,
+        183,1105,8470,1108,187,1112,1029,1109,1111,1040,1041,1042,1043,1044,1045,1046,1047,
+        1048,1049,1050,1051,1052,1053,1054,1055,1056,1057,1058,1059,1060,1061,1062,1063,
+        1064,1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1075,1076,1077,1078,1079,
+        1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1094,1095,
+        1096,1097,1098,1099,1100,1101,1102,1103
+    };
 
     uint8_t *out_start = out;
     uint8_t *end = out + outlen;
 
-	for(int i = 0; i < inlen && out < end - 4; i++) {
-		long c = utf[*in++];
-		if (c < 0x80) {
-			*out++ = c;
-		}
-		else if (c < 0x800) {
-			*out++ = (c >> 6) | 0xc0;
-			*out++ = (c & 0x3f) | 0x80;
-		}
-		else if( c < 0x10000 ) {
-			*out++ = (c >> 12) | 0xe0;
-			*out++ = ((c >> 6) & 0x3f) | 0x80;
-			*out++ = (c & 0x3f) | 0x80;
-		}
-	}
-	*out++ = 0;
+    for(int i = 0; i < inlen && out < end - 4; i++) {
+        long c = utf[*in++];
+        if (c < 0x80) {
+            *out++ = c;
+        }
+        else if (c < 0x800) {
+            *out++ = (c >> 6) | 0xc0;
+            *out++ = (c & 0x3f) | 0x80;
+        }
+        else if( c < 0x10000 ) {
+            *out++ = (c >> 12) | 0xe0;
+            *out++ = ((c >> 6) & 0x3f) | 0x80;
+            *out++ = (c & 0x3f) | 0x80;
+        }
+    }
+    *out++ = 0;
     return (int)(out - out_start);
 }
 
@@ -379,38 +379,38 @@ junk_cp1252_to_utf8(const uint8_t *in, int inlen, uint8_t *out, int outlen) {
             *out++ = w;\
             len += 3;\
             break;
-        CONV2(0x9f,0xc5,0xb8);
-        CONV2(0x9e,0xc5,0xbe);
-        CONV3(0x9d,0xef,0xbf,0xbd);
-        CONV3(0x80,0xe2,0x82,0xac);
-        CONV3(0x81,0xef,0xbf,0xbd);
-        CONV3(0x82,0xe2,0x80,0x9a);
-        CONV2(0x83,0xc6,0x92);
-        CONV3(0x84,0xe2,0x80,0x9e);
-        CONV3(0x85,0xe2,0x80,0xa6);
-        CONV3(0x86,0xe2,0x80,0xa0);
-        CONV3(0x87,0xe2,0x80,0xa1);
-        CONV2(0x88,0xcb,0x86);
-        CONV3(0x89,0xe2,0x80,0xb0);
-        CONV2(0x8a,0xc5,0xa0);
-        CONV3(0x8b,0xe2,0x80,0xb9);
-        CONV2(0x8c,0xc5,0x92);
-        CONV3(0x8d,0xef,0xbf,0xbd);
-        CONV2(0x8e,0xc5,0xbd);
-        CONV3(0x8f,0xef,0xbf,0xbd);
-        CONV3(0x90,0xef,0xbf,0xbd);
-        CONV3(0x91,0xe2,0x80,0x98);
-        CONV3(0x92,0xe2,0x80,0x99);
-        CONV3(0x93,0xe2,0x80,0x9c);
-        CONV3(0x94,0xe2,0x80,0x9d);
-        CONV3(0x95,0xe2,0x80,0xa2);
-        CONV3(0x96,0xe2,0x80,0x93);
-        CONV3(0x97,0xe2,0x80,0x94);
-        CONV2(0x98,0xcb,0x9c);
-        CONV3(0x99,0xe2,0x84,0xa2);
-        CONV2(0x9a,0xc5,0xa1);
-        CONV3(0x9b,0xe2,0x80,0xba);
-        CONV2(0x9c,0xc5,0x93);
+            CONV2(0x9f,0xc5,0xb8);
+            CONV2(0x9e,0xc5,0xbe);
+            CONV3(0x9d,0xef,0xbf,0xbd);
+            CONV3(0x80,0xe2,0x82,0xac);
+            CONV3(0x81,0xef,0xbf,0xbd);
+            CONV3(0x82,0xe2,0x80,0x9a);
+            CONV2(0x83,0xc6,0x92);
+            CONV3(0x84,0xe2,0x80,0x9e);
+            CONV3(0x85,0xe2,0x80,0xa6);
+            CONV3(0x86,0xe2,0x80,0xa0);
+            CONV3(0x87,0xe2,0x80,0xa1);
+            CONV2(0x88,0xcb,0x86);
+            CONV3(0x89,0xe2,0x80,0xb0);
+            CONV2(0x8a,0xc5,0xa0);
+            CONV3(0x8b,0xe2,0x80,0xb9);
+            CONV2(0x8c,0xc5,0x92);
+            CONV3(0x8d,0xef,0xbf,0xbd);
+            CONV2(0x8e,0xc5,0xbd);
+            CONV3(0x8f,0xef,0xbf,0xbd);
+            CONV3(0x90,0xef,0xbf,0xbd);
+            CONV3(0x91,0xe2,0x80,0x98);
+            CONV3(0x92,0xe2,0x80,0x99);
+            CONV3(0x93,0xe2,0x80,0x9c);
+            CONV3(0x94,0xe2,0x80,0x9d);
+            CONV3(0x95,0xe2,0x80,0xa2);
+            CONV3(0x96,0xe2,0x80,0x93);
+            CONV3(0x97,0xe2,0x80,0x94);
+            CONV2(0x98,0xcb,0x9c);
+            CONV3(0x99,0xe2,0x84,0xa2);
+            CONV2(0x9a,0xc5,0xa1);
+            CONV3(0x9b,0xe2,0x80,0xba);
+            CONV2(0x9c,0xc5,0x93);
 #undef CONV2
 #undef CONV3
         default:
@@ -979,7 +979,7 @@ can_be_shift_jis (const unsigned char *str, int size) {
     int s = size;
     while (s >= 2) {
         if ((((p[0] >= 0x81 && p[0] <= 0x84) || (p[0] >= 0x87 && p[0] <= 0x9f))
-                    && ((p[1] >= 0x40 && p[1] <= 0x9e) || (p[1] >= 0x9f && p[1] <= 0xfc)))
+                && ((p[1] >= 0x40 && p[1] <= 0x9e) || (p[1] >= 0x9f && p[1] <= 0xfc)))
                 || ((p[0] >= 0xe0 && p[0] <= 0xef)
                     && ((p[1] >= 0x40 && p[1] <= 0x9e) || (p[1] >= 0x9f && p[1] <= 0xfc)))) {
             break;
@@ -1025,7 +1025,7 @@ convstr_id3v2 (const char *sb_charset, int version, uint8_t encoding, const uint
             enc = "cp1252";
         }
     }
-    else if (encoding != 1 && !(version == 4 && encoding == 3)){
+    else if (encoding != 1 && !(version == 4 && encoding == 3)) {
         return NULL; // invalid encoding
     }
 
@@ -1745,8 +1745,8 @@ junk_apev2_read_full (playItem_t *it, DB_apev2_tag_t *tag_store, DB_FILE *fp) {
     int32_t size = extract_i32_le (&header[12]);
     uint32_t numitems = extract_i32_le (&header[16]);
     uint32_t flags = extract_i32_le (&header[20]);
-    #pragma unused(version)
-    #pragma unused(flags)
+#pragma unused(version)
+#pragma unused(flags)
 
     trace ("APEv%d, size=%d, items=%d, flags=%x\n", version, size, numitems, flags);
     if (it) {
@@ -2402,7 +2402,7 @@ junk_id3v2_convert_24_to_23 (DB_id3v2_tag_t *tag24, DB_id3v2_tag_t *tag23) {
         uint8_t flags[2];
         // 1st byte (status flags) is the same, but shifted by 1 bit to the left
         flags[0] = f24->flags[0] << 1;
-        
+
         // 2nd byte (format flags) is quite different
         // 2.4 format is %0h00kmnp (6:grouping, 3:compression, 2:encryption, 1:unsync, 0:datalen)
         // 2.3 format is %ijk00000 (7:compression, 6:encryption, 5:grouping)
@@ -2604,7 +2604,7 @@ junk_id3v2_convert_23_to_24 (DB_id3v2_tag_t *tag23, DB_id3v2_tag_t *tag24) {
         // 1st byte (status flags) is the same, but shifted by 1 bit to the
         // right
         flags[0] = f23->flags[0] >> 1;
-        
+
         // 2nd byte (format flags) is quite different
         // 2.4 format is %0h00kmnp (6:grouping, 3:compression, 2:encryption, 1:unsync, 0:datalen)
         // 2.3 format is %ijk00000 (7:compression, 6:encryption, 5:grouping)
@@ -2815,7 +2815,7 @@ junk_id3v2_convert_22_to_24 (DB_id3v2_tag_t *tag22, DB_id3v2_tag_t *tag24) {
         // 1st byte (status flags) is the same, but shifted by 1 bit to the
         // right
         flags[0] = f22->flags[0] >> 1;
-        
+
         // 2nd byte (format flags) is quite different
         // 2.4 format is %0h00kmnp (grouping, compression, encryption, unsync)
         // 2.3 format is %ijk00000 (compression, encryption, grouping)
@@ -3045,7 +3045,7 @@ junk_id3v2_convert_apev2_to_24 (DB_apev2_tag_t *ape, DB_id3v2_tag_t *tag24) {
         "Comment", "Unsynced lyrics", "EAN/UPC", "ISBN", "Catalog", "LC", "Publicationright", "Record Location", "Related", "Abstract", "Bibliography", NULL
     };
 
-    // FIXME: additional frames: File->WOAF 
+    // FIXME: additional frames: File->WOAF
     // converted to COMM: Comment, Unsynced Lyrics, EAN/UPC, ISBN, Catalog, LC, Publicationright, Record Location, Related, Abstract, Bibliography
     // "Debut album" is discarded
     // "Index" is discarded
@@ -4295,7 +4295,7 @@ junk_id3v2_read_full (playItem_t *it, DB_id3v2_tag_t *tag_store, DB_FILE *fp) {
     }
     uint8_t *readptr = tag;
     trace ("version: 2.%d.%d, unsync: %d, extheader: %d, experimental: %d\n", version_major, version_minor, unsync, extheader, expindicator);
-    
+
     if (extheader) {
         uint32_t sz = (readptr[3] << 0) | (readptr[2] << 7) | (readptr[1] << 14) | (readptr[0] << 21);
         if (size < sz) {
@@ -4600,7 +4600,7 @@ junk_detect_charset_len (const char *s, int len) {
     }
     // hack to add cp936 support
     if (can_be_chinese (s, len)) {
-       return "cp936";
+        return "cp936";
     }
     // check if that could be non-latin1 (too many nonascii chars)
     if (can_be_russian (s, len)) {

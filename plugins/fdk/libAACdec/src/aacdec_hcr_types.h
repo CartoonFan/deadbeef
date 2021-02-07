@@ -259,40 +259,40 @@ amm-info@iis.fraunhofer.de
 // ----+-----+-----------+--------------------------------------
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY \
   0x80000000  //  31   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
+//  every PCW if there are too many bits decoded (immediate
+//  check).
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN \
   0x40000000  //  30   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
+//  every PCW if there are too many bits decoded (immediate
+//  check).
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN_ESC \
   0x20000000  //  29   no    PCW-Dec     During PCW decoding it is checked after
-              //  every PCW if there are too many bits decoded (immediate
-              //  check).
+//  every PCW if there are too many bits decoded (immediate
+//  check).
 #define EXTENDED_SORTED_COUNTER_OVERFLOW \
   0x10000000  //  28   yes   Init-Dec    Error during extending sideinfo
-              //  (neither a PCW nor a nonPCW was decoded so far)
-              // 0x08000000 //  27                     reserved
-              // 0x04000000 //  26                     reserved
-              // 0x02000000 //  25                     reserved
-              // 0x01000000 //  24                     reserved
-              // 0x00800000 //  23                     reserved
-              // 0x00400000 //  22                     reserved
-              // 0x00200000 //  21                     reserved
-              // 0x00100000 //  20                     reserved
+//  (neither a PCW nor a nonPCW was decoded so far)
+// 0x08000000 //  27                     reserved
+// 0x04000000 //  26                     reserved
+// 0x02000000 //  25                     reserved
+// 0x01000000 //  24                     reserved
+// 0x00800000 //  23                     reserved
+// 0x00400000 //  22                     reserved
+// 0x00200000 //  21                     reserved
+// 0x00100000 //  20                     reserved
 
 /* special errors */
 #define TOO_MANY_PCW_BODY_BITS_DECODED \
   0x00080000  //  19   yes   PCW-Dec     During PCW-body-decoding too many bits
-              //  have been read from bitstream -- advice: skip non-PCW decoding
+//  have been read from bitstream -- advice: skip non-PCW decoding
 #define TOO_MANY_PCW_BODY_SIGN_BITS_DECODED \
   0x00040000  //  18   yes   PCW-Dec     During PCW-body-sign-decoding too many
-              //  bits have been read from bitstream -- advice: skip non-PCW
-              //  decoding
+//  bits have been read from bitstream -- advice: skip non-PCW
+//  decoding
 #define TOO_MANY_PCW_BODY_SIGN_ESC_BITS_DECODED \
   0x00020000  //  17   yes   PCW-Dec     During PCW-body-sign-esc-decoding too
-              //  many bits have been read from bitstream -- advice: skip
-              //  non-PCW decoding
+//  many bits have been read from bitstream -- advice: skip
+//  non-PCW decoding
 
 // 0x00010000 //  16                     reserved
 #define STATE_ERROR_BODY_ONLY \
@@ -311,31 +311,31 @@ amm-info@iis.fraunhofer.de
   0x00000200  //   9   no    NonPCW-Dec  State machine returned with error
 #define HCR_SI_LENGTHS_FAILURE \
   0x00000100  //   8   yes   Init-Dec    LengthOfLongestCodeword must not be
-              //   less than lenghtOfReorderedSpectralData
+//   less than lenghtOfReorderedSpectralData
 #define NUM_SECT_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000080  //   7   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (short block)
+//   the allowed range (short block)
 #define NUM_SECT_OUT_OF_RANGE_LONG_BLOCK \
   0x00000040  //   6   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (long block)
+//   the allowed range (long block)
 #define LINE_IN_SECT_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000020  //   5   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (short block)
+//   within the allowed range (short block)
 #define CB_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000010  //   4   yes   Init-Dec    The codebook is not within the allowed
-              //   range (short block)
+//   range (short block)
 #define LINE_IN_SECT_OUT_OF_RANGE_LONG_BLOCK \
   0x00000008  //   3   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (long block)
+//   within the allowed range (long block)
 #define CB_OUT_OF_RANGE_LONG_BLOCK \
   0x00000004  //   2   yes   Init-Dec    The codebook is not within the allowed
-              //   range (long block)
+//   range (long block)
 #define LAV_VIOLATION \
   0x00000002  //   1   no    Final       The absolute value of at least one
-              //   decoded line was too high for the according codebook.
+//   decoded line was too high for the according codebook.
 #define BIT_IN_SEGMENTATION_ERROR \
   0x00000001  //   0   no    Final       After PCW and non-PWC-decoding at least
-              //   one segment is not zero (global check).
+//   one segment is not zero (global check).
 
 /*----------*/
 #define HCR_FATAL_PCW_ERROR_MASK 0x100E01FC
@@ -344,87 +344,87 @@ typedef enum { PCW_BODY, PCW_BODY_SIGN, PCW_BODY_SIGN_ESC } PCW_TYPE;
 
 /* interface Decoder <---> HCR */
 typedef struct {
-  UINT errorLog;
-  SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
-  int quantizedSpectralCoefficientsIdx;
-  SHORT lengthOfReorderedSpectralData;
-  SHORT numSection;
-  SHORT *pNumLineInSect;
-  INT bitstreamAnchor;
-  SCHAR lengthOfLongestCodeword;
-  UCHAR *pCodebook;
+    UINT errorLog;
+    SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
+    int quantizedSpectralCoefficientsIdx;
+    SHORT lengthOfReorderedSpectralData;
+    SHORT numSection;
+    SHORT *pNumLineInSect;
+    INT bitstreamAnchor;
+    SCHAR lengthOfLongestCodeword;
+    UCHAR *pCodebook;
 } HCR_INPUT_OUTPUT;
 
 typedef struct {
-  const UCHAR *pMinOfCbPair;
-  const UCHAR *pMaxOfCbPair;
+    const UCHAR *pMinOfCbPair;
+    const UCHAR *pMaxOfCbPair;
 } HCR_CB_PAIRS;
 
 typedef struct {
-  const USHORT *pLargestAbsVal;
-  const UCHAR *pMaxCwLength;
-  const UCHAR *pCbDimension;
-  const UCHAR *pCbDimShift;
-  const UCHAR *pCbSign;
-  const UCHAR *pCbPriority;
+    const USHORT *pLargestAbsVal;
+    const UCHAR *pMaxCwLength;
+    const UCHAR *pCbDimension;
+    const UCHAR *pCbDimShift;
+    const UCHAR *pCbSign;
+    const UCHAR *pCbPriority;
 } HCR_TABLE_INFO;
 
 typedef struct {
-  UINT numSegment;
-  UINT pSegmentBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  UINT pCodewordBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  UINT segmentOffset;
-  INT pLeftStartOfSegment[1024 >> 1];
-  INT pRightStartOfSegment[1024 >> 1];
-  SCHAR pRemainingBitsInSegment[1024 >> 1];
-  UCHAR readDirection;
-  UCHAR numWordForBitfield;
-  USHORT pNumBitValidInLastWord;
+    UINT numSegment;
+    UINT pSegmentBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
+    UINT pCodewordBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
+    UINT segmentOffset;
+    INT pLeftStartOfSegment[1024 >> 1];
+    INT pRightStartOfSegment[1024 >> 1];
+    SCHAR pRemainingBitsInSegment[1024 >> 1];
+    UCHAR readDirection;
+    UCHAR numWordForBitfield;
+    USHORT pNumBitValidInLastWord;
 } HCR_SEGMENT_INFO;
 
 typedef struct {
-  UINT numCodeword;
-  UINT numSortedSection;
-  USHORT pNumCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumSortedCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
-  int numExtendedSortedCodewordInSectionIdx;
-  USHORT pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
-  int numExtendedSortedSectionsInSetsIdx;
-  USHORT pReorderOffset[MAX_SFB_HCR];
-  UCHAR pSortedCodebook[MAX_SFB_HCR];
+    UINT numCodeword;
+    UINT numSortedSection;
+    USHORT pNumCodewordInSection[MAX_SFB_HCR];
+    USHORT pNumSortedCodewordInSection[MAX_SFB_HCR];
+    USHORT pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
+    int numExtendedSortedCodewordInSectionIdx;
+    USHORT pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
+    int numExtendedSortedSectionsInSetsIdx;
+    USHORT pReorderOffset[MAX_SFB_HCR];
+    UCHAR pSortedCodebook[MAX_SFB_HCR];
 
-  UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
-  int extendedSortedCodebookIdx;
-  UCHAR pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
-  int maxLenOfCbInExtSrtSecIdx;
-  UCHAR pCodebookSwitch[MAX_SFB_HCR];
+    UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
+    int extendedSortedCodebookIdx;
+    UCHAR pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
+    int maxLenOfCbInExtSrtSecIdx;
+    UCHAR pCodebookSwitch[MAX_SFB_HCR];
 } HCR_SECTION_INFO;
 
 typedef UINT (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
 
 typedef struct {
-  /* worst-case and 1024/4 non-PCWs exist in worst-case */
-  FIXP_DBL
-  *pResultBase; /* Base address for spectral data output target buffer */
-  UINT iNode[1024 >> 2]; /* Helper indices for code books */
-  USHORT
-  iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
-  UINT pEscapeSequenceInfo[1024 >> 2];
-  UINT codewordOffset;
-  STATEFUNC pState;
-  UCHAR pCodebook[1024 >> 2];
-  UCHAR pCntSign[1024 >> 2];
-  /* this array holds the states coded as integer values within the range
-   * [0,1,..,7] */
-  SCHAR pSta[1024 >> 2];
+    /* worst-case and 1024/4 non-PCWs exist in worst-case */
+    FIXP_DBL
+    *pResultBase; /* Base address for spectral data output target buffer */
+    UINT iNode[1024 >> 2]; /* Helper indices for code books */
+    USHORT
+    iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
+    UINT pEscapeSequenceInfo[1024 >> 2];
+    UINT codewordOffset;
+    STATEFUNC pState;
+    UCHAR pCodebook[1024 >> 2];
+    UCHAR pCntSign[1024 >> 2];
+    /* this array holds the states coded as integer values within the range
+     * [0,1,..,7] */
+    SCHAR pSta[1024 >> 2];
 } HCR_NON_PCW_SIDEINFO;
 
 typedef struct {
-  HCR_INPUT_OUTPUT decInOut;
-  HCR_SEGMENT_INFO segmentInfo;
-  HCR_SECTION_INFO sectionInfo;
-  HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
+    HCR_INPUT_OUTPUT decInOut;
+    HCR_SEGMENT_INFO segmentInfo;
+    HCR_SECTION_INFO sectionInfo;
+    HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
 } CErHcrInfo;
 
 typedef CErHcrInfo *H_HCR_INFO;

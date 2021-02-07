@@ -109,15 +109,15 @@ amm-info@iis.fraunhofer.de
 #include "tp_data.h"
 
 typedef struct {
-  CHANNEL_MODE cm;
-  INT samplingRate;
-  INT bitRate;
-  int profile;
-  int bVariableRate;
-  int instanceTag;
-  int headerWritten;
-  int matrixMixdownA;
-  int pseudoSurroundEnable;
+    CHANNEL_MODE cm;
+    INT samplingRate;
+    INT bitRate;
+    int profile;
+    int bVariableRate;
+    int instanceTag;
+    int headerWritten;
+    int matrixMixdownA;
+    int pseudoSurroundEnable;
 
 } ADIF_INFO;
 

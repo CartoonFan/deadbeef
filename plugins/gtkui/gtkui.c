@@ -164,7 +164,7 @@ format_timestr (char *buf, int sz, float time) {
 static gboolean
 update_songinfo (gpointer unused) {
     if (w_get_rootwidget() == NULL) return FALSE;
- 
+
     int iconified = gdk_window_get_state(gtk_widget_get_window(mainwin)) & GDK_WINDOW_STATE_ICONIFIED;
     if (!gtk_widget_get_visible (mainwin) || iconified) {
         return FALSE;
@@ -241,9 +241,9 @@ on_trayicon_scroll_event               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     int change_track = deadbeef->conf_get_int ("tray.scroll_changes_track", 0)
-        ? ((event->state & GDK_CONTROL_MASK) == 0)
-        : ((event->state & GDK_CONTROL_MASK) != 0)
-        ;
+                       ? ((event->state & GDK_CONTROL_MASK) == 0)
+                       : ((event->state & GDK_CONTROL_MASK) != 0)
+                       ;
     if (change_track) {
         if (event->direction == GDK_SCROLL_UP || event->direction == GDK_SCROLL_RIGHT) {
             deadbeef->sendmessage (DB_EV_NEXT, 0, 0, 0);
@@ -301,9 +301,9 @@ show_traymenu (void) {
 #if GTK_CHECK_VERSION(3,0,0)
 static gboolean
 mainwin_hide_cb (gpointer data) {
-     gtk_widget_hide (mainwin);
-     return FALSE;
- }
+    gtk_widget_hide (mainwin);
+    return FALSE;
+}
 #endif
 
 void
@@ -314,7 +314,7 @@ mainwin_toggle_visible (void) {
     }
     else {
         if (w_get_rootwidget() == NULL) init_widget_layout ();
-      
+
         wingeom_restore (mainwin, "mainwin", 40, 40, 500, 300, 0);
         if (iconified) {
             gtk_window_deiconify (GTK_WINDOW(mainwin));
@@ -328,7 +328,7 @@ mainwin_toggle_visible (void) {
 #if !GTK_CHECK_VERSION(2,14,0)
 gboolean
 on_trayicon_activate (GtkWidget       *widget,
-                                        gpointer         user_data)
+                      gpointer         user_data)
 {
     mainwin_toggle_visible ();
     return FALSE;
@@ -338,8 +338,8 @@ on_trayicon_activate (GtkWidget       *widget,
 
 gboolean
 on_trayicon_button_press_event (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
+                                GdkEventButton  *event,
+                                gpointer         user_data)
 {
     if (event->button == 1 && event->type == GDK_BUTTON_PRESS) {
         mainwin_toggle_visible ();
@@ -353,9 +353,9 @@ on_trayicon_button_press_event (GtkWidget       *widget,
 
 gboolean
 on_trayicon_popup_menu (GtkWidget       *widget,
-        guint button,
-        guint time,
-                                        gpointer         user_data)
+                        guint button,
+                        guint time,
+                        gpointer         user_data)
 {
     gtk_menu_popup (GTK_MENU (traymenu), NULL, NULL, gtk_status_icon_position_menu, trayicon, button, time);
     return FALSE;
@@ -977,14 +977,14 @@ gtkui_message (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
         }
         break;
     case DB_EV_TRACKINFOCHANGED:
-        {
-            ddb_event_track_t *ev = (ddb_event_track_t *)ctx;
-            if (ev->track) {
-                deadbeef->pl_item_ref (ev->track);
-                g_idle_add (trackinfochanged_cb, ev->track);
-            }
+    {
+        ddb_event_track_t *ev = (ddb_event_track_t *)ctx;
+        if (ev->track) {
+            deadbeef->pl_item_ref (ev->track);
+            g_idle_add (trackinfochanged_cb, ev->track);
         }
-        break;
+    }
+    break;
     case DB_EV_PLAYLISTCHANGED:
         if (p1 == DDB_PLAYLIST_CHANGE_CONTENT) {
             g_idle_add (playlistcontentchanged_cb, NULL);
@@ -1177,8 +1177,8 @@ void
 logwindow_scroll_changed (GtkAdjustment *adjustment, gpointer user_data)
 {
     if (gtk_adjustment_get_value (adjustment) >=
-        gtk_adjustment_get_upper (adjustment) -
-        gtk_adjustment_get_page_size (adjustment) - 1e-12)
+            gtk_adjustment_get_upper (adjustment) -
+            gtk_adjustment_get_page_size (adjustment) - 1e-12)
     {
         logwindow_scroll_bottomed = 1;
     } else {
@@ -1269,12 +1269,12 @@ gtkui_mainwin_init(void) {
     mainwin = create_mainwin ();
 
 #if GTK_CHECK_VERSION(3,10,0) && USE_GTK_APPLICATION
-     // This must be called before window is shown
-     gtk_application_add_window ( GTK_APPLICATION (gapp), GTK_WINDOW (mainwin));
+    // This must be called before window is shown
+    gtk_application_add_window ( GTK_APPLICATION (gapp), GTK_WINDOW (mainwin));
 #endif
 
-   wingeom_restore (mainwin, "mainwin", 40, 40, 500, 300, 0); 
-    
+    wingeom_restore (mainwin, "mainwin", 40, 40, 500, 300, 0);
+
 #if GTK_CHECK_VERSION(3,0,0)
     init_widget_layout ();
     gtk_widget_set_events (GTK_WIDGET (mainwin), gtk_widget_get_events (GTK_WIDGET (mainwin)) | GDK_SCROLL_MASK);
@@ -1287,7 +1287,7 @@ gtkui_mainwin_init(void) {
         init_widget_layout ();
         gtk_widget_show (mainwin);
     }
-#endif 
+#endif
 
     logwindow = gtkui_create_log_window();
     deadbeef->log_viewer_register (logwindow_logger_callback, logwindow);
@@ -1632,7 +1632,7 @@ static DB_plugin_action_t action_scan_all_tracks_without_rg = {
     .title = "ReplayGain/Scan Per-file Track Gain If Not Scanned",
     .name = "scan_all_tracks_without_Rg",
     .flags = DB_ACTION_SINGLE_TRACK | DB_ACTION_MULTIPLE_TRACKS | DB_ACTION_ADD_MENU,
-    .callback2 = action_scan_all_tracks_without_rg_handler ,
+    .callback2 = action_scan_all_tracks_without_rg_handler,
     .next = &action_rg_scan_per_file
 };
 
@@ -1987,7 +1987,7 @@ static const char settings_dlg[] =
     "property \"Add separators between plugin context menu items\" checkbox gtkui.action_separators 0;\n"
     "property \"Use unicode chars instead of images for track state\" checkbox gtkui.unicode_playstate 0;\n"
     "property \"Disable seekbar overlay text\" checkbox gtkui.disable_seekbar_overlay 0;\n"
-;
+    ;
 
 // define plugin interface
 ddb_gtkui_t plugin = {
@@ -2006,43 +2006,43 @@ ddb_gtkui_t plugin = {
     .gui.plugin.descr = "User interface using GTK+ 2.x",
 #endif
     .gui.plugin.copyright =
-        "GTK+ user interface for DeaDBeeF Player.\n"
-        "Copyright (C) 2009-2015 Alexey Yakovenko and other contributors\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
-        "\n"
-        "\n"
-        "GTK - The GIMP Toolkit\n"
-        "Copyright (C) GTK Developers\n"
-        "\n"
-        "This library is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU Lesser General Public\n"
-        "License as published by the Free Software Foundation; either\n"
-        "version 2 of the License, or (at your option) any later version.\n"
-        "\n"
-        "This library is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
-        "Lesser General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU Lesser General Public\n"
-        "License along with this library. If not, see <http://www.gnu.org/licenses/>.\n"
+    "GTK+ user interface for DeaDBeeF Player.\n"
+    "Copyright (C) 2009-2015 Alexey Yakovenko and other contributors\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
+    "\n"
+    "\n"
+    "GTK - The GIMP Toolkit\n"
+    "Copyright (C) GTK Developers\n"
+    "\n"
+    "This library is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU Lesser General Public\n"
+    "License as published by the Free Software Foundation; either\n"
+    "version 2 of the License, or (at your option) any later version.\n"
+    "\n"
+    "This library is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
+    "Lesser General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU Lesser General Public\n"
+    "License along with this library. If not, see <http://www.gnu.org/licenses/>.\n"
     ,
     .gui.plugin.website = "http://deadbeef.sf.net",
     .gui.plugin.start = gtkui_start,

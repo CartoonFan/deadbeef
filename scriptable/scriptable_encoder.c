@@ -72,7 +72,7 @@ static const char *configdialog =
     "property \"Write FLAC tag\" checkbox tag_flac 0;"
     "property \"Write OggVorbis tag\" checkbox tag_oggvorbis 0;"
     "property \"Write MP4 tag\" checkbox tag_mp4 0;"
-;
+    ;
 
 static scriptableStringListItem_t *
 scriptableEncoderChainItemNames (scriptableItem_t *item) {
@@ -289,7 +289,7 @@ scriptableEncoderLoadPresets (void) {
         int i;
         for (i = 0; i < n; i++) {
             char s[PATH_MAX];
-            if (snprintf (s, sizeof (s), "%s/%s", presetspath, namelist[i]->d_name) > 0){
+            if (snprintf (s, sizeof (s), "%s/%s", presetspath, namelist[i]->d_name) > 0) {
 
                 scriptableItem_t *preset = scriptableEncoderCreateBlankPreset ();
                 preset->isLoading = 1;

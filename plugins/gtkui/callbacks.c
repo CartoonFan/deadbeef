@@ -93,7 +93,7 @@ on_add_folders_activate                (GtkMenuItem     *menuitem,
 
 void
 on_quit_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+                                       gpointer         user_data)
 {
     gdk_threads_add_idle (action_quit_handler_cb, NULL);
 }
@@ -504,7 +504,7 @@ on_cursor_follows_playback_activate    (GtkMenuItem     *menuitem,
 
 GtkWidget*
 create_ddb_listview_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+                            gint int1, gint int2)
 {
     return ddb_listview_new ();
 }
@@ -512,7 +512,7 @@ create_ddb_listview_widget (gchar *widget_name, gchar *string1, gchar *string2,
 
 GtkWidget*
 create_tabstrip_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+                        gint int1, gint int2)
 {
     return ddb_tabstrip_new ();
 }
@@ -520,7 +520,7 @@ create_tabstrip_widget (gchar *widget_name, gchar *string1, gchar *string2,
 
 GtkWidget*
 create_volumebar_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+                         gint int1, gint int2)
 {
     return ddb_volumebar_new ();
 }
@@ -638,7 +638,7 @@ on_translators1_activate               (GtkMenuItem     *menuitem,
 
 GtkWidget*
 title_formatting_help_link_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+                                   gint int1, gint int2)
 {
     GtkWidget *link = gtk_link_button_new_with_label ("http://github.com/DeaDBeeF-Player/deadbeef/wiki/Title-formatting-2.0", _("Help"));
     return link;
@@ -658,7 +658,7 @@ on_sortfmt_activate                    (GtkEntry        *entry,
 
 GtkWidget*
 create_plugin_weblink (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+                       gint int1, gint int2)
 {
     GtkWidget *link = gtk_link_button_new_with_label ("", "WWW");
     gtk_widget_set_sensitive (link, FALSE);
@@ -731,7 +731,7 @@ on_sort_by_date_activate               (GtkMenuItem     *menuitem,
 
 void
 on_sort_by_random_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+        gpointer         user_data)
 {
     ddb_playlist_t *plt = deadbeef->plt_get_curr ();
     deadbeef->plt_sort_v2 (plt, PL_MAIN, -1, NULL, DDB_SORT_RANDOM);
@@ -793,7 +793,7 @@ on_log_clear_clicked                   (GtkButton       *button,
 {
     GtkWidget *textview = lookup_widget (gtk_widget_get_toplevel (GTK_WIDGET (button)), "logwindow_textview");
     GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));    
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
     gtk_text_buffer_set_text(buffer, "", 0);
 }
 

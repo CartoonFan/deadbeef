@@ -72,7 +72,7 @@ trim (char* s)
         return "";
     }
     char *h, *t;
-    
+
     for (h = s; *h == ' ' || *h == '\t'; h++);
     for (t = s + strlen (s)-1; *t == ' ' || *t == '\t'; t--);
     *(t+1) = 0;
@@ -100,80 +100,80 @@ shx_callback (Shx_action_t *action, int ctx)
         int res = system (action->shcommand);
         break;
     case DDB_ACTION_CTX_SELECTION:
-        {
-            deadbeef->pl_lock ();
-            ddb_playlist_t *plt = deadbeef->plt_get_curr ();
-            if (plt) {
-                DB_playItem_t **items = NULL;
-                int items_count = deadbeef->plt_getselcount (plt);
-                if (0 < items_count) {
-                    items = calloc (sizeof (DB_playItem_t *), items_count);
-                    if (items) {
-                        int n = 0;
-                        DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
-                        while (it) {
-                            if (deadbeef->pl_is_selected (it)) {
-                                assert (n < items_count);
-                                deadbeef->pl_item_ref (it);
-                                items[n++] = it;
-                            }
-                            DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
-                            deadbeef->pl_item_unref (it);
-                            it = next;
-                        }
-                    }
-                }
-                deadbeef->pl_unlock ();
+    {
+        deadbeef->pl_lock ();
+        ddb_playlist_t *plt = deadbeef->plt_get_curr ();
+        if (plt) {
+            DB_playItem_t **items = NULL;
+            int items_count = deadbeef->plt_getselcount (plt);
+            if (0 < items_count) {
+                items = calloc (sizeof (DB_playItem_t *), items_count);
                 if (items) {
-                    for (int i = 0; i < items_count; i++) {
-                        res = shx_exec_track_cmd (action, items[i]);
-                        deadbeef->pl_item_unref (items[i]);
-                    }
-                    free (items);
-                }
-                deadbeef->plt_unref (plt);
-            }
-        }
-        break;
-    case DDB_ACTION_CTX_PLAYLIST:
-        {
-            ddb_playlist_t *plt = deadbeef->action_get_playlist ();
-            if (plt) {
-                deadbeef->pl_lock ();
-                DB_playItem_t **items = NULL;
-                int items_count = deadbeef->plt_get_item_count (plt, PL_MAIN);
-                if (0 < items_count) {
-                    items = calloc (sizeof (DB_playItem_t *), items_count);
-                    if (items) {
-                        int n = 0;
-                        DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
-                        while (it) {
+                    int n = 0;
+                    DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
+                    while (it) {
+                        if (deadbeef->pl_is_selected (it)) {
+                            assert (n < items_count);
+                            deadbeef->pl_item_ref (it);
                             items[n++] = it;
-                            it = deadbeef->pl_get_next (it, PL_MAIN);
                         }
+                        DB_playItem_t *next = deadbeef->pl_get_next (it, PL_MAIN);
+                        deadbeef->pl_item_unref (it);
+                        it = next;
                     }
                 }
-                deadbeef->pl_unlock ();
+            }
+            deadbeef->pl_unlock ();
+            if (items) {
+                for (int i = 0; i < items_count; i++) {
+                    res = shx_exec_track_cmd (action, items[i]);
+                    deadbeef->pl_item_unref (items[i]);
+                }
+                free (items);
+            }
+            deadbeef->plt_unref (plt);
+        }
+    }
+    break;
+    case DDB_ACTION_CTX_PLAYLIST:
+    {
+        ddb_playlist_t *plt = deadbeef->action_get_playlist ();
+        if (plt) {
+            deadbeef->pl_lock ();
+            DB_playItem_t **items = NULL;
+            int items_count = deadbeef->plt_get_item_count (plt, PL_MAIN);
+            if (0 < items_count) {
+                items = calloc (sizeof (DB_playItem_t *), items_count);
                 if (items) {
-                    for (int i = 0; i < items_count; i++) {
-                        res = shx_exec_track_cmd (action, items[i]);
-                        deadbeef->pl_item_unref (items[i]);
+                    int n = 0;
+                    DB_playItem_t *it = deadbeef->pl_get_first (PL_MAIN);
+                    while (it) {
+                        items[n++] = it;
+                        it = deadbeef->pl_get_next (it, PL_MAIN);
                     }
-                    free (items);
                 }
-                deadbeef->plt_unref (plt);
             }
+            deadbeef->pl_unlock ();
+            if (items) {
+                for (int i = 0; i < items_count; i++) {
+                    res = shx_exec_track_cmd (action, items[i]);
+                    deadbeef->pl_item_unref (items[i]);
+                }
+                free (items);
+            }
+            deadbeef->plt_unref (plt);
         }
-        break;
+    }
+    break;
     case DDB_ACTION_CTX_NOWPLAYING:
-        {
-            DB_playItem_t *it = deadbeef->streamer_get_playing_track ();
-            if (it) {
-                res = shx_exec_track_cmd (action, it);
-                deadbeef->pl_item_unref (it);
-            }
+    {
+        DB_playItem_t *it = deadbeef->streamer_get_playing_track ();
+        if (it) {
+            res = shx_exec_track_cmd (action, it);
+            deadbeef->pl_item_unref (it);
         }
-        break;
+    }
+    break;
     }
     return res;
 }
@@ -189,7 +189,7 @@ shx_get_plugin_actions (DB_playItem_t *it)
     for (action = actions; action; action = (Shx_action_t *)action->parent.next)
     {
         if ((!(action->shx_flags & SHX_ACTION_LOCAL_ONLY) && is_local) ||
-            (!(action->shx_flags & SHX_ACTION_REMOTE_ONLY) && !is_local)) {
+                (!(action->shx_flags & SHX_ACTION_REMOTE_ONLY) && !is_local)) {
             action->parent.flags |= DB_ACTION_DISABLED;
         }
         else {
@@ -282,9 +282,9 @@ shx_get_actions_json (json_t *json) {
         json_t *jflags = json_object_get (item, "flags");
 
         if (!json_is_string (jcommand)
-            || !json_is_string (jtitle)
-            || (jname && !json_is_string (jname))
-            || (jflags && !json_is_array (jflags))) {
+                || !json_is_string (jtitle)
+                || (jname && !json_is_string (jname))
+                || (jflags && !json_is_array (jflags))) {
             continue;
         }
 
@@ -463,26 +463,26 @@ static Shx_plugin_t plugin = {
     .misc.plugin.id = "shellexec",
     .misc.plugin.name = "Shell commands",
     .misc.plugin.descr = "Run custom shell commands as plugin actions.\n",
-    .misc.plugin.copyright = 
-        "Shellexec plugin for DeaDBeeF\n"
-        "Copyright (C) 2010-2014 Deadbeef team\n"
-        "Original developer Viktor Semykin <thesame.ml@gmail.com>\n"
-        "Maintenance, minor improvements Alexey Yakovenko <waker@users.sf.net>\n"
-        "GUI support and bugfixing Azeem Arshad <kr00r4n@gmail.com>"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .misc.plugin.copyright =
+    "Shellexec plugin for DeaDBeeF\n"
+    "Copyright (C) 2010-2014 Deadbeef team\n"
+    "Original developer Viktor Semykin <thesame.ml@gmail.com>\n"
+    "Maintenance, minor improvements Alexey Yakovenko <waker@users.sf.net>\n"
+    "GUI support and bugfixing Azeem Arshad <kr00r4n@gmail.com>"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .misc.plugin.website = "http://deadbeef.sf.net",
     .misc.plugin.start = shx_start,

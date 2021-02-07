@@ -126,7 +126,7 @@ waveout_message (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2)
     unsigned int new_wdevice;
 
     switch (id) {
-        case DB_EV_CONFIGCHANGED:
+    case DB_EV_CONFIGCHANGED:
         new_wdevice = waveout_device;
         current_dev = deadbeef->conf_get_str_fast ("alsa_soundcard", "default");
 
@@ -169,7 +169,7 @@ waveout_message (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2)
         }
         break;
 #if 0
-        case DB_EV_SONGSTARTED:
+    case DB_EV_SONGSTARTED:
         if (/* notification balloon requested */)
         {
         }
@@ -282,10 +282,10 @@ pwaveout_free (void)
 }
 
 static void CALLBACK waveOutProc(HWAVEOUT  hwo,
-                          UINT      uMsg,
-                          DWORD_PTR dwInstance,
-                          DWORD_PTR dwParam1,
-                          DWORD_PTR dwParam2)
+                                 UINT      uMsg,
+                                 DWORD_PTR dwInstance,
+                                 DWORD_PTR dwParam1,
+                                 DWORD_PTR dwParam2)
 {
     if (hwo == device_handle && uMsg == WOM_DONE)
     {
@@ -425,7 +425,7 @@ pwaveout_thread (void *context)
 
     while (1)
     {
-        if (wave_terminate){
+        if (wave_terminate) {
             trace("pwave terminating\n");
             break;
         }
@@ -511,7 +511,7 @@ pwaveout_thread (void *context)
         waveOutReset(device_handle);
         while (audio_blocks_sent)
             nanosleep(&sleep_time, NULL);
-            //__mingw_sleep(0, AUDIO_BUFFER_DURATION*1000000);
+        //__mingw_sleep(0, AUDIO_BUFFER_DURATION*1000000);
 
         for (idx=0; idx<AUDIO_BUFFER_NO; idx++)
         {
@@ -635,7 +635,7 @@ static DB_output_t plugin = {
     .plugin.id = "waveout",
     .plugin.name = "WaveOut output plugin",
     .plugin.descr = "Output plugin for the WaveOut interface\non Windows(R) OSs.\nRequires Windows XP at least.",
-    .plugin.copyright = 
+    .plugin.copyright =
     "WaveOut output plugin for DeaDBeeF Player\n"
     "Copyright (C) 2016-2017 Elio Blanca\n"
     "\n"

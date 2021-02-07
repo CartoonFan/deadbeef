@@ -243,7 +243,7 @@ pl_cue_get_total_tracks_and_files(const uint8_t *buffer, const uint8_t *buffer_e
         }
         // move pointer to the next line
         while (p < buffer_end && *p >= 0x20) {
-           p++;
+            p++;
         }
     }
 }
@@ -350,8 +350,8 @@ pl_cue_get_field_value(cueparser_t *cue) {
             return CUE_FIELD_ALBUM_PERFORMER;
         }
         else {
-             pl_get_qvalue_from_cue (cue->p + 10, CUE_FIELD_LEN, cue->cuefields[CUE_FIELD_PERFORMER], cue->charset);
-             return CUE_FIELD_PERFORMER;
+            pl_get_qvalue_from_cue (cue->p + 10, CUE_FIELD_LEN, cue->cuefields[CUE_FIELD_PERFORMER], cue->charset);
+            return CUE_FIELD_PERFORMER;
         }
     }
     else if (!strncasecmp (cue->p, "SONGWRITER ", 11)) {
@@ -613,7 +613,7 @@ _load_nextfile (cueparser_t *cue) {
                         }
 
                         if (!strncasecmp (audio_file, cue->namelist[i]->d_name, ext-audio_file)
-                            && cue->namelist[i]->d_name[ext-audio_file] == '.') {
+                                && cue->namelist[i]->d_name[ext-audio_file] == '.') {
                             // have to try loading each of these files
                             snprintf (cue->fullpath, sizeof (cue->fullpath), "%s/%s", cue->dirname, cue->namelist[i]->d_name);
 
@@ -860,7 +860,7 @@ plt_load_cuesheet_from_buffer (playlist_t *plt, playItem_t *after, const char *f
             filefield = 0;
             // If FILE is immediately followed by TRACK, that next TRACK is from the new FILE
             if (field == CUE_FIELD_TRACK
-                && _is_audio_track(cue.cuefields[CUE_FIELD_TRACK])) {
+                    && _is_audio_track(cue.cuefields[CUE_FIELD_TRACK])) {
                 if (plt_process_cue_track (plt, &cue) < 0) {
                     goto error;
                 }

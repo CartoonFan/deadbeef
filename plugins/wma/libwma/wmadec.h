@@ -87,7 +87,7 @@
 
 typedef struct CoefVLCTable
 {
-    int n;                               /* total number of codes */ 
+    int n;                               /* total number of codes */
     const uint32_t *huffcodes;           /* VLC bit values */
     const uint8_t *huffbits;             /* VLC bit size */
     const uint16_t *levels;              /* table to build run/level tables */
@@ -97,17 +97,17 @@ CoefVLCTable;
 /* Define MEM_ALIGN_ATTR which may be used to align e.g. buffers for faster
  * access. */
 #if defined(CPU_ARM)
-    /* Use ARMs cache alignment. */
-    #define MEM_ALIGN_ATTR CACHEALIGN_ATTR
-    #define MEM_ALIGN_SIZE CACHEALIGN_SIZE
+/* Use ARMs cache alignment. */
+#define MEM_ALIGN_ATTR CACHEALIGN_ATTR
+#define MEM_ALIGN_SIZE CACHEALIGN_SIZE
 #elif defined(CPU_COLDFIRE)
-    /* Use fixed alignment of 16 bytes. Speed up only for 'movem' in DRAM. */
-    #define MEM_ALIGN_ATTR __attribute__((aligned(16)))
-    #define MEM_ALIGN_SIZE 16
+/* Use fixed alignment of 16 bytes. Speed up only for 'movem' in DRAM. */
+#define MEM_ALIGN_ATTR __attribute__((aligned(16)))
+#define MEM_ALIGN_SIZE 16
 #else
-    /* Align pointer size */
-    #define MEM_ALIGN_ATTR __attribute__((aligned(sizeof(intptr_t))))
-    #define MEM_ALIGN_SIZE sizeof(intptr_t)
+/* Align pointer size */
+#define MEM_ALIGN_ATTR __attribute__((aligned(sizeof(intptr_t))))
+#define MEM_ALIGN_SIZE sizeof(intptr_t)
 #endif
 
 typedef struct WMADecodeContext

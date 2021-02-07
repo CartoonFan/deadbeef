@@ -58,7 +58,7 @@ on_preferences1_activate               (GtkMenuItem     *menuitem,
 
 void
 on_quit_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+                                       gpointer         user_data);
 
 void
 on_clear1_activate                     (GtkMenuItem     *menuitem,
@@ -469,8 +469,8 @@ on_add_to_playback_queue1_activate     (GtkMenuItem     *menuitem,
 
 void
 on_remove_from_playback_queue1_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+(GtkMenuItem     *menuitem,
+ gpointer         user_data);
 
 void
 on_properties1_activate                (GtkMenuItem     *menuitem,
@@ -577,16 +577,16 @@ on_save_all_playlists1_activate        (GtkMenuItem     *menuitem,
 
 GtkWidget*
 create_ddb_listview_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
+                            gint int1, gint int2);
 
 
 GtkWidget*
 create_tabstrip_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
+                        gint int1, gint int2);
 
 GtkWidget*
 create_volumebar_widget (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
+                         gint int1, gint int2);
 
 void
 on_color_light_color_set               (GtkColorButton  *colorbutton,
@@ -861,7 +861,7 @@ on_translators1_activate               (GtkMenuItem     *menuitem,
 
 GtkWidget*
 title_formatting_help_link_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
+                                   gint int1, gint int2);
 
 void
 on_album1_activate                     (GtkMenuItem     *menuitem,
@@ -918,8 +918,8 @@ on_dsp_down_clicked                    (GtkButton       *button,
 
 void
 on_auto_name_playlist_from_folder_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+(GtkToggleButton *togglebutton,
+ gpointer         user_data);
 
 void
 on_dsp_preset_changed                  (GtkComboBox     *combobox,
@@ -939,7 +939,7 @@ on_plug_copyright_clicked              (GtkButton       *button,
 
 GtkWidget*
 create_plugin_weblink (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
+                       gint int1, gint int2);
 
 gboolean
 on_metalist_button_press_event         (GtkWidget       *widget,
@@ -1038,7 +1038,7 @@ on_sort_by_date_activate               (GtkMenuItem     *menuitem,
 
 void
 on_sort_by_random_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+        gpointer         user_data);
 
 void
 on_sort_by_custom_activate             (GtkMenuItem     *menuitem,
@@ -1054,7 +1054,7 @@ on_design_mode1_activate               (GtkMenuItem     *menuitem,
 
 void
 on_convert16to24_toggled                (GtkToggleButton *togglebutton,
-                                         gpointer       user_data);
+        gpointer       user_data);
 
 void
 on_reset_autostop_toggled              (GtkToggleButton *togglebutton,
@@ -1123,9 +1123,9 @@ on_hotkey_keycombo_motion_notify_event (GtkWidget       *widget,
 
 gboolean
 on_hotkey_keycombo_button_release_event
-                                        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+(GtkWidget       *widget,
+ GdkEventButton  *event,
+ gpointer         user_data);
 
 gboolean
 on_hotkey_keycombo_focus_in_event      (GtkWidget       *widget,
@@ -1243,8 +1243,8 @@ on_listview_playing_text_bold_toggled  (GtkToggleButton *togglebutton,
 
 void
 on_listview_playing_text_italic_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+(GtkToggleButton *togglebutton,
+ gpointer         user_data);
 
 void
 on_listview_selected_text_bold_toggled (GtkToggleButton *togglebutton,
@@ -1252,8 +1252,8 @@ on_listview_selected_text_bold_toggled (GtkToggleButton *togglebutton,
 
 void
 on_listview_selected_text_italic_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+(GtkToggleButton *togglebutton,
+ gpointer         user_data);
 
 void
 on_tabstrip_selected_text_color_set    (GtkColorButton  *colorbutton,
@@ -1302,8 +1302,8 @@ on_trkpropertis_edit_activate          (GtkMenuItem     *menuitem,
 
 void
 on_trkproperties_edit_in_place_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+(GtkMenuItem     *menuitem,
+ gpointer         user_data);
 
 void
 on_trkproperties_remove_activate       (GtkMenuItem     *menuitem,
@@ -1331,13 +1331,13 @@ on_trkproperties_clean_up_activate     (GtkMenuItem     *menuitem,
 
 void
 on_trkproperties_format_from_other_fields_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+(GtkMenuItem     *menuitem,
+ gpointer         user_data);
 
 void
 on_trkproperties_add_new_field_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+(GtkMenuItem     *menuitem,
+ gpointer         user_data);
 
 void
 on_trkproperties_paste_fields_activate (GtkMenuItem     *menuitem,
@@ -1345,8 +1345,8 @@ on_trkproperties_paste_fields_activate (GtkMenuItem     *menuitem,
 
 void
 on_trkproperties_automatically_fill_values_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+(GtkMenuItem     *menuitem,
+ gpointer         user_data);
 
 void
 on_trkproperties_crop_activate         (GtkMenuItem     *menuitem,
@@ -1388,8 +1388,8 @@ on_pref_pluginlist_row_activated       (GtkTreeView     *treeview,
                                         gpointer         user_data);
 void
 on_listview_group_spacing_value_changed
-                                        (GtkSpinButton   *spinbutton,
-                                        gpointer         user_data);
+(GtkSpinButton   *spinbutton,
+ gpointer         user_data);
 
 void
 on_comboboxentry_direct_sr_changed     (GtkComboBox     *combobox,

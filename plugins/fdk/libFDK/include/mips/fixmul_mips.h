@@ -114,11 +114,11 @@ amm-info@iis.fraunhofer.de
 #define fixmuldiv2BitExact_DD(a, b) fixmuldiv2_DD(a, b)
 
 inline INT fixmuldiv2_DD(const INT a, const INT b) {
-  INT result;
+    INT result;
 
-  result = ((long long)a * b) >> 32;
+    result = ((long long)a * b) >> 32;
 
-  return result;
+    return result;
 }
 
 #endif /* (__GNUC__) && defined(__mips__) */

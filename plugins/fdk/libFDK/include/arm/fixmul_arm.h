@@ -132,24 +132,24 @@ amm-info@iis.fraunhofer.de
 
 #ifdef FUNCTION_fixmuldiv2_DD
 inline INT fixmuldiv2_DD(const INT a, const INT b) {
-  INT result;
+    INT result;
 #if defined(__ARM_ARCH_8__)
-  INT64 result64;
-  __asm__(
-      "smull %x0, %w1, %w2;\n"
-      "asr %x0, %x0, #32;     "
-      : "=r"(result64)
-      : "r"(a), "r"(b));
-  result = (INT)result64;
+    INT64 result64;
+    __asm__(
+        "smull %x0, %w1, %w2;\n"
+        "asr %x0, %x0, #32;     "
+        : "=r"(result64)
+        : "r"(a), "r"(b));
+    result = (INT)result64;
 #elif defined(__ARM_ARCH_6__) || defined(__TARGET_ARCH_7E_M)
-  __asm__("smmul %0, %1, %2" : "=r"(result) : "r"(a), "r"(b));
+    __asm__("smmul %0, %1, %2" : "=r"(result) : "r"(a), "r"(b));
 #else
-  INT discard;
-  __asm__("smull %0, %1, %2, %3"
-          : "=&r"(discard), "=r"(result)
-          : "r"(a), "r"(b));
+    INT discard;
+    __asm__("smull %0, %1, %2, %3"
+            : "=&r"(discard), "=r"(result)
+            : "r"(a), "r"(b));
 #endif
-  return result;
+    return result;
 }
 #endif /* #ifdef FUNCTION_fixmuldiv2_DD */
 
@@ -157,16 +157,16 @@ inline INT fixmuldiv2_DD(const INT a, const INT b) {
 #define FUNCTION_fixmuldiv2_SD
 #ifdef FUNCTION_fixmuldiv2_SD
 inline INT fixmuldiv2_SD(const SHORT a, const INT b) {
-  return fixmuldiv2_DD((INT)(a << 16), b);
+    return fixmuldiv2_DD((INT)(a << 16), b);
 }
 #endif /* #ifdef FUNCTION_fixmuldiv2_SD */
 #elif defined(__ARM_ARCH_5TE__) || defined(__ARM_ARCH_6__)
 #define FUNCTION_fixmuldiv2_SD
 #ifdef FUNCTION_fixmuldiv2_SD
 inline INT fixmuldiv2_SD(const SHORT a, const INT b) {
-  INT result;
-  __asm__("smulwb %0, %1, %2" : "=r"(result) : "r"(b), "r"(a));
-  return result;
+    INT result;
+    __asm__("smulwb %0, %1, %2" : "=r"(result) : "r"(b), "r"(a));
+    return result;
 }
 #endif /* #ifdef FUNCTION_fixmuldiv2_SD */
 #endif
@@ -175,18 +175,18 @@ inline INT fixmuldiv2_SD(const SHORT a, const INT b) {
 #ifdef FUNCTION_fixmul_DD
 #if defined(__ARM_ARCH_8__)
 inline INT fixmul_DD(const INT a, const INT b) {
-  INT64 result64;
+    INT64 result64;
 
-  __asm__(
-      "smull %x0, %w1, %w2;\n"
-      "asr %x0, %x0, #31;     "
-      : "=r"(result64)
-      : "r"(a), "r"(b));
-  return (INT)result64;
+    __asm__(
+        "smull %x0, %w1, %w2;\n"
+        "asr %x0, %x0, #31;     "
+        : "=r"(result64)
+        : "r"(a), "r"(b));
+    return (INT)result64;
 }
 #else
 inline INT fixmul_DD(const INT a, const INT b) {
-  return (fixmuldiv2_DD(a, b) << 1);
+    return (fixmuldiv2_DD(a, b) << 1);
 }
 #endif /* __ARM_ARCH_8__ */
 #endif /* #ifdef FUNCTION_fixmul_DD */

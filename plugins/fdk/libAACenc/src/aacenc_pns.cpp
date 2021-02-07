@@ -137,19 +137,19 @@ static void FDKaacEnc_CalcNoiseNrgs(const INT sfbActive, INT *pnsFlag,
 AAC_ENCODER_ERROR FDKaacEnc_InitPnsConfiguration(
     PNS_CONFIG *pnsConf, INT bitRate, INT sampleRate, INT usePns, INT sfbCnt,
     const INT *sfbOffset, const INT numChan, const INT isLC) {
-  AAC_ENCODER_ERROR ErrorStatus;
+    AAC_ENCODER_ERROR ErrorStatus;
 
-  /* init noise detection */
-  ErrorStatus = FDKaacEnc_GetPnsParam(&pnsConf->np, bitRate, sampleRate, sfbCnt,
-                                      sfbOffset, &usePns, numChan, isLC);
-  if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
+    /* init noise detection */
+    ErrorStatus = FDKaacEnc_GetPnsParam(&pnsConf->np, bitRate, sampleRate, sfbCnt,
+                                        sfbOffset, &usePns, numChan, isLC);
+    if (ErrorStatus != AAC_ENC_OK) return ErrorStatus;
 
-  pnsConf->minCorrelationEnergy = minCorrelationEnergy;
-  pnsConf->noiseCorrelationThresh = noiseCorrelationThresh;
+    pnsConf->minCorrelationEnergy = minCorrelationEnergy;
+    pnsConf->noiseCorrelationThresh = noiseCorrelationThresh;
 
-  pnsConf->usePns = usePns;
+    pnsConf->usePns = usePns;
 
-  return AAC_ENC_OK;
+    return AAC_ENC_OK;
 }
 
 /*****************************************************************************
@@ -179,116 +179,116 @@ void FDKaacEnc_PnsDetect(PNS_CONFIG *pnsConf, PNS_DATA *pnsData,
                          FIXP_DBL *sfbEnergyLdData, INT *noiseNrg)
 
 {
-  int sfb;
-  int startNoiseSfb;
+    int sfb;
+    int startNoiseSfb;
 
-  /* Reset pns info. */
-  FDKmemclear(pnsData->pnsFlag, sizeof(pnsData->pnsFlag));
-  for (sfb = 0; sfb < MAX_GROUPED_SFB; sfb++) {
-    noiseNrg[sfb] = NO_NOISE_PNS;
-  }
-
-  /* Disable PNS and skip detection in certain cases. */
-  if (pnsConf->usePns == 0) {
-    return;
-  } else {
-    /* AAC - LC core encoder */
-    if ((pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY) &&
-        (lastWindowSequence == SHORT_WINDOW)) {
-      return;
+    /* Reset pns info. */
+    FDKmemclear(pnsData->pnsFlag, sizeof(pnsData->pnsFlag));
+    for (sfb = 0; sfb < MAX_GROUPED_SFB; sfb++) {
+        noiseNrg[sfb] = NO_NOISE_PNS;
     }
-    /* AAC - (E)LD core encoder */
-    if (!(pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY) &&
-        (pnsConf->np.detectionAlgorithmFlags & JUST_LONG_WINDOW) &&
-        (lastWindowSequence != LONG_WINDOW)) {
-      return;
-    }
-  }
 
-  /*
-    call noise detection
-  */
-  FDKaacEnc_FDKaacEnc_noiseDetection(
-      pnsConf, pnsData, sfbActive, sfbOffset, tnsOrder, tnsPredictionGain,
-      tnsActive, mdctSpectrum, sfbMaxScaleSpec, sfbtonality);
-
-  /* set startNoiseSfb (long) */
-  startNoiseSfb = pnsConf->np.startSfb;
-
-  /* Set noise substitution status */
-  for (sfb = 0; sfb < sfbActive; sfb++) {
-    /* No PNS below startNoiseSfb */
-    if (sfb < startNoiseSfb) {
-      pnsData->pnsFlag[sfb] = 0;
-      continue;
+    /* Disable PNS and skip detection in certain cases. */
+    if (pnsConf->usePns == 0) {
+        return;
+    } else {
+        /* AAC - LC core encoder */
+        if ((pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY) &&
+                (lastWindowSequence == SHORT_WINDOW)) {
+            return;
+        }
+        /* AAC - (E)LD core encoder */
+        if (!(pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY) &&
+                (pnsConf->np.detectionAlgorithmFlags & JUST_LONG_WINDOW) &&
+                (lastWindowSequence != LONG_WINDOW)) {
+            return;
+        }
     }
 
     /*
-      do noise substitution if
-      fuzzy measure is high enough
-      sfb freq > minimum sfb freq
-      signal in coder band is not masked
+      call noise detection
     */
+    FDKaacEnc_FDKaacEnc_noiseDetection(
+        pnsConf, pnsData, sfbActive, sfbOffset, tnsOrder, tnsPredictionGain,
+        tnsActive, mdctSpectrum, sfbMaxScaleSpec, sfbtonality);
 
-    if ((pnsData->noiseFuzzyMeasure[sfb] > FL2FXCONST_SGL(0.5)) &&
-        ((sfbThresholdLdData[sfb] +
-          FL2FXCONST_DBL(0.5849625f /
-                         64.0f)) /* thr * 1.5 = thrLd +ld(1.5)/64 */
-         < sfbEnergyLdData[sfb])) {
-      /*
-        mark in psyout flag array that we will code
-        this band with PNS
-      */
-      pnsData->pnsFlag[sfb] = 1; /* PNS_ON */
-    } else {
-      pnsData->pnsFlag[sfb] = 0; /* PNS_OFF */
+    /* set startNoiseSfb (long) */
+    startNoiseSfb = pnsConf->np.startSfb;
+
+    /* Set noise substitution status */
+    for (sfb = 0; sfb < sfbActive; sfb++) {
+        /* No PNS below startNoiseSfb */
+        if (sfb < startNoiseSfb) {
+            pnsData->pnsFlag[sfb] = 0;
+            continue;
+        }
+
+        /*
+          do noise substitution if
+          fuzzy measure is high enough
+          sfb freq > minimum sfb freq
+          signal in coder band is not masked
+        */
+
+        if ((pnsData->noiseFuzzyMeasure[sfb] > FL2FXCONST_SGL(0.5)) &&
+                ((sfbThresholdLdData[sfb] +
+                  FL2FXCONST_DBL(0.5849625f /
+                                 64.0f)) /* thr * 1.5 = thrLd +ld(1.5)/64 */
+                 < sfbEnergyLdData[sfb])) {
+            /*
+              mark in psyout flag array that we will code
+              this band with PNS
+            */
+            pnsData->pnsFlag[sfb] = 1; /* PNS_ON */
+        } else {
+            pnsData->pnsFlag[sfb] = 0; /* PNS_OFF */
+        }
+
+        /* no PNS if LTP is active */
     }
 
-    /* no PNS if LTP is active */
-  }
-
-  /* avoid PNS holes */
-  if ((pnsData->noiseFuzzyMeasure[0] > FL2FXCONST_SGL(0.5f)) &&
-      (pnsData->pnsFlag[1])) {
-    pnsData->pnsFlag[0] = 1;
-  }
-
-  for (sfb = 1; sfb < maxSfbPerGroup - 1; sfb++) {
-    if ((pnsData->noiseFuzzyMeasure[sfb] > pnsConf->np.gapFillThr) &&
-        (pnsData->pnsFlag[sfb - 1]) && (pnsData->pnsFlag[sfb + 1])) {
-      pnsData->pnsFlag[sfb] = 1;
+    /* avoid PNS holes */
+    if ((pnsData->noiseFuzzyMeasure[0] > FL2FXCONST_SGL(0.5f)) &&
+            (pnsData->pnsFlag[1])) {
+        pnsData->pnsFlag[0] = 1;
     }
-  }
 
-  if (maxSfbPerGroup > 0) {
-    /* avoid PNS hole */
-    if ((pnsData->noiseFuzzyMeasure[maxSfbPerGroup - 1] >
-         pnsConf->np.gapFillThr) &&
-        (pnsData->pnsFlag[maxSfbPerGroup - 2])) {
-      pnsData->pnsFlag[maxSfbPerGroup - 1] = 1;
+    for (sfb = 1; sfb < maxSfbPerGroup - 1; sfb++) {
+        if ((pnsData->noiseFuzzyMeasure[sfb] > pnsConf->np.gapFillThr) &&
+                (pnsData->pnsFlag[sfb - 1]) && (pnsData->pnsFlag[sfb + 1])) {
+            pnsData->pnsFlag[sfb] = 1;
+        }
     }
-    /* avoid single PNS band */
-    if (pnsData->pnsFlag[maxSfbPerGroup - 2] == 0) {
-      pnsData->pnsFlag[maxSfbPerGroup - 1] = 0;
+
+    if (maxSfbPerGroup > 0) {
+        /* avoid PNS hole */
+        if ((pnsData->noiseFuzzyMeasure[maxSfbPerGroup - 1] >
+                pnsConf->np.gapFillThr) &&
+                (pnsData->pnsFlag[maxSfbPerGroup - 2])) {
+            pnsData->pnsFlag[maxSfbPerGroup - 1] = 1;
+        }
+        /* avoid single PNS band */
+        if (pnsData->pnsFlag[maxSfbPerGroup - 2] == 0) {
+            pnsData->pnsFlag[maxSfbPerGroup - 1] = 0;
+        }
     }
-  }
 
-  /* avoid single PNS bands */
-  if (pnsData->pnsFlag[1] == 0) {
-    pnsData->pnsFlag[0] = 0;
-  }
-
-  for (sfb = 1; sfb < maxSfbPerGroup - 1; sfb++) {
-    if ((pnsData->pnsFlag[sfb - 1] == 0) && (pnsData->pnsFlag[sfb + 1] == 0)) {
-      pnsData->pnsFlag[sfb] = 0;
+    /* avoid single PNS bands */
+    if (pnsData->pnsFlag[1] == 0) {
+        pnsData->pnsFlag[0] = 0;
     }
-  }
 
-  /*
-    calculate noiseNrg's
-  */
-  FDKaacEnc_CalcNoiseNrgs(sfbActive, pnsData->pnsFlag, sfbEnergyLdData,
-                          noiseNrg);
+    for (sfb = 1; sfb < maxSfbPerGroup - 1; sfb++) {
+        if ((pnsData->pnsFlag[sfb - 1] == 0) && (pnsData->pnsFlag[sfb + 1] == 0)) {
+            pnsData->pnsFlag[sfb] = 0;
+        }
+    }
+
+    /*
+      calculate noiseNrg's
+    */
+    FDKaacEnc_CalcNoiseNrgs(sfbActive, pnsData->pnsFlag, sfbEnergyLdData,
+                            noiseNrg);
 }
 
 /*****************************************************************************
@@ -310,30 +310,30 @@ static void FDKaacEnc_FDKaacEnc_noiseDetection(
     PNS_CONFIG *pnsConf, PNS_DATA *pnsData, const INT sfbActive,
     const INT *sfbOffset, int tnsOrder, INT tnsPredictionGain, INT tnsActive,
     FIXP_DBL *mdctSpectrum, INT *sfbMaxScaleSpec, FIXP_SGL *sfbtonality) {
-  INT condition = TRUE;
-  if (!(pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY)) {
-    condition = (tnsOrder > 3);
-  }
-  /*
-  no PNS if heavy TNS activity
-  clear pnsData->noiseFuzzyMeasure
-  */
-  if ((pnsConf->np.detectionAlgorithmFlags & USE_TNS_GAIN_THR) &&
-      (tnsPredictionGain >= pnsConf->np.tnsGainThreshold) && condition &&
-      !((pnsConf->np.detectionAlgorithmFlags & USE_TNS_PNS) &&
-        (tnsPredictionGain >= pnsConf->np.tnsPNSGainThreshold) &&
-        (tnsActive))) {
-    /* clear all noiseFuzzyMeasure */
-    FDKmemclear(pnsData->noiseFuzzyMeasure, sfbActive * sizeof(FIXP_SGL));
-  } else {
+    INT condition = TRUE;
+    if (!(pnsConf->np.detectionAlgorithmFlags & IS_LOW_COMPLEXITY)) {
+        condition = (tnsOrder > 3);
+    }
     /*
-    call noise detection, output in pnsData->noiseFuzzyMeasure,
-    use real mdct spectral data
+    no PNS if heavy TNS activity
+    clear pnsData->noiseFuzzyMeasure
     */
-    FDKaacEnc_noiseDetect(mdctSpectrum, sfbMaxScaleSpec, sfbActive, sfbOffset,
-                          pnsData->noiseFuzzyMeasure, &pnsConf->np,
-                          sfbtonality);
-  }
+    if ((pnsConf->np.detectionAlgorithmFlags & USE_TNS_GAIN_THR) &&
+            (tnsPredictionGain >= pnsConf->np.tnsGainThreshold) && condition &&
+            !((pnsConf->np.detectionAlgorithmFlags & USE_TNS_PNS) &&
+              (tnsPredictionGain >= pnsConf->np.tnsPNSGainThreshold) &&
+              (tnsActive))) {
+        /* clear all noiseFuzzyMeasure */
+        FDKmemclear(pnsData->noiseFuzzyMeasure, sfbActive * sizeof(FIXP_SGL));
+    } else {
+        /*
+        call noise detection, output in pnsData->noiseFuzzyMeasure,
+        use real mdct spectral data
+        */
+        FDKaacEnc_noiseDetect(mdctSpectrum, sfbMaxScaleSpec, sfbActive, sfbOffset,
+                              pnsData->noiseFuzzyMeasure, &pnsConf->np,
+                              sfbtonality);
+    }
 }
 
 /*****************************************************************************
@@ -352,16 +352,16 @@ static void FDKaacEnc_FDKaacEnc_noiseDetection(
 static void FDKaacEnc_CalcNoiseNrgs(const INT sfbActive, INT *RESTRICT pnsFlag,
                                     FIXP_DBL *RESTRICT sfbEnergyLdData,
                                     INT *RESTRICT noiseNrg) {
-  int sfb;
-  INT tmp = (-LOG_NORM_PCM) << 2;
+    int sfb;
+    INT tmp = (-LOG_NORM_PCM) << 2;
 
-  for (sfb = 0; sfb < sfbActive; sfb++) {
-    if (pnsFlag[sfb]) {
-      INT nrg = (-sfbEnergyLdData[sfb] + FL2FXCONST_DBL(0.5f / 64.0f)) >>
-                (DFRACT_BITS - 1 - 7);
-      noiseNrg[sfb] = tmp - nrg;
+    for (sfb = 0; sfb < sfbActive; sfb++) {
+        if (pnsFlag[sfb]) {
+            INT nrg = (-sfbEnergyLdData[sfb] + FL2FXCONST_DBL(0.5f / 64.0f)) >>
+                      (DFRACT_BITS - 1 - 7);
+            noiseNrg[sfb] = tmp - nrg;
+        }
     }
-  }
 }
 
 /*****************************************************************************
@@ -383,44 +383,44 @@ void FDKaacEnc_CodePnsChannel(const INT sfbActive, PNS_CONFIG *pnsConf,
                               FIXP_DBL *RESTRICT sfbEnergyLdData,
                               INT *RESTRICT noiseNrg,
                               FIXP_DBL *RESTRICT sfbThresholdLdData) {
-  INT sfb;
-  INT lastiNoiseEnergy = 0;
-  INT firstPNSband = 1; /* TRUE for first PNS-coded band */
+    INT sfb;
+    INT lastiNoiseEnergy = 0;
+    INT firstPNSband = 1; /* TRUE for first PNS-coded band */
 
-  /* no PNS */
-  if (!pnsConf->usePns) {
+    /* no PNS */
+    if (!pnsConf->usePns) {
+        for (sfb = 0; sfb < sfbActive; sfb++) {
+            /* no PNS coding */
+            noiseNrg[sfb] = NO_NOISE_PNS;
+        }
+        return;
+    }
+
+    /* code PNS */
     for (sfb = 0; sfb < sfbActive; sfb++) {
-      /* no PNS coding */
-      noiseNrg[sfb] = NO_NOISE_PNS;
+        if (pnsFlag[sfb]) {
+            /* high sfbThreshold causes pe = 0 */
+            if (noiseNrg[sfb] != NO_NOISE_PNS)
+                sfbThresholdLdData[sfb] =
+                    sfbEnergyLdData[sfb] + FL2FXCONST_DBL(1.0f / LD_DATA_SCALING);
+
+            /* set noiseNrg in valid region */
+            if (!firstPNSband) {
+                INT deltaiNoiseEnergy = noiseNrg[sfb] - lastiNoiseEnergy;
+
+                if (deltaiNoiseEnergy > CODE_BOOK_PNS_LAV)
+                    noiseNrg[sfb] -= deltaiNoiseEnergy - CODE_BOOK_PNS_LAV;
+                else if (deltaiNoiseEnergy < -CODE_BOOK_PNS_LAV)
+                    noiseNrg[sfb] -= deltaiNoiseEnergy + CODE_BOOK_PNS_LAV;
+            } else {
+                firstPNSband = 0;
+            }
+            lastiNoiseEnergy = noiseNrg[sfb];
+        } else {
+            /* no PNS coding */
+            noiseNrg[sfb] = NO_NOISE_PNS;
+        }
     }
-    return;
-  }
-
-  /* code PNS */
-  for (sfb = 0; sfb < sfbActive; sfb++) {
-    if (pnsFlag[sfb]) {
-      /* high sfbThreshold causes pe = 0 */
-      if (noiseNrg[sfb] != NO_NOISE_PNS)
-        sfbThresholdLdData[sfb] =
-            sfbEnergyLdData[sfb] + FL2FXCONST_DBL(1.0f / LD_DATA_SCALING);
-
-      /* set noiseNrg in valid region */
-      if (!firstPNSband) {
-        INT deltaiNoiseEnergy = noiseNrg[sfb] - lastiNoiseEnergy;
-
-        if (deltaiNoiseEnergy > CODE_BOOK_PNS_LAV)
-          noiseNrg[sfb] -= deltaiNoiseEnergy - CODE_BOOK_PNS_LAV;
-        else if (deltaiNoiseEnergy < -CODE_BOOK_PNS_LAV)
-          noiseNrg[sfb] -= deltaiNoiseEnergy + CODE_BOOK_PNS_LAV;
-      } else {
-        firstPNSband = 0;
-      }
-      lastiNoiseEnergy = noiseNrg[sfb];
-    } else {
-      /* no PNS coding */
-      noiseNrg[sfb] = NO_NOISE_PNS;
-    }
-  }
 }
 
 /*****************************************************************************
@@ -444,39 +444,39 @@ void FDKaacEnc_PreProcessPnsChannelPair(
     FIXP_DBL *RESTRICT sfbEnergyRightLD, FIXP_DBL *RESTRICT sfbEnergyMid,
     PNS_CONFIG *RESTRICT pnsConf, PNS_DATA *pnsDataLeft,
     PNS_DATA *pnsDataRight) {
-  INT sfb;
-  FIXP_DBL ccf;
+    INT sfb;
+    FIXP_DBL ccf;
 
-  if (!pnsConf->usePns) return;
+    if (!pnsConf->usePns) return;
 
-  FIXP_DBL *RESTRICT pNoiseEnergyCorrelationL =
-      pnsDataLeft->noiseEnergyCorrelation;
-  FIXP_DBL *RESTRICT pNoiseEnergyCorrelationR =
-      pnsDataRight->noiseEnergyCorrelation;
+    FIXP_DBL *RESTRICT pNoiseEnergyCorrelationL =
+        pnsDataLeft->noiseEnergyCorrelation;
+    FIXP_DBL *RESTRICT pNoiseEnergyCorrelationR =
+        pnsDataRight->noiseEnergyCorrelation;
 
-  for (sfb = 0; sfb < sfbActive; sfb++) {
-    FIXP_DBL quot = (sfbEnergyLeftLD[sfb] >> 1) + (sfbEnergyRightLD[sfb] >> 1);
+    for (sfb = 0; sfb < sfbActive; sfb++) {
+        FIXP_DBL quot = (sfbEnergyLeftLD[sfb] >> 1) + (sfbEnergyRightLD[sfb] >> 1);
 
-    if (quot < FL2FXCONST_DBL(-32.0f / (float)LD_DATA_SCALING))
-      ccf = FL2FXCONST_DBL(0.0f);
-    else {
-      FIXP_DBL accu =
-          sfbEnergyMid[sfb] -
-          (((sfbEnergyLeft[sfb] >> 1) + (sfbEnergyRight[sfb] >> 1)) >> 1);
-      INT sign = (accu < FL2FXCONST_DBL(0.0f)) ? 1 : 0;
-      accu = fixp_abs(accu);
+        if (quot < FL2FXCONST_DBL(-32.0f / (float)LD_DATA_SCALING))
+            ccf = FL2FXCONST_DBL(0.0f);
+        else {
+            FIXP_DBL accu =
+                sfbEnergyMid[sfb] -
+                (((sfbEnergyLeft[sfb] >> 1) + (sfbEnergyRight[sfb] >> 1)) >> 1);
+            INT sign = (accu < FL2FXCONST_DBL(0.0f)) ? 1 : 0;
+            accu = fixp_abs(accu);
 
-      ccf = CalcLdData(accu) +
-            FL2FXCONST_DBL((float)1.0f / (float)LD_DATA_SCALING) -
-            quot; /* ld(accu*2) = ld(accu) + 1 */
-      ccf = (ccf >= FL2FXCONST_DBL(0.0))
-                ? ((FIXP_DBL)MAXVAL_DBL)
-                : (sign) ? -CalcInvLdData(ccf) : CalcInvLdData(ccf);
+            ccf = CalcLdData(accu) +
+                  FL2FXCONST_DBL((float)1.0f / (float)LD_DATA_SCALING) -
+                  quot; /* ld(accu*2) = ld(accu) + 1 */
+            ccf = (ccf >= FL2FXCONST_DBL(0.0))
+                  ? ((FIXP_DBL)MAXVAL_DBL)
+                  : (sign) ? -CalcInvLdData(ccf) : CalcInvLdData(ccf);
+        }
+
+        pNoiseEnergyCorrelationL[sfb] = ccf;
+        pNoiseEnergyCorrelationR[sfb] = ccf;
     }
-
-    pNoiseEnergyCorrelationL[sfb] = ccf;
-    pNoiseEnergyCorrelationR[sfb] = ccf;
-  }
 }
 
 /*****************************************************************************
@@ -496,46 +496,46 @@ void FDKaacEnc_PreProcessPnsChannelPair(
 *****************************************************************************/
 
 void FDKaacEnc_PostProcessPnsChannelPair(const INT sfbActive,
-                                         PNS_CONFIG *pnsConf,
-                                         PNS_DATA *pnsDataLeft,
-                                         PNS_DATA *pnsDataRight,
-                                         INT *RESTRICT msMask, INT *msDigest) {
-  INT sfb;
+        PNS_CONFIG *pnsConf,
+        PNS_DATA *pnsDataLeft,
+        PNS_DATA *pnsDataRight,
+        INT *RESTRICT msMask, INT *msDigest) {
+    INT sfb;
 
-  if (!pnsConf->usePns) return;
+    if (!pnsConf->usePns) return;
 
-  for (sfb = 0; sfb < sfbActive; sfb++) {
-    /*
-      MS post processing
-    */
-    if (msMask[sfb]) {
-      if ((pnsDataLeft->pnsFlag[sfb]) && (pnsDataRight->pnsFlag[sfb])) {
-        /* AAC only: Standard */
-        /* do this to avoid ms flags in layers that should not have it */
-        if (pnsDataLeft->noiseEnergyCorrelation[sfb] <=
-            pnsConf->noiseCorrelationThresh) {
-          msMask[sfb] = 0;
-          *msDigest = MS_SOME;
-        }
-      } else {
+    for (sfb = 0; sfb < sfbActive; sfb++) {
         /*
-          No PNS coding
+          MS post processing
         */
-        pnsDataLeft->pnsFlag[sfb] = 0;
-        pnsDataRight->pnsFlag[sfb] = 0;
-      }
-    }
+        if (msMask[sfb]) {
+            if ((pnsDataLeft->pnsFlag[sfb]) && (pnsDataRight->pnsFlag[sfb])) {
+                /* AAC only: Standard */
+                /* do this to avoid ms flags in layers that should not have it */
+                if (pnsDataLeft->noiseEnergyCorrelation[sfb] <=
+                        pnsConf->noiseCorrelationThresh) {
+                    msMask[sfb] = 0;
+                    *msDigest = MS_SOME;
+                }
+            } else {
+                /*
+                  No PNS coding
+                */
+                pnsDataLeft->pnsFlag[sfb] = 0;
+                pnsDataRight->pnsFlag[sfb] = 0;
+            }
+        }
 
-    /*
-      Use MS flag to signal noise correlation if
-      pns is active in both channels
-    */
-    if ((pnsDataLeft->pnsFlag[sfb]) && (pnsDataRight->pnsFlag[sfb])) {
-      if (pnsDataLeft->noiseEnergyCorrelation[sfb] >
-          pnsConf->noiseCorrelationThresh) {
-        msMask[sfb] = 1;
-        *msDigest = MS_SOME;
-      }
+        /*
+          Use MS flag to signal noise correlation if
+          pns is active in both channels
+        */
+        if ((pnsDataLeft->pnsFlag[sfb]) && (pnsDataRight->pnsFlag[sfb])) {
+            if (pnsDataLeft->noiseEnergyCorrelation[sfb] >
+                    pnsConf->noiseCorrelationThresh) {
+                msMask[sfb] = 1;
+                *msDigest = MS_SOME;
+            }
+        }
     }
-  }
 }

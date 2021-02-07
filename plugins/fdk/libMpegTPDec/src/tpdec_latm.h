@@ -112,42 +112,42 @@ amm-info@iis.fraunhofer.de
 #define MIN_TP_BUF_SIZE_LOAS (8194)
 
 enum {
-  LATM_MAX_PROG = 1,
-  LATM_MAX_LAYER = 1,
-  LATM_MAX_VAR_CHUNKS = 16,
-  LATM_MAX_ID = 16
+    LATM_MAX_PROG = 1,
+    LATM_MAX_LAYER = 1,
+    LATM_MAX_VAR_CHUNKS = 16,
+    LATM_MAX_ID = 16
 };
 
 typedef struct {
-  UINT m_frameLengthType;
-  UINT m_bufferFullness;
-  UINT m_streamID;
-  UINT m_frameLengthInBits;
+    UINT m_frameLengthType;
+    UINT m_bufferFullness;
+    UINT m_streamID;
+    UINT m_frameLengthInBits;
 } LATM_LAYER_INFO;
 
 typedef struct {
-  LATM_LAYER_INFO m_linfo[LATM_MAX_PROG][LATM_MAX_LAYER];
-  UINT m_taraBufferFullness;
-  UINT m_otherDataLength;
-  UINT m_audioMuxLengthBytes; /* Length of LOAS payload */
+    LATM_LAYER_INFO m_linfo[LATM_MAX_PROG][LATM_MAX_LAYER];
+    UINT m_taraBufferFullness;
+    UINT m_otherDataLength;
+    UINT m_audioMuxLengthBytes; /* Length of LOAS payload */
 
-  UCHAR m_useSameStreamMux;
-  UCHAR m_AudioMuxVersion;
-  UCHAR m_AudioMuxVersionA;
-  UCHAR m_allStreamsSameTimeFraming;
-  UCHAR m_noSubFrames;
-  UCHAR m_numProgram;
-  UCHAR m_numLayer[LATM_MAX_PROG];
+    UCHAR m_useSameStreamMux;
+    UCHAR m_AudioMuxVersion;
+    UCHAR m_AudioMuxVersionA;
+    UCHAR m_allStreamsSameTimeFraming;
+    UCHAR m_noSubFrames;
+    UCHAR m_numProgram;
+    UCHAR m_numLayer[LATM_MAX_PROG];
 
-  UCHAR m_otherDataPresent;
-  UCHAR m_crcCheckPresent;
+    UCHAR m_otherDataPresent;
+    UCHAR m_crcCheckPresent;
 
-  SCHAR BufferFullnessAchieved;
-  UCHAR
-  usacExplicitCfgChanged;      /* explicit config in case of USAC and LOAS/LATM
+    SCHAR BufferFullnessAchieved;
+    UCHAR
+    usacExplicitCfgChanged;      /* explicit config in case of USAC and LOAS/LATM
                                   must be compared to IPF cfg */
-  UCHAR applyAsc;              /* apply ASC immediate without flushing */
-  UCHAR newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
+    UCHAR applyAsc;              /* apply ASC immediate without flushing */
+    UCHAR newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
                                   AudioPreRoll */
 } CLatmDemux;
 
@@ -179,7 +179,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
     int *pfConfigFound, UCHAR configMode, UCHAR configChanged);
 
 TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
-                                                    CLatmDemux *pLatmDemux);
+        CLatmDemux *pLatmDemux);
 
 UINT CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const UINT prog,
                                      const UINT layer);

@@ -107,9 +107,9 @@ amm-info@iis.fraunhofer.de
 
 inline INT fixmuldiv2_DD (const INT a, const INT b)
 {
-  INT result;
-  __asm__ ("mulhw %0, %1, %2" : "=r" (result) : "r" (a), "r" (b));
-  return result;
+    INT result;
+    __asm__ ("mulhw %0, %1, %2" : "=r" (result) : "r" (a), "r" (b));
+    return result;
 }
 
 #endif /* __powerpc__ && (__GNUC__ || __xlC__) */

@@ -141,8 +141,8 @@ print_help (void) {
     fprintf (stdout, _("   --gui PLUGIN       Tells which GUI plugin to use, default is \"GTK2\"\n"));
     fprintf (stdout, _("   --nowplaying FMT   Print formatted track name to stdout\n"));
     fprintf (stdout, _("                      FMT %%-syntax: [a]rtist, [t]itle, al[b]um,\n"
-                "                      [l]ength, track[n]umber, [y]ear, [c]omment,\n"
-                "                      copy[r]ight, [e]lapsed\n"));
+                       "                      [l]ength, track[n]umber, [y]ear, [c]omment,\n"
+                       "                      copy[r]ight, [e]lapsed\n"));
     fprintf (stdout, _("                      example: --nowplaying \"%%a - %%t\" should print \"artist - title\"\n"));
     fprintf (stdout, _("                      for more info, see %s\n"), "http://github.com/DeaDBeeF-Player/deadbeef/wiki/Title-formatting");
     fprintf (stdout, _("                      NOTE: --nowplaying is deprecated.\n"));
@@ -373,7 +373,7 @@ server_exec_command_line (const char *cmdline, int len, char *sendback, int sbsi
                 }
             }
             if (sendback) {
-                snprintf (sendback, sbsize, "\1%.0f%% (%.2f dB)", deadbeef->volume_get_db() * 2 + 100 , deadbeef->volume_get_db());
+                snprintf (sendback, sbsize, "\1%.0f%% (%.2f dB)", deadbeef->volume_get_db() * 2 + 100, deadbeef->volume_get_db());
             }
             return 0;
         }
@@ -603,7 +603,7 @@ server_close (void) {
 char*
 read_entire_message (int sockfd, int *size) {
     int bufsize = 4096; // initial buffer size, will expand if
-                        // the actual package turns out to be bigger
+    // the actual package turns out to be bigger
     char *buf = (char*) malloc(bufsize);
     int rdp = 0;
 
@@ -754,14 +754,14 @@ player_mainloop (void) {
                     conf_save ();
                     break;
                 case DB_EV_TERMINATE:
-                    {
-                        save_resume_state ();
+                {
+                    save_resume_state ();
 
-                        playqueue_clear ();
+                    playqueue_clear ();
 
-                        term = 1;
-                    }
-                    break;
+                    term = 1;
+                }
+                break;
                 case DB_EV_PLAY_CURRENT:
                     streamer_play_current_track ();
                     break;
@@ -803,14 +803,14 @@ player_mainloop (void) {
                     junk_configchanged ();
                     break;
                 case DB_EV_SEEK:
-                    {
-                        int32_t pos = (int32_t)p1;
-                        if (pos < 0) {
-                            pos = 0;
-                        }
-                        streamer_set_seek (p1 / 1000.f);
+                {
+                    int32_t pos = (int32_t)p1;
+                    if (pos < 0) {
+                        pos = 0;
                     }
-                    break;
+                    streamer_set_seek (p1 / 1000.f);
+                }
+                break;
                 case DB_EV_PLAYLISTCHANGED:
                     switch (p1) {
                     case DDB_PLAYLIST_CHANGE_CONTENT:
@@ -1392,7 +1392,7 @@ main (int argc, char *argv[]) {
 
     // NOTE: It's not guaranteed that the code after this line will be called.
     // On some platforms (cocoa), main_cleanup_and_quit is called directly before quit.
-    
+
     trace ("gui plugin has quit; waiting for mainloop thread to finish\n");
     thread_join (mainloop_tid);
 

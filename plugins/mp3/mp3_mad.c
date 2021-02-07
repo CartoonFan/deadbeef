@@ -111,7 +111,7 @@ mp3_mad_decode_int16 (mp3_info_t *info) {
         }
     }
     // mono
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1){
+    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1) {
         while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
             *((int16_t*)info->out) = MadFixedToSshort (info->mad_synth.pcm.samples[0][idx]);
             info->bytes_to_decode -= 2;
@@ -165,7 +165,7 @@ mp3_mad_consume_decoded_data (mp3_info_t *info) {
         }
     }
     // mono
-    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1){
+    else if (MAD_NCHANNELS(&info->mad_frame.header) == 1 && info->info.fmt.channels == 1) {
         while (info->decoded_samples_remaining > 0 && info->bytes_to_decode > 0) {
             *((float*)info->out) = MadFixedToFloat (info->mad_synth.pcm.samples[0][idx]);
             info->bytes_to_decode -= 4;
@@ -244,7 +244,7 @@ mp3_mad_decode_next_packet (mp3_info_t *info) {
         info->mad_stream.error=0;
 
         // decode next frame
-    retry:
+retry:
         if(mad_frame_decode(&info->mad_frame, &info->mad_stream))
         {
             if(MAD_RECOVERABLE(info->mad_stream.error))
@@ -275,7 +275,7 @@ mp3_mad_decode_next_packet (mp3_info_t *info) {
         deadbeef->streamer_set_bitrate ((int)(info->mad_frame.header.bitrate/1000));
         break;
     }
-    
+
     return eof;
 }
 

@@ -322,17 +322,17 @@ set_file_filter (GtkFileChooser *dlg, const char *name) {
     gtk_file_filter_set_name (flt, name);
 
     // Add supported extensions
-        DB_decoder_t **codecs = deadbeef->plug_get_decoder_list ();
-        for (int i = 0; codecs[i]; i++) {
-            if (codecs[i]->exts && codecs[i]->insert) {
-                const char **exts = codecs[i]->exts;
-                char buf[100];
-                for (int e = 0; exts[e]; e++) {
-                    snprintf (buf, sizeof (buf), "*.%s", exts[e]);
-                    gtk_file_filter_add_pattern (flt, buf);
-                }
+    DB_decoder_t **codecs = deadbeef->plug_get_decoder_list ();
+    for (int i = 0; codecs[i]; i++) {
+        if (codecs[i]->exts && codecs[i]->insert) {
+            const char **exts = codecs[i]->exts;
+            char buf[100];
+            for (int e = 0; exts[e]; e++) {
+                snprintf (buf, sizeof (buf), "*.%s", exts[e]);
+                gtk_file_filter_add_pattern (flt, buf);
             }
         }
+    }
     gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (dlg), flt);
     gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dlg), flt);
 
@@ -533,7 +533,7 @@ set_file_filter_saveplaylist (GtkFileChooser *dlg) {
 #ifndef USE_GTK_NATIVE_FILE_CHOOSER
 static void
 on_follow_symlinks_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                    gpointer         user_data)
 {
     deadbeef->conf_set_int ("add_folders_follow_symlinks", gtk_toggle_button_get_active (togglebutton));
 }
@@ -541,8 +541,8 @@ on_follow_symlinks_toggled         (GtkToggleButton *togglebutton,
 
 static GtkFileChooser *
 get_file_chooser  (const gchar          *title,
-                          GtkFileChooserAction action,
-                          gboolean             select_multiple)
+                   GtkFileChooserAction action,
+                   gboolean             select_multiple)
 {
 #ifdef USE_GTK_NATIVE_FILE_CHOOSER
     GtkFileChooserNative *dlg = gtk_file_chooser_native_new (title, GTK_WINDOW (mainwin), action, NULL, NULL);
@@ -556,8 +556,8 @@ get_file_chooser  (const gchar          *title,
         GtkWidget *check = gtk_check_button_new_with_mnemonic (_("Follow symlinks"));
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), deadbeef->conf_get_int ("add_folders_follow_symlinks", 0));
         g_signal_connect ((gpointer) check, "toggled",
-                G_CALLBACK (on_follow_symlinks_toggled),
-                NULL);
+                          G_CALLBACK (on_follow_symlinks_toggled),
+                          NULL);
         gtk_widget_show (check);
         gtk_box_pack_start (GTK_BOX (box), check, FALSE, FALSE, 0);
 

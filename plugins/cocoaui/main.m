@@ -36,7 +36,7 @@ int cocoaui_start(void) {
 }
 
 int cocoaui_stop(void) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
+    dispatch_sync(dispatch_get_main_queue(), ^ {
         g_CanQuit = YES;
         [NSApp terminate:g_appDelegate];
     });

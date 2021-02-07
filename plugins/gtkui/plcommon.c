@@ -701,7 +701,7 @@ get_context_menu_column (GtkMenuItem *menuitem) {
 
 static void
 add_to_playback_queue_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+                                    gpointer         user_data)
 {
     DdbListview *listview = get_context_menu_listview (menuitem);
     DB_playItem_t *it = listview->binding->head ();
@@ -717,8 +717,8 @@ add_to_playback_queue_activate     (GtkMenuItem     *menuitem,
 
 static void
 remove_from_playback_queue_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+(GtkMenuItem     *menuitem,
+ gpointer         user_data)
 {
     DdbListview *listview = get_context_menu_listview (menuitem);
     DB_playItem_t *it = listview->binding->head ();
@@ -734,7 +734,7 @@ remove_from_playback_queue_activate
 
 void
 on_cut_activate (GtkMenuItem     *menuitem,
-                    gpointer         user_data)
+                 gpointer         user_data)
 {
     ddb_playlist_t *plt = deadbeef->plt_get_curr ();
     if (plt) {
@@ -745,7 +745,7 @@ on_cut_activate (GtkMenuItem     *menuitem,
 
 void
 on_copy_activate (GtkMenuItem     *menuitem,
-                    gpointer         user_data)
+                  gpointer         user_data)
 {
     ddb_playlist_t *plt = deadbeef->plt_get_curr ();
     if (plt) {
@@ -756,7 +756,7 @@ on_copy_activate (GtkMenuItem     *menuitem,
 
 void
 on_paste_activate (GtkMenuItem     *menuitem,
-                    gpointer         user_data)
+                   gpointer         user_data)
 {
     ddb_playlist_t *plt = deadbeef->plt_get_curr ();
     if (plt) {
@@ -767,8 +767,8 @@ on_paste_activate (GtkMenuItem     *menuitem,
 
 static void
 reload_metadata_activate
-                                        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+(GtkMenuItem     *menuitem,
+ gpointer         user_data)
 {
     DdbListview *listview = get_context_menu_listview (menuitem);
     DB_playItem_t *it = listview->binding->head ();
@@ -808,7 +808,7 @@ reload_metadata_activate
 
 static void
 properties_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+                                    gpointer         user_data)
 {
     action_show_track_properties_handler (NULL, DDB_ACTION_CTX_SELECTION);
 }
@@ -893,8 +893,8 @@ on_set_custom_title_activate (GtkMenuItem *menuitem, gpointer user_data)
     deadbeef->pl_unlock ();
 
     g_signal_connect ((gpointer) sct, "toggled",
-            G_CALLBACK (on_toggle_set_custom_title),
-            dlg);
+                      G_CALLBACK (on_toggle_set_custom_title),
+                      dlg);
     gtk_entry_set_text (GTK_ENTRY (ct), custom_title);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dlg), GTK_RESPONSE_OK);
@@ -914,7 +914,7 @@ on_set_custom_title_activate (GtkMenuItem *menuitem, gpointer user_data)
 
 static void
 on_remove_from_disk_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+        gpointer         user_data)
 {
     delete_from_disk_with_track_list(_menuTrackList);
 }
@@ -963,8 +963,8 @@ list_empty_region_context_menu (DdbListview *listview) {
     gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (paste), paste_image);
 
     g_signal_connect ((gpointer) paste, "activate",
-            G_CALLBACK (on_paste_activate),
-            NULL);
+                      G_CALLBACK (on_paste_activate),
+                      NULL);
 
     gtk_menu_popup_at_pointer (GTK_MENU (playlist_menu), NULL);
 }
@@ -1202,10 +1202,10 @@ list_context_menu (DdbListview *listview, DdbListviewIter it, int idx, int iter)
             gtk_container_add (popup ? GTK_CONTAINER (popup) : GTK_CONTAINER (playlist_menu), actionitem);
 
             g_signal_connect ((gpointer) actionitem, "activate",
-                    G_CALLBACK (actionitem_activate),
-                    action);
+                              G_CALLBACK (actionitem_activate),
+                              action);
             if ((selected_count > 1 && !(action->flags & DB_ACTION_MULTIPLE_TRACKS)) ||
-                (action->flags & DB_ACTION_DISABLED)) {
+                    (action->flags & DB_ACTION_DISABLED)) {
                 gtk_widget_set_sensitive (GTK_WIDGET (actionitem), FALSE);
             }
         }
@@ -1244,39 +1244,39 @@ list_context_menu (DdbListview *listview, DdbListviewIter it, int idx, int iter)
     gtk_container_add (GTK_CONTAINER (playlist_menu), properties1);
 
     g_signal_connect ((gpointer) add_to_playback_queue1, "activate",
-            G_CALLBACK (add_to_playback_queue_activate),
-            NULL);
+                      G_CALLBACK (add_to_playback_queue_activate),
+                      NULL);
     g_signal_connect ((gpointer) remove_from_playback_queue1, "activate",
-            G_CALLBACK (remove_from_playback_queue_activate),
-            NULL);
+                      G_CALLBACK (remove_from_playback_queue_activate),
+                      NULL);
     g_signal_connect ((gpointer) reload_metadata, "activate",
-            G_CALLBACK (reload_metadata_activate),
-            NULL);
+                      G_CALLBACK (reload_metadata_activate),
+                      NULL);
     g_signal_connect ((gpointer) cut, "activate",
-            G_CALLBACK (on_cut_activate),
-            NULL);
+                      G_CALLBACK (on_cut_activate),
+                      NULL);
     g_signal_connect ((gpointer) copy, "activate",
-            G_CALLBACK (on_copy_activate),
-            NULL);
+                      G_CALLBACK (on_copy_activate),
+                      NULL);
     g_signal_connect ((gpointer) paste, "activate",
-            G_CALLBACK (on_paste_activate),
-            NULL);
+                      G_CALLBACK (on_paste_activate),
+                      NULL);
     g_signal_connect ((gpointer) remove2, "activate",
-            G_CALLBACK (on_remove2_activate),
-            NULL);
+                      G_CALLBACK (on_remove2_activate),
+                      NULL);
     if (!hide_remove_from_disk) {
         g_signal_connect ((gpointer) remove_from_disk, "activate",
-                G_CALLBACK (on_remove_from_disk_activate),
-                NULL);
+                          G_CALLBACK (on_remove_from_disk_activate),
+                          NULL);
     }
 #ifndef DISABLE_CUSTOM_TITLE
     g_signal_connect ((gpointer) set_custom_title, "activate",
-            G_CALLBACK (on_set_custom_title_activate),
-            listview);
+                      G_CALLBACK (on_set_custom_title_activate),
+                      listview);
 #endif
     g_signal_connect ((gpointer) properties1, "activate",
-            G_CALLBACK (properties_activate),
-            NULL);
+                      G_CALLBACK (properties_activate),
+                      NULL);
 
     gtk_menu_popup_at_pointer (GTK_MENU (playlist_menu), NULL);
 }
@@ -1495,7 +1495,7 @@ on_group_by_none_activate              (GtkMenuItem     *menuitem,
         deadbeef->plt_modified (plt);
         deadbeef->plt_unref (plt);
     }
-    groups_changed (get_context_menu_listview (menuitem) , "");
+    groups_changed (get_context_menu_listview (menuitem), "");
 }
 
 static void
@@ -1808,7 +1808,7 @@ on_edit_column_activate                (GtkMenuItem     *menuitem,
     if (inf->id == DB_COLUMN_STANDARD) {
         for (int i = 0; i < PRESET_COLUMN_NUMITEMS; i++) {
             if (pl_preset_column_formats[i].id == DB_COLUMN_STANDARD && inf->format &&
-                pl_preset_column_formats[i].format && !strcmp (inf->format, pl_preset_column_formats[i].format)) {
+                    pl_preset_column_formats[i].format && !strcmp (inf->format, pl_preset_column_formats[i].format)) {
                 idx = i;
                 break;
             }
@@ -1938,24 +1938,24 @@ create_headermenu (DdbListview *listview, int column, int groupby)
         gtk_container_add (GTK_CONTAINER (group_by_menu), custom);
 
         g_signal_connect ((gpointer) none, "activate",
-              G_CALLBACK (on_group_by_none_activate),
-              NULL);
+                          G_CALLBACK (on_group_by_none_activate),
+                          NULL);
 
         g_signal_connect ((gpointer) pin_groups, "activate",
-              G_CALLBACK (on_pin_groups_active),
-              NULL);
+                          G_CALLBACK (on_pin_groups_active),
+                          NULL);
 
         g_signal_connect ((gpointer) artist_date_album, "activate",
-              G_CALLBACK (on_group_by_artist_date_album_activate),
-              NULL);
+                          G_CALLBACK (on_group_by_artist_date_album_activate),
+                          NULL);
 
         g_signal_connect ((gpointer) artist, "activate",
-              G_CALLBACK (on_group_by_artist_activate),
-              NULL);
+                          G_CALLBACK (on_group_by_artist_activate),
+                          NULL);
 
         g_signal_connect ((gpointer) custom, "activate",
-              G_CALLBACK (on_group_by_custom_activate),
-              NULL);
+                          G_CALLBACK (on_group_by_custom_activate),
+                          NULL);
     }
 
     g_signal_connect ((gpointer) add_column, "activate",

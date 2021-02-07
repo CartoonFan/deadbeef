@@ -292,7 +292,7 @@ ca_init (void) {
     theAddress.mSelector = kAudioDevicePropertyDeviceName;
     theAddress.mScope = kAudioDevicePropertyScopeOutput;
     theAddress.mElement = kAudioObjectPropertyElementMaster;
-    
+
     err = AudioObjectGetPropertyData(device_id, &theAddress, 0, NULL, &sz, device_name);
     if (err != noErr) {
         trace ("AudioObjectGetPropertyData kAudioDevicePropertyDeviceName: %x\n", err);
@@ -328,7 +328,7 @@ ca_init (void) {
     }
 
     theAddress.mSelector = kAudioDevicePropertyStreamFormat;
-    
+
     err = AudioObjectAddPropertyListener(device_id, &theAddress, ca_fmtchanged, NULL);
     if (err != noErr) {
         trace ("AudioObjectAddPropertyListener kAudioDevicePropertyStreamFormat: %x\n", err);
@@ -354,18 +354,19 @@ ca_init (void) {
 static int
 ca_free (void) {
     OSStatus err;
-    
+
     if (device_id != 0) {
         deadbeef->mutex_lock (mutex);
         AudioObjectPropertyAddress theAddress = { kAudioDevicePropertyStreamFormat,
-            kAudioDevicePropertyScopeOutput,
-            0 };
-        
+                                                  kAudioDevicePropertyScopeOutput,
+                                                  0
+                                                };
+
         err = AudioDeviceStop(device_id, ca_buffer_callback);
         if (err != noErr) {
             trace ("AudioDeviceStop: %x\n", err);
         }
-        
+
         err = AudioObjectRemovePropertyListener(device_id, &theAddress, ca_fmtchanged, NULL);
         if (err != noErr) {
             trace ("AudioObjectRemovePropertyListener kAudioDevicePropertyStreamFormat: %x\n", err);
@@ -442,7 +443,7 @@ ca_prevent_sleep (void) {
     CFStringRef reasonForActivity= CFSTR("Deadbeef playback");
 
     IOReturn success = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoIdleSleep,
-                                                   kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+                       kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
     if (success == kIOReturnSuccess) {
         sleep_prevented = 1;
         assertion_id = assertionID;
@@ -539,7 +540,7 @@ ca_pause (void) {
 static OSStatus
 ca_fmtchanged (AudioObjectID inObjectID, UInt32 inNumberAddresses, const AudioObjectPropertyAddress* inAddresses, void* inClientData) {
     OSStatus err;
-    
+
     AudioStreamBasicDescription device_format;
     UInt32 sz = sizeof (device_format);
     AudioObjectPropertyAddress theAddress = {
@@ -701,27 +702,27 @@ static DB_output_t plugin = {
     .plugin.name = "CoreAudio",
     .plugin.descr = "CoreAudio output plugin",
     .plugin.copyright =
-        "DeaDBeeF CoreAudio output plugin\n"
-        "Copyright (C) 2009-2017 Alexey Yakovenko and other contributors\n"
-        "Copyright (C) 2016 Christopher Snowhill\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    "DeaDBeeF CoreAudio output plugin\n"
+    "Copyright (C) 2009-2017 Alexey Yakovenko and other contributors\n"
+    "Copyright (C) 2016 Christopher Snowhill\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .init = ca_init,

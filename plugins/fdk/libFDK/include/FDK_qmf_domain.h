@@ -107,14 +107,14 @@ amm-info@iis.fraunhofer.de
 #include "qmf.h"
 
 typedef enum {
-  QMF_DOMAIN_OK = 0x0, /*!< No error occurred. */
-  QMF_DOMAIN_OUT_OF_MEMORY =
-      0x1, /*!< QMF-Configuration demands for more memory than allocated on
+    QMF_DOMAIN_OK = 0x0, /*!< No error occurred. */
+    QMF_DOMAIN_OUT_OF_MEMORY =
+        0x1, /*!< QMF-Configuration demands for more memory than allocated on
               heap. */
-  QMF_DOMAIN_INIT_ERROR =
-      0x2, /*!< An error during filterbank-setup occurred. */
-  QMF_DOMAIN_RESAMPLER_INIT_ERROR =
-      0x3 /*!< An error during QMF-resampler-setup occurred. */
+    QMF_DOMAIN_INIT_ERROR =
+        0x2, /*!< An error during filterbank-setup occurred. */
+    QMF_DOMAIN_RESAMPLER_INIT_ERROR =
+        0x3 /*!< An error during QMF-resampler-setup occurred. */
 } QMF_DOMAIN_ERROR;
 
 #define CMPLX_MOD (2)
@@ -168,60 +168,60 @@ H_ALLOC_MEM(QmfOverlapBuffer32, FIXP_DBL)
  * instance.
  */
 typedef struct {
-  UCHAR qmfDomainExplicitConfig;   /*!< Flag to signal that QMF domain is set
+    UCHAR qmfDomainExplicitConfig;   /*!< Flag to signal that QMF domain is set
                                       explicitly instead of SBR and MPS init
                                       routines. */
-  UCHAR nInputChannels;            /*!< Number of QMF input channels. */
-  UCHAR nInputChannels_requested;  /*!< Corresponding requested not yet active
+    UCHAR nInputChannels;            /*!< Number of QMF input channels. */
+    UCHAR nInputChannels_requested;  /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR nOutputChannels;           /*!< Number of QMF output channels. */
-  UCHAR nOutputChannels_requested; /*!< Corresponding requested not yet active
+    UCHAR nOutputChannels;           /*!< Number of QMF output channels. */
+    UCHAR nOutputChannels_requested; /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR
-  parkChannel; /*!< signal to automatically allocate additional memory to
+    UCHAR
+    parkChannel; /*!< signal to automatically allocate additional memory to
                   park a channel if only one processing channel is
                   available. */
-  UCHAR parkChannel_requested;
-  QDOM_PCM
-  *TDinput; /*!< Pointer to time domain data used as input for the QMF
+    UCHAR parkChannel_requested;
+    QDOM_PCM
+    *TDinput; /*!< Pointer to time domain data used as input for the QMF
                analysis. */
-  FIXP_DBL *
-      pWorkBuffer[QMF_MAX_WB_SECTIONS]; /*!< Pointerarray to volatile memory. */
-  UINT flags; /*!< Flags to be set on all QMF analysis/synthesis filter
+    FIXP_DBL *
+    pWorkBuffer[QMF_MAX_WB_SECTIONS]; /*!< Pointerarray to volatile memory. */
+    UINT flags; /*!< Flags to be set on all QMF analysis/synthesis filter
                  instances. */
-  UINT flags_requested; /*!< Corresponding requested not yet active
+    UINT flags_requested; /*!< Corresponding requested not yet active
                            configuration parameter. */
-  UCHAR nBandsAnalysis; /*!< Number of QMF analysis bands for all input
+    UCHAR nBandsAnalysis; /*!< Number of QMF analysis bands for all input
                            channels. */
-  UCHAR nBandsAnalysis_requested; /*!< Corresponding requested not yet active
+    UCHAR nBandsAnalysis_requested; /*!< Corresponding requested not yet active
                                      configuration parameter. */
-  USHORT nBandsSynthesis; /*!< Number of QMF synthesis bands for all output
+    USHORT nBandsSynthesis; /*!< Number of QMF synthesis bands for all output
                              channels. */
-  USHORT
-  nBandsSynthesis_requested; /*!< Corresponding requested not yet active
+    USHORT
+    nBandsSynthesis_requested; /*!< Corresponding requested not yet active
                                 configuration parameter. */
-  UCHAR nQmfTimeSlots; /*!< Number of QMF time slots (stored in work buffer
+    UCHAR nQmfTimeSlots; /*!< Number of QMF time slots (stored in work buffer
                           memory). */
-  UCHAR nQmfTimeSlots_requested; /*!< Corresponding requested not yet active
+    UCHAR nQmfTimeSlots_requested; /*!< Corresponding requested not yet active
                                     configuration parameter. */
-  UCHAR
-  nQmfOvTimeSlots; /*!< Number of QMF overlap/delay time slots (stored in
+    UCHAR
+    nQmfOvTimeSlots; /*!< Number of QMF overlap/delay time slots (stored in
                       persistent memory). */
-  UCHAR nQmfOvTimeSlots_requested; /*!< Corresponding requested not yet active
+    UCHAR nQmfOvTimeSlots_requested; /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR nQmfProcBands; /*!< Number of QMF bands which are processed by the
+    UCHAR nQmfProcBands; /*!< Number of QMF bands which are processed by the
                           decoder. Typically this is equal to nBandsSynthesis
                           but it may differ if the QMF based resampler is being
                           used. */
-  UCHAR nQmfProcBands_requested; /*!< Corresponding requested not yet active
+    UCHAR nQmfProcBands_requested; /*!< Corresponding requested not yet active
                                     configuration parameter. */
-  UCHAR
-  nQmfProcChannels; /*!< Number of complete QMF channels which need to
+    UCHAR
+    nQmfProcChannels; /*!< Number of complete QMF channels which need to
                        coexist in memory at the same time. For most cases
                        this is 1 which means the work buffer can be shared
                        between audio channels. */
-  UCHAR
-  nQmfProcChannels_requested; /*!< Corresponding requested not yet active
+    UCHAR
+    nQmfProcChannels_requested; /*!< Corresponding requested not yet active
                                  configuration parameter. */
 } FDK_QMF_DOMAIN_GC;
 typedef FDK_QMF_DOMAIN_GC *HANDLE_FDK_QMF_DOMAIN_GC;
@@ -233,26 +233,26 @@ typedef FDK_QMF_DOMAIN_GC *HANDLE_FDK_QMF_DOMAIN_GC;
  * consecutive order.
  */
 typedef struct {
-  HANDLE_FDK_QMF_DOMAIN_GC
-  pGlobalConf;               /*!< Pointer to global configuration structure. */
-  QMF_FILTER_BANK fb;        /*!< QMF (analysis) filter bank structure. */
-  QMF_SCALE_FACTOR scaling;  /*!< Structure with scaling information. */
-  UCHAR workBuf_nTimeSlots;  /*!< Work buffer dimension for this channel is
+    HANDLE_FDK_QMF_DOMAIN_GC
+    pGlobalConf;               /*!< Pointer to global configuration structure. */
+    QMF_FILTER_BANK fb;        /*!< QMF (analysis) filter bank structure. */
+    QMF_SCALE_FACTOR scaling;  /*!< Structure with scaling information. */
+    UCHAR workBuf_nTimeSlots;  /*!< Work buffer dimension for this channel is
                                 (workBuf_nTimeSlots * workBuf_nBands *
                                 CMPLX_MOD). */
-  UCHAR workBuf_nBands;      /*!< Work buffer dimension for this channel is
+    UCHAR workBuf_nBands;      /*!< Work buffer dimension for this channel is
                                 (workBuf_nTimeSlots * workBuf_nBands * CMPLX_MOD). */
-  USHORT workBufferOffset;   /*!< Offset within work buffer. */
-  USHORT workBufferSectSize; /*!< Size of work buffer section. */
-  FIXP_QAS *
-      pAnaQmfStates; /*!< Pointer to QMF analysis states (persistent memory). */
-  FIXP_DBL
-  *pOverlapBuffer;        /*!< Pointer to QMF overlap/delay memory (persistent
+    USHORT workBufferOffset;   /*!< Offset within work buffer. */
+    USHORT workBufferSectSize; /*!< Size of work buffer section. */
+    FIXP_QAS *
+    pAnaQmfStates; /*!< Pointer to QMF analysis states (persistent memory). */
+    FIXP_DBL
+    *pOverlapBuffer;        /*!< Pointer to QMF overlap/delay memory (persistent
                              memory). */
-  FIXP_DBL **pWorkBuffer; /*!< Pointer array to available work buffers. */
-  FIXP_DBL *
-      *hQmfSlotsReal; /*!< Handle for QMF real data time slot pointer array. */
-  FIXP_DBL **hQmfSlotsImag; /*!< Handle for QMF imaginary data time slot pointer
+    FIXP_DBL **pWorkBuffer; /*!< Pointer array to available work buffers. */
+    FIXP_DBL *
+    *hQmfSlotsReal; /*!< Handle for QMF real data time slot pointer array. */
+    FIXP_DBL **hQmfSlotsImag; /*!< Handle for QMF imaginary data time slot pointer
                                array. */
 } FDK_QMF_DOMAIN_IN;
 typedef FDK_QMF_DOMAIN_IN *HANDLE_FDK_QMF_DOMAIN_IN;
@@ -261,8 +261,8 @@ typedef FDK_QMF_DOMAIN_IN *HANDLE_FDK_QMF_DOMAIN_IN;
  * Structure representing one QMF output channel.
  */
 typedef struct {
-  QMF_FILTER_BANK fb;      /*!< QMF (synthesis) filter bank structure. */
-  FIXP_QSS *pSynQmfStates; /*!< Pointer to QMF synthesis states (persistent
+    QMF_FILTER_BANK fb;      /*!< QMF (synthesis) filter bank structure. */
+    FIXP_QSS *pSynQmfStates; /*!< Pointer to QMF synthesis states (persistent
                               memory). */
 } FDK_QMF_DOMAIN_OUT;
 typedef FDK_QMF_DOMAIN_OUT *HANDLE_FDK_QMF_DOMAIN_OUT;
@@ -271,11 +271,11 @@ typedef FDK_QMF_DOMAIN_OUT *HANDLE_FDK_QMF_DOMAIN_OUT;
  * Structure representing the QMF domain for multiple channels.
  */
 typedef struct {
-  FDK_QMF_DOMAIN_GC globalConf; /*!< Global configuration structure. */
-  FDK_QMF_DOMAIN_IN
-  QmfDomainIn[((8) + (1))]; /*!< Array of QMF domain input structures */
-  FDK_QMF_DOMAIN_OUT
-  QmfDomainOut[((8) + (1))]; /*!< Array of QMF domain output structures */
+    FDK_QMF_DOMAIN_GC globalConf; /*!< Global configuration structure. */
+    FDK_QMF_DOMAIN_IN
+    QmfDomainIn[((8) + (1))]; /*!< Array of QMF domain input structures */
+    FDK_QMF_DOMAIN_OUT
+    QmfDomainOut[((8) + (1))]; /*!< Array of QMF domain output structures */
 } FDK_QMF_DOMAIN;
 typedef FDK_QMF_DOMAIN *HANDLE_FDK_QMF_DOMAIN;
 

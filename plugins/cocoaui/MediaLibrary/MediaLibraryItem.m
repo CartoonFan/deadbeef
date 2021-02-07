@@ -48,11 +48,11 @@ extern DB_functions_t *deadbeef;
         }
 
         [_children sortUsingComparator:^NSComparisonResult(MediaLibraryItem  * _Nonnull obj1, MediaLibraryItem * _Nonnull obj2) {
-            if (!obj1.playItem || !obj2.playItem) {
-                return [obj1.stringValue caseInsensitiveCompare:obj2.stringValue];
-            }
+                      if (!obj1.playItem || !obj2.playItem) {
+                          return [obj1.stringValue caseInsensitiveCompare:obj2.stringValue];
+                      }
 
-            int n1 = atoi (deadbeef->pl_find_meta (obj1.playItem, "track") ?: "0");
+                      int n1 = atoi (deadbeef->pl_find_meta (obj1.playItem, "track") ?: "0");
             int n2 = atoi (deadbeef->pl_find_meta (obj2.playItem, "track") ?: "0");
             int d1 = atoi (deadbeef->pl_find_meta (obj1.playItem, "disc") ?: "0") + 1;
             int d2 = atoi (deadbeef->pl_find_meta (obj2.playItem, "disc") ?: "0") + 1;

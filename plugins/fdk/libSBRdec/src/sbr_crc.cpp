@@ -117,46 +117,46 @@ amm-info@iis.fraunhofer.de
   \brief     crc calculation
 */
 static ULONG calcCRC(HANDLE_CRC hCrcBuf, ULONG bValue, int nBits) {
-  int i;
-  ULONG bMask = (1UL << (nBits - 1));
+    int i;
+    ULONG bMask = (1UL << (nBits - 1));
 
-  for (i = 0; i < nBits; i++, bMask >>= 1) {
-    USHORT flag = (hCrcBuf->crcState & hCrcBuf->crcMask) ? 1 : 0;
-    USHORT flag1 = (bMask & bValue) ? 1 : 0;
+    for (i = 0; i < nBits; i++, bMask >>= 1) {
+        USHORT flag = (hCrcBuf->crcState & hCrcBuf->crcMask) ? 1 : 0;
+        USHORT flag1 = (bMask & bValue) ? 1 : 0;
 
-    flag ^= flag1;
-    hCrcBuf->crcState <<= 1;
-    if (flag) hCrcBuf->crcState ^= hCrcBuf->crcPoly;
-  }
+        flag ^= flag1;
+        hCrcBuf->crcState <<= 1;
+        if (flag) hCrcBuf->crcState ^= hCrcBuf->crcPoly;
+    }
 
-  return (hCrcBuf->crcState);
+    return (hCrcBuf->crcState);
 }
 
 /*!
   \brief     crc
 */
 static int getCrc(HANDLE_FDK_BITSTREAM hBs, ULONG NrBits) {
-  int i;
-  CRC_BUFFER CrcBuf;
+    int i;
+    CRC_BUFFER CrcBuf;
 
-  CrcBuf.crcState = SBR_CRC_START;
-  CrcBuf.crcPoly = SBR_CRC_POLY;
-  CrcBuf.crcMask = SBR_CRC_MASK;
+    CrcBuf.crcState = SBR_CRC_START;
+    CrcBuf.crcPoly = SBR_CRC_POLY;
+    CrcBuf.crcMask = SBR_CRC_MASK;
 
-  int CrcStep = NrBits >> MAXCRCSTEP_LD;
+    int CrcStep = NrBits >> MAXCRCSTEP_LD;
 
-  int CrcNrBitsRest = (NrBits - CrcStep * MAXCRCSTEP);
-  ULONG bValue;
+    int CrcNrBitsRest = (NrBits - CrcStep * MAXCRCSTEP);
+    ULONG bValue;
 
-  for (i = 0; i < CrcStep; i++) {
-    bValue = FDKreadBits(hBs, MAXCRCSTEP);
-    calcCRC(&CrcBuf, bValue, MAXCRCSTEP);
-  }
+    for (i = 0; i < CrcStep; i++) {
+        bValue = FDKreadBits(hBs, MAXCRCSTEP);
+        calcCRC(&CrcBuf, bValue, MAXCRCSTEP);
+    }
 
-  bValue = FDKreadBits(hBs, CrcNrBitsRest);
-  calcCRC(&CrcBuf, bValue, CrcNrBitsRest);
+    bValue = FDKreadBits(hBs, CrcNrBitsRest);
+    calcCRC(&CrcBuf, bValue, CrcNrBitsRest);
 
-  return (CrcBuf.crcState & SBR_CRC_RANGE);
+    return (CrcBuf.crcState & SBR_CRC_RANGE);
 }
 
 /*!
@@ -166,27 +166,27 @@ static int getCrc(HANDLE_FDK_BITSTREAM hBs, ULONG NrBits) {
 int SbrCrcCheck(HANDLE_FDK_BITSTREAM hBs, /*!< handle to bit-buffer  */
                 LONG NrBits)              /*!< max. CRC length       */
 {
-  int crcResult = 1;
-  ULONG NrCrcBits;
-  ULONG crcCheckResult;
-  LONG NrBitsAvailable;
-  ULONG crcCheckSum;
+    int crcResult = 1;
+    ULONG NrCrcBits;
+    ULONG crcCheckResult;
+    LONG NrBitsAvailable;
+    ULONG crcCheckSum;
 
-  crcCheckSum = FDKreadBits(hBs, 10);
+    crcCheckSum = FDKreadBits(hBs, 10);
 
-  NrBitsAvailable = FDKgetValidBits(hBs);
-  if (NrBitsAvailable <= 0) {
-    return 0;
-  }
+    NrBitsAvailable = FDKgetValidBits(hBs);
+    if (NrBitsAvailable <= 0) {
+        return 0;
+    }
 
-  NrCrcBits = fixMin((INT)NrBits, (INT)NrBitsAvailable);
+    NrCrcBits = fixMin((INT)NrBits, (INT)NrBitsAvailable);
 
-  crcCheckResult = getCrc(hBs, NrCrcBits);
-  FDKpushBack(hBs, (NrBitsAvailable - FDKgetValidBits(hBs)));
+    crcCheckResult = getCrc(hBs, NrCrcBits);
+    FDKpushBack(hBs, (NrBitsAvailable - FDKgetValidBits(hBs)));
 
-  if (crcCheckResult != crcCheckSum) {
-    crcResult = 0;
-  }
+    if (crcCheckResult != crcCheckSum) {
+        crcResult = 0;
+    }
 
-  return (crcResult);
+    return (crcResult);
 }

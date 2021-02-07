@@ -114,8 +114,8 @@ amm-info@iis.fraunhofer.de
 
 /* Data Types ****************************************************************/
 typedef enum {
-  t_CLD,
-  t_ICC
+    t_CLD,
+    t_ICC
 
 } DATA_TYPE;
 

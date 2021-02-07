@@ -483,7 +483,7 @@ m3uplug_load (ddb_playlist_t *plt, DB_playItem_t *after, const char *fname, int 
         tried_pls = 1;
         ret = load_pls (plt, after, fname, pabort, cb, user_data);
     }
-    
+
     if (!ret) {
         ret = load_m3u (plt, after, fname, pabort, cb, user_data);
     }
@@ -637,27 +637,27 @@ DB_playlist_t plugin = {
     .plugin.id = "m3u",
     .plugin.name = "M3U and PLS support",
     .plugin.descr = "Importing and exporting M3U and PLS formats\nRecognizes .pls, .m3u and .m3u8 file types\n\nNOTE: only utf8 file names are currently supported",
-    .plugin.copyright = 
-        "M3U and PLS playlist plugin for DeaDBeeF Player\n"
-        "Copyright (C) 2009-2014 Alexey Yakovenko\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    .plugin.copyright =
+    "M3U and PLS playlist plugin for DeaDBeeF Player\n"
+    "Copyright (C) 2009-2014 Alexey Yakovenko\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.website = "http://deadbeef.sf.net",
     .load = m3uplug_load,

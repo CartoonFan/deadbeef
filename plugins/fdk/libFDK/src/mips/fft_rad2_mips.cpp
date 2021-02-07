@@ -102,7 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef __FFT_RAD2_CPP__
 #error \
-    "Do not compile this file separately. It is included on demand from fft_rad2.cpp"
+"Do not compile this file separately. It is included on demand from fft_rad2.cpp"
 #endif
 
 #if defined(MIPS_DSP_LIB)
@@ -118,47 +118,47 @@ amm-info@iis.fraunhofer.de
 
 void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
              const INT trigDataSize) {
-  int i;
+    int i;
 
-  int32c *din = (int32c *)x;
-  int32c *dout = (int32c *)x;
+    int32c *din = (int32c *)x;
+    int32c *dout = (int32c *)x;
 
-  int32c scratch[1024];
-  int32c *twiddles;
+    int32c scratch[1024];
+    int32c *twiddles;
 
-  switch (ldn) {
+    switch (ldn) {
     case 4:
-      twiddles = (int32c *)__twiddles_mips_fft32_16;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_16;
+        break;
     case 5:
-      twiddles = (int32c *)__twiddles_mips_fft32_32;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_32;
+        break;
     case 6:
-      twiddles = (int32c *)__twiddles_mips_fft32_64;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_64;
+        break;
     case 7:
-      twiddles = (int32c *)__twiddles_mips_fft32_128;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_128;
+        break;
     case 8:
-      twiddles = (int32c *)__twiddles_mips_fft32_256;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_256;
+        break;
     case 9:
-      twiddles = (int32c *)__twiddles_mips_fft32_512;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_512;
+        break;
     case 10:
-      twiddles = (int32c *)__twiddles_mips_fft32_1024;
-      break;
+        twiddles = (int32c *)__twiddles_mips_fft32_1024;
+        break;
     default:
-      FDK_ASSERT(0);
-      break;
-  }
+        FDK_ASSERT(0);
+        break;
+    }
 
-  mips_fft32(dout, din, twiddles, scratch, ldn);
+    mips_fft32(dout, din, twiddles, scratch, ldn);
 
-  for (i = 0; i < (1 << ldn); i++) {
-    x[2 * i] = dout[i].re << 1;
-    x[2 * i + 1] = dout[i].im << 1;
-  }
+    for (i = 0; i < (1 << ldn); i++) {
+        x[2 * i] = dout[i].re << 1;
+        x[2 * i + 1] = dout[i].im << 1;
+    }
 }
 #endif
 

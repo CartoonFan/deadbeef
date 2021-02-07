@@ -53,10 +53,13 @@ static void vis_callback (void *ctx, ddb_audio_data_t *data) {
     paragraphStyle.alignment = NSTextAlignmentLeft;
     NSColor *gridColor = [NSColor.whiteColor colorWithAlphaComponent:0.8];
 
-    self.textAttrs = @{
-        NSFontAttributeName: [NSFont fontWithName:@"HelveticaNeue" size:10],
-        NSParagraphStyleAttributeName: paragraphStyle,
-        NSForegroundColorAttributeName: gridColor
+    self.textAttrs = @ {
+NSFontAttributeName:
+        [NSFont fontWithName:@"HelveticaNeue" size:10],
+NSParagraphStyleAttributeName:
+        paragraphStyle,
+NSForegroundColorAttributeName:
+        gridColor
     };
 
     self.peakColor = [NSColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];

@@ -216,10 +216,10 @@ static int grouptitleheight = 22;
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     switch(context) {
-        case NSDraggingContextWithinApplication:
-            return NSDragOperationCopy | NSDragOperationMove;
-        case NSDraggingContextOutsideApplication:
-            return NSDragOperationNone; // FIXME
+    case NSDraggingContextWithinApplication:
+        return NSDragOperationCopy | NSDragOperationMove;
+    case NSDraggingContextOutsideApplication:
+        return NSDragOperationNone; // FIXME
     }
     return NSDragOperationNone;
 }
@@ -228,19 +228,19 @@ static int grouptitleheight = 22;
 #pragma mark - Album art
 
 - (void)renderAlbumArtForGroup:(DdbListviewGroup_t *)grp
-                    groupIndex:(int)groupIndex
-                 isPinnedGroup:(BOOL)isPinnedGroup
-                nextGroupCoord:(int)grp_next_y
-                          yPos:(int)y
-                     viewportY:(CGFloat)viewportY
-                    clipRegion:(NSRect)clip {
+    groupIndex:(int)groupIndex
+    isPinnedGroup:(BOOL)isPinnedGroup
+    nextGroupCoord:(int)grp_next_y
+    yPos:(int)y
+    viewportY:(CGFloat)viewportY
+    clipRegion:(NSRect)clip {
     int x = 0;
     id<DdbListviewDelegate> delegate = self.delegate;
 
     int title_height = [self grouptitle_height];
     for (DdbListviewCol_t col = [self.delegate firstColumn];
-         col != [self.delegate invalidColumn];
-         col = [self.delegate nextColumn:col]) {
+            col != [self.delegate invalidColumn];
+            col = [self.delegate nextColumn:col]) {
 
         int w = [self.delegate columnWidth:col];
 
@@ -488,8 +488,8 @@ static int grouptitleheight = 22;
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
     if ((event.type == NSEventTypeRightMouseDown || event.type == NSEventTypeLeftMouseDown)
-        && (event.buttonNumber == 1
-            || (event.buttonNumber == 0 && (event.modifierFlags & NSEventModifierFlagControl))))
+            && (event.buttonNumber == 1
+                || (event.buttonNumber == 0 && (event.modifierFlags & NSEventModifierFlagControl))))
     {
         if (event.buttonNumber == 0) {
             // ctrl+click blocks the mouseDown handler, do it now
@@ -659,7 +659,7 @@ static int grouptitleheight = 22;
 {
     NSPoint dragLocation;
     dragLocation=[self convertPoint:[event locationInWindow]
-                           fromView:nil];
+                       fromView:nil];
 
     [self listMouseDragged:event];
 
@@ -875,7 +875,7 @@ static int grouptitleheight = 22;
         // clicked specific item - select, or start drag-n-drop
         DdbListviewRow_t it = [_delegate rowForIndex:sel];
         if (it == [_delegate invalidRow] || ![_delegate rowSelected:it]
-            || (![_delegate hasDND] && button == 1)) // HACK: don't reset selection by right click in search window
+                || (![_delegate hasDND] && button == 1)) // HACK: don't reset selection by right click in search window
         {
             // reset selection, and set it to single item
             [self selectSingle:sel];
@@ -993,45 +993,45 @@ static int grouptitleheight = 22;
         keyChar = [theArrow characterAtIndex:0];
 
         switch (keyChar) {
-            case NSDownArrowFunctionKey:
-                if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
-                    cursor = [_delegate rowCount]-1;
+        case NSDownArrowFunctionKey:
+            if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
+                cursor = [_delegate rowCount]-1;
+            }
+            else {
+                if (cursor < [_delegate rowCount]-1) {
+                    cursor++;
                 }
-                else {
-                    if (cursor < [_delegate rowCount]-1) {
-                        cursor++;
-                    }
+            }
+            break;
+        case NSUpArrowFunctionKey:
+            if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
+                cursor = 0;
+            }
+            else {
+                if (cursor > 0) {
+                    cursor--;
                 }
-                break;
-            case NSUpArrowFunctionKey:
-                if (theEvent.modifierFlags & NSEventModifierFlagCommand) {
+                else if (cursor < 0 && [_delegate rowCount] > 0) {
                     cursor = 0;
                 }
-                else {
-                    if (cursor > 0) {
-                        cursor--;
-                    }
-                    else if (cursor < 0 && [_delegate rowCount] > 0) {
-                            cursor = 0;
-                    }
-                }
-                break;
-            case NSPageDownFunctionKey: {
-                [self scrollPoint:NSMakePoint(vis.origin.x, vis.origin.y + vis.size.height - rowheight)];
-                break;
             }
-            case NSPageUpFunctionKey:
-                [self scrollPoint:NSMakePoint(vis.origin.x, vis.origin.y - vis.size.height + rowheight)];
-                break;
-            case NSHomeFunctionKey:
-                [self scrollPoint:NSMakePoint(vis.origin.x, 0)];
-                break;
-            case NSEndFunctionKey:
-                [self scrollPoint:NSMakePoint(vis.origin.x, (self.frame.size.height - sv.contentSize.height))];
-                break;
-            default:
-                [super keyDown:theEvent];
-                return;
+            break;
+        case NSPageDownFunctionKey: {
+            [self scrollPoint:NSMakePoint(vis.origin.x, vis.origin.y + vis.size.height - rowheight)];
+            break;
+        }
+        case NSPageUpFunctionKey:
+            [self scrollPoint:NSMakePoint(vis.origin.x, vis.origin.y - vis.size.height + rowheight)];
+            break;
+        case NSHomeFunctionKey:
+            [self scrollPoint:NSMakePoint(vis.origin.x, 0)];
+            break;
+        case NSEndFunctionKey:
+            [self scrollPoint:NSMakePoint(vis.origin.x, (self.frame.size.height - sv.contentSize.height))];
+            break;
+        default:
+            [super keyDown:theEvent];
+            return;
         }
 
         if ([theEvent modifierFlags] & NSEventModifierFlagShift) {

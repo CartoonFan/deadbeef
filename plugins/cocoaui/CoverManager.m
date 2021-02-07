@@ -103,7 +103,7 @@ static void cover_loaded_callback (int error, ddb_cover_query_t *query, ddb_cove
         img = [cm defaultCover];
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^ {
         if (img) {
             [cm addCoverForTrack:query->track withImage:img];
             cover_callback_info_t *info = query->user_data;

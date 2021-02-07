@@ -145,7 +145,7 @@ pnull_thread (void *context) {
             usleep (10000);
             continue;
         }
-        
+
         char buf[4096];
         pnull_callback (buf, 1024);
         usleep(1);
@@ -195,7 +195,7 @@ static DB_output_t plugin = {
     .plugin.id = "nullout",
     .plugin.name = "Null output plugin",
     .plugin.descr = "This plugin takes the audio data, and discards it,\nso nothing will play.\nThis is useful for testing.",
-    .plugin.copyright = 
+    .plugin.copyright =
     "Null output plugin for DeaDBeeF Player\n"
     "Copyright (C) 2009-2014 Alexey Yakovenko\n"
     "\n"

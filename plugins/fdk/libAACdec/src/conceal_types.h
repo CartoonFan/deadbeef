@@ -120,83 +120,83 @@ amm-info@iis.fraunhofer.de
 
 /* Warning: Do not ever change these values. */
 typedef enum {
-  ConcealMethodNone = -1,
-  ConcealMethodMute = 0,
-  ConcealMethodNoise = 1,
-  ConcealMethodInter = 2,
-  ConcealMethodTonal = 3
+    ConcealMethodNone = -1,
+    ConcealMethodMute = 0,
+    ConcealMethodNoise = 1,
+    ConcealMethodInter = 2,
+    ConcealMethodTonal = 3
 
 } CConcealmentMethod;
 
 typedef enum {
-  ConcealState_Ok,
-  ConcealState_Single,
-  ConcealState_FadeIn,
-  ConcealState_Mute,
-  ConcealState_FadeOut
+    ConcealState_Ok,
+    ConcealState_Single,
+    ConcealState_FadeIn,
+    ConcealState_Mute,
+    ConcealState_FadeOut
 
 } CConcealmentState;
 
 typedef struct {
-  FIXP_SGL fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
-  FIXP_SGL fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+    FIXP_SGL fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+    FIXP_SGL fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
 
-  CConcealmentMethod method;
+    CConcealmentMethod method;
 
-  int numFadeOutFrames;
-  int numFadeInFrames;
-  int numMuteReleaseFrames;
-  FIXP_DBL comfortNoiseLevel;
+    int numFadeOutFrames;
+    int numFadeInFrames;
+    int numMuteReleaseFrames;
+    FIXP_DBL comfortNoiseLevel;
 
 } CConcealParams;
 
 typedef enum {
-  FADE_TIMEDOMAIN_TOSPECTRALMUTE = 1,
-  FADE_TIMEDOMAIN_FROMSPECTRALMUTE,
-  FADE_TIMEDOMAIN
+    FADE_TIMEDOMAIN_TOSPECTRALMUTE = 1,
+    FADE_TIMEDOMAIN_FROMSPECTRALMUTE,
+    FADE_TIMEDOMAIN
 } TDfadingType;
 
 typedef struct {
-  CConcealParams *pConcealParams;
+    CConcealParams *pConcealParams;
 
-  FIXP_CNCL spectralCoefficient[1024];
-  SHORT specScale[8];
+    FIXP_CNCL spectralCoefficient[1024];
+    SHORT specScale[8];
 
-  INT iRandomPhase;
-  INT prevFrameOk[2];
-  INT cntValidFrames;
-  INT cntFadeFrames; /* State for signal fade-in/out */
-  /* States for signal fade-out of frames with more than one window/subframe -
-    [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used
-    by FadeOut mode */
-  int winGrpOffset[2]; /* State for signal fade-out of frames with more than one
+    INT iRandomPhase;
+    INT prevFrameOk[2];
+    INT cntValidFrames;
+    INT cntFadeFrames; /* State for signal fade-in/out */
+    /* States for signal fade-out of frames with more than one window/subframe -
+      [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used
+      by FadeOut mode */
+    int winGrpOffset[2]; /* State for signal fade-out of frames with more than one
                           window/subframe */
-  int attGrpOffset[2]; /* State for faster signal fade-out of frames with
+    int attGrpOffset[2]; /* State for faster signal fade-out of frames with
                           transient signal parts */
 
-  SCHAR lastRenderMode;
+    SCHAR lastRenderMode;
 
-  UCHAR windowShape;
-  BLOCK_TYPE windowSequence;
-  UCHAR lastWinGrpLen;
+    UCHAR windowShape;
+    BLOCK_TYPE windowSequence;
+    UCHAR lastWinGrpLen;
 
-  CConcealmentState concealState;
-  CConcealmentState concealState_old;
-  FIXP_DBL fade_old;           /* last fading factor */
-  TDfadingType lastFadingType; /* last fading type */
+    CConcealmentState concealState;
+    CConcealmentState concealState_old;
+    FIXP_DBL fade_old;           /* last fading factor */
+    TDfadingType lastFadingType; /* last fading type */
 
-  SHORT aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
-  UCHAR aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
-  SCHAR rvlcPreviousScaleFactorOK;
-  SCHAR rvlcPreviousBlockType;
+    SHORT aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
+    UCHAR aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
+    SCHAR rvlcPreviousScaleFactorOK;
+    SCHAR rvlcPreviousBlockType;
 
-  FIXP_LPC lsf4[M_LP_FILTER_ORDER];
-  FIXP_DBL last_tcx_gain;
-  INT last_tcx_gain_e;
-  ULONG TDNoiseSeed;
-  FIXP_PCM TDNoiseStates[3];
-  FIXP_SGL TDNoiseCoef[3];
-  FIXP_SGL TDNoiseAtt;
+    FIXP_LPC lsf4[M_LP_FILTER_ORDER];
+    FIXP_DBL last_tcx_gain;
+    INT last_tcx_gain_e;
+    ULONG TDNoiseSeed;
+    FIXP_PCM TDNoiseStates[3];
+    FIXP_SGL TDNoiseCoef[3];
+    FIXP_SGL TDNoiseAtt;
 
 } CConcealmentInfo;
 

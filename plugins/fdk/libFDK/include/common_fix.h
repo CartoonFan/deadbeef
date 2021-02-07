@@ -235,71 +235,109 @@ typedef LONG FIXP_DBL;
 /* ############################################################# */
 #include "fixmul.h"
 
-FDK_INLINE LONG fMult(SHORT a, SHORT b) { return fixmul_SS(a, b); }
-FDK_INLINE LONG fMult(SHORT a, LONG b) { return fixmul_SD(a, b); }
-FDK_INLINE LONG fMult(LONG a, SHORT b) { return fixmul_DS(a, b); }
-FDK_INLINE LONG fMult(LONG a, LONG b) { return fixmul_DD(a, b); }
-FDK_INLINE LONG fPow2(LONG a) { return fixpow2_D(a); }
-FDK_INLINE LONG fPow2(SHORT a) { return fixpow2_S(a); }
+FDK_INLINE LONG fMult(SHORT a, SHORT b) {
+    return fixmul_SS(a, b);
+}
+FDK_INLINE LONG fMult(SHORT a, LONG b) {
+    return fixmul_SD(a, b);
+}
+FDK_INLINE LONG fMult(LONG a, SHORT b) {
+    return fixmul_DS(a, b);
+}
+FDK_INLINE LONG fMult(LONG a, LONG b) {
+    return fixmul_DD(a, b);
+}
+FDK_INLINE LONG fPow2(LONG a) {
+    return fixpow2_D(a);
+}
+FDK_INLINE LONG fPow2(SHORT a) {
+    return fixpow2_S(a);
+}
 
-FDK_INLINE LONG fMultDiv2(SHORT a, SHORT b) { return fixmuldiv2_SS(a, b); }
-FDK_INLINE LONG fMultDiv2(SHORT a, LONG b) { return fixmuldiv2_SD(a, b); }
-FDK_INLINE LONG fMultDiv2(LONG a, SHORT b) { return fixmuldiv2_DS(a, b); }
-FDK_INLINE LONG fMultDiv2(LONG a, LONG b) { return fixmuldiv2_DD(a, b); }
-FDK_INLINE LONG fPow2Div2(LONG a) { return fixpow2div2_D(a); }
-FDK_INLINE LONG fPow2Div2(SHORT a) { return fixpow2div2_S(a); }
+FDK_INLINE LONG fMultDiv2(SHORT a, SHORT b) {
+    return fixmuldiv2_SS(a, b);
+}
+FDK_INLINE LONG fMultDiv2(SHORT a, LONG b) {
+    return fixmuldiv2_SD(a, b);
+}
+FDK_INLINE LONG fMultDiv2(LONG a, SHORT b) {
+    return fixmuldiv2_DS(a, b);
+}
+FDK_INLINE LONG fMultDiv2(LONG a, LONG b) {
+    return fixmuldiv2_DD(a, b);
+}
+FDK_INLINE LONG fPow2Div2(LONG a) {
+    return fixpow2div2_D(a);
+}
+FDK_INLINE LONG fPow2Div2(SHORT a) {
+    return fixpow2div2_S(a);
+}
 
 FDK_INLINE LONG fMultDiv2BitExact(LONG a, LONG b) {
-  return fixmuldiv2BitExact_DD(a, b);
+    return fixmuldiv2BitExact_DD(a, b);
 }
 FDK_INLINE LONG fMultDiv2BitExact(SHORT a, LONG b) {
-  return fixmuldiv2BitExact_SD(a, b);
+    return fixmuldiv2BitExact_SD(a, b);
 }
 FDK_INLINE LONG fMultDiv2BitExact(LONG a, SHORT b) {
-  return fixmuldiv2BitExact_DS(a, b);
+    return fixmuldiv2BitExact_DS(a, b);
 }
 FDK_INLINE LONG fMultBitExact(LONG a, LONG b) {
-  return fixmulBitExact_DD(a, b);
+    return fixmulBitExact_DD(a, b);
 }
 FDK_INLINE LONG fMultBitExact(SHORT a, LONG b) {
-  return fixmulBitExact_SD(a, b);
+    return fixmulBitExact_SD(a, b);
 }
 FDK_INLINE LONG fMultBitExact(LONG a, SHORT b) {
-  return fixmulBitExact_DS(a, b);
+    return fixmulBitExact_DS(a, b);
 }
 
 /* ********************************************************************************
  */
 #include "abs.h"
 
-FDK_INLINE FIXP_DBL fAbs(FIXP_DBL x) { return fixabs_D(x); }
-FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
+FDK_INLINE FIXP_DBL fAbs(FIXP_DBL x) {
+    return fixabs_D(x);
+}
+FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) {
+    return fixabs_S(x);
+}
 
 #if !defined(__LP64__)
-FDK_INLINE INT fAbs(INT x) { return fixabs_I(x); }
+FDK_INLINE INT fAbs(INT x) {
+    return fixabs_I(x);
+}
 #endif
 
-  /* ********************************************************************************
-   */
+/* ********************************************************************************
+ */
 
 #include "clz.h"
 
 FDK_INLINE INT fNormz(INT64 x) {
-  INT clz = fixnormz_D((INT)(x >> 32));
-  if (clz == 32) clz += fixnormz_D((INT)x);
-  return clz;
+    INT clz = fixnormz_D((INT)(x >> 32));
+    if (clz == 32) clz += fixnormz_D((INT)x);
+    return clz;
 }
-FDK_INLINE INT fNormz(FIXP_DBL x) { return fixnormz_D(x); }
-FDK_INLINE INT fNormz(FIXP_SGL x) { return fixnormz_S(x); }
-FDK_INLINE INT fNorm(FIXP_DBL x) { return fixnorm_D(x); }
-FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
+FDK_INLINE INT fNormz(FIXP_DBL x) {
+    return fixnormz_D(x);
+}
+FDK_INLINE INT fNormz(FIXP_SGL x) {
+    return fixnormz_S(x);
+}
+FDK_INLINE INT fNorm(FIXP_DBL x) {
+    return fixnorm_D(x);
+}
+FDK_INLINE INT fNorm(FIXP_SGL x) {
+    return fixnorm_S(x);
+}
 
-  /* ********************************************************************************
-   */
-  /* ********************************************************************************
-   */
-  /* ********************************************************************************
-   */
+/* ********************************************************************************
+ */
+/* ********************************************************************************
+ */
+/* ********************************************************************************
+ */
 
 #include "clz.h"
 #define fixp_abs(x) fAbs(x)
@@ -312,132 +350,152 @@ FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 
 /* y = (x+0.5*a*b) */
 FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmadddiv2_DD(x, a, b);
+    return fixmadddiv2_DD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmadddiv2_SD(x, a, b);
+    return fixmadddiv2_SD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmadddiv2_DS(x, a, b);
+    return fixmadddiv2_DS(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
-  return fixmadddiv2_SS(x, a, b);
+    return fixmadddiv2_SS(x, a, b);
 }
 
 FDK_INLINE FIXP_DBL fPow2AddDiv2(FIXP_DBL x, FIXP_DBL a) {
-  return fixpadddiv2_D(x, a);
+    return fixpadddiv2_D(x, a);
 }
 FDK_INLINE FIXP_DBL fPow2AddDiv2(FIXP_DBL x, FIXP_SGL a) {
-  return fixpadddiv2_S(x, a);
+    return fixpadddiv2_S(x, a);
 }
 
 /* y = 2*(x+0.5*a*b) = (2x+a*b) */
 FDK_INLINE FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmadd_DD(x, a, b);
+    return fixmadd_DD(x, a, b);
 }
 inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmadd_SD(x, a, b);
+    return fixmadd_SD(x, a, b);
 }
 inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmadd_DS(x, a, b);
+    return fixmadd_DS(x, a, b);
 }
 inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
-  return fixmadd_SS(x, a, b);
+    return fixmadd_SS(x, a, b);
 }
 
-inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_DBL a) { return fixpadd_D(x, a); }
-inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_SGL a) { return fixpadd_S(x, a); }
+inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_DBL a) {
+    return fixpadd_D(x, a);
+}
+inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_SGL a) {
+    return fixpadd_S(x, a);
+}
 
 /* y = (x-0.5*a*b) */
 inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmsubdiv2_DD(x, a, b);
+    return fixmsubdiv2_DD(x, a, b);
 }
 inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmsubdiv2_SD(x, a, b);
+    return fixmsubdiv2_SD(x, a, b);
 }
 inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmsubdiv2_DS(x, a, b);
+    return fixmsubdiv2_DS(x, a, b);
 }
 inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
-  return fixmsubdiv2_SS(x, a, b);
+    return fixmsubdiv2_SS(x, a, b);
 }
 
 /* y = 2*(x-0.5*a*b) = (2*x-a*b) */
 FDK_INLINE FIXP_DBL fMultSub(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmsub_DD(x, a, b);
+    return fixmsub_DD(x, a, b);
 }
 inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmsub_SD(x, a, b);
+    return fixmsub_SD(x, a, b);
 }
 inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmsub_DS(x, a, b);
+    return fixmsub_DS(x, a, b);
 }
 inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
-  return fixmsub_SS(x, a, b);
+    return fixmsub_SS(x, a, b);
 }
 
 FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmadddiv2BitExact_DD(x, a, b);
+    return fixmadddiv2BitExact_DD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmadddiv2BitExact_SD(x, a, b);
+    return fixmadddiv2BitExact_SD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmadddiv2BitExact_DS(x, a, b);
+    return fixmadddiv2BitExact_DS(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
-  return fixmsubdiv2BitExact_DD(x, a, b);
+    return fixmsubdiv2BitExact_DD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
-  return fixmsubdiv2BitExact_SD(x, a, b);
+    return fixmsubdiv2BitExact_SD(x, a, b);
 }
 FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
-  return fixmsubdiv2BitExact_DS(x, a, b);
+    return fixmsubdiv2BitExact_DS(x, a, b);
 }
 
 #include "fixminmax.h"
 
-FDK_INLINE FIXP_DBL fMin(FIXP_DBL a, FIXP_DBL b) { return fixmin_D(a, b); }
-FDK_INLINE FIXP_DBL fMax(FIXP_DBL a, FIXP_DBL b) { return fixmax_D(a, b); }
+FDK_INLINE FIXP_DBL fMin(FIXP_DBL a, FIXP_DBL b) {
+    return fixmin_D(a, b);
+}
+FDK_INLINE FIXP_DBL fMax(FIXP_DBL a, FIXP_DBL b) {
+    return fixmax_D(a, b);
+}
 
-FDK_INLINE FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
-FDK_INLINE FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
+FDK_INLINE FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) {
+    return fixmin_S(a, b);
+}
+FDK_INLINE FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) {
+    return fixmax_S(a, b);
+}
 
 #if !defined(__LP64__)
-FDK_INLINE INT fMax(INT a, INT b) { return fixmax_I(a, b); }
-FDK_INLINE INT fMin(INT a, INT b) { return fixmin_I(a, b); }
+FDK_INLINE INT fMax(INT a, INT b) {
+    return fixmax_I(a, b);
+}
+FDK_INLINE INT fMin(INT a, INT b) {
+    return fixmin_I(a, b);
+}
 #endif
 
-inline UINT fMax(UINT a, UINT b) { return fixmax_UI(a, b); }
-inline UINT fMin(UINT a, UINT b) { return fixmin_UI(a, b); }
+inline UINT fMax(UINT a, UINT b) {
+    return fixmax_UI(a, b);
+}
+inline UINT fMin(UINT a, UINT b) {
+    return fixmin_UI(a, b);
+}
 
 inline UCHAR fMax(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmax_UI((UINT)a, (UINT)b);
+    return (UCHAR)fixmax_UI((UINT)a, (UINT)b);
 }
 inline UCHAR fMin(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmin_UI((UINT)a, (UINT)b);
+    return (UCHAR)fixmin_UI((UINT)a, (UINT)b);
 }
 
 /* Complex data types */
 typedef shouldBeUnion {
-  /* vector representation for arithmetic */
-  struct {
-    FIXP_SGL re;
-    FIXP_SGL im;
-  } v;
-  /* word representation for memory move */
-  LONG w;
+    /* vector representation for arithmetic */
+    struct {
+        FIXP_SGL re;
+        FIXP_SGL im;
+    } v;
+    /* word representation for memory move */
+    LONG w;
 }
 FIXP_SPK;
 
 typedef shouldBeUnion {
-  /* vector representation for arithmetic */
-  struct {
-    FIXP_DBL re;
-    FIXP_DBL im;
-  } v;
-  /* word representation for memory move */
-  INT64 w;
+    /* vector representation for arithmetic */
+    struct {
+        FIXP_DBL re;
+        FIXP_DBL im;
+    } v;
+    /* word representation for memory move */
+    INT64 w;
 }
 FIXP_DPK;
 

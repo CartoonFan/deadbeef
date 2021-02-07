@@ -220,12 +220,12 @@ gtkui_run_preferences_dlg (void) {
     preferences_fill_soundcards ();
 
     g_signal_connect ((gpointer) combobox, "changed",
-            G_CALLBACK (on_pref_output_plugin_changed),
-            NULL);
+                      G_CALLBACK (on_pref_output_plugin_changed),
+                      NULL);
     GtkWidget *pref_soundcard = lookup_widget (prefwin, "pref_soundcard");
     g_signal_connect ((gpointer) pref_soundcard, "changed",
-            G_CALLBACK (on_pref_soundcard_changed),
-            NULL);
+                      G_CALLBACK (on_pref_soundcard_changed),
+                      NULL);
 
     // 8_to_16
     set_toggle_button("convert8to16", deadbeef->conf_get_int ("streamer.8_to_16", 1));
@@ -273,13 +273,13 @@ gtkui_run_preferences_dlg (void) {
 
     // preamp without rg
     set_scale("global_preamp", deadbeef->conf_get_int ("replaygain.preamp_without_rg", 0));
-    
+
     // dsp
     dsp_setup_init (prefwin);
 
     // minimize_on_startup
     set_toggle_button("minimize_on_startup", deadbeef->conf_get_int ("gtkui.start_hidden", 0));
-    
+
     // close_send_to_tray
     set_toggle_button("pref_close_send_to_tray", deadbeef->conf_get_int ("close_send_to_tray", 0));
 
@@ -294,7 +294,7 @@ gtkui_run_preferences_dlg (void) {
 
     // hide_delete_from_disk
     set_toggle_button("hide_delete_from_disk", deadbeef->conf_get_int ("gtkui.hide_remove_from_disk", 0));
-    
+
     // play next song when currently played is deleted
     set_toggle_button("skip_deleted_songs", deadbeef->conf_get_int ("gtkui.skip_deleted_songs", 0));
 
@@ -431,8 +431,8 @@ gtkui_run_preferences_dlg (void) {
     GtkCellRenderer *rend_toggle = gtk_cell_renderer_toggle_new ();
     GtkListStore *store = gtk_list_store_new (3, G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_BOOLEAN);
     g_signal_connect ((gpointer)rend_toggle, "toggled",
-            G_CALLBACK (on_plugin_active_toggled),
-            store);
+                      G_CALLBACK (on_plugin_active_toggled),
+                      store);
     GtkTreeViewColumn *col1 = gtk_tree_view_column_new_with_attributes ("Active", rend_toggle, "active", 0, "activatable", 2, NULL);
     GtkTreeViewColumn *col2 = gtk_tree_view_column_new_with_attributes ("Title", rend_text, "text", 1, NULL);
     gtk_tree_view_append_column (tree, col1);
@@ -588,7 +588,7 @@ on_global_preamp_value_changed     (GtkRange        *range,
 
 void
 on_minimize_on_startup_clicked     (GtkButton       *button,
-                                   gpointer         user_data)
+                                    gpointer         user_data)
 {
     int active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
     deadbeef->conf_set_int ("gtkui.start_hidden", active);
@@ -967,7 +967,7 @@ on_listview_playing_text_bold_toggled  (GtkToggleButton *togglebutton,
 
 void
 on_listview_playing_text_italic_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+        gpointer         user_data)
 {
     gtkui_italic_current_track = font_style_set_helper (togglebutton, "gtkui.italic_current_track");
 }
@@ -981,7 +981,7 @@ on_listview_selected_text_bold_toggled (GtkToggleButton *togglebutton,
 
 void
 on_listview_selected_text_italic_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+        gpointer         user_data)
 {
     gtkui_italic_selected_tracks = font_style_set_helper (togglebutton, "gtkui.italic_selected_tracks");
 }
@@ -1176,8 +1176,8 @@ on_enable_cp936_recoding_toggled       (GtkToggleButton *togglebutton,
 
 void
 on_auto_name_playlist_from_folder_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+(GtkToggleButton *togglebutton,
+ gpointer         user_data)
 {
     int active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (togglebutton));
     deadbeef->conf_set_int ("gtkui.name_playlist_from_folder", active);
@@ -1267,7 +1267,7 @@ on_gui_plugin_changed                  (GtkComboBox     *combobox,
 
 void
 on_gui_fps_value_changed           (GtkRange        *range,
-                                        gpointer         user_data)
+                                    gpointer         user_data)
 {
     int val = gtk_range_get_value (range);
     deadbeef->conf_set_int ("gtkui.refresh_rate", val);
@@ -1308,7 +1308,7 @@ on_convert8to16_toggled                (GtkToggleButton *togglebutton,
 
 void
 on_convert16to24_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+        gpointer         user_data)
 {
     deadbeef->conf_set_int ("streamer.16_to_24", gtk_toggle_button_get_active (togglebutton));
     deadbeef->sendmessage (DB_EV_CONFIGCHANGED, 0, 0, 0);
@@ -1339,8 +1339,8 @@ on_display_seltime_toggled             (GtkToggleButton *togglebutton,
 
 void
 on_listview_group_spacing_value_changed
-                                        (GtkSpinButton   *spinbutton,
-                                        gpointer         user_data)
+(GtkSpinButton   *spinbutton,
+ gpointer         user_data)
 {
     deadbeef->conf_set_int ("playlist.groups.spacing", gtk_spin_button_get_value_as_int (spinbutton));
     deadbeef->sendmessage (DB_EV_CONFIGCHANGED, (uintptr_t)"playlist.groups.spacing", 0, 0);

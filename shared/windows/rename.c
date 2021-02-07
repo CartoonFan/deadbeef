@@ -25,7 +25,7 @@
 #include <windows.h>
 #include "utils.h"
 
-int rename_windows(const char * oldfile_c, const char * newfile_c){
+int rename_windows(const char * oldfile_c, const char * newfile_c) {
     // early stage validation
     if (!oldfile_c || !newfile_c || !oldfile_c[0] || !newfile_c[0]) {
         return -1;
@@ -72,7 +72,7 @@ int rename_windows(const char * oldfile_c, const char * newfile_c){
         }
     }
     int ret = ReplaceFileW (newfile_w, oldfile_w, NULL, 0, /*reserved for future use ...*/0,/*xd*/0);
-    if (!ret){
+    if (!ret) {
         return -1;
     }
     return 0;

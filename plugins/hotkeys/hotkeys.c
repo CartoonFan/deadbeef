@@ -67,7 +67,7 @@ typedef struct {
 #define KEY(kname, kcode) { .name=kname, .keysym=kcode},
 
 static xkey_t keys[] = {
-    #include "keysyms.inc"
+#include "keysyms.inc"
 };
 
 typedef struct command_s {
@@ -257,9 +257,9 @@ read_config (Display *disp) {
 #define Mod3Mask        (1<<5)
 #define Mod4Mask        (1<<6)
 #define Mod5Mask        (1<<7)
-    int ks_per_kk = -1;
-    int first_kk = -1, last_kk = -1;
-    int* syms = NULL;
+int ks_per_kk = -1;
+int first_kk = -1, last_kk = -1;
+int* syms = NULL;
 static int
 read_config (void) {
 #endif
@@ -477,7 +477,7 @@ hotkeys_event_loop (void *unused) {
                 trace ("filtered state=%X\n", state);
                 for (i = 0; i < command_count; i++) {
                     if ( (event.xkey.keycode == commands[ i ].x11_keycode) &&
-                         (state == commands[ i ].modifier))
+                            (state == commands[ i ].modifier))
                     {
                         trace ("matches to commands[%d]!\n", i);
                         cmd_invoke_plugin_command (commands[i].action, commands[i].ctx);
@@ -1283,30 +1283,30 @@ static DB_hotkeys_plugin_t plugin = {
     .misc.plugin.id = "hotkeys",
     .misc.plugin.name = "Hotkey manager",
     .misc.plugin.descr =
-        "Manages local and global hotkeys, and executes actions when the assigned key combinations are pressed\n\n"
-        "This plugin has its own API, to allow 3rd party GUI plugins to reuse the code.\n"
-        "Check the plugins/hotkeys/hotkeys.h in the source tree if you need this.\n\n"
-        "Changes in version 1.1\n"
-        "    * adaptation to new deadbeef 0.6 plugin API\n"
-        "    * added local hotkeys support\n"
+    "Manages local and global hotkeys, and executes actions when the assigned key combinations are pressed\n\n"
+    "This plugin has its own API, to allow 3rd party GUI plugins to reuse the code.\n"
+    "Check the plugins/hotkeys/hotkeys.h in the source tree if you need this.\n\n"
+    "Changes in version 1.1\n"
+    "    * adaptation to new deadbeef 0.6 plugin API\n"
+    "    * added local hotkeys support\n"
     ,
-    .misc.plugin.copyright = 
-        "Copyright (C) 2012-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
-        "\n"
-        "This program is free software; you can redistribute it and/or\n"
-        "modify it under the terms of the GNU General Public License\n"
-        "as published by the Free Software Foundation; either version 2\n"
-        "of the License, or (at your option) any later version.\n"
-        "\n"
-        "This program is distributed in the hope that it will be useful,\n"
-        "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-        "GNU General Public License for more details.\n"
-        "\n"
-        "You should have received a copy of the GNU General Public License\n"
-        "along with this program; if not, write to the Free Software\n"
-        "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+    .misc.plugin.copyright =
+    "Copyright (C) 2012-2013 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
+    "\n"
+    "This program is free software; you can redistribute it and/or\n"
+    "modify it under the terms of the GNU General Public License\n"
+    "as published by the Free Software Foundation; either version 2\n"
+    "of the License, or (at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with this program; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
     ,
     .misc.plugin.website = "http://deadbeef.sf.net",
     .misc.plugin.get_actions = hotkeys_get_actions,

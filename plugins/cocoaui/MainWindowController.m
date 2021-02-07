@@ -159,8 +159,8 @@ extern DB_functions_t *deadbeef;
 
     __weak MainWindowController *weakself = self;
     _updateTimer = [NSTimer timerWithTimeInterval:1.0f/10.0f repeats:YES block:^(NSTimer * _Nonnull timer) {
-        MainWindowController *strongself = weakself;
-        if (strongself) {
+                MainWindowController *strongself = weakself;
+                if (strongself) {
             [self frameUpdate];
         }
     }];
@@ -176,7 +176,7 @@ static char sb_text[512];
 - (void)updateSonginfo {
     DB_output_t *output = deadbeef->get_output ();
     char sbtext_new[512] = "-";
-    
+
     float pl_totaltime = roundf(deadbeef->pl_get_totaltime ());
     int daystotal = (int)pl_totaltime / (3600*24);
     int hourtotal = ((int)pl_totaltime / 3600) % 24;
@@ -193,9 +193,9 @@ static char sb_text[512];
     else {
         snprintf (totaltime_str, sizeof (totaltime_str), _("%d days %d:%02d:%02d"), daystotal, hourtotal, mintotal, sectotal);
     }
-    
+
     DB_playItem_t *track = deadbeef->streamer_get_playing_track ();
-    
+
     if (!output || (output->state () == DDB_PLAYBACK_STATE_STOPPED || !track)) {
         snprintf (sbtext_new, sizeof (sbtext_new), _("Stopped | %d tracks | %s total playtime"), deadbeef->pl_getcount (PL_MAIN), totaltime_str);
     }
@@ -210,12 +210,12 @@ static char sb_text[512];
         deadbeef->tf_eval (&ctx, _statusbar_playing_script, buffer, sizeof (buffer));
         snprintf (sbtext_new, sizeof (sbtext_new), "%s | %d tracks | %s total playtime", buffer, deadbeef->pl_getcount (PL_MAIN), totaltime_str);
     }
-    
+
     if (strcmp (sbtext_new, sb_text)) {
         strcpy (sb_text, sbtext_new);
         self.statusBar.stringValue = [NSString stringWithUTF8String:sb_text];
     }
-    
+
     if (track) {
         deadbeef->pl_item_unref (track);
     }
@@ -300,23 +300,23 @@ static char sb_text[512];
 
 - (IBAction)tbClicked:(id)sender {
     NSInteger selectedSegment = [sender selectedSegment];
-    
+
     switch (selectedSegment) {
-        case 0:
-            deadbeef->sendmessage(DB_EV_PREV, 0, 0, 0);
-            break;
-        case 1:
-            deadbeef->sendmessage(DB_EV_PLAY_CURRENT, 0, 0, 0);
-            break;
-        case 2:
-            deadbeef->sendmessage(DB_EV_TOGGLE_PAUSE, 0, 0, 0);
-            break;
-        case 3:
-            deadbeef->sendmessage(DB_EV_STOP, 0, 0, 0);
-            break;
-        case 4:
-            deadbeef->sendmessage(DB_EV_NEXT, 0, 0, 0);
-            break;
+    case 0:
+        deadbeef->sendmessage(DB_EV_PREV, 0, 0, 0);
+        break;
+    case 1:
+        deadbeef->sendmessage(DB_EV_PLAY_CURRENT, 0, 0, 0);
+        break;
+    case 2:
+        deadbeef->sendmessage(DB_EV_TOGGLE_PAUSE, 0, 0, 0);
+        break;
+    case 3:
+        deadbeef->sendmessage(DB_EV_STOP, 0, 0, 0);
+        break;
+    case 4:
+        deadbeef->sendmessage(DB_EV_NEXT, 0, 0, 0);
+        break;
     }
 }
 

@@ -24,7 +24,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-    #include "../../config.h"
+#include "../../config.h"
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,10 +38,10 @@
 #include <errno.h>
 #include <sys/stat.h>
 #ifdef __linux__
-    #include <sys/prctl.h>
+#include <sys/prctl.h>
 #endif
 #if HAVE_SYS_CDEFS_H
-    #include <sys/cdefs.h>
+#include <sys/cdefs.h>
 #endif
 #include <limits.h>
 #include "../../deadbeef.h"
@@ -90,10 +90,10 @@ int artwork_save_to_music_folders = DEFAULT_SAVE_TO_MUSIC_FOLDERS;
 static int artwork_enable_embedded;
 static int artwork_enable_local;
 #ifdef USE_VFS_CURL
-    static int artwork_enable_lfm;
-    static int artwork_enable_mb;
-    static int artwork_enable_aao;
-    static int artwork_enable_wos;
+static int artwork_enable_lfm;
+static int artwork_enable_mb;
+static int artwork_enable_aao;
+static int artwork_enable_wos;
 #endif
 static int scale_towards_longer;
 static int missing_artwork;
@@ -910,7 +910,7 @@ process_query (ddb_cover_info_t *cover)
 static void
 queue_clear (void) {
     artwork_abort_http_request ();
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         cancellation_idx = last_job_idx++;
     });
 }
@@ -996,7 +996,7 @@ static void
 cover_get (ddb_cover_query_t *query, ddb_cover_callback_t callback) {
     __block int cancel_query = 0;
     __block int64_t job_idx = 0;
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         if (terminate) {
             cancel_query = 1;
             return;
@@ -1010,7 +1010,7 @@ cover_get (ddb_cover_query_t *query, ddb_cover_callback_t callback) {
         return;
     }
 
-    dispatch_async(fetch_queue, ^{
+    dispatch_async(fetch_queue, ^ {
         if (!query->track) {
             callback (-1, query, NULL);
             return;
@@ -1175,18 +1175,18 @@ artwork_configchanged (void)
     }
 
     if (old_artwork_enable_embedded != artwork_enable_embedded ||
-        old_artwork_enable_local != artwork_enable_local ||
+            old_artwork_enable_local != artwork_enable_local ||
 #ifdef USE_VFS_CURL
-        old_artwork_enable_lfm != artwork_enable_lfm ||
-        old_artwork_enable_mb != artwork_enable_mb ||
-        old_artwork_enable_aao != artwork_enable_aao ||
-        old_artwork_enable_wos != artwork_enable_wos ||
+            old_artwork_enable_lfm != artwork_enable_lfm ||
+            old_artwork_enable_mb != artwork_enable_mb ||
+            old_artwork_enable_aao != artwork_enable_aao ||
+            old_artwork_enable_wos != artwork_enable_wos ||
 #endif
-        strcmp(old_artwork_filemask, artwork_filemask) ||
-        strcmp(old_artwork_folders, artwork_folders)
-        ) {
+            strcmp(old_artwork_filemask, artwork_filemask) ||
+            strcmp(old_artwork_folders, artwork_folders)
+       ) {
 
-        dispatch_async(fetch_queue, ^{
+        dispatch_async(fetch_queue, ^ {
             /* All artwork is now (including this second) obsolete */
             deadbeef->conf_set_int64 ("artwork.cache_reset_time", cache_reset_time);
             deadbeef->sendmessage (DB_EV_PLAYLIST_REFRESH, 0, 0, 0);
@@ -1272,13 +1272,13 @@ artwork_get_actions (DB_playItem_t *it)
 
 static int
 artwork_plugin_stop (void) {
-    dispatch_sync(sync_queue, ^{
+    dispatch_sync(sync_queue, ^ {
         terminate = 1; // prevent any new items from being scheduled
     });
     queue_clear ();
     artwork_abort_http_request ();
 
-    dispatch_sync(fetch_queue, ^{
+    dispatch_sync(fetch_queue, ^ {
         // wait for the queue to finish all jobs
     });
 
@@ -1354,7 +1354,7 @@ static const char settings_dlg[] =
     "property \"Custom image path\" file artwork.nocover_path \"\";\n"
     "property \"Scale artwork towards longer side\" checkbox artwork.scale_towards_longer 1;\n"
 #endif
-;
+    ;
 
 // define plugin interface
 ddb_artwork_plugin_t plugin = {
@@ -1367,28 +1367,28 @@ ddb_artwork_plugin_t plugin = {
     .plugin.plugin.name = "Album Artwork",
     .plugin.plugin.descr = "Loads album artwork from embedded tags, local directories, or internet services",
     .plugin.plugin.copyright =
-        "Album Art plugin for DeaDBeeF\n"
-        "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
-        "Copyright (C) 2009-2016 Alexey Yakovenko <waker@users.sourceforge.net>\n"
-        "Copyright (C) 2014-2016 Ian Nartowicz <deadbeef@nartowicz.co.uk>\n"
-        "\n"
-        "This software is provided 'as-is', without any express or implied\n"
-        "warranty.  In no event will the authors be held liable for any damages\n"
-        "arising from the use of this software.\n"
-        "\n"
-        "Permission is granted to anyone to use this software for any purpose,\n"
-        "including commercial applications, and to alter it and redistribute it\n"
-        "freely, subject to the following restrictions:\n"
-        "\n"
-        "1. The origin of this software must not be misrepresented; you must not\n"
-        " claim that you wrote the original software. If you use this software\n"
-        " in a product, an acknowledgment in the product documentation would be\n"
-        " appreciated but is not required.\n"
-        "\n"
-        "2. Altered source versions must be plainly marked as such, and must not be\n"
-        " misrepresented as being the original software.\n"
-        "\n"
-        "3. This notice may not be removed or altered from any source distribution.\n"
+    "Album Art plugin for DeaDBeeF\n"
+    "Copyright (C) 2009-2011 Viktor Semykin <thesame.ml@gmail.com>\n"
+    "Copyright (C) 2009-2016 Alexey Yakovenko <waker@users.sourceforge.net>\n"
+    "Copyright (C) 2014-2016 Ian Nartowicz <deadbeef@nartowicz.co.uk>\n"
+    "\n"
+    "This software is provided 'as-is', without any express or implied\n"
+    "warranty.  In no event will the authors be held liable for any damages\n"
+    "arising from the use of this software.\n"
+    "\n"
+    "Permission is granted to anyone to use this software for any purpose,\n"
+    "including commercial applications, and to alter it and redistribute it\n"
+    "freely, subject to the following restrictions:\n"
+    "\n"
+    "1. The origin of this software must not be misrepresented; you must not\n"
+    " claim that you wrote the original software. If you use this software\n"
+    " in a product, an acknowledgment in the product documentation would be\n"
+    " appreciated but is not required.\n"
+    "\n"
+    "2. Altered source versions must be plainly marked as such, and must not be\n"
+    " misrepresented as being the original software.\n"
+    "\n"
+    "3. This notice may not be removed or altered from any source distribution.\n"
     ,
     .plugin.plugin.website = "http://deadbeef.sf.net",
     .plugin.plugin.start = artwork_plugin_start,

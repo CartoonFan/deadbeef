@@ -112,13 +112,13 @@ amm-info@iis.fraunhofer.de
 /* Data Types ****************************************************************/
 
 typedef enum {
-  METADATA_OK = 0x0000, /*!< No error happened. All fine. */
-  METADATA_INVALID_HANDLE =
-      0x0020, /*!< Handle passed to function call was invalid. */
-  METADATA_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
-  METADATA_INIT_ERROR = 0x0040,   /*!< General initialization error. */
-  METADATA_ENCODE_ERROR =
-      0x0060 /*!< The encoding process was interrupted by an unexpected error.
+    METADATA_OK = 0x0000, /*!< No error happened. All fine. */
+    METADATA_INVALID_HANDLE =
+        0x0020, /*!< Handle passed to function call was invalid. */
+    METADATA_MEMORY_ERROR = 0x0021, /*!< Memory allocation failed. */
+    METADATA_INIT_ERROR = 0x0040,   /*!< General initialization error. */
+    METADATA_ENCODE_ERROR =
+        0x0060 /*!< The encoding process was interrupted by an unexpected error.
               */
 
 } FDK_METADATA_ERROR;

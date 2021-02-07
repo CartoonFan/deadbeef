@@ -106,28 +106,28 @@ extern "C" {
 
 #elif defined(__GNUC__)
 
-    #if !defined(__GNUC_PREREQ)
-        // avoid including glibc headers, this is not very portable
-        #if defined __GNUC_MINOR__
-        #   define __GNUC_PREREQ(maj, min) \
+#if !defined(__GNUC_PREREQ)
+// avoid including glibc headers, this is not very portable
+#if defined __GNUC_MINOR__
+#   define __GNUC_PREREQ(maj, min) \
             ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
-        #else
-        #   define __GNUC_PREREQ(maj, min) 0
-        #endif
+#else
+#   define __GNUC_PREREQ(maj, min) 0
+#endif
 
-    #endif
+#endif
 
-    // Deprecating of enum values requires GCC 6+.
-    // Older GCC can still be used to build.
-    #if __GNUC_PREREQ(6,0)
-    #   define DDB_DEPRECATED(x) __attribute__ ((deprecated(x)))
-    #else
-    #   define DDB_DEPRECATED(x)
-    #endif
+// Deprecating of enum values requires GCC 6+.
+// Older GCC can still be used to build.
+#if __GNUC_PREREQ(6,0)
+#   define DDB_DEPRECATED(x) __attribute__ ((deprecated(x)))
+#else
+#   define DDB_DEPRECATED(x)
+#endif
 
 #else
 
-    #define DDB_DEPRECATED(x)
+#define DDB_DEPRECATED(x)
 
 #endif
 
@@ -491,7 +491,7 @@ enum {
 
 #if (DDB_API_LEVEL >= 8)
     // A caller sends this event, to ask playlist viewer(s) to focus on selected track.
-    DB_EV_FOCUS_SELECTION = 24, 
+    DB_EV_FOCUS_SELECTION = 24,
 #endif
 
     // -----------------
@@ -564,7 +564,7 @@ enum {
 #if (DDB_API_LEVEL >= 11)
 typedef enum ddb_rg_processing_e {
 #else
-    enum {
+enum {
 #endif
 
     DDB_RG_PROCESSING_NONE = 0,

@@ -44,20 +44,20 @@ get_new_font_description_from_type (int type)
 {
     PangoFontDescription *desc;
     switch (type) {
-        case DDB_LIST_FONT:
-            desc = pango_font_description_from_string (gtkui_listview_text_font);
-            break;
-        case DDB_GROUP_FONT:
-            desc = pango_font_description_from_string (gtkui_listview_group_text_font);
-            break;
-        case DDB_TABSTRIP_FONT:
-            desc = pango_font_description_from_string (gtkui_tabstrip_text_font);
-            break;
-        case DDB_COLUMN_FONT:
-            desc = pango_font_description_from_string (gtkui_listview_column_text_font);
-            break;
-        default:
-            desc = NULL;
+    case DDB_LIST_FONT:
+        desc = pango_font_description_from_string (gtkui_listview_text_font);
+        break;
+    case DDB_GROUP_FONT:
+        desc = pango_font_description_from_string (gtkui_listview_group_text_font);
+        break;
+    case DDB_TABSTRIP_FONT:
+        desc = pango_font_description_from_string (gtkui_tabstrip_text_font);
+        break;
+    case DDB_COLUMN_FONT:
+        desc = pango_font_description_from_string (gtkui_listview_column_text_font);
+        break;
+    default:
+        desc = NULL;
     }
     return desc;
 }
@@ -67,18 +67,18 @@ get_pango_alignment (int align)
 {
     int alignment = 0;
     switch (align) {
-        case 0:
-            alignment = PANGO_ALIGN_LEFT;
-            break;
-        case 1:
-            alignment = PANGO_ALIGN_RIGHT;
-            break;
-        case 2:
-            alignment = PANGO_ALIGN_CENTER;
-            break;
-        default:
-            alignment = PANGO_ALIGN_LEFT;
-            break;
+    case 0:
+        alignment = PANGO_ALIGN_LEFT;
+        break;
+    case 1:
+        alignment = PANGO_ALIGN_RIGHT;
+        break;
+    case 2:
+        alignment = PANGO_ALIGN_CENTER;
+        break;
+    default:
+        alignment = PANGO_ALIGN_LEFT;
+        break;
     }
     return alignment;
 }
@@ -265,10 +265,10 @@ int
 draw_get_listview_rowheight (drawctx_t *ctx) {
     PangoFontDescription *font_desc = pango_font_description_copy (pango_layout_get_font_description (ctx->pangolayout));
     PangoFontMetrics *metrics = pango_context_get_metrics (ctx->pangoctx,
-            font_desc,
-            pango_context_get_language (ctx->pangoctx));
+                                font_desc,
+                                pango_context_get_language (ctx->pangoctx));
     int row_height = (pango_font_metrics_get_ascent (metrics) +
-            pango_font_metrics_get_descent (metrics));
+                      pango_font_metrics_get_descent (metrics));
     pango_font_metrics_unref (metrics);
     pango_font_description_free (font_desc);
     return PANGO_PIXELS(row_height)+6;

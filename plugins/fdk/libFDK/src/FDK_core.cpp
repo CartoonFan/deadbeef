@@ -116,30 +116,30 @@ amm-info@iis.fraunhofer.de
 #endif
 
 int FDK_toolsGetLibInfo(LIB_INFO *info) {
-  UINT v;
-  int i;
+    UINT v;
+    int i;
 
-  if (info == NULL) {
-    return -1;
-  }
+    if (info == NULL) {
+        return -1;
+    }
 
-  /* search for next free tab */
-  i = FDKlibInfo_lookup(info, FDK_TOOLS);
-  if (i < 0) return -1;
+    /* search for next free tab */
+    i = FDKlibInfo_lookup(info, FDK_TOOLS);
+    if (i < 0) return -1;
 
-  info += i;
+    info += i;
 
-  v = LIB_VERSION(FDK_TOOLS_LIB_VL0, FDK_TOOLS_LIB_VL1, FDK_TOOLS_LIB_VL2);
+    v = LIB_VERSION(FDK_TOOLS_LIB_VL0, FDK_TOOLS_LIB_VL1, FDK_TOOLS_LIB_VL2);
 
-  FDKsprintf(info->versionStr, "%d.%d.%d", ((v >> 24) & 0xff),
-             ((v >> 16) & 0xff), ((v >> 8) & 0xff));
+    FDKsprintf(info->versionStr, "%d.%d.%d", ((v >> 24) & 0xff),
+               ((v >> 16) & 0xff), ((v >> 8) & 0xff));
 
-  info->module_id = FDK_TOOLS;
-  info->version = v;
-  info->build_date = FDK_TOOLS_LIB_BUILD_DATE;
-  info->build_time = FDK_TOOLS_LIB_BUILD_TIME;
-  info->title = FDK_TOOLS_LIB_TITLE;
-  info->flags = 1;
+    info->module_id = FDK_TOOLS;
+    info->version = v;
+    info->build_date = FDK_TOOLS_LIB_BUILD_DATE;
+    info->build_time = FDK_TOOLS_LIB_BUILD_TIME;
+    info->title = FDK_TOOLS_LIB_TITLE;
+    info->flags = 1;
 
-  return 0;
+    return 0;
 }
