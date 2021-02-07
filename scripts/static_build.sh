@@ -66,8 +66,8 @@ export OBJC="$AP"/apgcc
 sed -i 's/-lstdc++ -lm -lgcc_s -lc -lgcc_s/-lm -lc/g' libtool
 sed -i 's/hardcode_into_libs=yes/hardcode_into_libs=no/g' libtool
 make clean
-make V=1 -j8 DESTDIR="$(pwd)/static/$ARCH/deadbeef-$VERSION" || exit 1
-export DESTDIR="$(pwd)/static/$ARCH/deadbeef-$VERSION"
+make V=1 -j8 DESTDIR="$PWD/static/$ARCH/deadbeef-$VERSION" || exit 1
+export DESTDIR="$PWD/static/$ARCH/deadbeef-$VERSION"
 make DESTDIR="$DESTDIR" install || exit 1
 mkdir -p "$LIBRARY_PATH"
 cp -r "$LIBRARY_PATH"/libBlocksRuntime.so* "$DESTDIR"/opt/deadbeef/lib/
